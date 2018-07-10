@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">WakeupSchedule_Kotlin</string>
+
+    <string name="login_web_title">登录教务系统</string>
+    <string name="student_id">学号</string>
+    <string name="password">密码</string>
+    <string name="check_code">验证码</string>
+    <string name="check_code_get_error">获取验证码失败</string>
+    <string name="login">登录</string>
+
+
+</resources>

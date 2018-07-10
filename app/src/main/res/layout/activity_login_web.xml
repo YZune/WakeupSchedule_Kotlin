@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".schedule_import.LoginWebActivity">
+
+    <ImageView
+        android:scaleType="fitEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/login_bg" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:paddingTop="16dp"
+        android:text="@string/login_web_title"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_id"
+        style="@style/LoginEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="72dp"
+        android:hint="@string/student_id"
+        android:inputType="number" />
+
+    <LinearLayout
+        android:id="@+id/ll_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_id">
+
+        <EditText
+            android:id="@+id/et_pwd"
+            style="@style/LoginEditText"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
+
+        <CheckBox
+            android:id="@+id/cb_check_pwd"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="-2dp"
+            android:layout_marginRight="0dp"
+            android:button="@drawable/check_pwd_layout"
+            android:checked="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_pwd">
+
+        <EditText
+            android:id="@+id/et_code"
+            style="@style/LoginEditText"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            android:hint="@string/check_code" />
+
+        <RelativeLayout
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            android:paddingRight="24dp">
+
+            <ImageView
+                android:id="@+id/iv_error"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="32dp"
+                android:src="@drawable/retry"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/rl_progress"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="2dp"
+                android:layout_marginLeft="32dp">
+
+                <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="true"
+                    app:cpb_color="@color/grey"
+                    app:cpb_max_sweep_angle="360"
+                    app:cpb_min_sweep_angle="360"
+                    app:cpb_rotation_speed="1.0"
+                    app:cpb_stroke_width="4dp"
+                    app:cpb_sweep_speed="10.0" />
+
+                <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:indeterminate="true"
+                    app:cpb_color="#fa6278"
+                    app:cpb_max_sweep_angle="30"
+                    app:cpb_min_sweep_angle="150"
+                    app:cpb_rotation_speed="2.0"
+                    app:cpb_stroke_width="4dp"
+                    app:cpb_sweep_speed="0.5" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_code"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_alignParentBottom="true" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.suda.yzune.wakeupschedule.widget.LoginButton
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/ll_code"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginTop="56dp" />
+
+
+</RelativeLayout>
