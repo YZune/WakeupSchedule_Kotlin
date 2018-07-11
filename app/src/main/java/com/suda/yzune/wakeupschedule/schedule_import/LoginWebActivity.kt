@@ -239,12 +239,11 @@ class LoginWebActivity : AppCompatActivity() {
         maskOn.duration = 500
         maskOn.start()
 
-        ll_choice.visibility = View.VISIBLE
+        ll_dialog.visibility = View.VISIBLE
         var terms = listOf<String>("1", "2", "3")
         var years = listOf<String>("2016-2017", "2017-2018", "2018-2019")
-
-        sc_term.addItems(terms,0)
-        sc_year.addItems(years,0)
+        wp_term.data = terms
+        wp_years.data = years
     }
 
 }

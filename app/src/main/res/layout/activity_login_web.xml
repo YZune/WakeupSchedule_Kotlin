@@ -43,6 +43,7 @@
         <EditText
             android:id="@+id/et_pwd"
             style="@style/LoginEditText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:layout_marginTop="32dp"
@@ -70,6 +71,7 @@
         <EditText
             android:id="@+id/et_code"
             style="@style/LoginEditText"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_weight="1"
@@ -186,30 +188,61 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/ll_choice"
-                android:visibility="gone"
+                android:id="@+id/ll_dialog"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-                <com.webianks.library.scroll_choice.ScrollChoice
-                    android:id="@+id/sc_year"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:scroll_background_color="@color/transparent"
-                    app:scroll_item_text_color="@color/white"
-                    app:scroll_selected_item_background="@color/grey"
-                    app:scroll_selected_item_text_color="@color/white" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:text="请选择要导入的学期"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-                <com.webianks.library.scroll_choice.ScrollChoice
-                    android:id="@+id/sc_term"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    app:scroll_background_color="@color/transparent"
-                    app:scroll_item_text_color="@color/white"
-                    app:scroll_selected_item_background="@color/grey"
-                    app:scroll_selected_item_text_color="@color/white" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <com.aigestudio.wheelpicker.WheelPicker
+                        android:id="@+id/wp_years"
+                        style="@style/TermDataPicker"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        tools:ignore="NestedWeights" />
+
+                    <com.aigestudio.wheelpicker.WheelPicker
+                        android:id="@+id/wp_term"
+                        style="@style/TermDataPicker"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.CardView
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:layout_marginTop="8dp"
+                    app:cardCornerRadius="20dp"
+                    android:layout_gravity="center"
+                    android:layout_width="120dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:textColor="@color/colorAccent"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="确定"/>
+
+                </android.support.v7.widget.CardView>
 
             </LinearLayout>
 

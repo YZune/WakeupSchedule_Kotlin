@@ -22,4 +22,17 @@
         <item name="android:background">@null</item>
     </style>
 
+    <style name="TermDataPicker">
+        <item name="wheel_same_width">true</item>
+        <item name="wheel_curtain">true</item>
+        <item name="wheel_cyclic">true</item>
+        <item name="wheel_curved">false</item>
+        <item name="wheel_visible_item_count">3</item>
+        <item name="wheel_curtain_color">#64ffffff</item>
+        <item name="wheel_atmospheric">true</item>
+        <item name="wheel_item_text_color">@color/white</item>
+        <item name="wheel_selected_item_text_color">@color/white</item>
+        <item name="wheel_item_text_size">20sp</item>
+    </style>
+
 </resources>
