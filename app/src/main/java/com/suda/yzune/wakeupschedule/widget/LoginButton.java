@@ -54,6 +54,8 @@ public class LoginButton extends View {
     ValueAnimator animator_arc_to_rotate;
     ValueAnimator animator_point_move_up;
 
+    ValueAnimator animator_angle_to_rect;
+
     OnAnimationButtonClickListener onAnimationButtonClickListener;
 
     public boolean isBegin() {
@@ -118,6 +120,9 @@ public class LoginButton extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (!isBegin) {
+            circleAngle = heightMeasureSpec / 2;
+        }
     }
 
     @Override
@@ -213,6 +218,27 @@ public class LoginButton extends View {
         });
     }
 
+    /**
+     * 设置圆角矩形变成矩形的动画
+     */
+    public void setAnimator_angle_to_rect() {
+        circleAngle = 0;
+        isCircle = false;
+        isEye = false;
+        setAnimator_central_circle_to_rect(0);
+        animator_angle_to_rect = ValueAnimator.ofInt(height, height * 4);
+        animator_angle_to_rect.setDuration(300);
+        //animator_angle_to_rect.setStartDelay(500);
+        animator_angle_to_rect.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //circleAngle = (float) valueAnimator.getAnimatedValue();
+                height = (int) valueAnimator.getAnimatedValue();
+                invalidate();
+            }
+        });
+        animator_angle_to_rect.start();
+    }
 
     /**
      * 设置弧度矩形到终点的动画
@@ -264,6 +290,29 @@ public class LoginButton extends View {
         });
     }
 
+    private void setAnimator_central_circle_to_rect(int i) {
+        animator_central_circle_to_rect = ValueAnimator.ofInt(default_move_distance, 0);
+        animator_central_circle_to_rect.setDuration(rect_to_circle_duration);
+        animator_central_circle_to_rect.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+
+                actual_move_distance = (int) valueAnimator.getAnimatedValue();
+
+                //int alpha = (default_move_distance * 255) / default_move_distance;
+
+                //textPaint.setAlpha(alpha);
+
+                if (actual_move_distance < default_move_distance) {
+                    isCircle = false;
+                }
+
+                invalidate();
+            }
+        });
+        animator_central_circle_to_rect.start();
+    }
+
     /**
      * 加载旋转动画
      */
@@ -307,7 +356,7 @@ public class LoginButton extends View {
         rectf.bottom = height;
 
         //画圆角矩形
-        canvas.drawRoundRect(rectf, height / 2, height / 2, paint);
+        canvas.drawRoundRect(rectf, circleAngle, circleAngle, paint);
 
     }
 
@@ -372,7 +421,7 @@ public class LoginButton extends View {
         resetWH();
     }
 
-    public void setBtnString(String str){
+    public void setBtnString(String str) {
         btnString = str;
         invalidate();
     }

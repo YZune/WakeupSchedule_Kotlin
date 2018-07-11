@@ -20,6 +20,13 @@ interface ImportService {
     ): Call<ResponseBody>
 
     @POST("/xskbcx.aspx")
+    //@FormUrlEncoded
+    fun getPrepare(@Query("xh") xh: String,
+                   @Header("Referer") referer: String,
+                   @Header("Cookie") cookies: String
+    ): Call<ResponseBody>
+
+    @POST("/xskbcx.aspx")
     @FormUrlEncoded
     @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
     fun getSchedule(@Query("xh") xh: String,

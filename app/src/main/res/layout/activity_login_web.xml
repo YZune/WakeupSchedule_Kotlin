@@ -7,10 +7,10 @@
     tools:context=".schedule_import.LoginWebActivity">
 
     <ImageView
-        android:scaleType="fitEnd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:scaleType="fitEnd"
         android:src="@drawable/login_bg" />
 
     <TextView
@@ -73,7 +73,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:layout_weight="1"
-            android:hint="@string/check_code" />
+            android:hint="@string/check_code"
+            android:inputType="textVisiblePassword" />
 
         <RelativeLayout
             android:layout_width="120dp"
@@ -132,14 +133,88 @@
 
     </LinearLayout>
 
-    <com.suda.yzune.wakeupschedule.widget.LoginButton
-        android:id="@+id/btn_login"
+    <ImageView
+        android:id="@+id/iv_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="#96ffffff"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_login"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/ll_code"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginTop="56dp" />
+        android:layout_marginTop="56dp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        app:cardCornerRadius="24dp">
 
+        <RelativeLayout
+            android:id="@+id/rl_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/login_btn_bg">
+
+            <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                android:id="@+id/cpb"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
+                android:alpha="0"
+                android:indeterminate="true"
+                app:cpb_color="@color/white"
+                app:cpb_max_sweep_angle="30"
+                app:cpb_min_sweep_angle="150"
+                app:cpb_rotation_speed="2.0"
+                app:cpb_stroke_width="4dp"
+                app:cpb_sweep_speed="0.5" />
+
+            <TextView
+                android:id="@+id/btn_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:singleLine="true"
+                android:text="@string/login"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/ll_choice"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.webianks.library.scroll_choice.ScrollChoice
+                    android:id="@+id/sc_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:scroll_background_color="@color/transparent"
+                    app:scroll_item_text_color="@color/white"
+                    app:scroll_selected_item_background="@color/grey"
+                    app:scroll_selected_item_text_color="@color/white" />
+
+                <com.webianks.library.scroll_choice.ScrollChoice
+                    android:id="@+id/sc_term"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:scroll_background_color="@color/transparent"
+                    app:scroll_item_text_color="@color/white"
+                    app:scroll_selected_item_background="@color/grey"
+                    app:scroll_selected_item_text_color="@color/white" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 
 </RelativeLayout>
