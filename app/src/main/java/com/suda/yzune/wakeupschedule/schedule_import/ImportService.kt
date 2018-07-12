@@ -28,7 +28,8 @@ interface ImportService {
 
     @POST("/xskbcx.aspx")
     @FormUrlEncoded
-    @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
+    //@Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
+    @Headers("Connection: keep-alive")
     fun getSchedule(@Query("xh") xh: String,
                     @Query("xm", encoded = false) name: String,
                     @Query("gnmkdm") gnmkdm: String,

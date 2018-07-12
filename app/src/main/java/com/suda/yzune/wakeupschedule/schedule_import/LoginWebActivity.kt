@@ -32,9 +32,13 @@ import android.view.inputmethod.InputMethodManager
 
 class LoginWebActivity : AppCompatActivity() {
 
-    var isInitLoginObserver = false
-    var isLoginBtnClicked = false
-    var loginBtnOldWidth = 0
+    private var isInitLoginObserver = false
+    private var isInitPrepareObserver = false
+    private var isInitScheduleObserver = false
+    private var loginBtnOldWidth = 0
+    private var name = ""
+    private var year = ""
+    private var term = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -135,7 +139,12 @@ class LoginWebActivity : AppCompatActivity() {
                         //setLoginText("成功！")
 //                        val intent = Intent(this, ChooseTermActivity::class.java)
 //                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, btn_login, "btn_to_dialog").toBundle())
-                        cardC2Dialog()
+                        if (!isInitPrepareObserver) {
+                            isInitPrepareObserver = true
+                            initPrepareObserver(viewModel, et_id.text.toString())
+                        } else {
+                            viewModel.getPrepare(et_id.text.toString())
+                        }
 //                        Handler().postDelayed({
 //                            viewModel.toSchedule(id, it, "2016-2017", "1")
 //                        }, 500)
@@ -147,6 +156,27 @@ class LoginWebActivity : AppCompatActivity() {
                     }
                 }
             }
+        })
+    }
+
+    private fun initPrepareObserver(viewModel: ImportViewModel, id: String) {
+        viewModel.getPrepare(id).observe(this, Observer {
+            var years: List<String>? = null
+            if (it != null) {
+                years = viewModel.parseYears(it)
+                name = viewModel.parseName(it)
+            }
+            if (years == null) {
+                cardC2Re("获取学期数据失败:(")
+            } else {
+                cardC2Dialog(viewModel, years)
+            }
+        })
+    }
+
+    private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
+        viewModel.toSchedule(id, name, year, term).observe(this, Observer {
+
         })
     }
 
@@ -219,7 +249,7 @@ class LoginWebActivity : AppCompatActivity() {
         }, 3000)
     }
 
-    private fun cardC2Dialog() {
+    private fun cardC2Dialog(viewModel: ImportViewModel, years: List<String>) {
         cv_login.isClickable = false
         widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
         fadeAnimation(cpb, 1f, 0f, 100, 0)
@@ -240,10 +270,29 @@ class LoginWebActivity : AppCompatActivity() {
         maskOn.start()
 
         ll_dialog.visibility = View.VISIBLE
-        var terms = listOf<String>("1", "2", "3")
-        var years = listOf<String>("2016-2017", "2017-2018", "2018-2019")
+        val terms = listOf<String>("1", "2", "3")
         wp_term.data = terms
         wp_years.data = years
+        wp_years.setOnItemSelectedListener { _, data, _ ->
+            year = data as String
+            Log.d("选中","选中学年$year")
+        }
+        wp_term.setOnItemSelectedListener { _, data, _ ->
+            term = data as String
+        }
+
+        val contentOn = ObjectAnimator.ofFloat(ll_dialog, "alpha", 0f, 1f)
+        contentOn.duration = 500
+        contentOn.start()
+
+        cv_to_schedule.setOnClickListener(View.OnClickListener {
+            if (!isInitScheduleObserver) {
+                isInitScheduleObserver = true
+                initScheduleObserver(viewModel, et_id.text.toString(), name, year, term)
+            } else {
+                viewModel.toSchedule(et_id.text.toString(), name, year, term)
+            }
+        })
     }
 
 }
