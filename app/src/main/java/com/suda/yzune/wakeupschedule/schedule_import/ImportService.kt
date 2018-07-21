@@ -19,7 +19,7 @@ interface ImportService {
               @Header("Cookie") cookies: String
     ): Call<ResponseBody>
 
-    @POST("/xskbcx.aspx")
+    @GET("/xskbcx.aspx")
     //@FormUrlEncoded
     fun getPrepare(@Query("xh") xh: String,
                    @Header("Referer") referer: String,
@@ -31,7 +31,7 @@ interface ImportService {
     //@Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
     @Headers("Connection: keep-alive")
     fun getSchedule(@Query("xh") xh: String,
-                    @Query("xm", encoded = false) name: String,
+                    @Query("xm") name: String,
                     @Query("gnmkdm") gnmkdm: String,
                     @Field("__EVENTTARGET") event_target: String,
                     @Field("__EVENTARGUMENT") event_argument: String,

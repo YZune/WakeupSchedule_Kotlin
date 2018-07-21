@@ -13,8 +13,9 @@ import retrofit2.Retrofit
 import java.net.URLEncoder
 
 class ImportRepository(url: String) {
-    var VIEWSTATE_POST_CODE = arrayListOf<String>("")
-    var VIEWSTATE_LOGIN_CODE = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    var VIEWSTATE_POST_CODE = Array<String>(1){""}
+    //var VIEWSTATE_LOGIN_CODE = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    var VIEWSTATE_LOGIN_CODE = Array<String>(1){""}
     var LOGIN_COOKIE = MutableLiveData<String>()
     var checkCode = MutableLiveData<Bitmap>()
     var loginResponse = MutableLiveData<String>()
@@ -32,6 +33,7 @@ class ImportRepository(url: String) {
                         val verificationCode = response?.body()?.bytes()
                         checkCode.value = BitmapFactory.decodeByteArray(verificationCode, 0, verificationCode!!.size)
                         LOGIN_COOKIE.value = response.headers().values("Set-Cookie").joinToString("; ")
+                        VIEWSTATE_LOGIN_CODE[0] = "dDwxNTMxMDk5Mzc0Ozs+LxNdKu56vO/J6IPIRPAbc74T3WU="
                         Log.d("获取", LOGIN_COOKIE.value)
                     }
 
@@ -44,7 +46,7 @@ class ImportRepository(url: String) {
     fun login(xh: String, pwd: String, code: String) {
         importService.login(
                 xh = xh, pwd = pwd, code = code,
-                b = "", view_state = VIEWSTATE_LOGIN_CODE,
+                b = "", view_state = VIEWSTATE_LOGIN_CODE[0],
                 cookies = LOGIN_COOKIE.value!!
         ).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
@@ -78,7 +80,7 @@ class ImportRepository(url: String) {
 
     fun toSchedule(xh: String, name: String, year: String, term: String) {
         importService.getSchedule(
-                xh = xh, name = name, gnmkdm = "N121603",
+                xh = xh, name = URLEncoder.encode(name, "gb2312"), gnmkdm = "N121603",
                 event_target = "xnd",
                 event_argument = "",
                 view_state = VIEWSTATE_POST_CODE[0],
@@ -96,8 +98,8 @@ class ImportRepository(url: String) {
             override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                 val result = response?.body()?.string()
                 if (result != null) {
-                    scheduleResponse.value = result
-                    Log.d("课表", result.substring(result.indexOf("周一")))
+                    //scheduleResponse.value = result
+                    Log.d("课表", result.substring(result.indexOf("星期一")))
                 }else{
                     scheduleResponse.value = null
                 }

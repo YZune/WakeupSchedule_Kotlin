@@ -28,6 +28,7 @@ import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
+import com.suda.yzune.wakeupschedule.AppDatabase
 
 
 class LoginWebActivity : AppCompatActivity() {
@@ -36,6 +37,8 @@ class LoginWebActivity : AppCompatActivity() {
     private var isInitPrepareObserver = false
     private var isInitScheduleObserver = false
     private var loginBtnOldWidth = 0
+    private var loginBtnOldHeight = 0
+    private var loginBtnOldRadius = 0f
     private var name = ""
     private var year = ""
     private var term = ""
@@ -46,6 +49,13 @@ class LoginWebActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login_web)
 
         val viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
+
+        viewModel.insertResponse.observe(this, Observer {
+            if (it != null){
+                Toasty.success(this, it).show()
+            }
+        })
+
         viewModel.getCheckCode().observe(this, Observer {
             if (it != null) {
                 rl_progress.visibility = View.GONE
@@ -176,7 +186,11 @@ class LoginWebActivity : AppCompatActivity() {
 
     private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
         viewModel.toSchedule(id, name, year, term).observe(this, Observer {
-
+            if (it == null || it == "Failure") {
+                cardC2Re("网络错误")
+            } else {
+                viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
+            }
         })
     }
 
@@ -221,6 +235,8 @@ class LoginWebActivity : AppCompatActivity() {
 
     private fun cardRe2C() {
         loginBtnOldWidth = cv_login.width
+        loginBtnOldHeight = cv_login.height
+        loginBtnOldRadius = cv_login.radius
         widthAnimation(cv_login, loginBtnOldWidth, cv_login.height, 300, 0)
         fadeAnimation(btn_text, 1f, 0f, 200, 0)
         fadeAnimation(cpb, 0f, 1f, 100, 0)
@@ -254,7 +270,7 @@ class LoginWebActivity : AppCompatActivity() {
         widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
         fadeAnimation(cpb, 1f, 0f, 100, 0)
         cv_login.pivotY = 0f
-        val raiseUp = ObjectAnimator.ofFloat(cv_login, "y", cv_login.y, cv_login.y / 2)
+        val raiseUp = ObjectAnimator.ofFloat(cv_login, "translationY", 0f, -320f)
         raiseUp.interpolator = OvershootInterpolator()
         raiseUp.duration = 500
         raiseUp.start()
@@ -275,10 +291,11 @@ class LoginWebActivity : AppCompatActivity() {
         wp_years.data = years
         wp_years.setOnItemSelectedListener { _, data, _ ->
             year = data as String
-            Log.d("选中","选中学年$year")
+            Log.d("选中", "选中学年$year")
         }
         wp_term.setOnItemSelectedListener { _, data, _ ->
             term = data as String
+            Log.d("选中", "选中学期$term")
         }
 
         val contentOn = ObjectAnimator.ofFloat(ll_dialog, "alpha", 0f, 1f)
@@ -286,6 +303,7 @@ class LoginWebActivity : AppCompatActivity() {
         contentOn.start()
 
         cv_to_schedule.setOnClickListener(View.OnClickListener {
+            cardDialog2C()
             if (!isInitScheduleObserver) {
                 isInitScheduleObserver = true
                 initScheduleObserver(viewModel, et_id.text.toString(), name, year, term)
@@ -295,4 +313,20 @@ class LoginWebActivity : AppCompatActivity() {
         })
     }
 
+    private fun cardDialog2C() {
+        cv_login.isClickable = false
+        widthAnimation(cv_login, loginBtnOldWidth, loginBtnOldHeight, 300, 0)
+        fadeAnimation(cpb, 0f, 1f, 100, 0)
+        cv_login.pivotY = 0f
+        heightAnimation(cv_login, cv_login.height, loginBtnOldHeight, 300, 0)
+
+        val radiusOn = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, loginBtnOldRadius)
+        radiusOn.duration = 100
+        radiusOn.start()
+        rl_login.isClickable = true
+        iv_mask.visibility = View.GONE
+
+        ll_dialog.visibility = View.GONE
+
+    }
 }
