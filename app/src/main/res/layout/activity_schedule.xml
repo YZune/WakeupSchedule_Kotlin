@@ -12,11 +12,11 @@
 
         <ImageView
             android:id="@+id/iv_bg"
-            android:alpha="0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/main_bg"
-            android:scaleType="centerCrop"/>
+            android:alpha="0"
+            android:scaleType="centerCrop"
+            android:src="@drawable/main_bg" />
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/ab_main"
@@ -87,28 +87,28 @@
                         android:textColor="@android:color/black" />
 
                     <ImageButton
-                        android:layout_toStartOf="@id/ib_import"
-                        android:layout_below="@id/v_status"
-                        android:padding="4dp"
-                        android:background="@null"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:layout_below="@id/v_status"
+                        android:layout_toStartOf="@id/ib_import"
+                        android:background="@null"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:padding="4dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/schedule_add"/>
+                        android:src="@drawable/schedule_add" />
 
                     <ImageButton
                         android:id="@+id/ib_import"
-                        android:layout_marginEnd="24dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_alignParentEnd="true"
                         android:layout_below="@id/v_status"
+                        android:layout_marginEnd="24dp"
                         android:background="@null"
                         android:foreground="?android:attr/selectableItemBackgroundBorderless"
                         android:padding="4dp"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/schedule_import"/>
+                        android:src="@drawable/schedule_import" />
 
                 </RelativeLayout>
 
@@ -194,9 +194,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
                                 android:text="数据结构"
-                                android:textStyle="bold"
                                 android:textColor="@android:color/black"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -302,9 +302,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="4dp"
                                 android:text="离散数学"
-                                android:textStyle="bold"
                                 android:textColor="@android:color/black"
-                                android:textSize="16sp" />
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -342,16 +342,19 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <com.suda.yzune.wakeupschedule.widget.JudgeNestedScrollView
+            android:id="@+id/nsv_schedule"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v4.view.ViewPager
+                android:id="@+id/vp_schedule"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </android.support.v4.widget.NestedScrollView>
+        </com.suda.yzune.wakeupschedule.widget.JudgeNestedScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
 

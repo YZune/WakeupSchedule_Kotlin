@@ -19,7 +19,18 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
         //resizeStatusBar(this)
+        initViewPage()
         initEvent()
+    }
+
+    private fun initViewPage() {
+        val mAdapter = SchedulePagerAdapter(supportFragmentManager)
+        vp_schedule.adapter = mAdapter
+        vp_schedule.offscreenPageLimit = 5
+        for (i in 1..20) {
+            mAdapter.addFragment(ScheduleFragment.newInstance())
+        }
+        mAdapter.notifyDataSetChanged()
     }
 
     private fun initEvent() {
@@ -29,6 +40,7 @@ class ScheduleActivity : AppCompatActivity() {
             ll_today_courses.alpha = alpha
             iv_title_bg.alpha = alpha
             iv_bg.alpha = 1 - alpha
+            nsv_schedule.setNeedScroll(alpha != 0f)
         })
     }
 
