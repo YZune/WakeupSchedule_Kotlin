@@ -8,15 +8,20 @@ interface ImportService {
     @GET("/CheckCode.aspx")
     fun getCheckCode(): Call<ResponseBody>
 
-    @POST("/")
+    @POST("/default2.aspx")
     @FormUrlEncoded
     @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
-    fun login(@Field("TextBox1") xh: String,
-              @Field("TextBox2") pwd: String,
-              @Field("TextBox3") code: String,
+    fun login(@Field("txtUserName") xh: String,
+              @Field("Textbox2") pwd: String,
+              @Field("txtSecretCode") code: String,
               @Field("Button1") b: String,
               @Field("__VIEWSTATE") view_state: String,
-              @Header("Cookie") cookies: String
+              @Header("Cookie") cookies: String,
+              @Field("Textbox1") textbox1: String,
+              @Field("RadioButtonList1", encoded = false) rbl: String,
+              @Field("lbLanguage") lang: String,
+              @Field("hidPdrs") h: String,
+              @Field("hidsc") hs: String
     ): Call<ResponseBody>
 
     @GET("/xskbcx.aspx")

@@ -189,6 +189,7 @@ class LoginWebActivity : AppCompatActivity() {
             if (it == null || it == "Failure") {
                 cardC2Re("网络错误")
             } else {
+                Log.d("数据库","插入")
                 viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
             }
         })

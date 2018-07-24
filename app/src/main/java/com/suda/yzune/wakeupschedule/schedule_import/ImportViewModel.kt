@@ -186,6 +186,7 @@ class ImportViewModel : ViewModel() {
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)
                 //insertResponse.value = "ok"
+                Log.d("数据库","插入")
             } catch (e: SQLiteConstraintException) {
                 Log.d("数据库","插入异常$e")
                 //insertResponse.value = "error"

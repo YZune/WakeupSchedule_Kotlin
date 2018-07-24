@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.suda.yzune.wakeupschedule.schedule.ScheduleActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_bg"
+            android:alpha="0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/main_bg"
+            android:scaleType="centerCrop"/>
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/ab_main"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:background="@android:color/transparent"
+            app:elevation="0dp">
+
+            <android.support.design.widget.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:minHeight="112dp"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:contentScrim="@android:color/transparent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+                <ImageView
+                    android:id="@+id/iv_title_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/main_bg"
+                    app:layout_collapseMode="parallax" />
+
+                <RelativeLayout
+                    android:id="@+id/rl_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="112dp"
+                    app:layout_collapseMode="pin">
+
+                    <View
+                        android:id="@+id/v_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp" />
+
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/v_status"
+                        android:layout_marginStart="24dp"
+                        android:text="7月23日"
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_week"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_date"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="4dp"
+                        android:alpha="0.65"
+                        android:text="第2周"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_date"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_toEndOf="@id/tv_week"
+                        android:alpha="0.65"
+                        android:text="周一"
+                        android:textColor="@android:color/black" />
+
+                    <ImageButton
+                        android:layout_toStartOf="@id/ib_import"
+                        android:layout_below="@id/v_status"
+                        android:padding="4dp"
+                        android:background="@null"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/schedule_add"/>
+
+                    <ImageButton
+                        android:id="@+id/ib_import"
+                        android:layout_marginEnd="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@id/v_status"
+                        android:background="@null"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:padding="4dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/schedule_import"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_today_courses"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="108dp"
+                    android:background="@color/main_title_bg"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginStart="24dp">
+
+                        <LinearLayout
+                            android:layout_width="16dp"
+                            android:layout_height="match_parent"
+                            android:alpha="0.65"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_start1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="01"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_end1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="12"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:alpha="0.65"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_startTime1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:text="08:00"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_endTime1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:text="08:50"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_name1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="数据结构"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:alpha="0.65">
+
+                                <TextView
+                                    android:id="@+id/tv_room1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="理工楼二楼"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_teacher1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="唐自立"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp">
+
+                        <LinearLayout
+                            android:layout_width="16dp"
+                            android:layout_height="match_parent"
+                            android:alpha="0.65"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_start2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="01"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_end2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="12"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:alpha="0.65"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_startTime2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:text="08:00"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_endTime2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="4dp"
+                                android:text="08:50"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="8dp"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/tv_name2"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="4dp"
+                                android:text="离散数学"
+                                android:textStyle="bold"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:alpha="0.65">
+
+                                <TextView
+                                    android:id="@+id/tv_room2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="博远楼201"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tv_teacher2"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="16dp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:text="唐自立"
+                                    android:textColor="@android:color/black"
+                                    android:textSize="12sp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.design.widget.CollapsingToolbarLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</android.support.v4.widget.DrawerLayout>
