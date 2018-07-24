@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
+import com.suda.yzune.wakeupschedule.bean.CourseBean
 
 @Dao
 interface CourseBaseDao {
@@ -14,6 +15,9 @@ interface CourseBaseDao {
     @Insert
     fun insertList(courseBaseList: List<CourseBaseBean>)
 
-    @Query("select * from coursebasebean")
-    fun getAll(): LiveData<List<CourseBaseBean>>
+    @Query("select * from coursebasebean natural join coursedetailbean")
+    fun getCourse(): LiveData<List<CourseBean>>
+
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day")
+    fun getCourseByDay(day: Int): LiveData<List<CourseBean>>
 }

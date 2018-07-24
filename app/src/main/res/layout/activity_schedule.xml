@@ -64,6 +64,17 @@
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
+                    <ImageButton
+                        android:layout_marginStart="-8dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_below="@id/v_status"
+                        android:background="@null"
+                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:padding="4dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/main_nav" />
+
                     <TextView
                         android:id="@+id/tv_week"
                         android:layout_width="wrap_content"
