@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
@@ -16,6 +17,7 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_schedule.*
 import android.widget.RelativeLayout
 import com.suda.yzune.wakeupschedule.schedule_import.ImportViewModel
+import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 
@@ -68,5 +70,8 @@ class ScheduleActivity : AppCompatActivity() {
             nsv_schedule.setNeedScroll(alpha != 0f)
         })
 
+        ib_import.setOnClickListener {
+            startActivity(Intent(this, LoginWebActivity::class.java))
+        }
     }
 }

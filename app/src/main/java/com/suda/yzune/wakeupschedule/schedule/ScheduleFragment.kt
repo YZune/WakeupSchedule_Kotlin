@@ -75,7 +75,7 @@ class ScheduleFragment : Fragment() {
 
     private fun initWeekPanel(lls: Array<LinearLayout?>, data: List<CourseBean>?) {
         if (data == null || data.isEmpty()) return
-        val ll = lls[data[0].day] ?: return
+        val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
             val c = data[i]

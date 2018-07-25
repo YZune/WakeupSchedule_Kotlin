@@ -12,7 +12,7 @@ import android.arch.persistence.room.Index
                 onUpdate = CASCADE,
                 onDelete = CASCADE
         ))],
-        primaryKeys = ["day", "startNode"],
+        primaryKeys = ["day", "startNode", "startWeek", "type"],
         indices = [Index(value = ["id", "tableName"], unique = false)])
 
 data class CourseDetailBean(

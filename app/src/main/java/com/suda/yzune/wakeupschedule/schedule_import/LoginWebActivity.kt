@@ -51,7 +51,7 @@ class LoginWebActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
 
         viewModel.insertResponse.observe(this, Observer {
-            if (it != null){
+            if (it != null) {
                 Toasty.success(this, it).show()
             }
         })
@@ -189,7 +189,8 @@ class LoginWebActivity : AppCompatActivity() {
             if (it == null || it == "Failure") {
                 cardC2Re("网络错误")
             } else {
-                Log.d("数据库","插入")
+                Log.d("数据库", "插入")
+                Log.d("课表", viewModel.html2ImportBean(it).toString())
                 viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
             }
         })

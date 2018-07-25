@@ -11,7 +11,7 @@ import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 
 
 @Database(entities = [CourseBaseBean::class, CourseDetailBean::class],
-        version = 2, exportSchema = false)
+        version = 3, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
 
