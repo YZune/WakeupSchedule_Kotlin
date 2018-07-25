@@ -264,6 +264,8 @@
             </LinearLayout>
             <!-- 周一到周日的排列 -->
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -273,6 +275,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -282,6 +286,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -291,6 +297,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_4"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -300,6 +308,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -309,6 +319,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -318,6 +330,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginStart="1dp"
+                android:layout_marginEnd="1dp"
                 android:id="@+id/weekPanel_7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

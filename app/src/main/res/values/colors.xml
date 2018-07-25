@@ -12,4 +12,26 @@
 
     <color name="main_title_bg">#94ffffff</color>
 
+    <color name="red">#FF1744</color>
+    <color name="pink">#fa6278</color>
+    <color name="blue">#2979ff</color>
+    <color name="green">#1DE9B6</color>
+    <color name="yellow">#ffea00</color>
+    <color name="orange">#ff9100</color>
+    <color name="deepOrange">#ff3d00</color>
+    <color name="lightBlue">#2196f3</color>
+    <color name="ruri">#005caf</color>
+
+    <integer-array name="customizedColors">
+        <item>@color/red</item>
+        <item>@color/pink</item>
+        <item>@color/blue</item>
+        <item>@color/green</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+        <item>@color/deepOrange</item>
+        <item>@color/lightBlue</item>
+        <item>@color/ruri</item>
+    </integer-array>
+
 </resources>

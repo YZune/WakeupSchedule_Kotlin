@@ -2,8 +2,8 @@
 
     <dimen name="weekItemHeight">56dp</dimen>
     <dimen name="weekItemHeight_widget">48dp</dimen>
-    <dimen name="weekItemMarTop">4dp</dimen>
-    <dimen name="weekItemMarLeft">4dp</dimen>
+    <dimen name="weekItemMarTop">2dp</dimen>
+    <dimen name="weekItemMarLeft">0dp</dimen>
     <dimen name="grid_expected_size">120dp</dimen>
 
 </resources>

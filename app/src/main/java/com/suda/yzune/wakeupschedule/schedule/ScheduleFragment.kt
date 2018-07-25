@@ -4,6 +4,8 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -87,14 +89,16 @@ class ScheduleFragment : Fragment() {
                 lp.setMargins(0, (c.startNode - 1) * (itemHeight + marTop) + marTop, 0, 0)
             }
             tv.layoutParams = lp
-            tv.gravity = Gravity.CENTER_VERTICAL
-            tv.gravity = Gravity.CENTER_HORIZONTAL
-            tv.textSize = 14f
-            tv.setPadding(2, 2, 2, 2)
+            //tv.gravity = Gravity.CENTER_VERTICAL
+            tv.textSize = 12f
+            tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+            tv.setPadding(8, 8, 8, 8)
             tv.setTextColor(resources.getColor(R.color.white))
 
-            //tv.background = resources.getDrawable(R.drawable.schedule_add)
-//            val myGrad = tv.background as GradientDrawable
+            tv.background = resources.getDrawable(R.drawable.course_item_bg)
+            val myGrad = tv.background as GradientDrawable
+            myGrad.setColor(getCustomizedColor(c.id % 9))
+            myGrad.alpha = Math.round(255 * (60.0 / 100)).toInt()
 
             when (c.type) {
                 0 -> tv.text = c.courseName + "@" + c.room
@@ -121,5 +125,10 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    private fun getCustomizedColor(index: Int): Int {
+        val customizedColors = resources.getIntArray(R.array.customizedColors)
+        val customizedColor = customizedColors[index]
+        return customizedColor
+    }
 
 }
