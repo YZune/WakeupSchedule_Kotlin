@@ -22,6 +22,12 @@
         <item name="android:background">@null</item>
     </style>
 
+    <style name="MainHeadDetailText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:alpha">0.65</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
     <style name="TermDataPicker">
         <item name="wheel_same_width">true</item>
         <item name="wheel_curtain">true</item>

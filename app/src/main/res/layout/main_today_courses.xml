@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_today_courses"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_start1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:text="01"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_end1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_start1"
+            android:layout_marginTop="4dp"
+            android:text="12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_startTime1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@id/tv_start1"
+            android:text="08:00" />
+
+        <TextView
+            android:id="@+id/tv_endTime1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_startTime1"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@id/tv_end1"
+            android:text="08:50" />
+
+        <TextView
+            android:id="@+id/tv_name1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/tv_startTime1"
+            android:text="数据结构"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_room1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_endTime1"
+            android:layout_below="@id/tv_name1"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/tv_endTime1"
+            android:text="理工楼二楼" />
+
+        <TextView
+            android:id="@+id/tv_teacher1"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_endTime1"
+            android:layout_below="@id/tv_name1"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/tv_room1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="唐自立" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_weight="1"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_start2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:text="01"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_end2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_start2"
+            android:layout_marginTop="4dp"
+            android:text="12"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_startTime2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@id/tv_start2"
+            android:text="08:00" />
+
+        <TextView
+            android:id="@+id/tv_endTime2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_startTime2"
+            android:layout_margin="4dp"
+            android:layout_toEndOf="@id/tv_end2"
+            android:text="08:50" />
+
+        <TextView
+            android:id="@+id/tv_name2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/tv_startTime2"
+            android:text="离散数学"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_room2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_endTime2"
+            android:layout_below="@id/tv_name2"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/tv_endTime2"
+            android:text="博远楼201" />
+
+        <TextView
+            android:id="@+id/tv_teacher2"
+            style="@style/MainHeadDetailText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/tv_endTime2"
+            android:layout_below="@id/tv_name2"
+            android:layout_marginStart="16dp"
+            android:layout_toEndOf="@id/tv_room2"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="徐汀荣" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>
