@@ -2,18 +2,11 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.util.Xml
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +14,6 @@ import android.widget.*
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
-import es.dmoral.toasty.Toasty
-import java.util.ArrayList
-import kotlin.concurrent.thread
 
 class ScheduleFragment : Fragment() {
 
@@ -35,15 +25,19 @@ class ScheduleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_schedule, container, false)
+        return inflater.inflate(R.layout.fragment_schedule, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
         itemHeight = SizeUtils.dp2px(context, 56f)
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-        refresh(view)
-        return view
+        refresh(view!!)
     }
 
     companion object {
@@ -55,29 +49,27 @@ class ScheduleFragment : Fragment() {
     }
 
     private fun refresh(view: View) {
-        for (i in weekPanels.indices) {
-            weekPanels[i] = view.findViewById<View>(R.id.weekPanel_1 + i) as LinearLayout?
-            weekPanels[i]?.removeAllViews()
-            Log.d("空", "${view.findViewById<View>(R.id.weekPanel_1 + i) == null}")
-        }
 
         for (i in 1..7) {
-            val a = viewModel.getRawCourseByDay(i)
-            a.observe(this, Observer {
+            viewModel.getRawCourseByDay(i).observe(this, Observer {
                 if (it != null) {
                     viewModel.getCourseByDay(it).observe(this, Observer {
-                        initWeekPanel(weekPanels, it)
+                        initWeekPanel(view, weekPanels, it)
                     })
                 }
             })
         }
     }
 
-    private fun initWeekPanel(lls: Array<LinearLayout?>, data: List<CourseBean>?) {
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?) {
         if (data == null || data.isEmpty()) return
+        val llIndex = data[0].day - 1
+        lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
+        lls[llIndex]?.removeAllViews()
         val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
+            Log.d("旋转", "更新了")
             val c = data[i]
             val tv = TextView(context)
             val lp = LinearLayout.LayoutParams(

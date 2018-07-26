@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
 import android.support.design.widget.AppBarLayout
+import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -36,9 +37,15 @@ class ScheduleActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         viewModel.initRepository(applicationContext)
 
+        initView(viewModel)
         initViewStub()
         initViewPage()
         initEvent(viewModel)
+    }
+
+    private fun initView(viewModel: ScheduleViewModel){
+        tv_date.text = viewModel.getTodayDate()
+        tv_weekday.text = viewModel.getWeekday()
     }
 
     private fun initViewStub() {
