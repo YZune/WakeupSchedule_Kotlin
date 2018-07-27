@@ -17,6 +17,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_schedule.*
 import android.widget.RelativeLayout
+import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_import.ImportViewModel
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
@@ -79,6 +80,12 @@ class ScheduleActivity : AppCompatActivity() {
 
         ib_import.setOnClickListener {
             startActivity(Intent(this, LoginWebActivity::class.java))
+        }
+
+        ib_add.setOnClickListener {
+            val intent = Intent(this, AddCourseActivity::class.java)
+            intent.putExtra("type", 0)
+            startActivity(intent)
         }
     }
 }

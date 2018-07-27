@@ -89,6 +89,7 @@
                         android:textColor="@android:color/black" />
 
                     <ImageButton
+                        android:id="@+id/ib_add"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_toStartOf="@id/ib_import"

@@ -17,10 +17,6 @@ class ScheduleViewModel : ViewModel() {
         repository = ScheduleRepository(context)
     }
 
-    fun getCourseCache(): ArrayList<List<CourseBean>?>{
-        return repository.courseCacheData
-    }
-
     fun getCourseByDay(raw: List<CourseBean>): LiveData<List<CourseBean>> {
         return repository.getCourseByDay(raw)
     }

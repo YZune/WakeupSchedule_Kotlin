@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/tv_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="时间段"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_item_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="24dp"
+        android:layout_toEndOf="@id/tv_item"
+        android:gravity="center"
+        android:lines="1"
+        android:text="11"
+        android:textSize="12sp" />
+
+    <ImageButton
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@null"
+        android:src="@drawable/ic_list_delete" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:layout_below="@id/tv_item_id"
+        android:padding="16dp"
+        android:src="@drawable/ic_edit_week" />
+
+    <EditText
+        android:enabled="false"
+        android:id="@+id/et_weeks"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_below="@id/tv_item_id"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="48dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="周数"
+        android:lines="1"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/et_weeks"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="48dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_weeks"
+        android:layout_marginTop="1dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_edit_time" />
+
+    <EditText
+        android:id="@+id/et_time"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_weeks"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:enabled="false"
+        android:gravity="center_vertical"
+        android:hint="周一    1 - 2节"
+        android:lines="1"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/et_time"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="48dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_time"
+        android:layout_marginTop="1dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_person" />
+
+    <EditText
+        android:singleLine="true"
+        android:id="@+id/et_teacher"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_time"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="授课老师"
+        android:lines="1"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/et_teacher"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="48dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_teacher"
+        android:layout_marginTop="1dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_edit_room" />
+
+    <EditText
+        android:singleLine="true"
+        android:id="@+id/et_room"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_below="@id/et_teacher"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="1dp"
+        android:background="@null"
+        android:gravity="center_vertical"
+        android:hint="上课地点"
+        android:lines="1"
+        android:textSize="14sp" />
+
+
+</RelativeLayout>

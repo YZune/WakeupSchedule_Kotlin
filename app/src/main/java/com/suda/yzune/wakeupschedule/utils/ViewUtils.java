@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 
 import com.suda.yzune.wakeupschedule.R;
 
@@ -29,12 +31,18 @@ public class ViewUtils {
         }
     }
 
-    public static int getStatusBarHeight(Context context) {
+    private static int getStatusBarHeight(Context context) {
         int result = 0;
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static void resizeStatusBar(Context context, View view) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.height = ViewUtils.getStatusBarHeight(context);
+        view.setLayoutParams(layoutParams);
     }
 }

@@ -32,6 +32,7 @@
         android:layout_below="@id/tv_title"
         android:layout_marginTop="72dp"
         android:hint="@string/student_id"
+        android:singleLine="true"
         android:inputType="number" />
 
     <LinearLayout
@@ -41,6 +42,7 @@
         android:layout_below="@id/et_id">
 
         <EditText
+            android:singleLine="true"
             android:id="@+id/et_pwd"
             style="@style/LoginEditText"
             android:layout_width="0dp"
@@ -76,6 +78,7 @@
             android:layout_marginTop="32dp"
             android:layout_weight="1"
             android:hint="@string/check_code"
+            android:singleLine="true"
             android:inputType="textVisiblePassword" />
 
         <RelativeLayout

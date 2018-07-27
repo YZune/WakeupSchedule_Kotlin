@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.suda.yzune.wakeupschedule.course_add.AddCourseActivity">
+
+    <View
+        android:id="@+id/v_status"
+        android:layout_width="match_parent"
+        android:layout_height="24dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="取消"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="添加课程"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="保存"
+            android:textColor="@color/colorAccent" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="64dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_course" />
+
+        <EditText
+            android:singleLine="true"
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="48dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="课程名称"
+            android:lines="1"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/et_name"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="48dp"
+            android:alpha="0.5"
+            android:background="@color/grey" />
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="65dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_color"
+            android:tint="@color/grey"
+            android:tintMode="src_in" />
+
+        <EditText
+            android:id="@+id/et_color"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="65dp"
+            android:background="@null"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:hint="选取颜色"
+            android:lines="1"
+            android:textSize="14sp" />
+
+        <View
+            android:layout_below="@id/et_color"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:alpha="0.5"
+            android:background="@color/grey" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:background="#f2f2f2"
+        android:id="@+id/rv_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+</LinearLayout>

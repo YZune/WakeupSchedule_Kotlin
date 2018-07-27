@@ -11,8 +11,6 @@ import java.util.ArrayList
 
 class ScheduleRepository(context: Context) {
 
-    val courseCacheData = ArrayList<List<CourseBean>?>()
-
     private val dataBase = AppDatabase.getDatabase(context)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
