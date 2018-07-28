@@ -6,7 +6,7 @@ import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
 
-class AddCourseViewModel: ViewModel() {
+class AddCourseViewModel : ViewModel() {
     private lateinit var repository: AddCourseRepository
     var newId = -1
 
@@ -14,11 +14,19 @@ class AddCourseViewModel: ViewModel() {
         repository = AddCourseRepository(context)
     }
 
-    fun initData(type: Int): MutableList<CourseDetailBean>{
+    fun initData(type: Int): MutableList<CourseDetailBean> {
         return repository.initData(type)
     }
 
-    fun getLastId(): LiveData<Int>{
+    fun getLastId(): LiveData<Int> {
         return repository.getLastId()
+    }
+
+    fun newBlankCourse(): CourseDetailBean {
+        return repository.newBlankCourse()
+    }
+
+    fun getList(): MutableList<CourseDetailBean> {
+        return repository.getList()
     }
 }

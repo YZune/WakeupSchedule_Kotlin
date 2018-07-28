@@ -10,20 +10,24 @@
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        android:layout_height="24dp"
+        android:background="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:background="@color/white">
 
         <TextView
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="取消"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="0dp"
@@ -33,16 +37,20 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="添加课程"
-            android:textColor="@android:color/black" />
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
 
         <TextView
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="保存"
-            android:textColor="@color/colorAccent" />
+            android:textColor="@color/colorAccent"
+            android:textSize="16sp" />
 
     </LinearLayout>
 
@@ -52,75 +60,13 @@
         android:alpha="0.5"
         android:background="@color/grey" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="64dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit_course" />
-
-        <EditText
-            android:singleLine="true"
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="48dp"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="课程名称"
-            android:lines="1"
-            android:textSize="14sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/et_name"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="48dp"
-            android:alpha="0.5"
-            android:background="@color/grey" />
-
-        <ImageView
-            android:layout_width="56dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="65dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit_color"
-            android:tint="@color/grey"
-            android:tintMode="src_in" />
-
-        <EditText
-            android:id="@+id/et_color"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginStart="48dp"
-            android:layout_marginTop="65dp"
-            android:background="@null"
-            android:enabled="false"
-            android:gravity="center_vertical"
-            android:hint="选取颜色"
-            android:lines="1"
-            android:textSize="14sp" />
-
-        <View
-            android:layout_below="@id/et_color"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:alpha="0.5"
-            android:background="@color/grey" />
-
-    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:background="#f2f2f2"
         android:id="@+id/rv_detail"
+        android:overScrollMode="never"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#f2f2f2">
 
     </android.support.v7.widget.RecyclerView>
 

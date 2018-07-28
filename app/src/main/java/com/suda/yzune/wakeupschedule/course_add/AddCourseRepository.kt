@@ -26,11 +26,15 @@ class AddCourseRepository(context: Context) {
         return detailList
     }
 
+    fun getList(): MutableList<CourseDetailBean> {
+        return detailList
+    }
+
     fun getLastId(): LiveData<Int> {
         return baseDao.getLastId()
     }
 
-    private fun newBlankCourse(): CourseDetailBean {
+    fun newBlankCourse(): CourseDetailBean {
         return CourseDetailBean(
                 id = -1, day = 0, teacher = "", room = "",
                 startNode = 0, step = 0, startWeek = 1, endWeek = 25,
