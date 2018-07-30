@@ -7,26 +7,28 @@ import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
 
 class AddCourseViewModel : ViewModel() {
-    private lateinit var repository: AddCourseRepository
+    private var repository: AddCourseRepository? = null
     var newId = -1
 
     fun initRepository(context: Context) {
-        repository = AddCourseRepository(context)
+        if (repository == null){
+            repository = AddCourseRepository(context)
+        }
     }
 
     fun initData(type: Int): MutableList<CourseDetailBean> {
-        return repository.initData(type)
+        return repository!!.initData(type)
     }
 
     fun getLastId(): LiveData<Int> {
-        return repository.getLastId()
+        return repository!!.getLastId()
     }
 
     fun newBlankCourse(): CourseDetailBean {
-        return repository.newBlankCourse()
+        return repository!!.newBlankCourse()
     }
 
     fun getList(): MutableList<CourseDetailBean> {
-        return repository.getList()
+        return repository!!.getList()
     }
 }

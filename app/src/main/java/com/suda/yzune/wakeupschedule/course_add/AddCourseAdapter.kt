@@ -24,6 +24,7 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseDetailBean>) :
         helper.setText(R.id.et_room, item.room)
         helper.setText(R.id.et_teacher, item.teacher)
         helper.addOnClickListener(R.id.ib_delete)
+        helper.addOnClickListener(R.id.ll_weeks)
         val etRoom = helper.getView<EditText>(R.id.et_room)
         val etTeacher = helper.getView<EditText>(R.id.et_teacher)
         etRoom.addTextChangedListener(object : TextWatcher {

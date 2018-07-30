@@ -13,12 +13,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity
-            android:name=".schedule_import.LoginWebActivity"
-            android:screenOrientation="portrait">
+        <activity android:name=".MainActivity">
 
         </activity>
+        <activity
+            android:name=".schedule_import.LoginWebActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".schedule_import.ChooseTermActivity" />
         <activity android:name=".schedule.ScheduleActivity">
             <intent-filter>
@@ -31,6 +31,9 @@
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".course_add.SelectWeekActivity"
+            android:theme="@style/DialogStyle" />
     </application>
 
 </manifest>

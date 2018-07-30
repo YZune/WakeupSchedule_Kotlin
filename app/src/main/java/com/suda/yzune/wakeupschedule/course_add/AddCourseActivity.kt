@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.CardView
@@ -69,6 +70,9 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 //                            (adapter.getViewByPosition(rv_detail, i, R.id.tv_item_id) as TextView).text = "$i"
 //                        }
                     }
+                }
+                R.id.ll_weeks -> {
+                    startActivity(Intent(this, SelectWeekActivity::class.java))
                 }
             }
         }

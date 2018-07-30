@@ -1,35 +1,28 @@
-package com.suda.yzune.wakeupschedule
+package com.suda.yzune.wakeupschedule.course_add
 
+import android.app.Activity
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
-import android.arch.persistence.room.Room
-import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
-import android.os.AsyncTask
 import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
+import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import kotlinx.android.synthetic.main.activity_main.*
 
-
-class MainActivity : AppCompatActivity() {
+class SelectWeekActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val db = AppDatabase.getDatabase(applicationContext)
-        val dao = db.courseBaseDao()
-        InsertAsyncTask(dao).execute()
-        drawView()
+        setContentView(R.layout.activity_select_week)
+        showWeeks()
     }
 
-
-    fun drawView() {
+    private fun showWeeks() {
         val result = arrayListOf<Int>()
         val context = ll_week.context
         val margin = SizeUtils.dp2px(context, 4f)
@@ -44,8 +37,8 @@ class MainActivity : AppCompatActivity() {
             params.height = llHeight
             linearLayout.layoutParams = params
 
-            for (j in 0..4) {
-                val week = i * 5 + j + 1
+            for (j in 0..5) {
+                val week = i * 6 + j + 1
                 val textView = TextView(context)
                 val textParams = LinearLayout.LayoutParams(textViewSize, textViewSize)
                 textParams.setMargins(margin, margin, margin, margin)
@@ -80,23 +73,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 }
-
-private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: CourseBaseDao) : AsyncTask<CourseBaseBean, Void, Void>() {
-    override fun doInBackground(vararg params: CourseBaseBean): Void? {
-
-//        mAsyncTaskDao.insertCourseBase(CourseBaseBean(
-//                id = 1,
-//                courseName = "高等数学",
-//                color = "",
-//                tableName = "2018-2019 1"
-//        ))
-
-//        mAsyncTaskDao.getAll().forEach {
-//            Log.d("数据库", it.toString())
-//        }
-        return null
-    }
-}
-
-
