@@ -25,7 +25,7 @@ import es.dmoral.toasty.Toasty
 
 class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
 
-    lateinit var viewModel: AddCourseViewModel
+    private lateinit var viewModel: AddCourseViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -66,13 +66,16 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                         Toasty.error(this, "至少要保留一个时间段").show()
                     } else {
                         adapter.remove(position)
+                        // 这里的position就是数据在List中的下标
 //                        for (i in (position + 1)..(adapter.itemCount - 2)) {
 //                            (adapter.getViewByPosition(rv_detail, i, R.id.tv_item_id) as TextView).text = "$i"
 //                        }
                     }
                 }
                 R.id.ll_weeks -> {
-                    startActivity(Intent(this, SelectWeekActivity::class.java))
+                    viewModel.initWeekArrayList(position)
+                    val selectWeekDialog = SelectWeekFragment.newInstance(position)
+                    selectWeekDialog.show(supportFragmentManager, "selectWeek")
                 }
             }
         }

@@ -12,6 +12,8 @@ class AddCourseRepository(context: Context) {
     private val dataBase = AppDatabase.getDatabase(context)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
+    private val weekMap = mutableMapOf<Int, ArrayList<Int>>()
+
 
     /**
      * @param type = 0 为添加新课程
@@ -34,10 +36,14 @@ class AddCourseRepository(context: Context) {
         return baseDao.getLastId()
     }
 
+    fun getWeekMap(): MutableMap<Int, ArrayList<Int>>{
+        return weekMap
+    }
+
     fun newBlankCourse(): CourseDetailBean {
         return CourseDetailBean(
                 id = -1, day = 0, teacher = "", room = "",
-                startNode = 0, step = 0, startWeek = 1, endWeek = 25,
+                startNode = 0, step = 0, startWeek = 1, endWeek = 30,
                 type = 0, tableName = ""
         )
     }

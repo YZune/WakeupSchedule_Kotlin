@@ -31,9 +31,6 @@
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".course_add.SelectWeekActivity"
-            android:theme="@style/DialogStyle" />
     </application>
 
 </manifest>

@@ -1,29 +1,60 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.app.Activity
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import android.view.Gravity
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_select_week.*
 
-class SelectWeekActivity : Activity() {
+class SelectWeekFragment : DialogFragment() {
+
+    var position = -1
+    private lateinit var viewModel: AddCourseViewModel
+    private val liveData = MutableLiveData<ArrayList<Int>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_select_week)
-        showWeeks()
+        retainInstance = true
+        viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
+        liveData.observe(this, Observer {
+            if (it?.size == 30){
+                tv_all.setTextColor(resources.getColor(R.color.white))
+                tv_all.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
+            }
+            if (it?.size != 30){
+                tv_all.setTextColor(resources.getColor(R.color.black))
+                tv_all.background = null
+            }
+        })
     }
 
-    private fun showWeeks() {
-        val result = arrayListOf<Int>()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return inflater.inflate(R.layout.fragment_select_week, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        liveData.value = viewModel.getWeekMap()[position]
+        showWeeks(liveData.value!!)
+    }
+
+    private fun showWeeks(result: ArrayList<Int>) {
+        ll_week.removeAllViews()
         val context = ll_week.context
         val margin = SizeUtils.dp2px(context, 4f)
         val textViewSize = SizeUtils.dp2px(context, 32f)
@@ -74,4 +105,21 @@ class SelectWeekActivity : Activity() {
         }
     }
 
+    private fun changeType(){
+        tv_all.setOnClickListener {
+            val allList = arrayListOf<Int>()
+            for (i in 1..30){
+
+            }
+        }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance(arg: Int) =
+                SelectWeekFragment().apply {
+                    position = arg
+                }
+    }
 }

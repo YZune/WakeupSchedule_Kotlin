@@ -25,61 +25,61 @@ class MainActivity : AppCompatActivity() {
         val db = AppDatabase.getDatabase(applicationContext)
         val dao = db.courseBaseDao()
         InsertAsyncTask(dao).execute()
-        drawView()
+        //drawView()
     }
 
 
-    fun drawView() {
-        val result = arrayListOf<Int>()
-        val context = ll_week.context
-        val margin = SizeUtils.dp2px(context, 4f)
-        val textViewSize = SizeUtils.dp2px(context, 32f)
-        val llHeight = SizeUtils.dp2px(context, 40f)
-        for (i in 0 until 5) {
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.HORIZONTAL
-            ll_week.addView(linearLayout)
-            val params = linearLayout.layoutParams
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            params.height = llHeight
-            linearLayout.layoutParams = params
-
-            for (j in 0..4) {
-                val week = i * 5 + j + 1
-                val textView = TextView(context)
-                val textParams = LinearLayout.LayoutParams(textViewSize, textViewSize)
-                textParams.setMargins(margin, margin, margin, margin)
-                textView.layoutParams = textParams
-                textView.text = "$week"
-                textView.gravity = Gravity.CENTER
-                if (week in result){
-                    textView.setTextColor(resources.getColor(R.color.white))
-                    textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                }
-                else{
-                    textView.setTextColor(resources.getColor(R.color.black))
-                    textView.background = null
-                }
-
-                textView.setOnClickListener {
-                    if (textView.background == null){
-                        result.add(week)
-                        textView.setTextColor(resources.getColor(R.color.white))
-                        textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                    }
-                    else{
-                        result.remove(week)
-                        textView.setTextColor(resources.getColor(R.color.black))
-                        textView.background = null
-                    }
-                    Log.d("输出",result.toString())
-                }
-                textView.setLines(1)
-                linearLayout.addView(textView)
-                //selections[week - 1] = textView
-            }
-        }
-    }
+//    fun drawView() {
+//        val result = arrayListOf<Int>()
+//        val context = ll_week.context
+//        val margin = SizeUtils.dp2px(context, 4f)
+//        val textViewSize = SizeUtils.dp2px(context, 32f)
+//        val llHeight = SizeUtils.dp2px(context, 40f)
+//        for (i in 0 until 5) {
+//            val linearLayout = LinearLayout(context)
+//            linearLayout.orientation = LinearLayout.HORIZONTAL
+//            ll_week.addView(linearLayout)
+//            val params = linearLayout.layoutParams
+//            params.width = ViewGroup.LayoutParams.MATCH_PARENT
+//            params.height = llHeight
+//            linearLayout.layoutParams = params
+//
+//            for (j in 0..4) {
+//                val week = i * 5 + j + 1
+//                val textView = TextView(context)
+//                val textParams = LinearLayout.LayoutParams(textViewSize, textViewSize)
+//                textParams.setMargins(margin, margin, margin, margin)
+//                textView.layoutParams = textParams
+//                textView.text = "$week"
+//                textView.gravity = Gravity.CENTER
+//                if (week in result){
+//                    textView.setTextColor(resources.getColor(R.color.white))
+//                    textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
+//                }
+//                else{
+//                    textView.setTextColor(resources.getColor(R.color.black))
+//                    textView.background = null
+//                }
+//
+//                textView.setOnClickListener {
+//                    if (textView.background == null){
+//                        result.add(week)
+//                        textView.setTextColor(resources.getColor(R.color.white))
+//                        textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
+//                    }
+//                    else{
+//                        result.remove(week)
+//                        textView.setTextColor(resources.getColor(R.color.black))
+//                        textView.background = null
+//                    }
+//                    Log.d("输出",result.toString())
+//                }
+//                textView.setLines(1)
+//                linearLayout.addView(textView)
+//                //selections[week - 1] = textView
+//            }
+//        }
+//    }
 }
 
 private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: CourseBaseDao) : AsyncTask<CourseBaseBean, Void, Void>() {

@@ -11,7 +11,7 @@ class AddCourseViewModel : ViewModel() {
     var newId = -1
 
     fun initRepository(context: Context) {
-        if (repository == null){
+        if (repository == null) {
             repository = AddCourseRepository(context)
         }
     }
@@ -30,5 +30,32 @@ class AddCourseViewModel : ViewModel() {
 
     fun getList(): MutableList<CourseDetailBean> {
         return repository!!.getList()
+    }
+
+    fun getWeekMap(): MutableMap<Int, ArrayList<Int>> {
+        return repository!!.getWeekMap()
+    }
+
+    fun initWeekArrayList(position: Int) {
+        val result = arrayListOf<Int>()
+        when (getList()[position].type) {
+            0 -> {
+                for (i in getList()[position].startWeek..getList()[position].endWeek) {
+                    result.add(i)
+                }
+            }
+            else -> {
+                for (i in getList()[position].startWeek..getList()[position].endWeek step 2) {
+                    result.add(i)
+                }
+            }
+        }
+        getWeekMap()[position] = result
+    }
+
+    fun judgeType(list: ArrayList<Int>){
+        var flag = 0
+        //0表示不是全30周的单周也不是全30周的双周
+        if (list.size != 15) return
     }
 }
