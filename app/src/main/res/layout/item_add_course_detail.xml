@@ -6,6 +6,7 @@
     android:background="@color/white">
 
     <TextView
+        android:singleLine="true"
         android:id="@+id/tv_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        android:background="@null"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_list_delete" />
 
     <LinearLayout
@@ -89,7 +90,7 @@
         android:layout_marginTop="1dp"
         android:background="@null"
         android:gravity="center_vertical"
-        android:hint="周一    1 - 2节"
+        android:hint="周一    第1 - 2节"
         android:lines="1"
         android:textSize="14sp" />
 
@@ -120,7 +121,7 @@
         android:layout_marginTop="1dp"
         android:background="@null"
         android:gravity="center_vertical"
-        android:hint="授课老师"
+        android:hint="授课老师（可不填）"
         android:lines="1"
         android:singleLine="true"
         android:textSize="14sp" />
@@ -152,7 +153,7 @@
         android:layout_marginTop="1dp"
         android:background="@null"
         android:gravity="center_vertical"
-        android:hint="上课地点"
+        android:hint="上课地点（可不填）"
         android:lines="1"
         android:singleLine="true"
         android:textSize="14sp" />

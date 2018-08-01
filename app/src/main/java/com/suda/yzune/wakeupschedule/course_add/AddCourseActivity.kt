@@ -21,6 +21,8 @@ import android.widget.EditText
 import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.item_add_course_base.*
+import java.util.*
 
 
 class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
@@ -44,20 +46,28 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
             }
         })
 
-        initAdapter()
+        if (intent.extras == null) {
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData()))
+        } else {
+            viewModel.initData(intent.extras.getInt("id")).observe(this, Observer {
+                viewModel.getList().addAll(it!!)
+                viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
+                    initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.getList()), it?.courseName!!, it.color)
+                })
+            })
+        }
     }
 
     override fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String) {
-        when (what){
+        when (what) {
             "room" -> viewModel.getList()[position].room = editable.toString()
             "teacher" -> viewModel.getList()[position].teacher = editable.toString()
         }
     }
 
-    private fun initAdapter() {
-        val adapter = AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(intent.extras.getInt("type")))
+    private fun initAdapter(adapter: AddCourseAdapter, name: String = "", color: String = "") {
         adapter.setListener(this)
-        adapter.addHeaderView(initHeaderView(adapter))
+        adapter.addHeaderView(initHeaderView(adapter, name, color))
         adapter.addFooterView(initFooterView(adapter))
         adapter.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
             when (view.id) {
@@ -66,15 +76,13 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                         Toasty.error(this, "至少要保留一个时间段").show()
                     } else {
                         adapter.remove(position)
-                        // 这里的position就是数据在List中的下标
-//                        for (i in (position + 1)..(adapter.itemCount - 2)) {
-//                            (adapter.getViewByPosition(rv_detail, i, R.id.tv_item_id) as TextView).text = "$i"
-//                        }
+                        //todo: 设计算法处理移除后周数的问题
                     }
                 }
                 R.id.ll_weeks -> {
                     viewModel.initWeekArrayList(position)
                     val selectWeekDialog = SelectWeekFragment.newInstance(position)
+                    selectWeekDialog.isCancelable = false
                     selectWeekDialog.show(supportFragmentManager, "selectWeek")
                 }
             }
@@ -83,8 +91,12 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         rv_detail.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun initHeaderView(adapter: AddCourseAdapter): View {
+    private fun initHeaderView(adapter: AddCourseAdapter, name: String = "", color: String = ""): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
+        val etName = view.findViewById<EditText>(R.id.et_name)
+        val etColor = view.findViewById<EditText>(R.id.et_color)
+        etName.setText(name)
+        etColor.setText(color)
         return view
     }
 

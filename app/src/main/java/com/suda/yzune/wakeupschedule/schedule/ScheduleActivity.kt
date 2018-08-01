@@ -84,7 +84,6 @@ class ScheduleActivity : AppCompatActivity() {
 
         ib_add.setOnClickListener {
             val intent = Intent(this, AddCourseActivity::class.java)
-            intent.putExtra("type", 0)
             startActivity(intent)
         }
     }

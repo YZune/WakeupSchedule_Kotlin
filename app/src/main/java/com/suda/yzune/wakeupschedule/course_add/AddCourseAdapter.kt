@@ -14,15 +14,25 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseDetailBean>) :
         BaseItemDraggableAdapter<CourseDetailBean, BaseViewHolder>(layoutResId, data) {
 
     private var mListener: OnItemEditTextChangedListener? = null
+    val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
 
     fun setListener(listener: OnItemEditTextChangedListener) {
         mListener = listener
     }
 
     override fun convert(helper: BaseViewHolder, item: CourseDetailBean) {
-        helper.setText(R.id.tv_item_id, "${helper.layoutPosition}")
+        //helper.setText(R.id.tv_item_id, "${helper.layoutPosition}")
         helper.setText(R.id.et_room, item.room)
         helper.setText(R.id.et_teacher, item.teacher)
+        var type = ""
+        when (item.type) {
+            1 -> type = "单周"
+            2 -> type = "双周"
+        }
+        helper.setText(R.id.et_weeks, "第${item.startWeek} - ${item.endWeek}周    $type")
+        if (item.startNode != 0){
+            helper.setText(R.id.et_time, "${WEEK[item.day]}    第${item.startNode} - ${item.startNode + item.step - 1}节")
+        }
         helper.addOnClickListener(R.id.ib_delete)
         helper.addOnClickListener(R.id.ll_weeks)
         val etRoom = helper.getView<EditText>(R.id.et_room)

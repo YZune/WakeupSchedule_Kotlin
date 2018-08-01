@@ -112,6 +112,11 @@ class ScheduleFragment : Fragment() {
                 tv.visibility = View.INVISIBLE
             }
 
+            tv.setOnClickListener {
+                val detailFragment = CourseDetailFragment.newInstance(c)
+                detailFragment.show(fragmentManager, "courseDetail")
+            }
+
             ll.addView(tv)
             pre = c
         }

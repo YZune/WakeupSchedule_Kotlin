@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.arch.lifecycle.LiveData
 import android.content.Context
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 
 class AddCourseRepository(context: Context) {
@@ -12,20 +13,16 @@ class AddCourseRepository(context: Context) {
     private val dataBase = AppDatabase.getDatabase(context)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
-    private val weekMap = mutableMapOf<Int, ArrayList<Int>>()
+    private var weekMap = mutableMapOf<Int, ArrayList<Int>>()
 
-
-    /**
-     * @param type = 0 为添加新课程
-     * @param type = 1 为修改课程
-     */
-
-    fun initData(type: Int): MutableList<CourseDetailBean> {
-        when (type) {
-            0 -> detailList = mutableListOf(newBlankCourse())
-            1 -> detailList = mutableListOf(newBlankCourse())
-        }
+    fun initData(): MutableList<CourseDetailBean> {
+        detailList = mutableListOf(newBlankCourse())
         return detailList
+    }
+
+    fun initData(id: Int): LiveData<List<CourseDetailBean>> {
+        detailList = mutableListOf()
+        return detailDao.getDetailById(id)
     }
 
     fun getList(): MutableList<CourseDetailBean> {
@@ -36,7 +33,11 @@ class AddCourseRepository(context: Context) {
         return baseDao.getLastId()
     }
 
-    fun getWeekMap(): MutableMap<Int, ArrayList<Int>>{
+    fun initBaseData(id: Int): LiveData<CourseBaseBean>{
+        return baseDao.getCourseById(id)
+    }
+
+    fun getWeekMap(): MutableMap<Int, ArrayList<Int>> {
         return weekMap
     }
 

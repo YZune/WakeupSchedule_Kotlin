@@ -183,6 +183,9 @@ class ImportViewModel : ViewModel() {
 
         thread {
             try {
+                detailList.forEach {
+                    println(it.toString())
+                }
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)
                 //insertResponse.value = "ok"

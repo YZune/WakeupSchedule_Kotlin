@@ -93,8 +93,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_toStartOf="@id/ib_import"
-                        android:background="@null"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:padding="4dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/schedule_add" />
@@ -105,8 +104,7 @@
                         android:layout_height="32dp"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="24dp"
-                        android:background="@null"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
                         android:padding="4dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/schedule_import" />

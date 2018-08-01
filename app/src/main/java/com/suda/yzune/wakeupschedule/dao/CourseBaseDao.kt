@@ -22,6 +22,9 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day")
     fun getCourseByDay(day: Int): LiveData<List<CourseBean>>
 
+    @Query("select * from coursebasebean where id = :id")
+    fun getCourseById(id: Int): LiveData<CourseBaseBean>
+
     @Query("select max(id) from coursebasebean")
     fun getLastId(): LiveData<Int>
 }

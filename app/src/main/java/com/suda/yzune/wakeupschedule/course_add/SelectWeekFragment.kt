@@ -24,19 +24,37 @@ class SelectWeekFragment : DialogFragment() {
     var position = -1
     private lateinit var viewModel: AddCourseViewModel
     private val liveData = MutableLiveData<ArrayList<Int>>()
+    private val result = ArrayList<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
         liveData.observe(this, Observer {
-            if (it?.size == 30){
+            if (it?.size == 30) {
                 tv_all.setTextColor(resources.getColor(R.color.white))
                 tv_all.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
-            if (it?.size != 30){
+            if (it?.size != 30) {
                 tv_all.setTextColor(resources.getColor(R.color.black))
                 tv_all.background = null
+            }
+            val flag = viewModel.judgeType(it!!)
+            if (flag == 1) {
+                tv_type1.setTextColor(resources.getColor(R.color.white))
+                tv_type1.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
+            }
+            if (flag != 1) {
+                tv_type1.setTextColor(resources.getColor(R.color.black))
+                tv_type1.background = null
+            }
+            if (flag == 2) {
+                tv_type2.setTextColor(resources.getColor(R.color.white))
+                tv_type2.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
+            }
+            if (flag != 2) {
+                tv_type2.setTextColor(resources.getColor(R.color.black))
+                tv_type2.background = null
             }
         })
     }
@@ -50,10 +68,12 @@ class SelectWeekFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
         liveData.value = viewModel.getWeekMap()[position]
-        showWeeks(liveData.value!!)
+        result.addAll(liveData.value!!)
+        showWeeks()
+        initEvent()
     }
 
-    private fun showWeeks(result: ArrayList<Int>) {
+    private fun showWeeks() {
         ll_week.removeAllViews()
         val context = ll_week.context
         val margin = SizeUtils.dp2px(context, 4f)
@@ -76,27 +96,26 @@ class SelectWeekFragment : DialogFragment() {
                 textView.layoutParams = textParams
                 textView.text = "$week"
                 textView.gravity = Gravity.CENTER
-                if (week in result){
+                if (week in result) {
                     textView.setTextColor(resources.getColor(R.color.white))
                     textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                }
-                else{
+                } else {
                     textView.setTextColor(resources.getColor(R.color.black))
                     textView.background = null
                 }
 
                 textView.setOnClickListener {
-                    if (textView.background == null){
+                    if (textView.background == null) {
                         result.add(week)
+                        liveData.value = result
                         textView.setTextColor(resources.getColor(R.color.white))
                         textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                    }
-                    else{
+                    } else {
                         result.remove(week)
+                        liveData.value = result
                         textView.setTextColor(resources.getColor(R.color.black))
                         textView.background = null
                     }
-                    Log.d("输出",result.toString())
                 }
                 textView.setLines(1)
                 linearLayout.addView(textView)
@@ -105,12 +124,51 @@ class SelectWeekFragment : DialogFragment() {
         }
     }
 
-    private fun changeType(){
+    private fun initEvent() {
         tv_all.setOnClickListener {
-            val allList = arrayListOf<Int>()
-            for (i in 1..30){
-
+            if (tv_all.background == null) {
+                result.clear()
+                for (i in 1..30) {
+                    result.add(i)
+                }
+                showWeeks()
+                liveData.value = result
+            } else {
+                result.clear()
+                showWeeks()
+                liveData.value = result
             }
+        }
+
+        tv_type1.setOnClickListener {
+            if (tv_type1.background == null) {
+                result.clear()
+                for (i in 1..29 step 2) {
+                    result.add(i)
+                }
+                showWeeks()
+                liveData.value = result
+            }
+        }
+
+        tv_type2.setOnClickListener {
+            if (tv_type2.background == null) {
+                result.clear()
+                for (i in 2..30 step 2) {
+                    result.add(i)
+                }
+                showWeeks()
+                liveData.value = result
+            }
+        }
+
+        btn_cancel.setOnClickListener {
+            dismiss()
+        }
+
+        btn_save.setOnClickListener {
+            viewModel.getWeekMap()[position] = result
+            dismiss()
         }
     }
 
