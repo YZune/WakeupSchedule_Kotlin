@@ -181,7 +181,7 @@ class ImportViewModel : ViewModel() {
         val baseDao = dataBase.courseBaseDao()
         val detailDao = dataBase.courseDetailDao()
 
-        thread {
+        thread(name = "InitDataThread") {
             try {
                 detailList.forEach {
                     println(it.toString())

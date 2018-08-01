@@ -19,6 +19,18 @@
         android:alpha="0.5"
         android:background="@color/grey" />
 
+    <TextView
+        android:lineSpacingExtra="4sp"
+        android:id="@+id/tv_tips"
+        android:textColor="@color/colorAccent"
+        android:layout_marginEnd="16dp"
+        android:textSize="12sp"
+        android:layout_marginTop="16dp"
+        android:text="再点一次确定删除\n长按可以同时删除这门课程的其他时间哦"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"

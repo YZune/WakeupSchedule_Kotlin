@@ -5,13 +5,16 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.os.AsyncTask
+import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
 import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.courseBean2DetailBean
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 class ScheduleRepository(context: Context) {
 
@@ -26,6 +29,7 @@ class ScheduleRepository(context: Context) {
     fun getCourseByDay(raw: List<CourseBean>): LiveData<List<CourseBean>> {
         val result = MutableLiveData<List<CourseBean>>()
         val list = ArrayList<CourseBean>()
+        val changeIndex = arrayListOf<Int>()
         result.value = list
         var i = 0
         while (i < raw.size) {
@@ -34,8 +38,7 @@ class ScheduleRepository(context: Context) {
                     && raw[i].startNode + raw[i].step == raw[i + 1].startNode) {
                 raw[i].step += raw[i + 1].step
                 list.add(raw[i])
-                detailDao.updateCourseDetail(courseBean2DetailBean(raw[i]))
-                detailDao.deleteCourseDetail(courseBean2DetailBean(raw[i + 1]))
+                changeIndex.add(i)
                 i += 2
             } else {
                 list.add(raw[i])
@@ -43,15 +46,14 @@ class ScheduleRepository(context: Context) {
             }
         }
         result.value = list
-
+        thread(name = "MakeTogetherThread") {
+            for (index in changeIndex){
+                detailDao.updateCourseDetail(courseBean2DetailBean(raw[index]))
+                detailDao.deleteCourseDetail(courseBean2DetailBean(raw[index + 1]))
+            }
+        }
         return result
     }
 
-    private fun courseBean2DetailBean(c: CourseBean): CourseDetailBean {
-        return CourseDetailBean(
-                id = c.id, room = c.room, day = c.day, teacher = c.teacher,
-                startNode = c.startNode, step = c.step, startWeek = c.startWeek,
-                endWeek = c.endWeek, tableName = c.tableName, type = c.type
-        )
-    }
+
 }
