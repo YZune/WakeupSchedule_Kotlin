@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 
 class SelectWeekFragment : DialogFragment() {
@@ -67,7 +68,7 @@ class SelectWeekFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        liveData.value = viewModel.getWeekMap()[position]
+        liveData.value = viewModel.getWeekMap()[position]!!.value
         result.addAll(liveData.value!!)
         showWeeks()
         initEvent()
@@ -167,8 +168,13 @@ class SelectWeekFragment : DialogFragment() {
         }
 
         btn_save.setOnClickListener {
-            viewModel.getWeekMap()[position] = result
-            dismiss()
+            if (result.size == 0){
+                Toasty.error(context!!.applicationContext, "请至少选择一周").show()
+            }
+            else{
+                viewModel.getWeekMap()[position]!!.value = result
+                dismiss()
+            }
         }
     }
 

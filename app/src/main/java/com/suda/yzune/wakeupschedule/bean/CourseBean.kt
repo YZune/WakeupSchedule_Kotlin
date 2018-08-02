@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.bean
 
 data class CourseBean(
-        val id: Int,
+        var id: Int,
         var courseName: String,
         var day: Int,
         var room: String?,

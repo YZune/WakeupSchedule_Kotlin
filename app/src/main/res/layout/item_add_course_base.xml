@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -32,33 +33,43 @@
         android:alpha="0.5"
         android:background="@color/grey" />
 
-    <ImageView
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="65dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_edit_color"
-        android:tint="@color/grey"
-        android:tintMode="src_in" />
-
-    <EditText
-        android:id="@+id/et_color"
+    <LinearLayout
+        android:id="@+id/ll_color"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_below="@id/et_name"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="65dp"
-        android:background="@null"
-        android:enabled="false"
-        android:gravity="center_vertical"
-        android:hint="选取颜色"
-        android:lines="1"
-        android:textSize="14sp" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_color"
+            android:layout_width="56dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="1dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_color"
+            android:tint="@color/grey"
+            android:tintMode="src_in" />
+
+        <TextView
+            android:background="@null"
+            android:id="@+id/tv_color"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="-8dp"
+            android:layout_marginTop="1dp"
+            android:enabled="false"
+            android:gravity="center_vertical"
+            android:hint="选取颜色"
+            android:lines="1"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/et_color"
+        android:layout_below="@id/ll_color"
         android:alpha="0.5"
         android:background="@color/grey" />
 

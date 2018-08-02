@@ -39,6 +39,7 @@
         android:src="@drawable/ic_list_delete" />
 
     <LinearLayout
+        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/ll_weeks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

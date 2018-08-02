@@ -30,4 +30,7 @@ interface CourseBaseDao {
 
     @Query("delete from coursebasebean where id = :id and tableName = :tableName")
     fun deleteCourseBaseBean(id: Int, tableName: String)
+
+    @Update
+    fun updateCourseBaseBean(course: CourseBaseBean)
 }

@@ -1,12 +1,14 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 
+import android.app.Service
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
+import android.os.Vibrator
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -99,6 +101,7 @@ class CourseDetailFragment : DialogFragment() {
     }
 
     private fun initEvent() {
+        val mVibrator = context!!.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
         close.setOnClickListener {
             dismiss()
         }
@@ -123,6 +126,7 @@ class CourseDetailFragment : DialogFragment() {
         }
 
         ib_delete_course.setOnLongClickListener {
+            mVibrator.vibrate(100)
             viewModel.deleteCourseBaseBean(course)
             Toasty.success(context!!, "删除成功").show()
             dismiss()

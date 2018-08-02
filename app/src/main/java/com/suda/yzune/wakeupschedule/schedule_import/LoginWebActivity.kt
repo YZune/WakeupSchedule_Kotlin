@@ -204,7 +204,9 @@ class LoginWebActivity : AppCompatActivity() {
             } else {
                 Log.d("数据库", "插入")
                 Log.d("课表", viewModel.html2ImportBean(it).toString())
-                viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
+                //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
+                //todo: 多课表管理
+                viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "", applicationContext)
             }
         })
     }

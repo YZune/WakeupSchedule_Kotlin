@@ -19,15 +19,17 @@
         android:background="@color/white">
 
         <TextView
-            android:textStyle="bold"
+            android:id="@+id/tv_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:gravity="center"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="取消"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="0dp"
@@ -37,20 +39,22 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="添加课程"
-            android:textStyle="bold"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:textStyle="bold"
+            android:id="@+id/tv_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:gravity="center"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="保存"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
@@ -63,10 +67,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_detail"
-        android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f2f2f2">
+        android:background="#f2f2f2"
+        android:overScrollMode="never">
 
     </android.support.v7.widget.RecyclerView>
 

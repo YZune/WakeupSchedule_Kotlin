@@ -67,4 +67,9 @@ class ScheduleRepository(context: Context) {
         }
     }
 
+    fun updateCourseBaseBean(course: CourseBaseBean){
+        thread(name = "UpdateCourseBaseBeanThread") {
+            baseDao.updateCourseBaseBean(course)
+        }
+    }
 }

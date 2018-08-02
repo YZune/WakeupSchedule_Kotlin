@@ -13,7 +13,7 @@ import kotlin.concurrent.thread
 
 class ScheduleViewModel : ViewModel() {
 
-    lateinit var repository: ScheduleRepository
+    private lateinit var repository: ScheduleRepository
 
     fun initRepository(context: Context) {
         repository = ScheduleRepository(context)
@@ -38,6 +38,10 @@ class ScheduleViewModel : ViewModel() {
 
     fun deleteCourseBaseBean(courseBean: CourseBean) {
         repository.deleteCourseBaseBean(courseBean.id, courseBean.tableName)
+    }
+
+    fun updateCourseBaseBean(courseBean: CourseBean){
+        repository.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(courseBean))
     }
 
     fun getWeekday(): String {

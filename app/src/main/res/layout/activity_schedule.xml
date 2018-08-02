@@ -37,8 +37,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="-8dp"
-                android:background="@null"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/main_nav" />

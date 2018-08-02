@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -89,7 +90,13 @@ class ScheduleFragment : Fragment() {
 
             tv.background = resources.getDrawable(R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
-            myGrad.setColor(getCustomizedColor(c.id % 9))
+            if (c.color == "") {
+                myGrad.setColor(getCustomizedColor(c.id % 9))
+                c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
+                viewModel.updateCourseBaseBean(c)
+            } else{
+                myGrad.setColor(Color.parseColor(c.color))
+            }
             myGrad.alpha = Math.round(255 * (60.0 / 100)).toInt()
 
             when (c.type) {

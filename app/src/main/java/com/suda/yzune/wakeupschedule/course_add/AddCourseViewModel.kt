@@ -1,11 +1,14 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
+import java.util.*
+import kotlin.collections.ArrayList
 
 class AddCourseViewModel : ViewModel() {
     private var repository: AddCourseRepository? = null
@@ -29,6 +32,11 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.initBaseData(id)
     }
 
+    fun initBaseData(): CourseBaseBean{
+        return repository!!.initBaseData()
+    }
+
+
     fun getLastId(): LiveData<Int> {
         return repository!!.getLastId()
     }
@@ -41,8 +49,16 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.getList()
     }
 
-    fun getWeekMap(): MutableMap<Int, ArrayList<Int>> {
+    fun getBaseData(): CourseBaseBean{
+        return repository!!.getBaseData()
+    }
+
+    fun getWeekMap(): SortedMap<Int, MutableLiveData<ArrayList<Int>>> {
         return repository!!.getWeekMap()
+    }
+
+    fun getDeleteList(): ArrayList<Int>{
+        return repository!!.getDeleteList()
     }
 
     fun initWeekArrayList(position: Int) {
@@ -60,7 +76,9 @@ class AddCourseViewModel : ViewModel() {
                     }
                 }
             }
-            getWeekMap()[position] = result
+            getWeekMap()[position] = MutableLiveData<ArrayList<Int>>().apply {
+                this.value = result
+            }
         }
     }
 

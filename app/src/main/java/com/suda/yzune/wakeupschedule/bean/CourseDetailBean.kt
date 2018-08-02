@@ -16,7 +16,7 @@ import android.arch.persistence.room.Index
         indices = [Index(value = ["id", "tableName"], unique = false)])
 
 data class CourseDetailBean(
-        val id: Int,
+        var id: Int,
         var day: Int,
         var room: String?,
         var teacher: String?,
