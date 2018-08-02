@@ -1,11 +1,15 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +19,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_login_web.*
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 
 class CourseDetailFragment : DialogFragment() {
@@ -26,6 +32,25 @@ class CourseDetailFragment : DialogFragment() {
     lateinit var teacher: TextView
     lateinit var room: TextView
     lateinit var close: ImageButton
+    private lateinit var viewModel: ScheduleViewModel
+    var makeSure = 0
+
+    private val timer = object : CountDownTimer(5000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+            tv_tips.visibility = View.GONE
+            makeSure = 0
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -73,7 +98,7 @@ class CourseDetailFragment : DialogFragment() {
         time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
     }
 
-    private fun initEvent(){
+    private fun initEvent() {
         close.setOnClickListener {
             dismiss()
         }
@@ -85,6 +110,29 @@ class CourseDetailFragment : DialogFragment() {
             startActivity(intent)
         }
 
+        ib_delete_course.setOnClickListener {
+            if (makeSure == 0) {
+                tv_tips.visibility = View.VISIBLE
+                makeSure++
+                timer.start()
+            } else {
+                viewModel.deleteCourseBean(course)
+                Toasty.success(context!!, "删除成功").show()
+                dismiss()
+            }
+        }
+
+        ib_delete_course.setOnLongClickListener {
+            viewModel.deleteCourseBaseBean(course)
+            Toasty.success(context!!, "删除成功").show()
+            dismiss()
+            return@setOnLongClickListener true
+        }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        timer.cancel()
     }
 
     companion object {

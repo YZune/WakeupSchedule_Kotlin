@@ -27,6 +27,7 @@ import android.content.Context
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
 import android.content.Context.INPUT_METHOD_SERVICE
+import android.os.CountDownTimer
 import android.view.inputmethod.InputMethodManager
 import com.suda.yzune.wakeupschedule.AppDatabase
 
@@ -42,6 +43,17 @@ class LoginWebActivity : AppCompatActivity() {
     private var name = ""
     private var year = ""
     private var term = ""
+
+    private val timer = object : CountDownTimer(3000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+
+        }
+
+        override fun onFinish() {
+            btn_text.text = "登录"
+            cv_login.isClickable = true
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -68,10 +80,11 @@ class LoginWebActivity : AppCompatActivity() {
                 iv_error.visibility = View.VISIBLE
                 cv_login.isClickable = false
                 btn_text.text = "请检查是否连接校园网"
-                Handler().postDelayed({
-                    btn_text.text = "登录"
-                    cv_login.isClickable = true
-                }, 3000)
+                timer.start()
+//                Handler().postDelayed({
+//                    btn_text.text = "登录"
+//                    cv_login.isClickable = true
+//                }, 3000)
                 //Toasty.error(this, resources.getString(R.string.check_code_get_error)).show()
             }
         })
@@ -261,10 +274,11 @@ class LoginWebActivity : AppCompatActivity() {
         fadeAnimation(cpb, 1f, 0f, 100, 0)
         btn_text.text = msg
         fadeAnimation(btn_text, 0f, 1f, 200, 0)
-        Handler().postDelayed({
-            btn_text.text = "登录"
-            cv_login.isClickable = true
-        }, 3000)
+//        Handler().postDelayed({
+//            btn_text.text = "登录"
+//            cv_login.isClickable = true
+//        }, 3000)
+        timer.start()
     }
 
     private fun cardC2Dialog(viewModel: ImportViewModel, years: List<String>) {
@@ -330,5 +344,10 @@ class LoginWebActivity : AppCompatActivity() {
 
         ll_dialog.visibility = View.GONE
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.cancel()
     }
 }

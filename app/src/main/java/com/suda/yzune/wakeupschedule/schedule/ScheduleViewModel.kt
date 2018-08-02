@@ -5,9 +5,11 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.schedule_import.ImportRepository
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
 
 class ScheduleViewModel : ViewModel() {
 
@@ -28,6 +30,14 @@ class ScheduleViewModel : ViewModel() {
     fun getTodayDate(): String {
         val dateFormat = SimpleDateFormat("M月d日", Locale.CHINA)
         return dateFormat.format(Date())
+    }
+
+    fun deleteCourseBean(courseBean: CourseBean) {
+        repository.deleteCourseBean(courseBean)
+    }
+
+    fun deleteCourseBaseBean(courseBean: CourseBean) {
+        repository.deleteCourseBaseBean(courseBean.id, courseBean.tableName)
     }
 
     fun getWeekday(): String {

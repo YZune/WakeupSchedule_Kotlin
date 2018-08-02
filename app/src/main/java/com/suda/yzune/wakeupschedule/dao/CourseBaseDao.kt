@@ -27,4 +27,7 @@ interface CourseBaseDao {
 
     @Query("select max(id) from coursebasebean")
     fun getLastId(): LiveData<Int>
+
+    @Query("delete from coursebasebean where id = :id and tableName = :tableName")
+    fun deleteCourseBaseBean(id: Int, tableName: String)
 }

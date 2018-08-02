@@ -47,7 +47,7 @@ class ScheduleRepository(context: Context) {
         }
         result.value = list
         thread(name = "MakeTogetherThread") {
-            for (index in changeIndex){
+            for (index in changeIndex) {
                 detailDao.updateCourseDetail(courseBean2DetailBean(raw[index]))
                 detailDao.deleteCourseDetail(courseBean2DetailBean(raw[index + 1]))
             }
@@ -55,5 +55,16 @@ class ScheduleRepository(context: Context) {
         return result
     }
 
+    fun deleteCourseBean(courseBean: CourseBean) {
+        thread(name = "DeleteCourseBeanThread") {
+            detailDao.deleteCourseDetail(courseBean2DetailBean(courseBean))
+        }
+    }
+
+    fun deleteCourseBaseBean(id: Int, tableName: String){
+        thread(name = "DeleteCourseBaseBeanThread") {
+            baseDao.deleteCourseBaseBean(id, tableName)
+        }
+    }
 
 }

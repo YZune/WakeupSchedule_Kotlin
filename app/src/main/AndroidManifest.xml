@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.suda.yzune.wakeupschedule">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +21,10 @@
             android:name=".schedule_import.LoginWebActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".schedule_import.ChooseTermActivity" />
-        <activity android:name=".schedule.ScheduleActivity">
+        <activity
+            android:name=".schedule.ScheduleActivity"
+            android:resizeableActivity="false"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
