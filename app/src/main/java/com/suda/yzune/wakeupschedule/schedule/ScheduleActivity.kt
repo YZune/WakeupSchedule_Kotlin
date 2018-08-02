@@ -1,12 +1,15 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
+import android.os.PersistableBundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.ViewPager
 import android.util.Log
@@ -44,14 +47,17 @@ class ScheduleActivity : AppCompatActivity() {
         initEvent(viewModel)
     }
 
+    @SuppressLint("MissingSuperCall")
+    override fun onSaveInstanceState(outState: Bundle?) {
+
+    }
+
     private fun initView(viewModel: ScheduleViewModel){
         tv_date.text = viewModel.getTodayDate()
         tv_weekday.text = viewModel.getWeekday()
     }
 
     private fun initViewStub() {
-        ll_today_courses_container = vs_today_courses.inflate()
-        title_bg_container = vs_title_bg.inflate()
         main_bg_container = vs_main_bg.inflate()
     }
 
@@ -66,17 +72,17 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initEvent(viewModel: ScheduleViewModel) {
-        val ll_today_courses = ll_today_courses_container.findViewById<LinearLayout>(R.id.ll_today_courses)
-        val iv_title_bg = title_bg_container.findViewById<ImageView>(R.id.iv_bg)
-        val iv_bg = main_bg_container.findViewById<ImageView>(R.id.iv_bg)
-        ab_main.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val scrollRange = appBarLayout.totalScrollRange
-            val alpha = 1 - 1.0f * Math.abs(verticalOffset) / scrollRange
-            ll_today_courses.alpha = alpha
-            iv_title_bg.alpha = alpha
-            iv_bg.alpha = 1 - alpha
-            nsv_schedule.setNeedScroll(alpha != 0f)
-        })
+//        val ll_today_courses = ll_today_courses_container.findViewById<LinearLayout>(R.id.ll_today_courses)
+//        val iv_title_bg = title_bg_container.findViewById<ImageView>(R.id.iv_bg)
+//        val iv_bg = main_bg_container.findViewById<ImageView>(R.id.iv_bg)
+//        ab_main.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+//            val scrollRange = appBarLayout.totalScrollRange
+//            val alpha = 1 - 1.0f * Math.abs(verticalOffset) / scrollRange
+//            ll_today_courses.alpha = alpha
+//            iv_title_bg.alpha = alpha
+//            iv_bg.alpha = 1 - alpha
+//            nsv_schedule.setNeedScroll(alpha != 0f)
+//        })
 
         ib_import.setOnClickListener {
             startActivity(Intent(this, LoginWebActivity::class.java))

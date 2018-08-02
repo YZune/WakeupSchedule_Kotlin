@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.suda.yzune.wakeupschedule.schedule.ScheduleActivity">
 
-    <android.support.design.widget.CoordinatorLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -16,127 +16,85 @@
             android:layout_height="match_parent"
             android:layout="@layout/main_background" />
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/ab_main"
+        <RelativeLayout
+            android:id="@+id/rl_title"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:background="@android:color/transparent"
-            app:elevation="0dp">
+            android:layout_height="112dp"
+            android:paddingTop="48dp"
+            app:layout_collapseMode="pin">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:minHeight="112dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:contentScrim="@android:color/transparent"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="7月23日"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
-                <ViewStub
-                    android:id="@+id/vs_title_bg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout="@layout/main_background" />
+            <ImageButton
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="-8dp"
+                android:background="@null"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/main_nav" />
 
-                <RelativeLayout
-                    android:id="@+id/rl_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="112dp"
-                    android:paddingTop="48dp"
-                    app:layout_collapseMode="pin">
+            <TextView
+                android:id="@+id/tv_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_date"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="4dp"
+                android:alpha="0.65"
+                android:text="第2周"
+                android:textColor="@android:color/black" />
 
-                    <TextView
-                        android:id="@+id/tv_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:text="7月23日"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_weekday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_date"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_toEndOf="@id/tv_week"
+                android:alpha="0.65"
+                android:text="周一"
+                android:textColor="@android:color/black" />
 
-                    <ImageButton
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_marginStart="-8dp"
-                        android:background="@null"
-                        android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/main_nav" />
+            <ImageButton
+                android:id="@+id/ib_add"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_toStartOf="@id/ib_import"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/schedule_add" />
 
-                    <TextView
-                        android:id="@+id/tv_week"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_date"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="4dp"
-                        android:alpha="0.65"
-                        android:text="第2周"
-                        android:textColor="@android:color/black" />
+            <ImageButton
+                android:id="@+id/ib_import"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="24dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/schedule_import" />
 
-                    <TextView
-                        android:id="@+id/tv_weekday"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/tv_date"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="4dp"
-                        android:layout_toEndOf="@id/tv_week"
-                        android:alpha="0.65"
-                        android:text="周一"
-                        android:textColor="@android:color/black" />
+        </RelativeLayout>
 
-                    <ImageButton
-                        android:id="@+id/ib_add"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_toStartOf="@id/ib_import"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/schedule_add" />
-
-                    <ImageButton
-                        android:id="@+id/ib_import"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="24dp"
-                        android:background="?android:attr/selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/schedule_import" />
-
-                </RelativeLayout>
-
-                <ViewStub
-                    android:id="@+id/vs_today_courses"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="108dp"
-                    android:background="@color/main_title_bg"
-                    android:layout="@layout/main_today_courses" />
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-        </android.support.design.widget.AppBarLayout>
-
-        <com.suda.yzune.wakeupschedule.widget.JudgeNestedScrollView
-            android:id="@+id/nsv_schedule"
+        <android.support.v4.view.ViewPager
+            android:layout_below="@+id/rl_title"
+            android:id="@+id/vp_schedule"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="match_parent" />
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vp_schedule"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.suda.yzune.wakeupschedule.widget.JudgeNestedScrollView>
-
-    </android.support.design.widget.CoordinatorLayout>
+    </RelativeLayout>
 
 </android.support.v4.widget.DrawerLayout>
