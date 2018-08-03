@@ -55,18 +55,18 @@ class ScheduleFragment : Fragment() {
             viewModel.getRawCourseByDay(i).observe(this, Observer {
                 if (it != null) {
                     viewModel.getCourseByDay(it).observe(this, Observer {
-                        initWeekPanel(view, weekPanels, it)
+                        initWeekPanel(view, weekPanels, it, i)
                     })
                 }
             })
         }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?) {
-        if (data == null || data.isEmpty()) return
-        val llIndex = data[0].day - 1
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int) {
+        val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
+        if (data == null || data.isEmpty()) return
         val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
@@ -94,7 +94,7 @@ class ScheduleFragment : Fragment() {
                 myGrad.setColor(getCustomizedColor(c.id % 9))
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
                 viewModel.updateCourseBaseBean(c)
-            } else{
+            } else {
                 myGrad.setColor(Color.parseColor(c.color))
             }
             myGrad.alpha = Math.round(255 * (60.0 / 100)).toInt()
