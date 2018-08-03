@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
+import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
 import java.util.*
 import kotlin.collections.ArrayList
@@ -14,13 +15,33 @@ class AddCourseViewModel : ViewModel() {
     private var repository: AddCourseRepository? = null
     var newId = -1
 
+    fun saveData() {
+        repository!!.saveData(newId)
+    }
+
+    fun getUpdateFlag(): Boolean{
+        return repository!!.getUpdateFlag()
+    }
+
+    fun removeInsert(){
+        repository!!.removeInsert()
+    }
+
+    fun getSaveInfo(): LiveData<String> {
+        return repository!!.getSaveInfo()
+    }
+
+    fun rollBackData(){
+        return repository!!.rollBackData()
+    }
+
     fun initRepository(context: Context) {
         if (repository == null) {
             repository = AddCourseRepository(context)
         }
     }
 
-    fun initData(): MutableList<CourseDetailBean> {
+    fun initData(): MutableList<CourseEditBean> {
         return repository!!.initData()
     }
 
@@ -32,7 +53,7 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.initBaseData(id)
     }
 
-    fun initBaseData(): CourseBaseBean{
+    fun initBaseData(): CourseBaseBean {
         return repository!!.initBaseData()
     }
 
@@ -41,45 +62,20 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.getLastId()
     }
 
-    fun newBlankCourse(): CourseDetailBean {
-        return repository!!.newBlankCourse()
-    }
-
-    fun getList(): MutableList<CourseDetailBean> {
+    fun getList(): MutableList<CourseEditBean> {
         return repository!!.getList()
     }
 
-    fun getBaseData(): CourseBaseBean{
+    fun getBaseData(): CourseBaseBean {
         return repository!!.getBaseData()
     }
 
-    fun getWeekMap(): SortedMap<Int, MutableLiveData<ArrayList<Int>>> {
-        return repository!!.getWeekMap()
+    fun checkSameName(): LiveData<CourseBaseBean> {
+        return repository!!.checkSameName()
     }
 
-    fun getDeleteList(): ArrayList<Int>{
+    fun getDeleteList(): ArrayList<Int> {
         return repository!!.getDeleteList()
-    }
-
-    fun initWeekArrayList(position: Int) {
-        if (!getWeekMap().containsKey(position)) {
-            val result = arrayListOf<Int>()
-            when (getList()[position].type) {
-                0 -> {
-                    for (i in getList()[position].startWeek..getList()[position].endWeek) {
-                        result.add(i)
-                    }
-                }
-                else -> {
-                    for (i in getList()[position].startWeek..getList()[position].endWeek step 2) {
-                        result.add(i)
-                    }
-                }
-            }
-            getWeekMap()[position] = MutableLiveData<ArrayList<Int>>().apply {
-                this.value = result
-            }
-        }
     }
 
     fun judgeType(list: ArrayList<Int>): Int {

@@ -25,6 +25,9 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean where id = :id")
     fun getCourseById(id: Int): LiveData<CourseBaseBean>
 
+    @Query("select * from coursebasebean where id = :id and tableName = :tableName")
+    fun getCourseBeanByIdAndTableNameInThread(id: Int, tableName: String): CourseBaseBean
+
     @Query("select max(id) from coursebasebean")
     fun getLastId(): LiveData<Int>
 
@@ -33,4 +36,7 @@ interface CourseBaseDao {
 
     @Update
     fun updateCourseBaseBean(course: CourseBaseBean)
+
+    @Query("select * from coursebasebean where courseName = :name and tableName = :tableName")
+    fun checkSameName(name: String, tableName: String): LiveData<CourseBaseBean>
 }

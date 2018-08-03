@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -41,6 +42,11 @@ class ScheduleActivity : AppCompatActivity() {
         val viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         viewModel.initRepository(applicationContext)
 
+        Toasty.Config.getInstance()
+                .setToastTypeface(Typeface.DEFAULT_BOLD)
+                .setTextSize(12)
+                .apply()
+
         initView(viewModel)
         initViewStub()
         initViewPage()
@@ -52,7 +58,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     }
 
-    private fun initView(viewModel: ScheduleViewModel){
+    private fun initView(viewModel: ScheduleViewModel) {
         tv_date.text = viewModel.getTodayDate()
         tv_weekday.text = viewModel.getWeekday()
     }

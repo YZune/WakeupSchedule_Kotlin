@@ -24,8 +24,6 @@ class ImportViewModel : ViewModel() {
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
 
-    var insertResponse = MutableLiveData<String>()
-
     private val repository = ImportRepository("http://xk.suda.edu.cn")
 
     fun getCheckCode(): LiveData<Bitmap> {

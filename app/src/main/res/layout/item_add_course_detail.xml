@@ -6,12 +6,12 @@
     android:background="@color/white">
 
     <TextView
-        android:singleLine="true"
         android:id="@+id/tv_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:singleLine="true"
         android:text="时间段"
         android:textSize="12sp" />
 
@@ -39,11 +39,11 @@
         android:src="@drawable/ic_list_delete" />
 
     <LinearLayout
-        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/ll_weeks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_item_id">
+        android:layout_below="@id/tv_item_id"
+        android:background="?android:attr/selectableItemBackground">
 
         <ImageView
             android:layout_width="56dp"
@@ -73,32 +73,40 @@
         android:alpha="0.5"
         android:background="@color/grey" />
 
-    <ImageView
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_below="@id/ll_weeks"
-        android:layout_marginTop="1dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_edit_time" />
-
-    <TextView
-        android:id="@+id/et_time"
+    <LinearLayout
+        android:id="@+id/ll_time"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/ll_weeks"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="48dp"
         android:layout_marginTop="1dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:hint="周一    第1 - 2节"
-        android:lines="1"
-        android:textSize="14sp" />
+        android:background="?android:attr/selectableItemBackground">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="1dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_edit_time" />
+
+        <TextView
+            android:id="@+id/et_time"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginStart="-8dp"
+            android:layout_marginTop="1dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="周一    第1 - 2节"
+            android:lines="1"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/et_time"
+        android:layout_below="@id/ll_time"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="48dp"
         android:alpha="0.5"
@@ -107,7 +115,7 @@
     <ImageView
         android:layout_width="56dp"
         android:layout_height="64dp"
-        android:layout_below="@id/et_time"
+        android:layout_below="@id/ll_time"
         android:layout_marginTop="1dp"
         android:padding="16dp"
         android:src="@drawable/ic_person" />
@@ -116,7 +124,7 @@
         android:id="@+id/et_teacher"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_below="@id/et_time"
+        android:layout_below="@id/ll_time"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="1dp"

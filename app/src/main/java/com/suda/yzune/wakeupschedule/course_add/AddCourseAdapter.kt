@@ -8,33 +8,32 @@ import android.widget.TextView
 import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
+import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import kotlinx.android.synthetic.main.activity_add_course.*
 
-class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseDetailBean>) :
-        BaseItemDraggableAdapter<CourseDetailBean, BaseViewHolder>(layoutResId, data) {
+class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
+        BaseItemDraggableAdapter<CourseEditBean, BaseViewHolder>(layoutResId, data) {
 
     private var mListener: OnItemEditTextChangedListener? = null
-    val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
 
     fun setListener(listener: OnItemEditTextChangedListener) {
         mListener = listener
     }
 
-    override fun convert(helper: BaseViewHolder, item: CourseDetailBean) {
+    override fun convert(helper: BaseViewHolder, item: CourseEditBean) {
         //helper.setText(R.id.tv_item_id, "${helper.layoutPosition}")
         helper.setText(R.id.et_room, item.room)
         helper.setText(R.id.et_teacher, item.teacher)
-        var type = ""
-        when (item.type) {
-            1 -> type = "单周"
-            2 -> type = "双周"
-        }
-        helper.setText(R.id.et_weeks, "第${item.startWeek} - ${item.endWeek}周    $type")
-        if (item.startNode != 0){
-            helper.setText(R.id.et_time, "${WEEK[item.day]}    第${item.startNode} - ${item.startNode + item.step - 1}节")
-        }
+
+        val week = CourseUtils.intList2WeekBeanList(item.weekList.value!!).toString()
+        helper.setText(R.id.et_weeks, week.substring(1, week.length - 1))
+
+        helper.setText(R.id.et_time, "${CourseUtils.getDayInt(item.time.value!!.day)}    第${item.time.value!!.startNode} - ${item.time.value!!.endNode}节")
+
         helper.addOnClickListener(R.id.ib_delete)
         helper.addOnClickListener(R.id.ll_weeks)
+        helper.addOnClickListener(R.id.ll_time)
         val etRoom = helper.getView<EditText>(R.id.et_room)
         val etTeacher = helper.getView<EditText>(R.id.et_teacher)
         etRoom.addTextChangedListener(object : TextWatcher {

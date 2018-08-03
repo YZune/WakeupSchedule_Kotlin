@@ -41,4 +41,16 @@
         <item name="wheel_item_text_size">20sp</item>
     </style>
 
+    <style name="TimeDataPicker">
+        <item name="android:layout_width">80dp</item>
+        <item name="wheel_curtain">true</item>
+        <item name="wheel_curved">false</item>
+        <item name="wheel_visible_item_count">5</item>
+        <item name="wheel_curtain_color">#64ff9393</item>
+        <item name="wheel_atmospheric">true</item>
+        <item name="wheel_item_text_color">@color/grey</item>
+        <item name="wheel_selected_item_text_color">@android:color/black</item>
+        <item name="wheel_item_text_size">14sp</item>
+    </style>
+
 </resources>

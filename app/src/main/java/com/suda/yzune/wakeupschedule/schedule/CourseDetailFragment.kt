@@ -120,7 +120,7 @@ class CourseDetailFragment : DialogFragment() {
                 timer.start()
             } else {
                 viewModel.deleteCourseBean(course)
-                Toasty.success(context!!, "删除成功").show()
+                Toasty.success(context!!.applicationContext, "删除成功").show()
                 dismiss()
             }
         }
@@ -128,7 +128,7 @@ class CourseDetailFragment : DialogFragment() {
         ib_delete_course.setOnLongClickListener {
             mVibrator.vibrate(100)
             viewModel.deleteCourseBaseBean(course)
-            Toasty.success(context!!, "删除成功").show()
+            Toasty.success(context!!.applicationContext, "删除成功").show()
             dismiss()
             return@setOnLongClickListener true
         }

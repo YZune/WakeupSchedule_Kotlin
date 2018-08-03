@@ -1,11 +1,22 @@
 package com.suda.yzune.wakeupschedule.utils
 
-import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
-import com.suda.yzune.wakeupschedule.bean.CourseBean
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
-import com.suda.yzune.wakeupschedule.bean.WeekBean
+import android.arch.lifecycle.MutableLiveData
+import com.suda.yzune.wakeupschedule.bean.*
 
 object CourseUtils {
+    fun getDayInt(weekDay: Int): String {
+        return when (weekDay) {
+            1 -> "周一"
+            2 -> "周二"
+            3 -> "周三"
+            4 -> "周四"
+            5 -> "周五"
+            6 -> "周六"
+            7 -> "周日"
+            else -> ""
+        }
+    }
+
     fun courseBean2DetailBean(c: CourseBean): CourseDetailBean {
         return CourseDetailBean(
                 id = c.id, room = c.room, day = c.day, teacher = c.teacher,
@@ -21,7 +32,49 @@ object CourseUtils {
         )
     }
 
-    fun intList2WeekBeanList(input: ArrayList<Int>) : ArrayList<WeekBean>{
+    fun editBean2DetailBeanList(editBean: CourseEditBean): MutableList<CourseDetailBean> {
+        val result = mutableListOf<CourseDetailBean>()
+        intList2WeekBeanList(editBean.weekList.value!!).forEach {
+            result.add(CourseDetailBean(
+                    id = editBean.id, room = editBean.room, teacher = editBean.teacher,
+                    day = editBean.time.value!!.day, startNode = editBean.time.value!!.startNode,
+                    step = editBean.time.value!!.endNode - editBean.time.value!!.startNode + 1,
+                    startWeek = it.start, endWeek = it.end, type = it.type,
+                    tableName = editBean.tableName
+            ))
+
+        }
+        return result
+    }
+
+    fun detailBean2EditBean(c: CourseDetailBean): CourseEditBean {
+        return CourseEditBean(
+                id = c.id,
+                time = MutableLiveData<TimeBean>().apply {
+                    this.value = TimeBean(day = c.day, startNode = c.startNode, endNode = c.startNode + c.step - 1)
+                },
+                room = c.room, teacher = c.teacher,
+                weekList = MutableLiveData<ArrayList<Int>>().apply {
+                    this.value = ArrayList<Int>().apply {
+                        when (c.type) {
+                            0 -> {
+                                for (i in c.startWeek..c.endWeek) {
+                                    this.add(i)
+                                }
+                            }
+                            else -> {
+                                for (i in c.startWeek..c.endWeek step 2) {
+                                    this.add(i)
+                                }
+                            }
+                        }
+                    }
+                },
+                tableName = c.tableName
+        )
+    }
+
+    fun intList2WeekBeanList(input: ArrayList<Int>): ArrayList<WeekBean> {
         var reset = 0
         var temp = WeekBean(0, 0, -1)
         val list = arrayListOf<WeekBean>()

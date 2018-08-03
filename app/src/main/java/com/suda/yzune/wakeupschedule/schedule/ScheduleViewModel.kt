@@ -45,22 +45,12 @@ class ScheduleViewModel : ViewModel() {
     }
 
     fun getWeekday(): String {
-        var str = ""
         var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {
             weekDay = 7
         } else {
             weekDay -= 1
         }
-        when (weekDay) {
-            1 -> str = "周一"
-            2 -> str = "周二"
-            3 -> str = "周三"
-            4 -> str = "周四"
-            5 -> str = "周五"
-            6 -> str = "周六"
-            7 -> str = "周日"
-        }
-        return str
+        return CourseUtils.getDayInt(weekDay)
     }
 }

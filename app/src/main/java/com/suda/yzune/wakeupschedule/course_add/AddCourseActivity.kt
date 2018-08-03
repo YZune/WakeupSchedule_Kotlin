@@ -18,29 +18,43 @@ import kotlinx.android.synthetic.main.activity_add_course.*
 import com.suda.yzune.wakeupschedule.MainActivity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.item_add_course_base.*
 import java.util.*
 import android.content.DialogInterface
+import android.os.CountDownTimer
 import android.support.v7.widget.RecyclerView
-import android.widget.LinearLayout
+import android.text.TextWatcher
+import android.view.KeyEvent
+import android.widget.*
 import com.flask.colorpicker.builder.ColorPickerClickListener
 import com.flask.colorpicker.OnColorSelectedListener
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
+import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import kotlinx.android.synthetic.main.fragment_course_detail.*
+import kotlinx.android.synthetic.main.item_add_course_detail.*
 
 
 class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
 
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
+    private var isExit: Boolean = false
+    private var rollBackFlag = false
+    private var isSaved = false
+    private val tExit = object : CountDownTimer(2000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+        }
+
+        override fun onFinish() {
+            isExit = false
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -52,10 +66,12 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         viewModel.initRepository(applicationContext)
 
         viewModel.getLastId().observe(this, Observer {
-            if (it != null) {
-                viewModel.newId = it + 1
-            } else {
-                viewModel.newId = 0
+            if (viewModel.newId == -1) {
+                if (it != null) {
+                    viewModel.newId = it + 1
+                } else {
+                    viewModel.newId = 0
+                }
             }
         })
 
@@ -63,7 +79,10 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
             initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData()), viewModel.initBaseData())
         } else {
             viewModel.initData(intent.extras.getInt("id")).observe(this, Observer { list ->
-                viewModel.getList().addAll(list!!)
+                //viewModel.getList().clear()
+                list!!.forEach {
+                    viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
+                }
                 viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
                     viewModel.getBaseData().id = it!!.id
                     viewModel.getBaseData().color = it.color
@@ -90,9 +109,18 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         adapter.addFooterView(initFooterView(adapter))
         adapter.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
             when (view.id) {
+                R.id.ll_time -> {
+                    viewModel.getList()[position].time.observe(this, Observer {
+                        val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_time) as TextView
+                        textView.text = "${CourseUtils.getDayInt(it!!.day)}    第${it.startNode} - ${it.endNode}节"
+                    })
+                    val selectTimeDialog = SelectTimeFragment.newInstance(position)
+                    selectTimeDialog.isCancelable = false
+                    selectTimeDialog.show(supportFragmentManager, "selectTime")
+                }
                 R.id.ib_delete -> {
                     if (adapter.data.size == 1) {
-                        Toasty.error(this, "至少要保留一个时间段").show()
+                        Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
 //                        adapter.remove(position)
 //                        viewModel.removeWeek(position)
@@ -104,8 +132,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     }
                 }
                 R.id.ll_weeks -> {
-                    viewModel.initWeekArrayList(position)
-                    viewModel.getWeekMap()[position]!!.observe(this, Observer {
+                    viewModel.getList()[position].weekList.observe(this, Observer {
                         it!!.sort()
                         val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_weeks) as TextView
                         val text = CourseUtils.intList2WeekBeanList(it).toString()
@@ -128,6 +155,17 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         val tvColor = view.findViewById<TextView>(R.id.tv_color)
         val ivColor = view.findViewById<ImageView>(R.id.iv_color)
         etName.setText(baseBean.courseName)
+        etName.setSelection(baseBean.courseName.length)
+        etName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                baseBean.courseName = s.toString()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        })
         tvColor.text = baseBean.color
         if (baseBean.color != "") {
             val colorInt = Color.parseColor(baseBean.color)
@@ -160,7 +198,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
         val cvBtn = view.findViewById<CardView>(R.id.cv_add)
         cvBtn.setOnClickListener {
-            adapter.addData(viewModel.newBlankCourse())
+            adapter.addData(CourseEditBean())
         }
         return view
     }
@@ -170,8 +208,73 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
             finish()
         }
 
-        tv_save.setOnClickListener {
+        tv_save.setOnClickListener { _ ->
+            if (viewModel.getBaseData().courseName == "") {
+                Toasty.error(this.applicationContext, "请填写课程名称").show()
+            } else {
+                if (viewModel.getBaseData().id == -1 || !viewModel.getUpdateFlag()) {
+                    viewModel.checkSameName().observe(this, Observer {
+                        if (it == null) {
+                            saveData()
+                        } else {
+                            Toasty.error(this.applicationContext, "不允许重复的课程名称>_<").show()
+                        }
+                    })
+                } else {
+                    saveData()
+                }
+            }
+        }
+    }
 
+    private fun saveData(){
+        viewModel.saveData()
+        viewModel.getSaveInfo().observe(this, Observer {
+            when (it) {
+                "ok" -> {
+                    rollBackFlag = false
+                    isSaved = true
+                    Toasty.success(this.applicationContext, "保存成功").show()
+                    finish()
+                }
+                "更新异常" -> {
+                    rollBackFlag = true
+                    Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()
+                }
+                "插入异常" -> {
+                    rollBackFlag = false
+                    viewModel.removeInsert()
+                    Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()
+                }
+                else ->{
+                    Toasty.error(this.applicationContext, "未知错误", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
+    private fun exitBy2Click() {
+        if (!isExit) {
+            isExit = true // 准备退出
+            Toasty.info(this.applicationContext, "再按一次退出编辑").show()
+            tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+        } else {
+            finish()
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitBy2Click()  //退出应用的操作
+        }
+        return false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tExit.cancel()
+        if (rollBackFlag) {
+            viewModel.rollBackData()
         }
     }
 }

@@ -23,6 +23,12 @@ interface CourseDetailDao {
     @Query("delete from coursedetailbean where tableName = :tableName")
     fun deleteByTableName(tableName: String)
 
+    @Query("delete from coursedetailbean where id = :id and tableName = :tableName")
+    fun deleteByIdAndTableName(id: Int, tableName: String)
+
+    @Query("select * from coursedetailbean where id = :id and tableName = :tableName")
+    fun getDetailByIdAndTableNameInThread(id: Int, tableName: String): List<CourseDetailBean>
+
     @Update
     fun updateCourseDetail(courseDetailBean: CourseDetailBean)
 

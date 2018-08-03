@@ -68,7 +68,7 @@ class SelectWeekFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        liveData.value = viewModel.getWeekMap()[position]!!.value
+        liveData.value = viewModel.getList()[position].weekList.value
         result.addAll(liveData.value!!)
         showWeeks()
         initEvent()
@@ -172,7 +172,7 @@ class SelectWeekFragment : DialogFragment() {
                 Toasty.error(context!!.applicationContext, "请至少选择一周").show()
             }
             else{
-                viewModel.getWeekMap()[position]!!.value = result
+                viewModel.getList()[position].weekList.value = result
                 dismiss()
             }
         }

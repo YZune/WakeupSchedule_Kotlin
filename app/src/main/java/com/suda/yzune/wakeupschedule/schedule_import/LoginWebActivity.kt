@@ -62,12 +62,6 @@ class LoginWebActivity : AppCompatActivity() {
 
         val viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
 
-        viewModel.insertResponse.observe(this, Observer {
-            if (it != null) {
-                Toasty.success(this, it).show()
-            }
-        })
-
         viewModel.getCheckCode().observe(this, Observer {
             if (it != null) {
                 rl_progress.visibility = View.GONE
