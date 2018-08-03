@@ -1,14 +1,18 @@
 package com.suda.yzune.wakeupschedule.course_add
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
+import android.os.AsyncTask
 import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
+import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,6 +31,8 @@ class AddCourseRepository(context: Context) {
     private val detailDao = dataBase.courseDetailDao()
     private val deleteList = arrayListOf<Int>()
     private val saveInfo = MutableLiveData<String>()
+    private val saveList = mutableListOf<CourseDetailBean>()
+
 
     fun getSaveInfo(): LiveData<String> {
         return saveInfo
@@ -36,8 +42,8 @@ class AddCourseRepository(context: Context) {
         return updateFlag
     }
 
-    fun saveData(newId: Int) {
-        val saveList = mutableListOf<CourseDetailBean>()
+    fun preSaveData(newId: Int) {
+        saveList.clear()
         if (baseBean.id == -1) {
             updateFlag = false
             baseBean.id = newId
@@ -51,42 +57,46 @@ class AddCourseRepository(context: Context) {
             }
         }
 
-        if (updateFlag) {
-            thread(name = "updateCourseThread") {
-                if (oldBaseBean == null) {
-                    oldBaseBean = baseDao.getCourseBeanByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
-                    oldDetailList = detailDao.getDetailByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
-                }
-                try {
-                    baseDao.updateCourseBaseBean(baseBean)
-                    detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
-                    detailDao.insertList(saveList)
-                    saveInfo.postValue("ok")
-                } catch (e: SQLiteConstraintException) {
-//                    baseDao.updateCourseBaseBean(oldBaseBean)
-//                    detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
-//                    detailDao.insertList(oldDetailList)
-                    saveInfo.postValue("更新异常")
-                }
-            }
+        val selfUnique = CourseUtils.checkSelfUnique(saveList)
+
+        if (selfUnique) {
+            CheckUniqueAsyncTask(detailDao).execute(saveList)
         } else {
-            thread(name = "insertNewCourseThread") {
-                try {
-                    baseDao.insertCourseBase(baseBean)
-                    detailDao.insertList(saveList)
-                    saveInfo.postValue("ok")
-                } catch (e: SQLiteConstraintException) {
-                    Log.d("异常", e.toString())
-                    //detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
-                    saveInfo.postValue("插入异常")
-                }
-            }
+            saveInfo.value = "自身重复"
         }
     }
 
-    fun removeInsert(){
-        thread(name = "removeInsertThread") {
-            baseDao.deleteCourseBaseBean(baseBean.id, baseBean.tableName)
+    fun saveData(isUnique: Boolean) {
+        if (isUnique) {
+            if (updateFlag) {
+                thread(name = "updateCourseThread") {
+                    if (oldBaseBean == null) {
+                        oldBaseBean = baseDao.getCourseBeanByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
+                        oldDetailList = detailDao.getDetailByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
+                    }
+                    try {
+                        baseDao.updateCourseBaseBean(baseBean)
+                        detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
+                        detailDao.insertList(saveList)
+                        saveInfo.postValue("ok")
+                    } catch (e: SQLiteConstraintException) {
+                        saveInfo.postValue("异常")
+                    }
+                }
+            } else {
+                thread(name = "insertNewCourseThread") {
+                    try {
+                        baseDao.insertCourseBase(baseBean)
+                        detailDao.insertList(saveList)
+                        saveInfo.postValue("ok")
+                    } catch (e: SQLiteConstraintException) {
+                        saveInfo.postValue("异常")
+                    }
+                }
+            }
+        }
+        else{
+            saveInfo.value = "其他重复"
         }
     }
 
@@ -135,5 +145,27 @@ class AddCourseRepository(context: Context) {
 
     fun getBaseData(): CourseBaseBean {
         return baseBean
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class CheckUniqueAsyncTask internal constructor(private val mAsyncTaskDao: CourseDetailDao) : AsyncTask<List<CourseDetailBean>, Void, Boolean>() {
+        override fun doInBackground(vararg params: List<CourseDetailBean>): Boolean {
+            var flag = true
+            params[0].forEach {
+                val result = mAsyncTaskDao.getDetailByKeys(it.day, it.startNode, it.startWeek, it.type, it.tableName)
+                if (result.isNotEmpty()) {
+                    if (result[0].id != it.id) {
+                        flag = false
+                        return flag
+                    }
+                }
+            }
+            return flag
+        }
+
+        override fun onPostExecute(result: Boolean) {
+            super.onPostExecute(result)
+            this@AddCourseRepository.saveData(result)
+        }
     }
 }

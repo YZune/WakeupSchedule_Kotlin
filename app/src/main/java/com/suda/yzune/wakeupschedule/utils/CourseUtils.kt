@@ -120,4 +120,21 @@ object CourseUtils {
         }
         return list
     }
+
+    fun checkSelfUnique(list: List<CourseDetailBean>): Boolean {
+        var flag = true
+        for (i in 0 until list.size - 1) {
+            for (j in i + 1 until list.size) {
+                if (list[i].day == list[j].day
+                        && list[i].startNode == list[j].startNode
+                        && list[i].startWeek == list[j].startWeek
+                        && list[i].type == list[j].type
+                        && list[i].tableName == list[j].tableName) {
+                    flag = false
+                    return flag
+                }
+            }
+        }
+        return flag
+    }
 }

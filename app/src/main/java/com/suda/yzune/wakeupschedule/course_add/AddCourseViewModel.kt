@@ -16,15 +16,11 @@ class AddCourseViewModel : ViewModel() {
     var newId = -1
 
     fun saveData() {
-        repository!!.saveData(newId)
+        repository!!.preSaveData(newId)
     }
 
     fun getUpdateFlag(): Boolean{
         return repository!!.getUpdateFlag()
-    }
-
-    fun removeInsert(){
-        repository!!.removeInsert()
     }
 
     fun getSaveInfo(): LiveData<String> {

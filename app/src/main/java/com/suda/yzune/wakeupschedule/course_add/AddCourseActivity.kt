@@ -45,7 +45,6 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
     private var isExit: Boolean = false
-    private var rollBackFlag = false
     private var isSaved = false
     private val tExit = object : CountDownTimer(2000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
@@ -80,16 +79,18 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         } else {
             viewModel.initData(intent.extras.getInt("id")).observe(this, Observer { list ->
                 //viewModel.getList().clear()
-                list!!.forEach {
-                    viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
+                if (!isSaved){
+                    list!!.forEach {
+                        viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
+                    }
+                    viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
+                        viewModel.getBaseData().id = it!!.id
+                        viewModel.getBaseData().color = it.color
+                        viewModel.getBaseData().courseName = it.courseName
+                        viewModel.getBaseData().tableName = it.tableName
+                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.getList()), viewModel.getBaseData())
+                    })
                 }
-                viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
-                    viewModel.getBaseData().id = it!!.id
-                    viewModel.getBaseData().color = it.color
-                    viewModel.getBaseData().courseName = it.courseName
-                    viewModel.getBaseData().tableName = it.tableName
-                    initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.getList()), viewModel.getBaseData())
-                })
             })
         }
 
@@ -119,7 +120,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     selectTimeDialog.show(supportFragmentManager, "selectTime")
                 }
                 R.id.ib_delete -> {
-                    if (adapter.data.size == 1) {
+                    if (adapter.data.size - viewModel.getDeleteList().size == 1) {
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
 //                        adapter.remove(position)
@@ -216,7 +217,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     viewModel.checkSameName().observe(this, Observer {
                         if (it == null) {
                             saveData()
-                        } else {
+                        } else if (!isSaved) {
                             Toasty.error(this.applicationContext, "不允许重复的课程名称>_<").show()
                         }
                     })
@@ -227,26 +228,22 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         }
     }
 
-    private fun saveData(){
+    private fun saveData() {
         viewModel.saveData()
         viewModel.getSaveInfo().observe(this, Observer {
             when (it) {
                 "ok" -> {
-                    rollBackFlag = false
-                    isSaved = true
                     Toasty.success(this.applicationContext, "保存成功").show()
+                    isSaved = true
                     finish()
                 }
-                "更新异常" -> {
-                    rollBackFlag = true
+                "其他重复" -> {
                     Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()
                 }
-                "插入异常" -> {
-                    rollBackFlag = false
-                    viewModel.removeInsert()
-                    Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()
+                "自身重复" -> {
+                    Toasty.error(this.applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
                 }
-                else ->{
+                else -> {
                     Toasty.error(this.applicationContext, "未知错误", Toast.LENGTH_LONG).show()
                 }
             }
@@ -273,8 +270,5 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     override fun onDestroy() {
         super.onDestroy()
         tExit.cancel()
-        if (rollBackFlag) {
-            viewModel.rollBackData()
-        }
     }
 }

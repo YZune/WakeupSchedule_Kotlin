@@ -34,4 +34,7 @@ interface CourseDetailDao {
 
     @Delete
     fun deleteCourseDetail(courseDetailBean: CourseDetailBean)
+
+    @Query("select * from coursedetailbean where day = :day and startNode = :startNode and startWeek = :startWeek and type = :type and tableName = :tableName")
+    fun getDetailByKeys(day: Int, startNode: Int, startWeek: Int, type: Int, tableName: String): List<CourseDetailBean>
 }

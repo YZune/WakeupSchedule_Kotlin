@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val db = AppDatabase.getDatabase(applicationContext)
         val dao = db.courseBaseDao()
-        InsertAsyncTask(dao).execute()
+        //InsertAsyncTask(dao).execute()
         //drawView()
     }
 
@@ -82,21 +82,6 @@ class MainActivity : AppCompatActivity() {
 //    }
 }
 
-private class InsertAsyncTask internal constructor(private val mAsyncTaskDao: CourseBaseDao) : AsyncTask<CourseBaseBean, Void, Void>() {
-    override fun doInBackground(vararg params: CourseBaseBean): Void? {
 
-//        mAsyncTaskDao.insertCourseBase(CourseBaseBean(
-//                id = 1,
-//                courseName = "高等数学",
-//                color = "",
-//                tableName = "2018-2019 1"
-//        ))
-
-//        mAsyncTaskDao.getAll().forEach {
-//            Log.d("数据库", it.toString())
-//        }
-        return null
-    }
-}
 
 
