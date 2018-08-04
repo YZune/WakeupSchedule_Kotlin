@@ -51,6 +51,7 @@ dependencies {
     implementation 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.40'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    implementation 'com.github.florent37:diagonallayout:1.0.7'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

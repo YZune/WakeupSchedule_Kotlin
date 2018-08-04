@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_wakeup"
+            android:icon="@drawable/wakeup"
+            android:title="WakeUp" />
+        <item
+            android:id="@+id/nav_young"
+            android:icon="@drawable/young"
+            android:title="咩咩" />
+        <item
+            android:id="@+id/nav_explore"
+            android:icon="@drawable/explore"
+            android:title="探索" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/about"
+            android:title="关于" />
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/feedback"
+            android:title="反馈" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/setting"
+            android:title="设置" />
+    </group>
+</menu>

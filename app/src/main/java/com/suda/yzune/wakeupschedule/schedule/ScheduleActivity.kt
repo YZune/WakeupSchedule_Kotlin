@@ -30,8 +30,6 @@ import es.dmoral.toasty.Toasty
 
 class ScheduleActivity : AppCompatActivity() {
 
-    lateinit var ll_today_courses_container: View
-    lateinit var title_bg_container: View
     lateinit var main_bg_container: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +59,8 @@ class ScheduleActivity : AppCompatActivity() {
     private fun initView(viewModel: ScheduleViewModel) {
         tv_date.text = viewModel.getTodayDate()
         tv_weekday.text = viewModel.getWeekday()
+
+        navigation_view.itemIconTintList = null
     }
 
     private fun initViewStub() {
@@ -78,17 +78,6 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initEvent(viewModel: ScheduleViewModel) {
-//        val ll_today_courses = ll_today_courses_container.findViewById<LinearLayout>(R.id.ll_today_courses)
-//        val iv_title_bg = title_bg_container.findViewById<ImageView>(R.id.iv_bg)
-//        val iv_bg = main_bg_container.findViewById<ImageView>(R.id.iv_bg)
-//        ab_main.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-//            val scrollRange = appBarLayout.totalScrollRange
-//            val alpha = 1 - 1.0f * Math.abs(verticalOffset) / scrollRange
-//            ll_today_courses.alpha = alpha
-//            iv_title_bg.alpha = alpha
-//            iv_bg.alpha = 1 - alpha
-//            nsv_schedule.setNeedScroll(alpha != 0f)
-//        })
 
         ib_import.setOnClickListener {
             startActivity(Intent(this, LoginWebActivity::class.java))

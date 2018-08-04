@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="240dp">
+
+    <com.github.florent37.diagonallayout.DiagonalLayout
+        android:id="@+id/nav_header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        diagonal:diagonal_angle="10"
+        diagonal:diagonal_direction="left"
+        diagonal:diagonal_position="bottom">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_bg" />
+    </com.github.florent37.diagonallayout.DiagonalLayout>
+
+    <ImageView
+        android:id="@+id/iv_person_image"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_below="@id/nav_header_bg"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="-48dp"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_sign"
+        android:layout_marginBottom="2dp"
+        android:layout_marginStart="16dp"
+        android:text="点击以登录"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_sign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/iv_person_image"
+        android:layout_marginBottom="64dp"
+        android:layout_marginStart="16dp"
+        android:text="原来过得很快乐。"
+        android:textColor="@android:color/white"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="72dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="180dp"
+        android:background="@drawable/textview_button_bg"
+        android:gravity="center"
+        android:text="签到"
+        android:textColor="@color/colorAccent" />
+</RelativeLayout>
