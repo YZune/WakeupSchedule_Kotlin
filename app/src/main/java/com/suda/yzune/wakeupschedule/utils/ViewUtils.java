@@ -1,7 +1,9 @@
 package com.suda.yzune.wakeupschedule.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Point;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -58,5 +60,11 @@ public class ViewUtils {
         states[4] = new int[] { android.R.attr.state_window_focused };
         states[5] = new int[] {};
         return new ColorStateList(states, colors);
+    }
+
+    public static Point getRealSize(Activity activity){
+        Point size = new Point();
+        activity.getWindowManager().getDefaultDisplay().getRealSize(size);
+        return size;
     }
 }

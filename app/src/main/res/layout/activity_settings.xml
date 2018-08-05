@@ -70,7 +70,8 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
-            <LinearLayout style="@style/settings_item_ll"
+            <LinearLayout
+                style="@style/settings_item_ll"
                 android:layout_marginBottom="-8dp">
 
                 <TextView
@@ -95,12 +96,12 @@
 
             <SeekBar
                 android:id="@+id/sb_height"
-                android:max="64"
-                android:layout_marginBottom="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"/>
+                android:max="64" />
 
             <View
                 android:layout_width="match_parent"
@@ -118,11 +119,11 @@
 
                 <Switch
                     android:id="@+id/s_text_white"
-                    android:layout_marginEnd="16dp"
-                    android:layout_gravity="center_vertical"
-                    android:switchMinWidth="48dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
                     android:thumb="@drawable/switch_selector"
                     android:track="@drawable/switch_track" />
             </LinearLayout>
@@ -143,11 +144,11 @@
 
                 <Switch
                     android:id="@+id/s_show_weekend"
-                    android:layout_marginEnd="16dp"
-                    android:layout_gravity="center_vertical"
-                    android:switchMinWidth="48dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
                     android:thumb="@drawable/switch_selector"
                     android:track="@drawable/switch_track" />
             </LinearLayout>
@@ -168,11 +169,11 @@
 
                 <Switch
                     android:id="@+id/s_show"
-                    android:layout_marginEnd="16dp"
-                    android:layout_gravity="center_vertical"
-                    android:switchMinWidth="48dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
                     android:thumb="@drawable/switch_selector"
                     android:track="@drawable/switch_track" />
             </LinearLayout>
@@ -184,6 +185,86 @@
                 android:layout_marginStart="8dp"
                 android:alpha="0.5"
                 android:background="@color/grey" />
+
+            <TextView
+                style="@style/settings_subtitle"
+                android:text="课程数据" />
+
+            <LinearLayout
+                android:id="@+id/ll_term_start"
+                style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="学期开始日期" />
+
+                <TextView
+                    android:id="@+id/tv_term_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:text="2018-09-03" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="一天课程节数" />
+
+                <TextView
+                    android:id="@+id/tv_nodes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="11" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" 节" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_nodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="64" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_course_time"
+                style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="上课时间" />
+            </LinearLayout>
 
         </LinearLayout>
 

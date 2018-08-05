@@ -3,11 +3,15 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Point
 import android.graphics.Typeface
+import android.hardware.display.DisplayManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Display
 import android.view.View
 import com.bumptech.glide.Glide
+import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_schedule.*
@@ -46,7 +50,12 @@ class ScheduleActivity : AppCompatActivity() {
         super.onStart()
         val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
         if (uri != "") {
-            Glide.with(this.applicationContext).load(uri).into(main_bg_container.findViewById(R.id.iv_bg))
+            val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
+            val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
+            GlideApp.with(this.applicationContext)
+                    .load(uri)
+                    .override(x, y)
+                    .into(main_bg_container.findViewById(R.id.iv_bg))
         }
         if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)) {
             tv_week.setTextColor(resources.getColor(R.color.white))
