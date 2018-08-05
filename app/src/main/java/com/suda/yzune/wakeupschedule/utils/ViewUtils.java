@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.suda.yzune.wakeupschedule.MyAppGlideModule;
 import com.suda.yzune.wakeupschedule.R;
 
 public class ViewUtils {

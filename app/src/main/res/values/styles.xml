@@ -53,4 +53,31 @@
         <item name="wheel_item_text_size">14sp</item>
     </style>
 
+    <style name="settings_subtitle">
+        <item name="android:textColor">#929292</item>
+        <item name="android:background">#f5f5f5</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="settings_item_ll">
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="settings_item_tv_main">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

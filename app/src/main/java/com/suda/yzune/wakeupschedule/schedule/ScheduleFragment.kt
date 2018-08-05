@@ -14,7 +14,9 @@ import android.view.ViewGroup
 import android.widget.*
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
 
@@ -36,9 +38,45 @@ class ScheduleFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        itemHeight = SizeUtils.dp2px(context, 56f)
+        val itemHeightDp = PreferenceUtils.getIntFromSP(context!!.applicationContext, "item_height", 56)
+        itemHeight = SizeUtils.dp2px(context, itemHeightDp.toFloat())
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-        refresh(view!!)
+
+        val showWeekend = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_weekend", true)
+        val daysEnd = if (showWeekend) 7 else 6
+        if (showWeekend) {
+            weekPanel_7.visibility = View.VISIBLE
+            title7.visibility = View.VISIBLE
+        } else {
+            weekPanel_7.visibility = View.GONE
+            title7.visibility = View.GONE
+        }
+
+        for (i in 0 until weekPanel_0.childCount) {
+            val lp = weekPanel_0.getChildAt(i).layoutParams
+            lp.height = itemHeight
+            weekPanel_0.getChildAt(i).layoutParams = lp
+        }
+        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", false)) {
+            for (i in 0 until weekPanel_0.childCount) {
+                val tv = weekPanel_0.getChildAt(i) as TextView
+                tv.setTextColor(resources.getColor(R.color.white))
+            }
+            for (i in 0 until weekName.childCount) {
+                val tv = weekName.getChildAt(i) as TextView
+                tv.setTextColor(resources.getColor(R.color.white))
+            }
+        } else {
+            for (i in 0 until weekPanel_0.childCount) {
+                val tv = weekPanel_0.getChildAt(i) as TextView
+                tv.setTextColor(resources.getColor(R.color.black))
+            }
+            for (i in 0 until weekName.childCount) {
+                val tv = weekName.getChildAt(i) as TextView
+                tv.setTextColor(resources.getColor(R.color.black))
+            }
+        }
+        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false))
     }
 
     companion object {
@@ -49,20 +87,20 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun refresh(view: View) {
+    private fun refresh(view: View, daysEnd: Int, show: Boolean) {
 
-        for (i in 1..7) {
+        for (i in 1..daysEnd) {
             viewModel.getRawCourseByDay(i).observe(this, Observer {
                 if (it != null) {
                     viewModel.getCourseByDay(it).observe(this, Observer {
-                        initWeekPanel(view, weekPanels, it, i)
+                        initWeekPanel(view, weekPanels, it, i, show)
                     })
                 }
             })
         }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int) {
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, show: Boolean) {
         val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
@@ -104,19 +142,40 @@ class ScheduleFragment : Fragment() {
                 1 -> {
                     tv.text = c.courseName + "@" + c.room + "\n单周"
                     if (week % 2 == 0) {
-                        tv.visibility = View.INVISIBLE
+                        if (show) {
+                            tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
+                            tv.visibility = View.VISIBLE
+                            tv.alpha = 0.6f
+                            myGrad.setColor(resources.getColor(R.color.grey))
+                        } else {
+                            tv.visibility = View.INVISIBLE
+                        }
                     }
                 }
                 2 -> {
                     tv.text = c.courseName + "@" + c.room + "\n双周"
                     if (week % 2 != 0) {
-                        tv.visibility = View.INVISIBLE
+                        if (show) {
+                            tv.alpha = 0.6f
+                            tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
+                            tv.visibility = View.VISIBLE
+                            myGrad.setColor(resources.getColor(R.color.grey))
+                        } else {
+                            tv.visibility = View.INVISIBLE
+                        }
                     }
                 }
             }
 
             if (c.startWeek > week || c.endWeek < week) {
-                tv.visibility = View.INVISIBLE
+                if (show) {
+                    tv.alpha = 0.6f
+                    tv.text = c.courseName + "@" + c.room + "[非本周]"
+                    tv.visibility = View.VISIBLE
+                    myGrad.setColor(resources.getColor(R.color.grey))
+                } else {
+                    tv.visibility = View.INVISIBLE
+                }
             }
 
             tv.setOnClickListener {

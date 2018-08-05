@@ -1,30 +1,21 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.annotation.SuppressLint
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Debug
-import android.os.PersistableBundle
-import android.support.design.widget.AppBarLayout
-import android.support.v4.view.ViewPager
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_schedule.*
-import android.widget.RelativeLayout
+import com.suda.yzune.wakeupschedule.MainActivity
+import com.suda.yzune.wakeupschedule.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
-import com.suda.yzune.wakeupschedule.schedule_import.ImportViewModel
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
 
 
@@ -51,6 +42,29 @@ class ScheduleActivity : AppCompatActivity() {
         initEvent(viewModel)
     }
 
+    override fun onStart() {
+        super.onStart()
+        val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
+        if (uri != "") {
+            Glide.with(this.applicationContext).load(uri).into(main_bg_container.findViewById(R.id.iv_bg))
+        }
+        if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)) {
+            tv_week.setTextColor(resources.getColor(R.color.white))
+            tv_date.setTextColor(resources.getColor(R.color.white))
+            tv_weekday.setTextColor(resources.getColor(R.color.white))
+            ib_import.setColorFilter(resources.getColor(R.color.white))
+            ib_add.setColorFilter(resources.getColor(R.color.white))
+            ib_nav.setColorFilter(resources.getColor(R.color.white))
+        } else {
+            tv_week.setTextColor(resources.getColor(R.color.black))
+            tv_date.setTextColor(resources.getColor(R.color.black))
+            tv_weekday.setTextColor(resources.getColor(R.color.black))
+            ib_import.setColorFilter(resources.getColor(R.color.black))
+            ib_add.setColorFilter(resources.getColor(R.color.black))
+            ib_nav.setColorFilter(resources.getColor(R.color.black))
+        }
+    }
+
     @SuppressLint("MissingSuperCall")
     override fun onSaveInstanceState(outState: Bundle?) {
 
@@ -61,6 +75,21 @@ class ScheduleActivity : AppCompatActivity() {
         tv_weekday.text = viewModel.getWeekday()
 
         navigation_view.itemIconTintList = null
+        navigation_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_young -> {
+                    startActivity(Intent(this, MainActivity::class.java))
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_setting -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    return@setNavigationItemSelectedListener true
+                }
+                else -> {
+                    return@setNavigationItemSelectedListener true
+                }
+            }
+        }
     }
 
     private fun initViewStub() {
@@ -71,7 +100,7 @@ class ScheduleActivity : AppCompatActivity() {
         val mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 5
-        for (i in 1..25) {
+        for (i in 1..30) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
         mAdapter.notifyDataSetChanged()

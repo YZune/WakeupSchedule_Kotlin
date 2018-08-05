@@ -34,6 +34,7 @@
                 android:textStyle="bold" />
 
             <ImageButton
+                android:id="@+id/ib_nav"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="-8dp"
