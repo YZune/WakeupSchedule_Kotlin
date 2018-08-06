@@ -1,7 +1,6 @@
-package com.suda.yzune.wakeupschedule
+package com.suda.yzune.wakeupschedule.settings
 
 import android.Manifest
-import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -10,9 +9,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.widget.DatePicker
 import android.widget.SeekBar
 import android.widget.Toast
+import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
