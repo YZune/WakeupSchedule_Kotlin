@@ -1,7 +1,11 @@
 package com.suda.yzune.wakeupschedule.utils
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.*
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 object CourseUtils {
     fun getDayInt(weekDay: Int): String {
@@ -136,5 +140,23 @@ object CourseUtils {
             }
         }
         return flag
+    }
+
+    @Throws(ParseException::class)
+    fun daysBetween(context: Context): Int {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+        val todayTime = sdf.format(Date())// 获取当前的日期
+        val cal = Calendar.getInstance()
+        cal.time = sdf.parse(PreferenceUtils.getStringFromSP(context, "termStart", "2018-09-03"))
+        val time1 = cal.timeInMillis
+        cal.time = sdf.parse(todayTime)
+        val time2 = cal.timeInMillis
+        val betweenDays = (time2 - time1) / (1000 * 3600 * 24)
+        return Integer.parseInt(betweenDays.toString())
+    }
+
+    @Throws(ParseException::class)
+    fun countWeek(context: Context): Int {
+        return daysBetween(context) / 7 + 1
     }
 }

@@ -13,6 +13,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.bean.TimeBean
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.activity_add_course.*
 import kotlinx.android.synthetic.main.activity_login_web.*
 import kotlinx.android.synthetic.main.fragment_select_time.*
@@ -32,7 +33,6 @@ class SelectTimeFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
-        initNodeList(12)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,13 +41,15 @@ class SelectTimeFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
+        val max = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
+        initNodeList(max)
         wp_day.data = dayList
         wp_start.data = nodeList
         wp_end.data = nodeList
         course = viewModel.getList()[position]
         day = course.time.value!!.day
-        start = course.time.value!!.startNode
-        end = course.time.value!!.endNode
+        start = if (course.time.value!!.startNode > max) max else course.time.value!!.startNode
+        end = if (course.time.value!!.endNode > max) max else course.time.value!!.endNode
         initEvent()
     }
 

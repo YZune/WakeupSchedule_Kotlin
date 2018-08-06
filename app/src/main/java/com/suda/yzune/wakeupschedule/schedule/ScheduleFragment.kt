@@ -76,6 +76,17 @@ class ScheduleFragment : Fragment() {
                 tv.setTextColor(resources.getColor(R.color.black))
             }
         }
+
+        val nodesNum = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
+        for (i in 8..nodesNum) {
+            val tv = weekPanel_0.getChildAt(i) as TextView
+            tv.visibility = View.VISIBLE
+        }
+        for (i in nodesNum+1 until weekPanel_0.childCount){
+            val tv = weekPanel_0.getChildAt(i) as TextView
+            tv.visibility = View.GONE
+        }
+
         refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false))
     }
 

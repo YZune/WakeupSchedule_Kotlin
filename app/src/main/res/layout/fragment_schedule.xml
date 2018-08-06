@@ -261,6 +261,17 @@
                     android:gravity="center_horizontal|center_vertical"
                     android:text="16"
                     android:visibility="gone" />
+
+                <TextView
+                    android:textSize="12sp"
+                    android:id="@+id/tv_17"
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/weekItemHeight"
+                    android:layout_marginStart="@dimen/weekItemMarLeft"
+                    android:layout_marginTop="@dimen/weekItemMarTop"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="17"
+                    android:visibility="gone" />
             </LinearLayout>
             <!-- 周一到周日的排列 -->
             <LinearLayout
