@@ -7,5 +7,7 @@
     <string name="check_code">验证码</string>
     <string name="check_code_get_error">获取验证码失败</string>
     <string name="login">登录</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>

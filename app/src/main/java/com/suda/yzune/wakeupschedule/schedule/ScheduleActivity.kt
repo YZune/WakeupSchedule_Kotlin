@@ -4,10 +4,13 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.view.View
+import android.widget.Toast
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -17,6 +20,7 @@ import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
 import java.text.ParseException
@@ -98,15 +102,27 @@ class ScheduleActivity : AppCompatActivity() {
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.nav_young -> {
-                    startActivity(Intent(this, MainActivity::class.java))
+                R.id.nav_setting -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity(Intent(this, SettingsActivity::class.java))
+                    }, 360)
                     return@setNavigationItemSelectedListener true
                 }
-                R.id.nav_setting -> {
-                    startActivity(Intent(this, SettingsActivity::class.java))
+                R.id.nav_feedback -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        if (isQQClientAvailable(applicationContext)) {
+                            val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))
+                        } else {
+                            Toasty.error(applicationContext, "手机上没有安装QQ，无法启动聊天窗口:-(", Toast.LENGTH_LONG).show()
+                        }
+                    }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 else -> {
+                    Toasty.info(this.applicationContext, "敬请期待").show()
                     return@setNavigationItemSelectedListener true
                 }
             }

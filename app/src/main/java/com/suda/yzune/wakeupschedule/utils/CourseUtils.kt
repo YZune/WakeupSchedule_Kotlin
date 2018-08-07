@@ -159,4 +159,18 @@ object CourseUtils {
     fun countWeek(context: Context): Int {
         return daysBetween(context) / 7 + 1
     }
+
+    fun isQQClientAvailable(context: Context): Boolean {
+        val packageManager = context.packageManager
+        val pInfo = packageManager.getInstalledPackages(0)
+        if (pInfo != null) {
+            for (i in pInfo.indices) {
+                val pn = pInfo[i].packageName
+                if (pn.equals("com.tencent.qqlite", ignoreCase = true) || pn.equals("com.tencent.mobileqq", ignoreCase = true)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 }

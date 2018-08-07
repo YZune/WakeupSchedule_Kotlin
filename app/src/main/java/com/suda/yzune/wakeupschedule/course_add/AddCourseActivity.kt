@@ -244,7 +244,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     Toasty.error(this.applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
                 }
                 else -> {
-                    Toasty.error(this.applicationContext, "未知错误", Toast.LENGTH_LONG).show()
+                    //Toasty.error(this.applicationContext, "未知错误", Toast.LENGTH_LONG).show()
                 }
             }
         })
