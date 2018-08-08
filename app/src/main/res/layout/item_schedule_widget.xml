@@ -5,6 +5,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_0"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -182,6 +183,7 @@
     </LinearLayout>
     <!-- 周一到周日的排列 -->
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -193,6 +195,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -204,6 +207,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -215,6 +219,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -226,6 +231,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -237,6 +243,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -248,6 +255,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/weekPanel_7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -257,6 +265,13 @@
         android:orientation="vertical">
 
     </LinearLayout>
+
+    <ImageView
+        android:adjustViewBounds="true"
+        android:id="@+id/iv_schedule"
+        android:scaleType="fitCenter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>

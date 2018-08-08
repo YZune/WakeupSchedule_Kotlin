@@ -111,8 +111,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 initWeekPanel(context, view, list, i, false)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
-            ViewUtils.layoutView(scrollView, 600, 600)
-            ViewUtils.saveImg(ViewUtils.getViewBitmap(scrollView))
+            ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))
+            views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
         }
 
         private fun initWeekPanel(views: RemoteViews, context: Context, data: List<CourseBean>?, day: Int, show: Boolean) {
