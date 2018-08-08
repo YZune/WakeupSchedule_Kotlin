@@ -14,4 +14,14 @@
         android:thumb="@drawable/switch_selector"
         android:track="@drawable/switch_track" />
 
+    <TextView
+        android:id="@+id/tv_test"
+        android:layout_marginTop="24dp"
+        android:layout_width="48dp"
+        android:text="哈哈哈"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_height="72dp"
+        />
+
 </RelativeLayout>

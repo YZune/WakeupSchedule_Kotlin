@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         val dao = db.courseBaseDao()
         //InsertAsyncTask(dao).execute()
         //drawView()
+        tv_test.setBackgroundColor(resources.getColor(R.color.blue))
     }
 
 

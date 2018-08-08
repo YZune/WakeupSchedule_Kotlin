@@ -2,18 +2,27 @@ package com.suda.yzune.wakeupschedule.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import com.suda.yzune.wakeupschedule.MyAppGlideModule;
 import com.suda.yzune.wakeupschedule.R;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ViewUtils {
     public static void fullScreen(AppCompatActivity activity) {
@@ -67,4 +76,57 @@ public class ViewUtils {
         activity.getWindowManager().getDefaultDisplay().getRealSize(size);
         return size;
     }
+
+    public static Bitmap getViewBitmap(ScrollView scrollView) {
+        int h = 0;
+        Bitmap bitmap;
+        // 获取scrollView实际高度,这里很重要
+        for (int i = 0; i < scrollView.getChildCount(); i++) {
+            h += scrollView.getChildAt(i).getHeight();
+        }
+        // 创建对应大小的bitmap
+        bitmap = Bitmap.createBitmap(scrollView.getWidth(), h,
+                Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(bitmap);
+        scrollView.draw(canvas);
+        return bitmap;
+    }
+
+    public static void saveImg(Bitmap bitmap) {
+        //把图片存储在哪个文件夹
+        File file = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        //图片的名称
+        String name = "mz.jpg";
+        File file1 = new File(file, name);
+        if (!file1.exists()){
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file1);
+                //这个100表示压缩比,100说明不压缩,90说明压缩到原来的90%
+                //注意:这是对于占用存储空间而言,不是说占用内存的大小
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //通知图库即使更新,否则不能看到图片
+        //activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file1.getAbsolutePath())));
+    }
+
+    public static void layoutView(View v, int width, int height) {
+        // validate view.width and view.height
+        v.layout(0, 0, width, height);
+        int measuredWidth = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int measuredHeight = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+
+        // validate view.measurewidth and view.measureheight
+        v.measure(measuredWidth, measuredHeight);
+        v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
+    }
+
+
 }

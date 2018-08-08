@@ -109,6 +109,13 @@ class ScheduleActivity : AppCompatActivity() {
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
+                R.id.nav_young -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity(Intent(this, MainActivity::class.java))
+                    }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
                 R.id.nav_feedback -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({

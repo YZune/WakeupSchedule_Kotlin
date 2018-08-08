@@ -10,10 +10,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RemoteViews
-import android.widget.RemoteViewsService
-import android.widget.TextView
+import android.widget.*
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -22,6 +19,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_schedule.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -60,6 +58,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(mContext.packageName, R.layout.item_schedule_widget)
+
             initView(mContext, mRemoteViews)
             initData(mContext, mRemoteViews, position)
 //            val intent = Intent(ScheduleAppWidget.ITEM_CLICK)
@@ -103,11 +102,17 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             val showWeekend = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
             val daysEnd = if (showWeekend) 7 else 6
 
+            val view = View.inflate(mContext, R.layout.fragment_schedule, null)
+
             for (i in 1..daysEnd) {
                 val list = baseDao.getCourseByDayInThread(i)
                 val sortedList = list.sortedBy { it.startNode }
                 initWeekPanel(views, context, sortedList, i, false)
+                initWeekPanel(context, view, list, i, false)
             }
+            val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
+            ViewUtils.layoutView(scrollView, 600, 600)
+            ViewUtils.saveImg(ViewUtils.getViewBitmap(scrollView))
         }
 
         private fun initWeekPanel(views: RemoteViews, context: Context, data: List<CourseBean>?, day: Int, show: Boolean) {
@@ -164,7 +169,84 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                         }
                     }
                 }
+
                 views.addView(llIndex, tv)
+                pre = c
+            }
+        }
+
+        private fun initWeekPanel(context: Context, view: View, data: List<CourseBean>?, day: Int, show: Boolean) {
+            val llIndex = day - 1
+            val ll = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
+            ll!!.removeAllViews()
+            if (data == null || data.isEmpty()) return
+            var pre = data[0]
+            for (i in data.indices) {
+                Log.d("旋转", "更新了")
+                val c = data[i]
+                val tv = TextView(context)
+                val lp = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.FILL_PARENT,
+                        itemHeight * c.step + marTop * (c.step - 1))
+                if (i > 0) {
+                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (itemHeight + marTop) + marTop, 0, 0)
+                } else {
+                    lp.setMargins(0, (c.startNode - 1) * (itemHeight + marTop) + marTop, 0, 0)
+                }
+                tv.layoutParams = lp
+                //tv.gravity = Gravity.CENTER_VERTICAL
+                tv.textSize = 12f
+                tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                tv.setPadding(8, 8, 8, 8)
+                tv.setTextColor(resources.getColor(R.color.white))
+
+                tv.background = resources.getDrawable(R.drawable.course_item_bg)
+                val myGrad = tv.background as GradientDrawable
+                myGrad.setColor(Color.parseColor(c.color))
+                myGrad.alpha = Math.round(255 * (60.0 / 100)).toInt()
+
+                when (c.type) {
+                    0 -> tv.text = c.courseName + "@" + c.room
+                    1 -> {
+                        tv.text = c.courseName + "@" + c.room + "\n单周"
+                        if (week % 2 == 0) {
+                            if (show) {
+                                tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
+                                tv.visibility = View.VISIBLE
+                                tv.alpha = 0.6f
+                                myGrad.setColor(resources.getColor(R.color.grey))
+                            } else {
+                                tv.visibility = View.INVISIBLE
+                            }
+                        }
+                    }
+                    2 -> {
+                        tv.text = c.courseName + "@" + c.room + "\n双周"
+                        if (week % 2 != 0) {
+                            if (show) {
+                                tv.alpha = 0.6f
+                                tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
+                                tv.visibility = View.VISIBLE
+                                myGrad.setColor(resources.getColor(R.color.grey))
+                            } else {
+                                tv.visibility = View.INVISIBLE
+                            }
+                        }
+                    }
+                }
+
+                if (c.startWeek > week || c.endWeek < week) {
+                    if (show) {
+                        tv.alpha = 0.6f
+                        tv.text = c.courseName + "@" + c.room + "[非本周]"
+                        tv.visibility = View.VISIBLE
+                        myGrad.setColor(resources.getColor(R.color.grey))
+                    } else {
+                        tv.visibility = View.INVISIBLE
+                    }
+                }
+
+                ll.addView(tv)
                 pre = c
             }
         }

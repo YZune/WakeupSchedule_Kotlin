@@ -16,6 +16,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
@@ -190,6 +191,7 @@ class ScheduleFragment : Fragment() {
             }
 
             tv.setOnClickListener {
+                //ViewUtils.saveImg(ViewUtils.getViewBitmap(scrollPanel), activity)
                 val detailFragment = CourseDetailFragment.newInstance(c)
                 detailFragment.show(fragmentManager, "courseDetail")
             }
