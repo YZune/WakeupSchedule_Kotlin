@@ -7,11 +7,14 @@ import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
+import android.view.View
 import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.AppDatabase
 
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlin.coroutines.experimental.coroutineContext
 
 /**
@@ -29,14 +32,9 @@ class ScheduleAppWidget : AppWidgetProvider() {
 
         }
 
-        for (appWidgetId in widgetDao.getIdsByTypes(0,0)) {
+        for (appWidgetId in widgetDao.getIdsByTypes(0, 0)) {
             Log.d("小部件id", appWidgetId.toString())
-            val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
-
-            val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
-            mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_schedule)
-            appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
+            AppWidgetUtils.refreshScheduleWidget(context, appWidgetManager, appWidgetId)
         }
     }
 
@@ -47,5 +45,6 @@ class ScheduleAppWidget : AppWidgetProvider() {
             widgetDao.deleteAppWidget(id)
         }
     }
+
 }
 

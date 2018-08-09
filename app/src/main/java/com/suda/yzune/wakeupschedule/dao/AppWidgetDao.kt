@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.dao
 
+import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Delete
 import android.arch.persistence.room.Insert
@@ -16,4 +17,7 @@ interface AppWidgetDao {
 
     @Query("select id from appwidgetbean where baseType = :baseType and detailType = :detailType")
     fun getIdsByTypes(baseType: Int, detailType: Int): List<Int>
+
+    @Query("select id from appwidgetbean where baseType = :baseType and detailType = :detailType")
+    fun getLiveIdsByTypes(baseType: Int, detailType: Int): LiveData<List<Int>>
 }

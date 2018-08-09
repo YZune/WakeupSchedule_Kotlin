@@ -19,6 +19,7 @@ import com.suda.yzune.wakeupschedule.MainActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -44,7 +45,7 @@ class ScheduleActivity : AppCompatActivity() {
                 .setTextSize(12)
                 .apply()
 
-        initView(viewModel)
+        initView()
         initViewStub()
         initEvent(viewModel)
     }
@@ -95,9 +96,9 @@ class ScheduleActivity : AppCompatActivity() {
 
     }
 
-    private fun initView(viewModel: ScheduleViewModel) {
-        tv_date.text = viewModel.getTodayDate()
-        tv_weekday.text = viewModel.getWeekday()
+    private fun initView() {
+        tv_date.text = CourseUtils.getTodayDate()
+        //tv_weekday.text = viewModel.getWeekday()
 
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
@@ -144,7 +145,7 @@ class ScheduleActivity : AppCompatActivity() {
         if (whichWeek >= 1) {
             tv_week.text = "第" + whichWeek + "周"
         } else {
-            tv_week.text = "第1周"
+            tv_week.text = "还没有开学哦"
             whichWeek = 1
         }
 
@@ -176,8 +177,8 @@ class ScheduleActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-            tv_weekday.text = viewModel.getWeekday()
-            tv_weekday.text = ""
+            tv_weekday.text = CourseUtils.getWeekday()
+            //tv_weekday.text = ""
             vp_schedule.currentItem = whichWeek - 1
         }
 
@@ -186,13 +187,17 @@ class ScheduleActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 whichWeek = position + 1
                 try {
-                    if (whichWeek == countWeek(this@ScheduleActivity)) {
-                        tv_week.text = "第${whichWeek}周"
-                        tv_weekday.text = viewModel.getWeekday()
-                        tv_date.text = viewModel.getTodayDate()
-                    } else {
-                        tv_week.text = "第${whichWeek}周"
-                        tv_weekday.text = "非本周  点击此处以回到本周"
+                    if (countWeek(this@ScheduleActivity) > 0) {
+                        if (whichWeek == countWeek(this@ScheduleActivity)) {
+                            tv_week.text = "第${whichWeek}周"
+                            tv_weekday.text = CourseUtils.getWeekday()
+                            tv_date.text = CourseUtils.getTodayDate()
+                        } else {
+                            tv_week.text = "第${whichWeek}周"
+                            tv_weekday.text = "非本周  点击此处以回到本周"
+                        }
+                    }else{
+                        tv_week.text = "还没有开学哦"
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()

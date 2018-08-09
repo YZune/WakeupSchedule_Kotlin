@@ -19,17 +19,16 @@ class ScheduleViewModel : ViewModel() {
         repository = ScheduleRepository(context)
     }
 
+    fun getScheduleWidgetIds(): LiveData<List<Int>> {
+        return repository.getScheduleWidgetIds()
+    }
+
     fun getCourseByDay(raw: List<CourseBean>): LiveData<List<CourseBean>> {
         return repository.getCourseByDay(raw)
     }
 
     fun getRawCourseByDay(day: Int): LiveData<List<CourseBean>> {
         return repository.getRawCourseByDay(day)
-    }
-
-    fun getTodayDate(): String {
-        val dateFormat = SimpleDateFormat("M月d日", Locale.CHINA)
-        return dateFormat.format(Date())
     }
 
     fun deleteCourseBean(courseBean: CourseBean) {
@@ -44,13 +43,4 @@ class ScheduleViewModel : ViewModel() {
         repository.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(courseBean))
     }
 
-    fun getWeekday(): String {
-        var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
-        if (weekDay == 1) {
-            weekDay = 7
-        } else {
-            weekDay -= 1
-        }
-        return CourseUtils.getDayInt(weekDay)
-    }
 }

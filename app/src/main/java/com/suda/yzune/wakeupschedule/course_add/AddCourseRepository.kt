@@ -29,9 +29,11 @@ class AddCourseRepository(context: Context) {
     private val dataBase = AppDatabase.getDatabase(context)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
+    private val widgetDao = dataBase.appWidgetDao()
     private val deleteList = arrayListOf<Int>()
     private val saveInfo = MutableLiveData<String>()
     private val saveList = mutableListOf<CourseDetailBean>()
+    private val widgetIds = arrayListOf<Int>()
 
 
     fun getSaveInfo(): LiveData<String> {
@@ -78,6 +80,8 @@ class AddCourseRepository(context: Context) {
                         baseDao.updateCourseBaseBean(baseBean)
                         detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
                         detailDao.insertList(saveList)
+                        widgetIds.clear()
+                        widgetIds.addAll(widgetDao.getIdsByTypes(0, 0))
                         saveInfo.postValue("ok")
                     } catch (e: SQLiteConstraintException) {
                         saveInfo.postValue("异常")
@@ -94,10 +98,13 @@ class AddCourseRepository(context: Context) {
                     }
                 }
             }
-        }
-        else{
+        } else {
             saveInfo.value = "其他重复"
         }
+    }
+
+    fun getWidgetIds(): ArrayList<Int> {
+        return widgetIds
     }
 
     fun checkSameName(): LiveData<CourseBaseBean> {

@@ -147,7 +147,7 @@ class ScheduleFragment : Fragment() {
             } else {
                 myGrad.setColor(Color.parseColor(c.color))
             }
-            myGrad.alpha = Math.round(255 * (60.0 / 100)).toInt()
+            myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_alpha", 60) / 100.0)).toInt()
 
             when (c.type) {
                 0 -> tv.text = c.courseName + "@" + c.room

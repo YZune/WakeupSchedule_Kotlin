@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.annotation.SuppressLint
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -35,6 +36,7 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
@@ -79,7 +81,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         } else {
             viewModel.initData(intent.extras.getInt("id")).observe(this, Observer { list ->
                 //viewModel.getList().clear()
-                if (!isSaved){
+                if (!isSaved) {
                     list!!.forEach {
                         viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
                     }
@@ -230,11 +232,15 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
     private fun saveData() {
         viewModel.saveData()
-        viewModel.getSaveInfo().observe(this, Observer {
-            when (it) {
+        viewModel.getSaveInfo().observe(this, Observer { s ->
+            when (s) {
                 "ok" -> {
                     Toasty.success(this.applicationContext, "保存成功").show()
                     isSaved = true
+                    val appWidgetManager = AppWidgetManager.getInstance(this.applicationContext)
+                    viewModel.getWidgetIds().forEach {
+                        AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it)
+                    }
                     finish()
                 }
                 "其他重复" -> {

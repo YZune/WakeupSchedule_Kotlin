@@ -21,9 +21,14 @@ class ScheduleRepository(context: Context) {
     private val dataBase = AppDatabase.getDatabase(context)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
+    private val widgetDao = dataBase.appWidgetDao()
 
     fun getRawCourseByDay(day: Int): LiveData<List<CourseBean>> {
         return baseDao.getCourseByDay(day)
+    }
+
+    fun getScheduleWidgetIds(): LiveData<List<Int>> {
+        return widgetDao.getLiveIdsByTypes(0, 0)
     }
 
     fun getCourseByDay(raw: List<CourseBean>): LiveData<List<CourseBean>> {
@@ -61,13 +66,13 @@ class ScheduleRepository(context: Context) {
         }
     }
 
-    fun deleteCourseBaseBean(id: Int, tableName: String){
+    fun deleteCourseBaseBean(id: Int, tableName: String) {
         thread(name = "DeleteCourseBaseBeanThread") {
             baseDao.deleteCourseBaseBean(id, tableName)
         }
     }
 
-    fun updateCourseBaseBean(course: CourseBaseBean){
+    fun updateCourseBaseBean(course: CourseBaseBean) {
         thread(name = "UpdateCourseBaseBeanThread") {
             baseDao.updateCourseBaseBean(course)
         }

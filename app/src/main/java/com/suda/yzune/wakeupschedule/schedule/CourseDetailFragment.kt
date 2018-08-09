@@ -2,6 +2,8 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.app.Service
+import android.appwidget.AppWidgetManager
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
@@ -20,6 +22,7 @@ import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_login_web.*
@@ -35,6 +38,7 @@ class CourseDetailFragment : DialogFragment() {
     lateinit var room: TextView
     lateinit var close: ImageButton
     private lateinit var viewModel: ScheduleViewModel
+    private val scheduleWidgetIds = arrayListOf<Int>()
     var makeSure = 0
 
     private val timer = object : CountDownTimer(5000, 1000) {
@@ -52,6 +56,10 @@ class CourseDetailFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+        viewModel.getScheduleWidgetIds().observe(this, Observer {
+            scheduleWidgetIds.clear()
+            scheduleWidgetIds.addAll(it!!)
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -113,7 +121,7 @@ class CourseDetailFragment : DialogFragment() {
             startActivity(intent)
         }
 
-        ib_delete_course.setOnClickListener {
+        ib_delete_course.setOnClickListener { _ ->
             if (makeSure == 0) {
                 tv_tips.visibility = View.VISIBLE
                 makeSure++
@@ -121,14 +129,22 @@ class CourseDetailFragment : DialogFragment() {
             } else {
                 viewModel.deleteCourseBean(course)
                 Toasty.success(context!!.applicationContext, "删除成功").show()
+                val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
+                scheduleWidgetIds.forEach {
+                    AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it)
+                }
                 dismiss()
             }
         }
 
-        ib_delete_course.setOnLongClickListener {
+        ib_delete_course.setOnLongClickListener { _ ->
             mVibrator.vibrate(100)
             viewModel.deleteCourseBaseBean(course)
             Toasty.success(context!!.applicationContext, "删除成功").show()
+            val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
+            scheduleWidgetIds.forEach {
+                AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it)
+            }
             dismiss()
             return@setOnLongClickListener true
         }

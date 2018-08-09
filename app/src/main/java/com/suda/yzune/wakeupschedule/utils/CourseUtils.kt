@@ -160,6 +160,21 @@ object CourseUtils {
         return daysBetween(context) / 7 + 1
     }
 
+    fun getWeekday(): String {
+        var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
+        if (weekDay == 1) {
+            weekDay = 7
+        } else {
+            weekDay -= 1
+        }
+        return getDayInt(weekDay)
+    }
+
+    fun getTodayDate(): String {
+        val dateFormat = SimpleDateFormat("M月d日", Locale.CHINA)
+        return dateFormat.format(Date())
+    }
+
     fun isQQClientAvailable(context: Context): Boolean {
         val packageManager = context.packageManager
         val pInfo = packageManager.getInstalledPackages(0)

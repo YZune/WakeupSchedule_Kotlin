@@ -27,6 +27,10 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.getSaveInfo()
     }
 
+    fun getWidgetIds(): ArrayList<Int> {
+        return repository!!.getWidgetIds()
+    }
+
     fun rollBackData(){
         return repository!!.rollBackData()
     }
