@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/settings_item_ll">
+
+        <TextView
+            style="@style/settings_item_tv_main"
+            android:text="每节课时长相同" />
+
+        <Switch
+            android:id="@+id/s_time_same"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="16dp"
+            android:switchMinWidth="48dp"
+            android:thumb="@drawable/switch_selector"
+            android:track="@drawable/switch_track" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_set_length"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:alpha="0.5"
+            android:background="@color/grey" />
+
+        <LinearLayout
+            style="@style/settings_item_ll"
+            android:layout_marginBottom="-8dp">
+
+            <TextView
+                style="@style/settings_item_tv_main"
+                android:text="每节课时长" />
+
+            <TextView
+                android:id="@+id/tv_time_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:text="50" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="16dp"
+                android:text=" 分钟" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/sb_time_length"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:max="90" />
+    </LinearLayout>
+
+</LinearLayout>

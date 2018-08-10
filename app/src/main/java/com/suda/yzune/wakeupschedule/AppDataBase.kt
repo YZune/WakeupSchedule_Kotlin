@@ -10,12 +10,14 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
 import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
+import com.suda.yzune.wakeupschedule.dao.TimeDetailDao
 
 
-@Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class],
-        version = 6, exportSchema = false)
+@Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class, TimeDetailBean::class],
+        version = 7, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
 
@@ -28,7 +30,6 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 AppDatabase::class.java, "wakeup")
-                                .addMigrations(migrate)
                                 .allowMainThreadQueries()
                                 .build()
                     }
@@ -36,14 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
             return INSTANCE!!
         }
-
-        private val migrate = object : Migration(5, 6) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("create table AppWidgetBean (id INTEGER not null, baseType INTEGER not null, detailType INTEGER not null, PRIMARY KEY(id))")
-            }
-
-        }
-
 
     }
 
@@ -53,4 +46,5 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun appWidgetDao(): AppWidgetDao
 
+    abstract fun timeDetailDao(): TimeDetailDao
 }

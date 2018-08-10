@@ -13,6 +13,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
 import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
 import kotlin.concurrent.thread
@@ -193,19 +194,6 @@ class ImportViewModel : ViewModel() {
                 //insertResponse.value = "error"
             }
         }
-    }
-
-    private fun isContainName(list: java.util.ArrayList<CourseBaseBean>, name: String): Int {
-        var flag = -1
-        if (!list.isEmpty()) {
-            for (bean in list) {
-                if (bean.courseName == name) {
-                    flag = bean.id
-                    break
-                }
-            }
-        }
-        return flag
     }
 
     private fun parseTime(time: String): Array<Int> {

@@ -219,6 +219,31 @@
                     android:track="@drawable/switch_track" />
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="在格子内显示上课时间" />
+
+                <Switch
+                    android:id="@+id/s_show_time_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
             <TextView
                 style="@style/settings_subtitle"
                 android:text="课程数据" />
@@ -302,6 +327,14 @@
             <TextView
                 style="@style/settings_subtitle"
                 android:text="周视图桌面小部件" />
+            <TextView
+                android:gravity="top"
+                android:layout_marginTop="-8dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:textStyle="normal"
+                style="@style/settings_subtitle"
+                android:text="按返回键退出此界面后，才能使此项中的更改生效。" />
 
             <LinearLayout
                 style="@style/settings_item_ll"

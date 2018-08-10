@@ -27,7 +27,7 @@ class ScheduleAppWidget : AppWidgetProvider() {
         val dataBase = AppDatabase.getDatabase(context)
         val widgetDao = dataBase.appWidgetDao()
         try {
-            widgetDao.insertAppWidget(AppWidgetBean(appWidgetIds[0], 0, 0))
+            widgetDao.insertAppWidget(AppWidgetBean(appWidgetIds[0], 0, 0, ""))
         } catch (e: SQLiteConstraintException) {
 
         }

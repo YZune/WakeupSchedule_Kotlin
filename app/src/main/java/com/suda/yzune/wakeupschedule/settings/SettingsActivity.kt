@@ -51,11 +51,12 @@ class SettingsActivity : AppCompatActivity() {
         widgetDao.getLiveIdsByTypes(0, 0).observe(this, Observer {
             scheduleIdList.clear()
             scheduleIdList.addAll(it!!)
-            Log.d("小部件", "看看有没有被触发呢")
+            //Log.d("小部件", "看看有没有被触发呢")
         })
     }
 
     private fun initView() {
+        s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show_time_detail", false)
         s_show.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show", false)
         s_show_weekend.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show_weekend", true)
         s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)
@@ -87,6 +88,10 @@ class SettingsActivity : AppCompatActivity() {
     private fun initEvent() {
         ib_back.setOnClickListener {
             finish()
+        }
+
+        ll_course_time.setOnClickListener {
+            startActivity(Intent(this, TimeSettingsActivity::class.java))
         }
 
         sb_widget_item_alpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -148,6 +153,16 @@ class SettingsActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
         })
+
+        s_show_time_detail.setOnCheckedChangeListener { _, isChecked ->
+            if (!PreferenceUtils.getBooleanFromSP(applicationContext, "isInitTimeTable", false)){
+                s_show_time_detail.isChecked = false
+                startActivity(Intent(this, TimeSettingsActivity::class.java))
+                Toasty.info(applicationContext, "首先要进行上课时间的设置哦").show()
+            }else{
+                PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_show_time_detail", isChecked)
+            }
+        }
 
         s_show.setOnCheckedChangeListener { _, isChecked ->
             PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_show", isChecked)

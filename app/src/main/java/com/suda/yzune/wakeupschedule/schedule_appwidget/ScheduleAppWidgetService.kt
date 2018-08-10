@@ -11,6 +11,7 @@ import android.widget.*
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
@@ -29,6 +30,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         var marTop = 0
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
+        private val timeDao = dataBase.timeDetailDao()
+        private val timeList = arrayListOf<TimeDetailBean>()
 
         override fun onCreate() {
 
@@ -37,6 +40,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         override fun onDataSetChanged() {
             itemHeight = SizeUtils.dp2px(mContext, PreferenceUtils.getIntFromSP(mContext, "widget_item_height", 56).toFloat())
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+            if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
+                timeList.clear()
+                timeList.addAll(timeDao.getTimeListInThread())
+            }else{
+                timeList.clear()
+            }
         }
 
         override fun onDestroy() {
@@ -50,7 +59,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(mContext.packageName, R.layout.item_schedule_widget)
 
-            initData(mContext, mRemoteViews)
+            initData(mContext, mRemoteViews, PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false))
 //            val intent = Intent(ScheduleAppWidget.ITEM_CLICK)
 //            mRemoteViews.setOnClickFillInIntent(R.id.ll_contentPanel, intent)
             return mRemoteViews
@@ -122,7 +131,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             }
         }
 
-        fun initData(context: Context, views: RemoteViews) {
+        fun initData(context: Context, views: RemoteViews, show: Boolean) {
             try {
                 week = countWeek(context)
             } catch (e: ParseException) {
@@ -217,6 +226,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     } else {
                         tv.visibility = View.INVISIBLE
                     }
+                }
+
+                if (timeList.isNotEmpty()) {
+                    tv.text = timeList[c.startNode - 1].startTime + "\n" + tv.text
                 }
 
                 ll.addView(tv)

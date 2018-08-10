@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
@@ -16,6 +17,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_schedule.*
 import com.suda.yzune.wakeupschedule.MainActivity
+import com.suda.yzune.wakeupschedule.bean.TimeBean
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
@@ -29,15 +32,16 @@ import java.text.ParseException
 
 class ScheduleActivity : AppCompatActivity() {
 
-    lateinit var main_bg_container: View
+    private lateinit var mainBgContainer: View
     var whichWeek = 1
+    private lateinit var viewModel: ScheduleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        val viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         viewModel.initRepository(applicationContext)
 
         Toasty.Config.getInstance()
@@ -45,13 +49,20 @@ class ScheduleActivity : AppCompatActivity() {
                 .setTextSize(12)
                 .apply()
 
+        viewModel.updateFromOldVer()
         initView()
         initViewStub()
-        initEvent(viewModel)
+        initEvent()
     }
 
     override fun onStart() {
         super.onStart()
+
+        viewModel.getTimeDetailLiveList().observe(this, Observer {
+            viewModel.getTimeList().clear()
+            viewModel.getTimeList().addAll(it!!)
+        })
+
 
         whichWeek = countWeek(this)
         tv_week.text = "第${whichWeek}周"
@@ -63,14 +74,14 @@ class ScheduleActivity : AppCompatActivity() {
             GlideApp.with(this.applicationContext)
                     .load(uri)
                     .override(x, y)
-                    .into(main_bg_container.findViewById(R.id.iv_bg))
+                    .into(mainBgContainer.findViewById(R.id.iv_bg))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             GlideApp.with(this.applicationContext)
                     .load(resources.getDrawable(R.drawable.main_bg))
                     .override(x, y)
-                    .into(main_bg_container.findViewById(R.id.iv_bg))
+                    .into(mainBgContainer.findViewById(R.id.iv_bg))
         }
         if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)) {
             tv_week.setTextColor(resources.getColor(R.color.white))
@@ -138,7 +149,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initViewStub() {
-        main_bg_container = vs_main_bg.inflate()
+        mainBgContainer = vs_main_bg.inflate()
     }
 
     private fun initViewPage() {
@@ -159,7 +170,7 @@ class ScheduleActivity : AppCompatActivity() {
         vp_schedule.currentItem = whichWeek - 1
     }
 
-    private fun initEvent(viewModel: ScheduleViewModel) {
+    private fun initEvent() {
 
         ib_import.setOnClickListener {
             startActivity(Intent(this, LoginWebActivity::class.java))
@@ -196,7 +207,7 @@ class ScheduleActivity : AppCompatActivity() {
                             tv_week.text = "第${whichWeek}周"
                             tv_weekday.text = "非本周  点击此处以回到本周"
                         }
-                    }else{
+                    } else {
                         tv_week.text = "还没有开学哦"
                     }
                 } catch (e: ParseException) {

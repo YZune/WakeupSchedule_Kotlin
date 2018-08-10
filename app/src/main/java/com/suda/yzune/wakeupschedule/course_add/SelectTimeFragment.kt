@@ -70,14 +70,15 @@ class SelectTimeFragment : DialogFragment() {
         wp_start.setOnItemSelectedListener { _, _, position ->
             start = position + 1
             if (end < start) {
-                wp_end.animation
                 wp_end.selectedItemPosition = start - 1
+                end = start - 1
             }
         }
         wp_end.setOnItemSelectedListener { _, _, position ->
             end = position + 1
             if (end < start) {
                 wp_end.selectedItemPosition = start - 1
+                end = start - 1
             }
         }
 

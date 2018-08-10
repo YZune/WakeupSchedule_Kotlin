@@ -188,4 +188,37 @@ object CourseUtils {
         }
         return false
     }
+
+    fun calAfterTime(time: String, min: Int): String {
+        val timeHour = Integer.valueOf(time.substring(0, 2))
+        val timeMin = Integer.valueOf(time.substring(3, 5))
+        val add = timeMin + min
+        val newHour = timeHour + add / 60
+        val newMin = add % 60
+        var strTime = ""
+
+        if (newHour < 10 && newMin >= 10) {
+            strTime = "0$newHour:$newMin"
+        } else if (newHour < 10 && newMin < 10) {
+            strTime = "0$newHour:0$newMin"
+        } else if (newHour >= 10 && newMin >= 10) {
+            strTime = newHour.toString() + ":" + newMin
+        } else if (newHour >= 10 && newMin < 10) {
+            strTime = newHour.toString() + ":0" + newMin
+        }
+        return strTime
+    }
+
+    fun isContainName(list: java.util.ArrayList<CourseBaseBean>, name: String): Int {
+        var flag = -1
+        if (!list.isEmpty()) {
+            for (bean in list) {
+                if (bean.courseName == name) {
+                    flag = bean.id
+                    break
+                }
+            }
+        }
+        return flag
+    }
 }

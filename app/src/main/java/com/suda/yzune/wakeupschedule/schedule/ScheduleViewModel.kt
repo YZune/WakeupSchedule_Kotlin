@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.schedule_import.ImportRepository
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import java.text.SimpleDateFormat
@@ -17,6 +18,18 @@ class ScheduleViewModel : ViewModel() {
 
     fun initRepository(context: Context) {
         repository = ScheduleRepository(context)
+    }
+
+    fun getTimeDetailLiveList(): LiveData<List<TimeDetailBean>> {
+        return repository.getTimeDetailLiveList()
+    }
+
+    fun updateFromOldVer(){
+        repository.updateFromOldVer()
+    }
+
+    fun getTimeList(): ArrayList<TimeDetailBean> {
+        return repository.getTimeDetailList()
     }
 
     fun getScheduleWidgetIds(): LiveData<List<Int>> {
@@ -39,7 +52,7 @@ class ScheduleViewModel : ViewModel() {
         repository.deleteCourseBaseBean(courseBean.id, courseBean.tableName)
     }
 
-    fun updateCourseBaseBean(courseBean: CourseBean){
+    fun updateCourseBaseBean(courseBean: CourseBean) {
         repository.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(courseBean))
     }
 

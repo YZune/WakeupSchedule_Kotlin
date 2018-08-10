@@ -83,12 +83,12 @@ class ScheduleFragment : Fragment() {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.VISIBLE
         }
-        for (i in nodesNum+1 until weekPanel_0.childCount){
+        for (i in nodesNum + 1 until weekPanel_0.childCount) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.GONE
         }
 
-        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false))
+        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false), PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false))
     }
 
     companion object {
@@ -99,20 +99,20 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun refresh(view: View, daysEnd: Int, show: Boolean) {
+    private fun refresh(view: View, daysEnd: Int, show: Boolean, showTimeDetail: Boolean) {
 
         for (i in 1..daysEnd) {
             viewModel.getRawCourseByDay(i).observe(this, Observer {
                 if (it != null) {
                     viewModel.getCourseByDay(it).observe(this, Observer {
-                        initWeekPanel(view, weekPanels, it, i, show)
+                        initWeekPanel(view, weekPanels, it, i, show, showTimeDetail)
                     })
                 }
             })
         }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, show: Boolean) {
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, show: Boolean, showTimeDetail: Boolean) {
         val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
@@ -188,6 +188,10 @@ class ScheduleFragment : Fragment() {
                 } else {
                     tv.visibility = View.INVISIBLE
                 }
+            }
+
+            if (showTimeDetail){
+                tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
             }
 
             tv.setOnClickListener {

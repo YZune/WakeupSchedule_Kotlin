@@ -14,6 +14,7 @@ import android.os.Vibrator
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_login_web.*
@@ -105,7 +107,11 @@ class CourseDetailFragment : DialogFragment() {
             2 -> type = "双周"
         }
         weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
-        time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
+        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "isInitTimeTable", false)) {
+            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.getTimeList()[course.startNode - 1].startTime} - ${viewModel.getTimeList()[course.startNode + course.step - 2].endTime}"
+        } else {
+            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
+        }
     }
 
     private fun initEvent() {
