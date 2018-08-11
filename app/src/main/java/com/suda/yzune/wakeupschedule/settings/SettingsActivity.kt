@@ -1,9 +1,11 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.Manifest
+import android.app.ActivityManager
 import android.app.DatePickerDialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -18,10 +20,7 @@ import android.widget.Toast
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.*
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
@@ -56,16 +55,17 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show_time_detail", false)
-        s_show.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show", false)
-        s_show_weekend.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_show_weekend", true)
-        s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)
-        s_widget_text_white.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_widget_color", false)
-        val itemHeight = PreferenceUtils.getIntFromSP(this.applicationContext, "item_height", 56)
-        val widgetItemHeight = PreferenceUtils.getIntFromSP(this.applicationContext, "widget_item_height", 56)
-        val nodesNum = PreferenceUtils.getIntFromSP(this.applicationContext, "classNum", 11)
-        val itemAlpha = PreferenceUtils.getIntFromSP(this.applicationContext, "sb_alpha", 60)
-        val widgetItemAlpha = PreferenceUtils.getIntFromSP(this.applicationContext, "sb_widget_alpha", 60)
+        s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
+        s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_time_detail", false)
+        s_show.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show", false)
+        s_show_weekend.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_weekend", true)
+        s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_color", true)
+        s_widget_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_widget_color", false)
+        val itemHeight = PreferenceUtils.getIntFromSP(applicationContext, "item_height", 56)
+        val widgetItemHeight = PreferenceUtils.getIntFromSP(applicationContext, "widget_item_height", 56)
+        val nodesNum = PreferenceUtils.getIntFromSP(applicationContext, "classNum", 11)
+        val itemAlpha = PreferenceUtils.getIntFromSP(applicationContext, "sb_alpha", 60)
+        val widgetItemAlpha = PreferenceUtils.getIntFromSP(applicationContext, "sb_widget_alpha", 60)
         sb_widget_item_height.progress = widgetItemHeight - 32
         sb_height.progress = itemHeight - 32
         sb_nodes.progress = nodesNum - 8
@@ -77,7 +77,7 @@ class SettingsActivity : AppCompatActivity() {
         tv_alpha.text = itemAlpha.toString()
         tv_widget_item_alpha.text = widgetItemAlpha.toString()
 
-        val termStart = PreferenceUtils.getStringFromSP(this.applicationContext, "termStart", "2018-09-03")
+        val termStart = PreferenceUtils.getStringFromSP(applicationContext, "termStart", "2018-09-03")
         tv_term_start.text = termStart
         val termStartList = termStart!!.split("-")
         mYear = Integer.parseInt(termStartList[0])
@@ -155,34 +155,42 @@ class SettingsActivity : AppCompatActivity() {
         })
 
         s_show_time_detail.setOnCheckedChangeListener { _, isChecked ->
-            if (!PreferenceUtils.getBooleanFromSP(applicationContext, "isInitTimeTable", false)){
+            if (!PreferenceUtils.getBooleanFromSP(applicationContext, "isInitTimeTable", false)) {
                 s_show_time_detail.isChecked = false
                 startActivity(Intent(this, TimeSettingsActivity::class.java))
                 Toasty.info(applicationContext, "首先要进行上课时间的设置哦").show()
-            }else{
-                PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_show_time_detail", isChecked)
+            } else {
+                PreferenceUtils.saveBooleanToSP(applicationContext, "s_show_time_detail", isChecked)
             }
         }
 
+        ll_clean_data.setOnClickListener {
+            DataCleanUtils.cleanApplicationData(applicationContext)
+        }
+
         s_show.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_show", isChecked)
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_show", isChecked)
+        }
+
+        s_update.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
         }
 
         s_show_weekend.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_show_weekend", isChecked)
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_show_weekend", isChecked)
         }
 
         s_text_white.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_color", isChecked)
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_color", isChecked)
         }
 
         s_widget_text_white.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_widget_color", isChecked)
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_widget_color", isChecked)
         }
 
         ll_term_start.setOnClickListener {
             DatePickerDialog(this, mDateListener, mYear, mMonth - 1, mDay).show()
-            Toasty.success(this.applicationContext, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
+            Toasty.success(applicationContext, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
         }
 
         ll_schedule_bg.setOnClickListener {
@@ -208,7 +216,7 @@ class SettingsActivity : AppCompatActivity() {
         mDay = dayOfMonth
         val mDate = "$mYear-$mMonth-$mDay"
         tv_term_start.text = mDate
-        PreferenceUtils.saveStringToSP(this.applicationContext, "termStart", mDate)
+        PreferenceUtils.saveStringToSP(applicationContext, "termStart", mDate)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -241,14 +249,14 @@ class SettingsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            PreferenceUtils.saveStringToSP(this.applicationContext, "pic_uri", Matisse.obtainResult(data)[0].toString())
+            PreferenceUtils.saveStringToSP(applicationContext, "pic_uri", Matisse.obtainResult(data)[0].toString())
         }
     }
 
     override fun onDestroy() {
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         for (i in scheduleIdList) {
-            AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, i)
+            AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, i)
         }
         super.onDestroy()
     }

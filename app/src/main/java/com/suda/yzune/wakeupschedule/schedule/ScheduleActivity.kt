@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.view.View
 import android.widget.Toast
+import com.suda.yzune.wakeupschedule.AboutActivity
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -49,10 +50,12 @@ class ScheduleActivity : AppCompatActivity() {
                 .setTextSize(12)
                 .apply()
 
-        viewModel.updateFromOldVer()
+        viewModel.updateFromOldVer(applicationContext)
         initView()
         initViewStub()
         initEvent()
+
+        DonateFragment.newInstance().show(supportFragmentManager, "donateDialog")
     }
 
     override fun onStart() {
@@ -83,7 +86,7 @@ class ScheduleActivity : AppCompatActivity() {
                     .override(x, y)
                     .into(mainBgContainer.findViewById(R.id.iv_bg))
         }
-        if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", false)) {
+        if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", true)) {
             tv_week.setTextColor(resources.getColor(R.color.white))
             tv_date.setTextColor(resources.getColor(R.color.white))
             tv_weekday.setTextColor(resources.getColor(R.color.white))
@@ -109,7 +112,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     private fun initView() {
         tv_date.text = CourseUtils.getTodayDate()
-        //tv_weekday.text = viewModel.getWeekday()
+        tv_weekday.text = CourseUtils.getWeekday()
 
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
@@ -121,11 +124,15 @@ class ScheduleActivity : AppCompatActivity() {
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
-                R.id.nav_young -> {
+                R.id.nav_about -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this, AboutActivity::class.java))
                     }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_young -> {
+                    Toasty.info(this.applicationContext, "咩咩将为你记录倒计时等事件哦，敬请期待").show()
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_feedback -> {
@@ -209,6 +216,8 @@ class ScheduleActivity : AppCompatActivity() {
                         }
                     } else {
                         tv_week.text = "还没有开学哦"
+                        tv_weekday.text = CourseUtils.getWeekday()
+                        tv_date.text = CourseUtils.getTodayDate()
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()

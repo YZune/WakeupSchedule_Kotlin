@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AboutActivity">
+
+    <View
+        android:id="@+id/v_status"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="关于"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_donate"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:gravity="center_vertical"
+            android:paddingEnd="24dp"
+            android:paddingStart="24dp"
+            android:text="捐赠"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="24dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/tv_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="8dp"
+                android:paddingLeft="48dp"
+                android:paddingRight="48dp"
+                android:paddingTop="16dp"
+                android:text="版本号：1.03"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:autoLink="web"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="8dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="48dp"
+                android:paddingRight="48dp"
+                android:text="WakeUp课程表\n由WakeUp俱乐部开发\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/WakeupSchedule_Kotlin"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"
+                android:gravity="center_horizontal"
+                android:text="关于WakeUp俱乐部"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:text="\n不辜负每一个清晨 | 用心发现梦想"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:lineSpacingExtra="8dp"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:text="「 苏州大学WakeUp俱乐部 」由13级马惠荣学姐创办，旨在鼓励大学生早睡早起，不辜负每一个清晨，时刻做一个醒着的人。在2017年毕业季上，熊思东校长在毕业典礼上表扬了创始人马惠荣学姐，是她通过社团将“不辜负每一个清晨”的理念带入我们的校园。社团的主要活动有: 早起签到，周末夜跑，读书交流，早餐日等活动，社团在天赐庄、阳澄湖、独墅湖校区均有招新，欢迎加入！关注我们的微信公众号和QQ公众号了解更多。"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="48dp"
+                android:gravity="center_horizontal"
+                android:text="WakeUp俱乐部联系方式"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="以下文字均可长按复制"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="WakeUp课程表交流群：161714534"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="苏大QQ交流群：577789383"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="QQ公众号：3173396816"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="微信公众号：szdxcx"
+                android:textIsSelectable="true"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="240dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:lineSpacingExtra="8dp"
+                android:text="对App有任何的建议\n欢迎点击侧栏的“反馈”"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

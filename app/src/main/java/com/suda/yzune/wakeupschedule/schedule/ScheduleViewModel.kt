@@ -24,8 +24,8 @@ class ScheduleViewModel : ViewModel() {
         return repository.getTimeDetailLiveList()
     }
 
-    fun updateFromOldVer(){
-        repository.updateFromOldVer()
+    fun updateFromOldVer(context: Context){
+        repository.updateFromOldVer(context)
     }
 
     fun getTimeList(): ArrayList<TimeDetailBean> {

@@ -58,7 +58,7 @@ class ScheduleFragment : Fragment() {
             lp.height = itemHeight
             weekPanel_0.getChildAt(i).layoutParams = lp
         }
-        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", false)) {
+        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)) {
             for (i in 0 until weekPanel_0.childCount) {
                 val tv = weekPanel_0.getChildAt(i) as TextView
                 tv.setTextColor(resources.getColor(R.color.white))

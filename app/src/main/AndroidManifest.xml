@@ -35,7 +35,9 @@
         <activity android:name=".settings.SettingsActivity" />
         <activity android:name=".settings.TimeSettingsActivity" />
 
-        <receiver android:name=".schedule_appwidget.ScheduleAppWidget">
+        <receiver
+            android:name=".schedule_appwidget.ScheduleAppWidget"
+            android:label="一周课程">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -50,6 +52,9 @@
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".AboutActivity" />
+        <activity android:name=".DonateActivity"></activity>
     </application>
 
 </manifest>

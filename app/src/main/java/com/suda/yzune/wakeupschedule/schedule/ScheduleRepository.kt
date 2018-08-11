@@ -29,7 +29,7 @@ class ScheduleRepository(context: Context) {
     private val timeList = arrayListOf<TimeDetailBean>()
     private val json = PreferenceUtils.getStringFromSP(context, "course", "")
 
-    private fun oldBean2CourseBean(list: List<CourseOldBean>, tableName: String) {
+    private fun oldBean2CourseBean(list: List<CourseOldBean>, tableName: String, context: Context) {
         val baseList = arrayListOf<CourseBaseBean>()
         val detailList = arrayListOf<CourseDetailBean>()
         var id = 0
@@ -65,6 +65,7 @@ class ScheduleRepository(context: Context) {
                 detailDao.insertList(detailList)
                 //insertResponse.value = "ok"
                 Log.d("数据库", "插入")
+                PreferenceUtils.saveStringToSP(context.applicationContext, "course", "")
             } catch (e: SQLiteConstraintException) {
                 Log.d("数据库", "插入异常$e")
                 //insertResponse.value = "error"
@@ -72,13 +73,13 @@ class ScheduleRepository(context: Context) {
         }
     }
 
-    fun updateFromOldVer() {
+    fun updateFromOldVer(context: Context) {
         if (json != "") {
             val gson = Gson()
             val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
             }.type)
 
-            oldBean2CourseBean(list, "")
+            oldBean2CourseBean(list, "", context)
         }
     }
 
