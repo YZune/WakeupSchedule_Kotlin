@@ -14,6 +14,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
 import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
@@ -30,8 +31,13 @@ class ImportViewModel : ViewModel() {
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
+    private val importInfo = MutableLiveData<String>()
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
+
+    fun getImportInfo(): LiveData<String> {
+        return importInfo
+    }
 
     fun getSelectedYear(): String {
         return selectedYear
@@ -143,6 +149,7 @@ class ImportViewModel : ViewModel() {
         val courses = ArrayList<ImportBean>()
         val split = source.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         var preIndex = -1
+        Log.d("空", split.size.toString())
         for (i in 0 until split.size) {
             if (split[i].contains('{') && split[i].contains('}')) {
                 if (preIndex != -1) {
@@ -177,7 +184,7 @@ class ImportViewModel : ViewModel() {
         return courses
     }
 
-    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context) {
+    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context, sourse: String) {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -186,7 +193,7 @@ class ImportViewModel : ViewModel() {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
                 baseList.add(CourseBaseBean(id, importBean.name, "", tableName))
-                val time = parseTime(importBean.timeInfo, importBean.startNode)
+                val time = parseTime(importBean.timeInfo, importBean.startNode,sourse,importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -199,7 +206,7 @@ class ImportViewModel : ViewModel() {
                 }
                 id++
             } else {
-                val time = parseTime(importBean.timeInfo, importBean.startNode)
+                val time = parseTime(importBean.timeInfo, importBean.startNode,sourse,importBean.name)
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -214,30 +221,36 @@ class ImportViewModel : ViewModel() {
         }
 
         if (retryList.isNotEmpty()) {
-
+            importInfo.value = "retry"
         } else {
-            val dataBase = AppDatabase.getDatabase(context)
-            val baseDao = dataBase.courseBaseDao()
-            val detailDao = dataBase.courseDetailDao()
+            write2DB(context)
+        }
+    }
 
-            thread(name = "InitDataThread") {
-                try {
-                    detailList.forEach {
-                        println(it.toString())
-                    }
-                    baseDao.insertList(baseList)
-                    detailDao.insertList(detailList)
-                    //insertResponse.value = "ok"
-                    Log.d("数据库", "插入")
-                } catch (e: SQLiteConstraintException) {
-                    Log.d("数据库", "插入异常$e")
-                    //insertResponse.value = "error"
+    private fun write2DB(context: Context) {
+        val dataBase = AppDatabase.getDatabase(context)
+        val baseDao = dataBase.courseBaseDao()
+        val detailDao = dataBase.courseDetailDao()
+
+        thread(name = "InitDataThread") {
+            try {
+                detailList.forEach {
+                    println(it.toString())
                 }
+                baseDao.insertList(baseList)
+                detailDao.insertList(detailList)
+                importInfo.postValue("ok")
+                //insertResponse.value = "ok"
+                Log.d("数据库", "插入")
+            } catch (e: SQLiteConstraintException) {
+                Log.d("数据库", "插入异常$e")
+                importInfo.postValue("插入异常")
+                //insertResponse.value = "error"
             }
         }
     }
 
-    private fun parseTime(time: String, startNode:Int): Array<Int> {
+    private fun parseTime(time: String, startNode: Int, source: String, courseName: String): Array<Int> {
         val result = Array(5) { 0 }
         //按顺序分别为day, step, startWeek, endWeek, type
 
@@ -246,6 +259,13 @@ class ImportViewModel : ViewModel() {
             val dayStr = time.substring(0, 2)
             val day = getIntWeek(dayStr)
             result[0] = day
+        }
+        if (result[0] == 0) {
+            val startIndex = source.indexOf("<td>第${startNode}节</td>")
+            val endIndex = source.indexOf(courseName, startIndex)
+            if (startIndex != -1 && endIndex != -1) {
+                result[0] = countStr(source.substring(startIndex, endIndex), "Center")
+            }
         }
 
         //step

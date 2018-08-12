@@ -73,6 +73,10 @@ class ScheduleRepository(context: Context) {
         }
     }
 
+    fun removeCourseData(){
+        baseDao.removeCourseData("")
+    }
+
     fun updateFromOldVer(context: Context) {
         if (json != "") {
             val gson = Gson()

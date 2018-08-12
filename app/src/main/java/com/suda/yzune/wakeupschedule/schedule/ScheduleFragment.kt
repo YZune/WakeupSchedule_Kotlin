@@ -88,7 +88,7 @@ class ScheduleFragment : Fragment() {
             tv.visibility = View.GONE
         }
 
-        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false), PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false))
+        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true), PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false))
     }
 
     companion object {

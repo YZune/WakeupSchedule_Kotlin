@@ -21,6 +21,21 @@ object CourseUtils {
         }
     }
 
+    fun countStr(str1: String, str2: String): Int {
+        var times = 0
+        var startIndex = 0
+        var findIndex = str1.indexOf(str2, startIndex)
+        while (findIndex != -1 && findIndex != str1.length - 1) {
+            times += 1
+            startIndex = findIndex + 1
+            findIndex = str1.indexOf(str2, startIndex)
+        }
+        if (findIndex == str1.length - 1) {
+            times += 1
+        }
+        return times
+    }
+
     fun courseBean2DetailBean(c: CourseBean): CourseDetailBean {
         return CourseDetailBean(
                 id = c.id, room = c.room, day = c.day, teacher = c.teacher,

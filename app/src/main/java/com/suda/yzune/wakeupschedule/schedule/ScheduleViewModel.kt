@@ -20,11 +20,17 @@ class ScheduleViewModel : ViewModel() {
         repository = ScheduleRepository(context)
     }
 
+    fun removeCourseData() {
+        thread(name = "removeCourseDataThread") {
+            repository.removeCourseData()
+        }
+    }
+
     fun getTimeDetailLiveList(): LiveData<List<TimeDetailBean>> {
         return repository.getTimeDetailLiveList()
     }
 
-    fun updateFromOldVer(context: Context){
+    fun updateFromOldVer(context: Context) {
         repository.updateFromOldVer(context)
     }
 

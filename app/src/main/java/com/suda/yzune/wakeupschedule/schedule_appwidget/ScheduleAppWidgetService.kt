@@ -150,7 +150,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
             for (i in 1..daysEnd) {
                 val list = baseDao.getCourseByDayInThread(i)
-                initWeekPanel(context, view, list, i, false)
+                initWeekPanel(context, view, list, i, true)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
             ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))

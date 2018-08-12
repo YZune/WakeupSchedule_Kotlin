@@ -23,11 +23,6 @@ object PreferenceUtils {
         editor.apply()
     }
 
-    fun getBooleanFromSP(context: Context, key: String): Boolean {
-        val sp = context.getSharedPreferences("config", MODE_PRIVATE)
-        return sp.getBoolean(key, true)
-    }
-
     fun getBooleanFromSP(context: Context, key: String, defaultBoolean: Boolean): Boolean {
         val sp = context.getSharedPreferences("config", MODE_PRIVATE)
         return sp.getBoolean(key, defaultBoolean)

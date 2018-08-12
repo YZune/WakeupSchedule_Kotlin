@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.AboutActivity
@@ -72,7 +73,7 @@ class ScheduleActivity : AppCompatActivity() {
             PreferenceUtils.saveIntToSP(applicationContext, "open_times", openTimes + 1)
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_count", false)){
+        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_count", false)) {
             MyRetrofitUtils.instance.addCount(applicationContext)
         }
     }
@@ -197,8 +198,10 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initEvent() {
+        ib_nav.setOnClickListener(View.OnClickListener { drawerLayout.openDrawer(Gravity.START) })
 
         ib_import.setOnClickListener {
+            viewModel.removeCourseData()
             startActivity(Intent(this, LoginWebActivity::class.java))
         }
 

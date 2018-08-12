@@ -42,4 +42,7 @@ interface CourseBaseDao {
 
     @Query("select * from coursebasebean natural join coursedetailbean where courseName = :name and tableName = :tableName")
     fun checkSameName(name: String, tableName: String): LiveData<CourseBaseBean>
+
+    @Query("delete from coursebasebean where tableName = :tableName")
+    fun removeCourseData(tableName: String)
 }
