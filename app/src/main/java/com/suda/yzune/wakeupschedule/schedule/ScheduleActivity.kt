@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Typeface
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.AboutActivity
@@ -26,8 +28,13 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.ParseException
 
 
@@ -55,7 +62,19 @@ class ScheduleActivity : AppCompatActivity() {
         initViewStub()
         initEvent()
 
-        DonateFragment.newInstance().show(supportFragmentManager, "donateDialog")
+        val openTimes = PreferenceUtils.getIntFromSP(applicationContext, "open_times", 0)
+        if (openTimes < 10) {
+            PreferenceUtils.saveIntToSP(applicationContext, "open_times", openTimes + 1)
+        } else if (openTimes == 10) {
+            val dialog = DonateFragment.newInstance()
+            dialog.isCancelable = false
+            dialog.show(supportFragmentManager, "donateDialog")
+            PreferenceUtils.saveIntToSP(applicationContext, "open_times", openTimes + 1)
+        }
+
+        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_count", false)){
+            MyRetrofitUtils.instance.addCount(applicationContext)
+        }
     }
 
     override fun onStart() {

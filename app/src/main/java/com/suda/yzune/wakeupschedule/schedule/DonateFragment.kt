@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_donate.*
 import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
+import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import es.dmoral.toasty.Toasty
@@ -34,7 +35,7 @@ class DonateFragment : DialogFragment() {
         initEvent()
     }
 
-    private fun initEvent(){
+    private fun initEvent() {
         ib_close.setOnClickListener {
             dismiss()
         }
@@ -74,7 +75,7 @@ class DonateFragment : DialogFragment() {
         }
 
         tv_donate_list.setOnClickListener {
-
+            startActivity(Intent(activity, DonateActivity::class.java))
         }
     }
 

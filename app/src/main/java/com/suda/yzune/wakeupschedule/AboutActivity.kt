@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
@@ -26,7 +27,7 @@ class AboutActivity : AppCompatActivity() {
         }
 
         tv_donate.setOnClickListener {
-
+            startActivity(Intent(this, DonateActivity::class.java))
         }
     }
 }
