@@ -17,7 +17,6 @@
         <activity
             android:name=".schedule_import.LoginWebActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".schedule_import.ChooseTermActivity" />
         <activity
             android:name=".schedule.ScheduleActivity"
             android:resizeableActivity="false"

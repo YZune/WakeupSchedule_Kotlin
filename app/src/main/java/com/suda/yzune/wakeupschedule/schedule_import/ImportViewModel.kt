@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -24,8 +25,21 @@ class ImportViewModel : ViewModel() {
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
+    private var selectedYear = ""
+    private var selectedTerm = ""
+    private val baseList = arrayListOf<CourseBaseBean>()
+    private val detailList = arrayListOf<CourseDetailBean>()
+    private val retryList = arrayListOf<Int>()
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
+
+    fun getSelectedYear(): String {
+        return selectedYear
+    }
+
+    fun getSelectedTerm(): String {
+        return selectedTerm
+    }
 
     fun getCheckCode(): LiveData<Bitmap> {
         repository.checkCode()
@@ -42,12 +56,17 @@ class ImportViewModel : ViewModel() {
         return repository.prepareResponse
     }
 
+    fun getSelectedSchedule(): String {
+        return repository.prepareResponse.value!!
+    }
+
     fun toSchedule(id: String, name: String, year: String, term: String): LiveData<String> {
         repository.toSchedule(xh = id, name = name, year = year, term = term)
         return repository.scheduleResponse
     }
 
     fun parseYears(html: String): List<String>? {
+        val selected = "selected"
         val option = "option"
 
         val doc = Jsoup.parse(html)
@@ -58,11 +77,22 @@ class ImportViewModel : ViewModel() {
             return null
         }
 
-        val options = selects[0].getElementsByTag(option)
+        var options = selects[0].getElementsByTag(option)
 
         for (o in options) {
             val year = o.text().trim()
             years.add(year)
+            if (o.attr(selected) == selected) {
+                selectedYear = year
+            }
+        }
+
+        options = selects[1].getElementsByTag(option)
+        for (o in options) {
+            val term = o.text().trim { it <= ' ' }
+            if (o.attr(selected) == selected) {
+                selectedTerm = term
+            }
         }
 
         Log.d("解析", years.toString())
@@ -148,14 +178,15 @@ class ImportViewModel : ViewModel() {
     }
 
     fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context) {
-        val baseList = arrayListOf<CourseBaseBean>()
-        val detailList = arrayListOf<CourseDetailBean>()
+        baseList.clear()
+        detailList.clear()
+        retryList.clear()
         var id = 0
         for (importBean in importList) {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
                 baseList.add(CourseBaseBean(id, importBean.name, "", tableName))
-                val time = parseTime(importBean.timeInfo)
+                val time = parseTime(importBean.timeInfo, importBean.startNode)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -163,9 +194,12 @@ class ImportViewModel : ViewModel() {
                         type = time[4], startNode = importBean.startNode,
                         tableName = tableName
                 ))
+                if (time[0] == 0) {
+                    retryList.add(importList.size - 1)
+                }
                 id++
             } else {
-                val time = parseTime(importBean.timeInfo)
+                val time = parseTime(importBean.timeInfo, importBean.startNode)
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -173,30 +207,37 @@ class ImportViewModel : ViewModel() {
                         type = time[4], startNode = importBean.startNode,
                         tableName = tableName
                 ))
+                if (time[0] == 0) {
+                    retryList.add(importList.size - 1)
+                }
             }
         }
 
-        val dataBase = AppDatabase.getDatabase(context)
-        val baseDao = dataBase.courseBaseDao()
-        val detailDao = dataBase.courseDetailDao()
+        if (retryList.isNotEmpty()) {
 
-        thread(name = "InitDataThread") {
-            try {
-                detailList.forEach {
-                    println(it.toString())
+        } else {
+            val dataBase = AppDatabase.getDatabase(context)
+            val baseDao = dataBase.courseBaseDao()
+            val detailDao = dataBase.courseDetailDao()
+
+            thread(name = "InitDataThread") {
+                try {
+                    detailList.forEach {
+                        println(it.toString())
+                    }
+                    baseDao.insertList(baseList)
+                    detailDao.insertList(detailList)
+                    //insertResponse.value = "ok"
+                    Log.d("数据库", "插入")
+                } catch (e: SQLiteConstraintException) {
+                    Log.d("数据库", "插入异常$e")
+                    //insertResponse.value = "error"
                 }
-                baseDao.insertList(baseList)
-                detailDao.insertList(detailList)
-                //insertResponse.value = "ok"
-                Log.d("数据库","插入")
-            } catch (e: SQLiteConstraintException) {
-                Log.d("数据库","插入异常$e")
-                //insertResponse.value = "error"
             }
         }
     }
 
-    private fun parseTime(time: String): Array<Int> {
+    private fun parseTime(time: String, startNode:Int): Array<Int> {
         val result = Array(5) { 0 }
         //按顺序分别为day, step, startWeek, endWeek, type
 
@@ -209,16 +250,24 @@ class ImportViewModel : ViewModel() {
 
         //step
         var step = 0
-        if (time.contains("节/")) {
-            val numLocate = time.indexOf("节/")
-            step = Integer.parseInt(time.substring(numLocate - 1, numLocate))
-        } else if (time.contains(",")) {
-            var locate = 0
-            step = 1
-            while (time.indexOf(",", locate) != -1 && locate < time.length) {
-                step += 1
-                locate = time.indexOf(",", locate) + 1
+        when {
+            time.contains("节/") -> {
+                val numLocate = time.indexOf("节/")
+                step = Integer.parseInt(time.substring(numLocate - 1, numLocate))
             }
+            time.contains(",") -> {
+                var locate = 0
+                step = 1
+                while (time.indexOf(",", locate) != -1 && locate < time.length) {
+                    step += 1
+                    locate = time.indexOf(",", locate) + 1
+                }
+            }
+            time.contains("第${startNode}节") -> {
+                step = 1
+            }
+
+            //周数
         }
         result[1] = step
 

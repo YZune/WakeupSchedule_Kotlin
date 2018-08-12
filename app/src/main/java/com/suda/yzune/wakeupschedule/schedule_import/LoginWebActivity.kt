@@ -192,17 +192,19 @@ class LoginWebActivity : AppCompatActivity() {
     }
 
     private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
-        viewModel.toSchedule(id, name, year, term).observe(this, Observer {
-            if (it == null || it == "Failure") {
-                cardC2Re("网络错误")
-            } else {
-                Log.d("数据库", "插入")
-                Log.d("课表", viewModel.html2ImportBean(it).toString())
-                //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
-                //todo: 多课表管理
-                viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "", applicationContext)
-            }
-        })
+        if (year == viewModel.getSelectedYear() && term == viewModel.getSelectedTerm()) {
+            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), "", applicationContext)
+        } else {
+            viewModel.toSchedule(id, name, year, term).observe(this, Observer {
+                if (it == null || it == "Failure") {
+                    cardC2Re("网络错误")
+                } else {
+                    //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
+                    //todo: 多课表管理
+                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "", applicationContext)
+                }
+            })
+        }
     }
 
     private fun refreshCode(viewModel: ImportViewModel) {
