@@ -45,15 +45,17 @@ class LoginWebActivity : AppCompatActivity() {
                     Toasty.success(applicationContext, "导入成功").show()
                     finish()
                 }
-                "retry" -> Toasty.info(applicationContext, "需要加工").show()
+                "retry" -> Toasty.info(applicationContext, "请到侧栏“反馈”中联系作者").show()
                 "插入异常" -> Toasty.error(applicationContext, "数据插入异常").show()
                 else -> Toasty.error(applicationContext, it!!).show()
             }
         })
 
-        val fragment = LoginWebFragment.newInstance()
+        val fragment = WebViewLoginFragment.newInstance()
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
+        //transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
+        transaction.add(R.id.fl_fragment, fragment, "webLogin")
         transaction.commit()
+
     }
 }
