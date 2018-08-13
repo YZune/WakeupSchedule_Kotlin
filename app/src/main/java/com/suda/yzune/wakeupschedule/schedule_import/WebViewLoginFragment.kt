@@ -117,6 +117,10 @@ class WebViewLoginFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        wv_course.clearCache(true)
+        super.onDestroyView()
+    }
 
     companion object {
         @JvmStatic

@@ -10,4 +10,7 @@ interface MyRetrofitService {
 
     @GET("/school/get_donate")
     fun getDonateList(): Call<ResponseBody>
+
+    @GET("/school/getupdate")
+    fun getUpdateInfo(): Call<ResponseBody>
 }

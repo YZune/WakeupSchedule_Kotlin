@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".schedule.ImportChooseFragment">
+
+    <ImageButton
+        android:id="@+id/ib_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="right"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_list_delete" />
+
+
+    <TextView
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="-16dp"
+        android:gravity="center"
+        android:text="导入课程"
+        android:textColor="@android:color/black"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:lineSpacingExtra="8dp"
+        android:text="目前已经支持包括苏大在内的采用正方教务系统的学校的课程自动导入哦。申请其他教务的适配可以在侧栏联系我。"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:lineSpacingExtra="8dp"
+        android:text="注意：由于目前版本还不支持多课表管理（即将支持），所以一旦自动导入成功，将会覆盖原有课程。"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_suda"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="苏大教务导入"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_fangzheng"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="方正教务导入"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_feedback"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="申请适配"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

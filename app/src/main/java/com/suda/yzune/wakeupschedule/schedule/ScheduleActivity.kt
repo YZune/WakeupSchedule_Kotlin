@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -14,24 +15,29 @@ import android.support.v4.view.ViewPager
 import android.util.Log
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
-import com.suda.yzune.wakeupschedule.AboutActivity
-import com.suda.yzune.wakeupschedule.GlideApp
-import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.getkeepsafe.taptargetview.TapTarget
+import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.getkeepsafe.taptargetview.TapTargetView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.suda.yzune.wakeupschedule.*
+import com.suda.yzune.wakeupschedule.GlideOptions.bitmapTransform
 import kotlinx.android.synthetic.main.activity_schedule.*
-import com.suda.yzune.wakeupschedule.MainActivity
+import com.suda.yzune.wakeupschedule.bean.DonateBean
 import com.suda.yzune.wakeupschedule.bean.TimeBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
-import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import es.dmoral.toasty.Toasty
+import jp.wasabeef.glide.transformations.CropCircleTransformation
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -76,6 +82,76 @@ class ScheduleActivity : AppCompatActivity() {
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_count", false)) {
             MyRetrofitUtils.instance.addCount(applicationContext)
         }
+
+        if (PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)) {
+            MyRetrofitUtils.instance.getService().getUpdateInfo().enqueue(object : Callback<ResponseBody> {
+                override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}
+
+                override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+                    if (response!!.body() != null) {
+                        val gson = Gson()
+                        val updateInfo = gson.fromJson<UpdateInfoBean>(response.body()!!.string(), object : TypeToken<UpdateInfoBean>() {
+                        }.type)
+                        if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
+                            UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
+                        }
+                    }
+                }
+
+            })
+        }
+
+        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
+            initIntro()
+        }
+    }
+
+    private fun initIntro() {
+        TapTargetSequence(this)
+                .targets(
+                        TapTarget.forView(ib_add, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.red)      // Specify a color for the outer circle
+                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
+                                .titleTextSize(16)                  // Specify the size (in sp) of the title text
+                                .titleTextColor(R.color.white)      // Specify the color of the title text
+                                .descriptionTextSize(12)            // Specify the size (in sp) of the description text
+                                .textColor(R.color.white)            // Specify a color for both the title and description text
+                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
+                                .drawShadow(true)                   // Whether to draw a drop shadow or not
+                                .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
+                                .tintTarget(true)                   // Whether to tint the target view's color
+                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
+                                .targetRadius(60),                  // Specify the target radius (in dp)
+                        TapTarget.forView(ib_import, "这是自动导入课程的按钮", "现在已经支持包括苏大在内的采用正方教务系统的学校的课程自动导入了！\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.lightBlue)      // Specify a color for the outer circle
+                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
+                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
+                                .titleTextSize(16)                  // Specify the size (in sp) of the title text
+                                .titleTextColor(R.color.white)      // Specify the color of the title text
+                                .descriptionTextSize(12)            // Specify the size (in sp) of the description text
+                                .textColor(R.color.white)            // Specify a color for both the title and description text
+                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
+                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
+                                .drawShadow(true)                   // Whether to draw a drop shadow or not
+                                .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
+                                .tintTarget(true)                   // Whether to tint the target view's color
+                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
+                                .targetRadius(60)                // Specify the target radius (in dp)
+                ).listener(object : TapTargetSequence.Listener {
+                    override fun onSequenceCanceled(lastTarget: TapTarget?) {
+
+                    }
+
+                    override fun onSequenceFinish() {
+                        PreferenceUtils.saveBooleanToSP(this@ScheduleActivity.applicationContext, "has_intro", true)
+                    }
+
+                    override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
+                    }
+
+                }).start()
     }
 
     override fun onStart() {
@@ -134,6 +210,18 @@ class ScheduleActivity : AppCompatActivity() {
         tv_date.text = CourseUtils.getTodayDate()
         tv_weekday.text = CourseUtils.getWeekday()
 
+        val headerLayout = navigation_view.getHeaderView(0)
+        val ivPersonImage = headerLayout.findViewById(R.id.iv_person_image) as ImageView
+
+        GlideApp.with(this)
+                .load(R.mipmap.ic_launcher)
+                .apply(bitmapTransform(CropCircleTransformation()))
+                .into(ivPersonImage)
+
+        headerLayout.setOnClickListener {
+            Toasty.info(this.applicationContext, "敬请期待").show()
+        }
+
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -141,6 +229,13 @@ class ScheduleActivity : AppCompatActivity() {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
                         startActivity(Intent(this, SettingsActivity::class.java))
+                    }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_help -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        CourseUtils.openUrl(this, "https://yzune.github.io/2018/08/13/WakeUp%E8%AF%BE%E7%A8%8B-%E9%97%AE%E7%AD%94-+-%E6%8A%80%E5%B7%A7/")
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -201,8 +296,9 @@ class ScheduleActivity : AppCompatActivity() {
         ib_nav.setOnClickListener(View.OnClickListener { drawerLayout.openDrawer(Gravity.START) })
 
         ib_import.setOnClickListener {
-            viewModel.removeCourseData()
-            startActivity(Intent(this, LoginWebActivity::class.java))
+            //viewModel.removeCourseData()
+            ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
+            //startActivity(Intent(this, LoginWebActivity::class.java))
         }
 
         ib_add.setOnClickListener {

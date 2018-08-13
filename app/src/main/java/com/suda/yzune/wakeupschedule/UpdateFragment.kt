@@ -1,0 +1,55 @@
+package com.suda.yzune.wakeupschedule
+
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
+import com.suda.yzune.wakeupschedule.utils.UpdateUtils
+import kotlinx.android.synthetic.main.fragment_update.*
+
+class UpdateFragment : DialogFragment() {
+
+    private lateinit var updateInfo: UpdateInfoBean
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_update, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tv_old_version.text = "当前版本：" + UpdateUtils.getVersionName(context!!.applicationContext)
+        tv_new_version.text = "最新版本：" + updateInfo.VersionName
+        tv_info.text = updateInfo.VersionInfo
+        tv_visit.setOnClickListener {
+            val intent = Intent()
+            intent.action = "android.intent.action.VIEW"
+            val contentUrl = Uri.parse("https://www.coolapk.com/apk/com.suda.yzune.wakeupschedule")
+            intent.data = contentUrl
+            context!!.startActivity(intent)
+            dismiss()
+        }
+        ib_close.setOnClickListener {
+            dismiss()
+        }
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun newInstance(arg: UpdateInfoBean) =
+                UpdateFragment().apply {
+                    updateInfo = arg
+                }
+    }
+}

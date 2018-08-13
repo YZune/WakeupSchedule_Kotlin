@@ -2,6 +2,8 @@ package com.suda.yzune.wakeupschedule.utils
 
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import com.suda.yzune.wakeupschedule.bean.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -235,5 +237,13 @@ object CourseUtils {
             }
         }
         return flag
+    }
+
+    fun openUrl(context: Context, url: String) {
+        val intent = Intent()
+        intent.action = "android.intent.action.VIEW"
+        val contentUrl = Uri.parse(url)
+        intent.data = contentUrl
+        context.startActivity(intent)
     }
 }

@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
+import android.database.sqlite.SQLiteConstraintException
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -19,12 +20,15 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
+import com.suda.yzune.wakeupschedule.dao.TimeDetailDao
 import com.suda.yzune.wakeupschedule.utils.*
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_settings.*
+import kotlin.concurrent.thread
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -32,8 +36,10 @@ class SettingsActivity : AppCompatActivity() {
     private var mYear = 0
     private var mMonth = 0
     private var mDay = 0
+    private val timeList = arrayListOf<TimeDetailBean>()
     private lateinit var dataBase: AppDatabase
     private lateinit var widgetDao: AppWidgetDao
+    private lateinit var timeDao: TimeDetailDao
     private val scheduleIdList = arrayListOf<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +50,7 @@ class SettingsActivity : AppCompatActivity() {
 
         dataBase = AppDatabase.getDatabase(applicationContext)
         widgetDao = dataBase.appWidgetDao()
+        timeDao = dataBase.timeDetailDao()
 
         initView()
         initEvent()
@@ -52,6 +59,37 @@ class SettingsActivity : AppCompatActivity() {
             scheduleIdList.addAll(it!!)
             //Log.d("小部件", "看看有没有被触发呢")
         })
+
+        initSudaTime(this)
+    }
+
+    private fun initSudaTime(context: Context) {
+        if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "isInitTimeTable", false)) {
+            timeList.add(TimeDetailBean(1, "08:00", "08:50"))
+            timeList.add(TimeDetailBean(2, "09:00", "09:50"))
+            timeList.add(TimeDetailBean(3, "10:10", "11:00"))
+            timeList.add(TimeDetailBean(4, "11:10", "12:00"))
+            timeList.add(TimeDetailBean(5, "13:30", "14:20"))
+            timeList.add(TimeDetailBean(6, "14:30", "15:20"))
+            timeList.add(TimeDetailBean(7, "15:40", "16:30"))
+            timeList.add(TimeDetailBean(8, "16:40", "17:30"))
+            timeList.add(TimeDetailBean(9, "18:30", "19:20"))
+            timeList.add(TimeDetailBean(10, "19:30", "20:20"))
+            timeList.add(TimeDetailBean(11, "20:30", "21:20"))
+            timeList.add(TimeDetailBean(12, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(13, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(14, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(15, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(16, "00:00", "00:00"))
+            thread(name = "initTimeTableThread") {
+                try {
+                    timeDao.insertTimeList(timeList)
+                } catch (e: SQLiteConstraintException) {
+
+                }
+                PreferenceUtils.saveBooleanToSP(context.applicationContext, "isInitTimeTable", true)
+            }
+        }
     }
 
     private fun initView() {

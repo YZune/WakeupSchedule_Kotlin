@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
@@ -20,6 +22,7 @@ import android.view.animation.Transformation
 import android.widget.RelativeLayout
 
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
@@ -83,6 +86,10 @@ class LoginWebFragment : Fragment() {
                 //Toasty.error(this, resources.getString(R.string.check_code_get_error)).show()
             }
         })
+
+        tv_vpn.setOnClickListener {
+            CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
+        }
 
         cvLoginLayoutParams = cv_login.layoutParams as RelativeLayout.LayoutParams
 

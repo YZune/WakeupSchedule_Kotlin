@@ -233,6 +233,7 @@ class ImportViewModel : ViewModel() {
         val detailDao = dataBase.courseDetailDao()
 
         thread(name = "InitDataThread") {
+            baseDao.removeCourseData("")
             try {
                 detailList.forEach {
                     println(it.toString())

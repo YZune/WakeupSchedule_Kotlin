@@ -12,7 +12,6 @@ class TimeSettingsViewModel : ViewModel() {
 
     fun initRepository(context: Context) {
         repository = TimeSettingsRepository(context)
-        repository.initSudaTime(context)
         repository.initTimeSelectList()
     }
 

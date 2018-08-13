@@ -51,11 +51,18 @@ class LoginWebActivity : AppCompatActivity() {
             }
         })
 
-        val fragment = WebViewLoginFragment.newInstance()
-        val transaction = supportFragmentManager.beginTransaction()
-        //transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
-        transaction.add(R.id.fl_fragment, fragment, "webLogin")
-        transaction.commit()
+        if (intent.getStringExtra("type") == "suda") {
+            val fragment = LoginWebFragment.newInstance()
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
+            transaction.commit()
+        } else {
+            val fragment = WebViewLoginFragment.newInstance()
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.add(R.id.fl_fragment, fragment, "webLogin")
+            transaction.commit()
+        }
+
 
     }
 }

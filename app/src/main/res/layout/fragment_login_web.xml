@@ -30,10 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="56dp"
         android:hint="@string/student_id"
-        android:singleLine="true"
-        android:inputType="number" />
+        android:inputType="number"
+        android:singleLine="true" />
 
     <LinearLayout
         android:id="@+id/ll_pwd"
@@ -42,7 +42,6 @@
         android:layout_below="@id/et_id">
 
         <EditText
-            android:singleLine="true"
             android:id="@+id/et_pwd"
             style="@style/LoginEditText"
             android:layout_width="0dp"
@@ -51,7 +50,8 @@
             android:layout_marginTop="32dp"
             android:layout_weight="1"
             android:hint="@string/password"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:singleLine="true" />
 
         <CheckBox
             android:id="@+id/cb_check_pwd"
@@ -78,8 +78,8 @@
             android:layout_marginTop="32dp"
             android:layout_weight="1"
             android:hint="@string/check_code"
-            android:singleLine="true"
-            android:inputType="textVisiblePassword" />
+            android:inputType="textVisiblePassword"
+            android:singleLine="true" />
 
         <RelativeLayout
             android:layout_width="120dp"
@@ -147,8 +147,20 @@
         android:src="#96ffffff"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/tv_vpn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_code"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:padding="8dp"
+        android:text="不在苏大WiFi覆盖区域？"
+        android:textColor="@color/colorAccent"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
     <android.support.v7.widget.CardView
-        app:cardElevation="0dp"
         android:id="@+id/cv_login"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -156,9 +168,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="96dp"
         android:foreground="?android:attr/selectableItemBackgroundBorderless"
-        app:cardCornerRadius="24dp">
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp">
 
         <RelativeLayout
             android:id="@+id/rl_login"
@@ -192,19 +205,19 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:alpha="0"
                 android:id="@+id/ll_dialog"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:alpha="0"
                 android:orientation="vertical"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:layout_marginBottom="16dp"
                     android:text="请选择要导入的学期"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
@@ -233,22 +246,22 @@
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/cv_to_schedule"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                    android:layout_marginTop="16dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    android:layout_gravity="center"
                     android:layout_width="120dp"
                     android:layout_height="40dp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="16dp"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp">
 
                     <TextView
-                        android:textStyle="bold"
-                        android:textColor="@color/colorAccent"
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="确定"/>
+                        android:layout_gravity="center"
+                        android:text="确定"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="bold" />
 
                 </android.support.v7.widget.CardView>
 
