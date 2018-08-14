@@ -13,6 +13,7 @@
         diagonal:diagonal_position="bottom">
 
         <ImageView
+            android:id="@+id/iv_header_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"

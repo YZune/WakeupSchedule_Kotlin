@@ -166,6 +166,9 @@ class ScheduleActivity : AppCompatActivity() {
         whichWeek = countWeek(this)
         tv_week.text = "第${whichWeek}周"
 
+        val headerLayout = navigation_view.getHeaderView(0)
+        val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
+
         val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
         if (uri != "") {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
@@ -174,13 +177,23 @@ class ScheduleActivity : AppCompatActivity() {
                     .load(uri)
                     .override(x, y)
                     .into(mainBgContainer.findViewById(R.id.iv_bg))
+
+            GlideApp.with(this.applicationContext)
+                    .load(R.drawable.main_bg)
+                    .override(x, y)
+                    .into(headerBg)
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             GlideApp.with(this.applicationContext)
-                    .load(resources.getDrawable(R.drawable.main_bg))
+                    .load(R.drawable.main_bg)
                     .override(x, y)
                     .into(mainBgContainer.findViewById(R.id.iv_bg))
+
+            GlideApp.with(this.applicationContext)
+                    .load(R.drawable.main_bg)
+                    .override(x, y)
+                    .into(headerBg)
         }
         if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", true)) {
             tv_week.setTextColor(resources.getColor(R.color.white))
