@@ -15,6 +15,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
 import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import org.jsoup.Jsoup
 import java.util.regex.Pattern
@@ -125,10 +126,11 @@ class ImportViewModel : ViewModel() {
                 }
                 if (Pattern.matches(pattern, courseSource)) {
                     //node number
+                    val nodeStr = courseSource.substring(1, courseSource.length - 1)
                     try {
-                        node = Integer.decode(courseSource.substring(1, courseSource.length - 1))!!
+                        node = Integer.decode(nodeStr)!!
                     } catch (e: Exception) {
-                        node = 0
+                        node = getNodeInt(nodeStr)
                         e.printStackTrace()
                     }
                     continue
@@ -153,7 +155,7 @@ class ImportViewModel : ViewModel() {
         for (i in 0 until split.size) {
             if (split[i].contains('{') && split[i].contains('}')) {
                 if (preIndex != -1) {
-                    val temp = ImportBean(startNode = node, name = split[preIndex - 1],
+                    val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] == "必修" || split[preIndex - 1] == "选修") split[preIndex - 2] else split[preIndex - 1],
                             timeInfo = split[preIndex],
                             room = null, teacher = null)
                     if ((i - preIndex - 2) == 1) {
@@ -169,7 +171,7 @@ class ImportViewModel : ViewModel() {
                 }
             }
             if (i == split.size - 1) {
-                val temp = ImportBean(startNode = node, name = split[preIndex - 1],
+                val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] == "必修" || split[preIndex - 1] == "选修") split[preIndex - 2] else split[preIndex - 1],
                         timeInfo = split[preIndex],
                         room = null, teacher = null)
                 if ((i - preIndex) == 1) {
