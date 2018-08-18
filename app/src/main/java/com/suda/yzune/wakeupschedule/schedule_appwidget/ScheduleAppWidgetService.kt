@@ -43,7 +43,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
                 timeList.clear()
                 timeList.addAll(timeDao.getTimeListInThread())
-            }else{
+            } else {
                 timeList.clear()
             }
         }
@@ -150,7 +150,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
             for (i in 1..daysEnd) {
                 val list = baseDao.getCourseByDayInThread(i)
-                initWeekPanel(context, view, list, i, true)
+                initWeekPanel(context, view, list, i, PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", true))
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
             ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))

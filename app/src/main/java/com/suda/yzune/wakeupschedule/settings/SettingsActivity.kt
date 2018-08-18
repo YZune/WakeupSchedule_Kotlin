@@ -93,6 +93,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        s_stroke.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_stroke", true)
         s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
         s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_time_detail", false)
         s_show.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show", true)
@@ -216,6 +217,10 @@ class SettingsActivity : AppCompatActivity() {
 
         s_show_weekend.setOnCheckedChangeListener { _, isChecked ->
             PreferenceUtils.saveBooleanToSP(applicationContext, "s_show_weekend", isChecked)
+        }
+
+        s_stroke.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_stroke", isChecked)
         }
 
         s_text_white.setOnCheckedChangeListener { _, isChecked ->

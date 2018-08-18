@@ -21,10 +21,16 @@ import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
 
-    var week = 0
-    var itemHeight = 0
-    var marTop = 0
-    var weekPanels = arrayOfNulls<LinearLayout>(7)
+    private var week = 0
+    private var itemHeight = 0
+    private var marTop = 0
+    private var showWhite = true
+    private var showSunday = true
+    private var showTimeDetail = false
+    private var showStroke = true
+    private var showNone = true
+    private var weekPanels = arrayOfNulls<LinearLayout>(7)
+    private var nodesNum = 11
     private lateinit var viewModel: ScheduleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,10 +48,13 @@ class ScheduleFragment : Fragment() {
         val itemHeightDp = PreferenceUtils.getIntFromSP(context!!.applicationContext, "item_height", 56)
         itemHeight = SizeUtils.dp2px(context, itemHeightDp.toFloat())
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-
-        val showWeekend = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_weekend", true)
-        val daysEnd = if (showWeekend) 7 else 6
-        if (showWeekend) {
+        showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true)
+        showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
+        showWhite = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)
+        showTimeDetail = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false)
+        showSunday = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_weekend", true)
+        val daysEnd = if (showSunday) 7 else 6
+        if (showSunday) {
             weekPanel_7.visibility = View.VISIBLE
             title7.visibility = View.VISIBLE
         } else {
@@ -58,7 +67,7 @@ class ScheduleFragment : Fragment() {
             lp.height = itemHeight
             weekPanel_0.getChildAt(i).layoutParams = lp
         }
-        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)) {
+        if (showWhite) {
             for (i in 0 until weekPanel_0.childCount) {
                 val tv = weekPanel_0.getChildAt(i) as TextView
                 tv.setTextColor(resources.getColor(R.color.white))
@@ -78,7 +87,7 @@ class ScheduleFragment : Fragment() {
             }
         }
 
-        val nodesNum = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
+        nodesNum = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
         for (i in 8..nodesNum) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.VISIBLE
@@ -88,7 +97,7 @@ class ScheduleFragment : Fragment() {
             tv.visibility = View.GONE
         }
 
-        refresh(view!!, daysEnd, PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true), PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false))
+        refresh(view!!, daysEnd)
     }
 
     companion object {
@@ -99,20 +108,20 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun refresh(view: View, daysEnd: Int, show: Boolean, showTimeDetail: Boolean) {
+    private fun refresh(view: View, daysEnd: Int) {
 
         for (i in 1..daysEnd) {
             viewModel.getRawCourseByDay(i).observe(this, Observer {
                 if (it != null) {
                     viewModel.getCourseByDay(it).observe(this, Observer {
-                        initWeekPanel(view, weekPanels, it, i, show, showTimeDetail)
+                        initWeekPanel(view, weekPanels, it, i)
                     })
                 }
             })
         }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, show: Boolean, showTimeDetail: Boolean) {
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int) {
         val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
@@ -140,6 +149,10 @@ class ScheduleFragment : Fragment() {
 
             tv.background = resources.getDrawable(R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
+            if (!showStroke) {
+                myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), resources.getColor(R.color.transparent))
+            }
+
             if (c.color == "") {
                 myGrad.setColor(getCustomizedColor(c.id % 9))
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
@@ -154,7 +167,7 @@ class ScheduleFragment : Fragment() {
                 1 -> {
                     tv.text = c.courseName + "@" + c.room + "\n单周"
                     if (week % 2 == 0) {
-                        if (show) {
+                        if (showNone) {
                             tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
                             tv.visibility = View.VISIBLE
                             tv.alpha = 0.6f
@@ -167,7 +180,7 @@ class ScheduleFragment : Fragment() {
                 2 -> {
                     tv.text = c.courseName + "@" + c.room + "\n双周"
                     if (week % 2 != 0) {
-                        if (show) {
+                        if (showNone) {
                             tv.alpha = 0.6f
                             tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
                             tv.visibility = View.VISIBLE
@@ -180,7 +193,7 @@ class ScheduleFragment : Fragment() {
             }
 
             if (c.startWeek > week || c.endWeek < week) {
-                if (show) {
+                if (showNone) {
                     tv.alpha = 0.6f
                     tv.text = c.courseName + "@" + c.room + "[非本周]"
                     tv.visibility = View.VISIBLE
@@ -190,7 +203,7 @@ class ScheduleFragment : Fragment() {
                 }
             }
 
-            if (showTimeDetail){
+            if (showTimeDetail) {
                 tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
             }
 
