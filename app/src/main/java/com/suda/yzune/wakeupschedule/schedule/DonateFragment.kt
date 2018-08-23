@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_donate.*
 import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
+import android.view.Window
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
@@ -27,6 +28,7 @@ class DonateFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(R.layout.fragment_donate, container, false)
     }
 

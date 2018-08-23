@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.DonateActivity
 
@@ -28,6 +29,7 @@ class ImportChooseFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(R.layout.fragment_import_choose, container, false)
     }
 

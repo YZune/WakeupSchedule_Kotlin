@@ -220,7 +220,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                         if (it == null) {
                             saveData()
                         } else if (!isSaved) {
-                            Toasty.error(this.applicationContext, "不允许重复的课程名称>_<").show()
+                            Toasty.error(this.applicationContext, "已存在相同名称的课程，请编辑该课程，然后添加不同的时间段").show()
                         }
                     })
                 } else {

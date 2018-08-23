@@ -24,10 +24,14 @@ class ScheduleAppWidgetService : RemoteViewsService() {
     }
 
     private inner class ScheduleRemoteViewsFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
-
-        var week = 0
-        var itemHeight = 0
-        var marTop = 0
+        private var week = 0
+        private var itemHeight = 0
+        private var marTop = 0
+        private var showWhite = true
+        private var showSunday = true
+        private var showStroke = true
+        private var showNone = true
+        private var nodesNum = 11
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
@@ -59,7 +63,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(mContext.packageName, R.layout.item_schedule_widget)
 
-            initData(mContext, mRemoteViews, PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false))
+            initData(mContext, mRemoteViews)
 //            val intent = Intent(ScheduleAppWidget.ITEM_CLICK)
 //            mRemoteViews.setOnClickFillInIntent(R.id.ll_contentPanel, intent)
             return mRemoteViews
@@ -81,13 +85,13 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             return false
         }
 
-        fun initView(context: Context, view: View) {
+        fun initView(view: View) {
             val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
             val title7 = view.findViewById<View>(R.id.title7)
             val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
             val weekName = view.findViewById<LinearLayout>(R.id.weekName)
-            val showWeekend = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
-            if (showWeekend) {
+
+            if (showSunday) {
                 weekPanel7.visibility = View.VISIBLE
                 title7.visibility = View.VISIBLE
             } else {
@@ -100,7 +104,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 lp.height = itemHeight
                 weekPanel0.getChildAt(i).layoutParams = lp
             }
-            if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
+
+            if (showWhite) {
                 for (i in 0 until weekPanel0.childCount) {
                     val tv = weekPanel0.getChildAt(i) as TextView
                     tv.setTextColor(resources.getColor(R.color.white))
@@ -120,7 +125,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
             }
 
-            val nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
             for (i in 8..nodesNum) {
                 val tv = weekPanel0.getChildAt(i) as TextView
                 tv.visibility = View.VISIBLE
@@ -131,7 +135,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             }
         }
 
-        fun initData(context: Context, views: RemoteViews, show: Boolean) {
+        fun initData(context: Context, views: RemoteViews) {
             try {
                 week = countWeek(context)
             } catch (e: ParseException) {
@@ -142,22 +146,26 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
-            val showWeekend = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
-            val daysEnd = if (showWeekend) 7 else 6
+            showStroke = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)
+            showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", true)
+            nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
+            showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)
+            showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
+            val daysEnd = if (showSunday) 7 else 6
 
             val view = View.inflate(mContext, R.layout.fragment_schedule, null)
-            initView(context, view)
+            initView(view)
 
             for (i in 1..daysEnd) {
                 val list = baseDao.getCourseByDayInThread(i)
-                initWeekPanel(context, view, list, i, PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", true))
+                initWeekPanel(context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
             ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
         }
 
-        private fun initWeekPanel(context: Context, view: View, data: List<CourseBean>?, day: Int, show: Boolean) {
+        private fun initWeekPanel(context: Context, view: View, data: List<CourseBean>?, day: Int) {
             val llIndex = day - 1
             val ll = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
             ll!!.removeAllViews()
@@ -184,6 +192,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 tv.background = resources.getDrawable(R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
+                if (!showStroke) {
+                    myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), resources.getColor(R.color.transparent))
+                }
+
                 myGrad.setColor(Color.parseColor(c.color))
                 myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60) / 100.0)).toInt()
 
@@ -192,7 +204,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     1 -> {
                         tv.text = c.courseName + "@" + c.room + "\n单周"
                         if (week % 2 == 0) {
-                            if (show) {
+                            if (showNone) {
                                 tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
                                 tv.visibility = View.VISIBLE
                                 tv.alpha = 0.6f
@@ -205,7 +217,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     2 -> {
                         tv.text = c.courseName + "@" + c.room + "\n双周"
                         if (week % 2 != 0) {
-                            if (show) {
+                            if (showNone) {
                                 tv.alpha = 0.6f
                                 tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
                                 tv.visibility = View.VISIBLE
@@ -218,7 +230,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
 
                 if (c.startWeek > week || c.endWeek < week) {
-                    if (show) {
+                    if (showNone) {
                         tv.alpha = 0.6f
                         tv.text = c.courseName + "@" + c.room + "[非本周]"
                         tv.visibility = View.VISIBLE

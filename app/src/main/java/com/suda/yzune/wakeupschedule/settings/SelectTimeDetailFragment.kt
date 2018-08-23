@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Adapter
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.course_add.AddCourseViewModel
@@ -29,6 +30,7 @@ class SelectTimeDetailFragment : DialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(R.layout.fragment_select_time_detail, container, false)
     }
 

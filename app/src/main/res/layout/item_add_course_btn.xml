@@ -6,23 +6,29 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/cv_add"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="64dp"
         android:layout_marginStart="64dp"
         android:layout_marginTop="32dp"
+        android:foreground="?android:attr/selectableItemBackgroundBorderless"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp">
 
-            <TextView
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@android:color/black"
-                android:text="添加时间段" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="添加时间段"
+            android:textColor="@android:color/white" />
 
     </android.support.v7.widget.CardView>
 
