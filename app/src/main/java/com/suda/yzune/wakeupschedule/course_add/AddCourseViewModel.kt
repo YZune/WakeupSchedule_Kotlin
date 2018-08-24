@@ -31,10 +31,6 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.getWidgetIds()
     }
 
-    fun rollBackData(){
-        return repository!!.rollBackData()
-    }
-
     fun initRepository(context: Context) {
         if (repository == null) {
             repository = AddCourseRepository(context)

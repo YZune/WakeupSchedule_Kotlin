@@ -11,19 +11,15 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
-import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
 import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class AddCourseRepository(context: Context) {
 
-    private lateinit var detailList: MutableList<CourseEditBean>
+    private lateinit var editList: MutableList<CourseEditBean>
     private lateinit var baseBean: CourseBaseBean
-    private var oldBaseBean: CourseBaseBean? = null
-    private var oldDetailList: List<CourseDetailBean>? = null
     private var updateFlag = true
 
     private val dataBase = AppDatabase.getDatabase(context)
@@ -49,13 +45,18 @@ class AddCourseRepository(context: Context) {
         if (baseBean.id == -1) {
             updateFlag = false
             baseBean.id = newId
-            detailList.forEach {
+            editList.forEach {
                 it.id = newId
             }
+        } else {
+            editList.forEach {
+                it.id = baseBean.id
+            }
         }
-        for (i in detailList.indices) {
+        for (i in editList.indices) {
             if (i !in deleteList) {
-                saveList.addAll(CourseUtils.editBean2DetailBeanList(detailList[i]))
+                saveList.addAll(CourseUtils.editBean2DetailBeanList(editList[i]))
+                Log.d("外键", CourseUtils.editBean2DetailBeanList(editList[i])[0].id.toString())
             }
         }
 
@@ -72,10 +73,6 @@ class AddCourseRepository(context: Context) {
         if (isUnique) {
             if (updateFlag) {
                 thread(name = "updateCourseThread") {
-                    if (oldBaseBean == null) {
-                        oldBaseBean = baseDao.getCourseBeanByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
-                        oldDetailList = detailDao.getDetailByIdAndTableNameInThread(baseBean.id, baseBean.tableName)
-                    }
                     try {
                         baseDao.updateCourseBaseBean(baseBean)
                         detailDao.deleteByIdAndTableName(baseBean.id, baseBean.tableName)
@@ -84,7 +81,7 @@ class AddCourseRepository(context: Context) {
                         widgetIds.addAll(widgetDao.getIdsByTypes(0, 0))
                         saveInfo.postValue("ok")
                     } catch (e: SQLiteConstraintException) {
-                        saveInfo.postValue("异常")
+                        saveInfo.postValue(e.toString())
                     }
                 }
             } else {
@@ -112,24 +109,17 @@ class AddCourseRepository(context: Context) {
     }
 
     fun initData(): MutableList<CourseEditBean> {
-        detailList = mutableListOf(CourseEditBean())
-        return detailList
+        editList = mutableListOf(CourseEditBean())
+        return editList
     }
 
     fun initData(id: Int): LiveData<List<CourseDetailBean>> {
-        detailList = mutableListOf()
+        editList = mutableListOf()
         return detailDao.getDetailById(id)
     }
 
     fun getList(): MutableList<CourseEditBean> {
-        return detailList
-    }
-
-    fun rollBackData() {
-        thread(name = "rollBackDataThread") {
-            baseDao.updateCourseBaseBean(oldBaseBean!!)
-            detailDao.insertList(oldDetailList!!)
-        }
+        return editList
     }
 
     fun getDeleteList(): ArrayList<Int> {

@@ -6,11 +6,11 @@ import android.arch.persistence.room.ForeignKey.CASCADE
 import android.arch.persistence.room.Index
 
 @Entity(foreignKeys = [(
-                        ForeignKey(entity = CourseBaseBean::class,
-                                parentColumns = ["id", "tableName"],
-                                childColumns = ["id", "tableName"],
-                                onUpdate = CASCADE,
-                                onDelete = CASCADE
+        ForeignKey(entity = CourseBaseBean::class,
+                parentColumns = ["id", "tableName"],
+                childColumns = ["id", "tableName"],
+                onUpdate = CASCADE,
+                onDelete = CASCADE
         ))],
         primaryKeys = ["day", "startNode", "startWeek", "type", "tableName"],
         indices = [Index(value = ["id", "tableName"], unique = false)])

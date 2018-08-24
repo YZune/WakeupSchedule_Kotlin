@@ -71,7 +71,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
-        android:text="方正教务导入"
+        android:text="正方教务导入"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />

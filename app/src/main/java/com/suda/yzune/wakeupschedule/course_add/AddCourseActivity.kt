@@ -125,8 +125,6 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     if (adapter.data.size - viewModel.getDeleteList().size == 1) {
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
-//                        adapter.remove(position)
-//                        viewModel.removeWeek(position)
                         viewModel.getDeleteList().add(position)
                         val lp = rv_detail.findViewHolderForLayoutPosition(position + 1).itemView.layoutParams as RecyclerView.LayoutParams
                         lp.height = 0
@@ -250,7 +248,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     Toasty.error(this.applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
                 }
                 else -> {
-                    //Toasty.error(this.applicationContext, "未知错误", Toast.LENGTH_LONG).show()
+                    Toasty.error(this.applicationContext, s!!, Toast.LENGTH_LONG).show()
                 }
             }
         })

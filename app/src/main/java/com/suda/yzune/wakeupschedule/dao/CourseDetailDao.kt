@@ -8,10 +8,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 @Dao
 interface CourseDetailDao {
 
-    @Insert
-    fun insertCourseDetail(courseDetailBean: CourseDetailBean)
-
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(courseDetailList: List<CourseDetailBean>)
 
     @Query("select * from coursedetailbean")
