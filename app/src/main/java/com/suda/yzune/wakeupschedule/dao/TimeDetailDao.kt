@@ -18,9 +18,15 @@ interface TimeDetailDao {
     @Update
     fun updateTimeDetailList(timeDetailBeanList: List<TimeDetailBean>)
 
-    @Query("select * from timedetailbean order by node")
+    @Query("select * from timedetailbean where node < 17 order by node")
     fun getTimeList(): LiveData<List<TimeDetailBean>>
 
-    @Query("select * from timedetailbean order by node")
+    @Query("select * from timedetailbean where node > 16 order by node")
+    fun getSummerTimeList(): LiveData<List<TimeDetailBean>>
+
+    @Query("select * from timedetailbean where node < 17 order by node")
     fun getTimeListInThread(): List<TimeDetailBean>
+
+    @Query("select * from timedetailbean where node > 16 order by node")
+    fun getSummerTimeListInThread(): List<TimeDetailBean>
 }

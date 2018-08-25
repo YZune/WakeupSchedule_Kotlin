@@ -15,6 +15,7 @@ class TimeSettingsRepository(context: Context) {
     private val dataBase = AppDatabase.getDatabase(context)
     private val timeDao = dataBase.timeDetailDao()
     private val timeList = arrayListOf<TimeDetailBean>()
+    private val summerTimeList = arrayListOf<TimeDetailBean>()
     private val timeSelectList = arrayListOf<String>()
     private val saveInfo = MutableLiveData<String>()
 
@@ -26,8 +27,16 @@ class TimeSettingsRepository(context: Context) {
             }
         }
 
+        for (i in 0 until summerTimeList.size - 1) {
+            if (summerTimeList[i].startTime > summerTimeList[i + 1].endTime) {
+                saveInfo.value = "时间的顺序不太对哦"
+                return
+            }
+        }
+
         thread(name = "updateTimeDetailThread") {
             timeDao.updateTimeDetailList(timeList)
+            timeDao.updateTimeDetailList(summerTimeList)
             saveInfo.postValue("ok")
         }
     }
@@ -38,6 +47,10 @@ class TimeSettingsRepository(context: Context) {
 
     fun getTimeList(): ArrayList<TimeDetailBean> {
         return timeList
+    }
+
+    fun getSummerTimeList(): ArrayList<TimeDetailBean> {
+        return summerTimeList
     }
 
     fun initTimeSelectList() {
@@ -56,5 +69,9 @@ class TimeSettingsRepository(context: Context) {
 
     fun getDetailData(): LiveData<List<TimeDetailBean>> {
         return timeDao.getTimeList()
+    }
+
+    fun getSummerData(): LiveData<List<TimeDetailBean>> {
+        return timeDao.getSummerTimeList()
     }
 }

@@ -19,6 +19,10 @@ class TimeSettingsViewModel : ViewModel() {
         return repository.getTimeList()
     }
 
+    fun getSummerTimeList(): ArrayList<TimeDetailBean>{
+        return repository.getSummerTimeList()
+    }
+
     fun getSaveInfo(): LiveData<String>{
         return repository.getSaveInfo()
     }
@@ -28,6 +32,10 @@ class TimeSettingsViewModel : ViewModel() {
     }
 
     fun getDetailData(): LiveData<List<TimeDetailBean>> {
+        return repository.getDetailData()
+    }
+
+    fun getSummerData(): LiveData<List<TimeDetailBean>> {
         return repository.getDetailData()
     }
 

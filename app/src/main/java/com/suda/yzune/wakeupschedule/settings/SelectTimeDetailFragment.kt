@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.fragment_select_time_detail.*
 class SelectTimeDetailFragment : DialogFragment() {
 
     var position = -1
+    var isSummer = false
     private lateinit var viewModel: TimeSettingsViewModel
     private lateinit var adapter: TimeSettingsAdapter
 
@@ -49,8 +50,15 @@ class SelectTimeDetailFragment : DialogFragment() {
     }
 
     private fun initEvent() {
-        var startIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].startTime)
-        var endIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].endTime)
+        var startIndex: Int
+        var endIndex: Int
+        if (!isSummer) {
+            startIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].startTime)
+            endIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].endTime)
+        } else {
+            startIndex = viewModel.getTimeSelectList().indexOf(viewModel.getSummerTimeList()[position].startTime)
+            endIndex = viewModel.getTimeSelectList().indexOf(viewModel.getSummerTimeList()[position].endTime)
+        }
         wp_start.selectedItemPosition = startIndex
         wp_end.selectedItemPosition = endIndex
 
@@ -70,15 +78,27 @@ class SelectTimeDetailFragment : DialogFragment() {
         }
 
         btn_save.setOnClickListener {
-            val startStr = viewModel.getTimeSelectList()[startIndex]
-            viewModel.getTimeList()[position].startTime = startStr
-            if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
-                viewModel.getTimeList()[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
+            if (!isSummer) {
+                val startStr = viewModel.getTimeSelectList()[startIndex]
+                viewModel.getTimeList()[position].startTime = startStr
+                if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
+                    viewModel.getTimeList()[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
+                } else {
+                    viewModel.getTimeList()[position].endTime = viewModel.getTimeSelectList()[endIndex]
+                }
+                adapter.notifyDataSetChanged()
+                dismiss()
             } else {
-                viewModel.getTimeList()[position].endTime = viewModel.getTimeSelectList()[endIndex]
+                val startStr = viewModel.getTimeSelectList()[startIndex]
+                viewModel.getSummerTimeList()[position].startTime = startStr
+                if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
+                    viewModel.getSummerTimeList()[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
+                } else {
+                    viewModel.getSummerTimeList()[position].endTime = viewModel.getTimeSelectList()[endIndex]
+                }
+                adapter.notifyDataSetChanged()
+                dismiss()
             }
-            adapter.notifyDataSetChanged()
-            dismiss()
         }
 
         btn_cancel.setOnClickListener {
@@ -88,10 +108,11 @@ class SelectTimeDetailFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg1: Int, arg2: TimeSettingsAdapter) =
+        fun newInstance(arg1: Int, arg2: TimeSettingsAdapter, arg3: Boolean) =
                 SelectTimeDetailFragment().apply {
                     position = arg1
                     adapter = arg2
+                    isSummer = arg3
                 }
     }
 }

@@ -61,6 +61,7 @@ class SettingsActivity : AppCompatActivity() {
         })
 
         initSudaTime(this)
+        initSummerTime(this)
     }
 
     private fun initSudaTime(context: Context) {
@@ -81,6 +82,22 @@ class SettingsActivity : AppCompatActivity() {
             timeList.add(TimeDetailBean(14, "00:00", "00:00"))
             timeList.add(TimeDetailBean(15, "00:00", "00:00"))
             timeList.add(TimeDetailBean(16, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(17, "08:00", "08:50"))
+            timeList.add(TimeDetailBean(18, "09:00", "09:50"))
+            timeList.add(TimeDetailBean(19, "10:10", "11:00"))
+            timeList.add(TimeDetailBean(20, "11:10", "12:00"))
+            timeList.add(TimeDetailBean(21, "13:30", "14:20"))
+            timeList.add(TimeDetailBean(22, "14:30", "15:20"))
+            timeList.add(TimeDetailBean(23, "15:40", "16:30"))
+            timeList.add(TimeDetailBean(24, "16:40", "17:30"))
+            timeList.add(TimeDetailBean(25, "18:30", "19:20"))
+            timeList.add(TimeDetailBean(26, "19:30", "20:20"))
+            timeList.add(TimeDetailBean(27, "20:30", "21:20"))
+            timeList.add(TimeDetailBean(28, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(29, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(30, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(31, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(32, "00:00", "00:00"))
             thread(name = "initTimeTableThread") {
                 try {
                     timeDao.insertTimeList(timeList)
@@ -88,6 +105,37 @@ class SettingsActivity : AppCompatActivity() {
 
                 }
                 PreferenceUtils.saveBooleanToSP(context.applicationContext, "isInitTimeTable", true)
+                PreferenceUtils.saveBooleanToSP(context.applicationContext, "isInitSummerTimeTable", true)
+            }
+        }
+    }
+
+    private fun initSummerTime(context: Context) {
+        if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "isInitTimeTable", false)
+                && !PreferenceUtils.getBooleanFromSP(context.applicationContext, "isInitSummerTimeTable", false)) {
+            timeList.add(TimeDetailBean(17, "08:00", "08:50"))
+            timeList.add(TimeDetailBean(18, "09:00", "09:50"))
+            timeList.add(TimeDetailBean(19, "10:10", "11:00"))
+            timeList.add(TimeDetailBean(20, "11:10", "12:00"))
+            timeList.add(TimeDetailBean(21, "13:30", "14:20"))
+            timeList.add(TimeDetailBean(22, "14:30", "15:20"))
+            timeList.add(TimeDetailBean(23, "15:40", "16:30"))
+            timeList.add(TimeDetailBean(24, "16:40", "17:30"))
+            timeList.add(TimeDetailBean(25, "18:30", "19:20"))
+            timeList.add(TimeDetailBean(26, "19:30", "20:20"))
+            timeList.add(TimeDetailBean(27, "20:30", "21:20"))
+            timeList.add(TimeDetailBean(28, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(29, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(30, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(31, "00:00", "00:00"))
+            timeList.add(TimeDetailBean(32, "00:00", "00:00"))
+            thread(name = "initSummerTimeTableThread") {
+                try {
+                    timeDao.insertTimeList(timeList)
+                } catch (e: SQLiteConstraintException) {
+
+                }
+                PreferenceUtils.saveBooleanToSP(context.applicationContext, "isInitSummerTimeTable", true)
             }
         }
     }

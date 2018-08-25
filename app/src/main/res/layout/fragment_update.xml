@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="256dp"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
@@ -63,10 +63,12 @@
         android:textStyle="bold" />
 
     <ScrollView
-        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp">
+
         <TextView
+            android:minHeight="120dp"
             android:id="@+id/tv_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,11 +84,11 @@
         android:layout_width="160dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
         android:text="去看看"
-        android:layout_marginBottom="32dp"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />

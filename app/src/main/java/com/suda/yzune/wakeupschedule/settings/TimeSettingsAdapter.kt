@@ -9,7 +9,8 @@ class TimeSettingsAdapter(layoutResId: Int, data: List<TimeDetailBean>) :
         BaseItemDraggableAdapter<TimeDetailBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: TimeDetailBean) {
-        helper.setText(R.id.tv_time_name, "第 ${item.node} 节")
+        val name = if (item.node <= 16) "第 ${item.node} 节" else "第 ${item.node} 节"
+        helper.setText(R.id.tv_time_name, name)
         helper.setText(R.id.tv_start, item.startTime)
         helper.setText(R.id.tv_end, item.endTime)
     }

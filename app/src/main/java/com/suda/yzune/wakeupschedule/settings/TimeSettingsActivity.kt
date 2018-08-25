@@ -48,12 +48,17 @@ class TimeSettingsActivity : AppCompatActivity() {
             viewModel.getTimeList().addAll(it!!.subList(0, nodesNum))
             initAdapter(TimeSettingsAdapter(R.layout.item_time_detail, viewModel.getTimeList()))
         })
+
+        viewModel.getSummerData().observe(this, Observer {
+            viewModel.getSummerTimeList().clear()
+            viewModel.getSummerTimeList().addAll(it!!.subList(0, nodesNum))
+        })
         initEvent()
     }
 
     private fun initAdapter(adapter: TimeSettingsAdapter) {
         adapter.setOnItemClickListener { _, _, position ->
-            val selectTimeDialog = SelectTimeDetailFragment.newInstance(position, adapter)
+            val selectTimeDialog = SelectTimeDetailFragment.newInstance(position, adapter,PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false))
             selectTimeDialog.isCancelable = false
             selectTimeDialog.show(supportFragmentManager, "selectTimeDetail")
         }
@@ -65,19 +70,46 @@ class TimeSettingsActivity : AppCompatActivity() {
     private fun initHeaderView(adapter: TimeSettingsAdapter): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_time_detail_header, null)
         val sameSwitch = view.findViewById<Switch>(R.id.s_time_same)
+        val summerSwitch = view.findViewById<Switch>(R.id.s_summer)
         val setLL = view.findViewById<LinearLayout>(R.id.ll_set_length)
         sameSwitch.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_time_same", true)
+        summerSwitch.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false)
         if (sameSwitch.isChecked) {
             setLL.visibility = View.VISIBLE
         } else {
             setLL.visibility = View.GONE
         }
+        if (summerSwitch.isChecked) {
+            adapter.data.clear()
+            adapter.data.addAll(viewModel.getSummerTimeList())
+//            adapter.replaceData(viewModel.getSummerTimeList())
+            adapter.notifyDataSetChanged()
+        } else {
+            adapter.data.clear()
+            adapter.data.addAll(viewModel.getTimeList())
+//            adapter.replaceData(viewModel.getTimeList())
+            adapter.notifyDataSetChanged()
+        }
         sameSwitch.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_time_same", isChecked)
+                PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_time_same", isChecked)
+                if (isChecked) {
+                    setLL.visibility = View.VISIBLE
+                } else {
+                    setLL.visibility = View.GONE
+                }
+        }
+        summerSwitch.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_summer", isChecked)
             if (isChecked) {
-                setLL.visibility = View.VISIBLE
+                adapter.data.clear()
+                adapter.data.addAll(viewModel.getSummerTimeList())
+//                adapter.replaceData(viewModel.getSummerTimeList())
+                adapter.notifyDataSetChanged()
             } else {
-                setLL.visibility = View.GONE
+                adapter.data.clear()
+                adapter.data.addAll(viewModel.getTimeList())
+//                adapter.replaceData(viewModel.getTimeList())
+                adapter.notifyDataSetChanged()
             }
         }
 
