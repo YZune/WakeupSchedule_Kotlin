@@ -26,7 +26,9 @@ class ImportViewModel : ViewModel() {
     private val pattern = "第.*节"
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
-    val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
+    private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
+    private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选")
+    //todo: 在线更新规则
     private var selectedYear = ""
     private var selectedTerm = ""
     private val baseList = arrayListOf<CourseBaseBean>()
@@ -155,8 +157,7 @@ class ImportViewModel : ViewModel() {
         for (i in 0 until split.size) {
             if (split[i].contains('{') && split[i].contains('}')) {
                 if (preIndex != -1) {
-                    val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] == "必修" || split[preIndex - 1] == "选修" || split[preIndex - 1] == "公选" || split[preIndex - 1] == "专基"
-                            || split[preIndex - 1] == "专选" || split[preIndex - 1] == "公必") split[preIndex - 2] else split[preIndex - 1],
+                    val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] in courseProperty) split[preIndex - 2] else split[preIndex - 1],
                             timeInfo = split[preIndex],
                             room = null, teacher = null)
                     if ((i - preIndex - 2) == 1) {
@@ -172,8 +173,7 @@ class ImportViewModel : ViewModel() {
                 }
             }
             if (i == split.size - 1) {
-                val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] == "必修" || split[preIndex - 1] == "选修" || split[preIndex - 1] == "公选"
-                        || split[preIndex - 1] == "专选" || split[preIndex - 1] == "公必" || split[preIndex - 1] == "专基") split[preIndex - 2] else split[preIndex - 1],
+                val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] in courseProperty) split[preIndex - 2] else split[preIndex - 1],
                         timeInfo = split[preIndex],
                         room = null, teacher = null)
                 if ((i - preIndex) == 1) {

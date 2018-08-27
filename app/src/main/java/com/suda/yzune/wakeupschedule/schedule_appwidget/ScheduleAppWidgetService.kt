@@ -194,6 +194,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val myGrad = tv.background as GradientDrawable
                 if (!showStroke) {
                     myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), resources.getColor(R.color.transparent))
+                }else{
+                    myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), Color.parseColor("#80ffffff"))
                 }
 
                 myGrad.setColor(Color.parseColor(c.color))
