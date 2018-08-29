@@ -1,21 +1,17 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
-import com.chad.library.adapter.base.BaseQuickAdapter
+import android.widget.SeekBar
+import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.course_add.SelectTimeFragment
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
@@ -43,84 +39,55 @@ class TimeSettingsActivity : AppCompatActivity() {
         viewModel.initRepository(applicationContext)
         val nodesNum = PreferenceUtils.getIntFromSP(this.applicationContext, "classNum", 11)
 
-        viewModel.getDetailData().observe(this, Observer {
-            viewModel.getTimeList().clear()
-            viewModel.getTimeList().addAll(it!!.subList(0, nodesNum))
-            initAdapter(TimeSettingsAdapter(R.layout.item_time_detail, viewModel.getTimeList()))
-        })
-
-        viewModel.getSummerData().observe(this, Observer {
-            viewModel.getSummerTimeList().clear()
-            viewModel.getSummerTimeList().addAll(it!!.subList(0, nodesNum))
-        })
+        initView(nodesNum)
         initEvent()
     }
 
-    private fun initAdapter(adapter: TimeSettingsAdapter) {
-        adapter.setOnItemClickListener { _, _, position ->
-            val selectTimeDialog = SelectTimeDetailFragment.newInstance(position, adapter,PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false))
-            selectTimeDialog.isCancelable = false
-            selectTimeDialog.show(supportFragmentManager, "selectTimeDetail")
+    private fun initView(nodesNum: Int) {
+        s_time_same.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_time_same", true)
+        s_summer.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false)
+
+        if (s_time_same.isChecked) {
+            ll_set_length.visibility = View.VISIBLE
+        } else {
+            ll_set_length.visibility = View.GONE
         }
-        adapter.addHeaderView(initHeaderView(adapter))
-        rv_time_detail.adapter = adapter
-        rv_time_detail.layoutManager = LinearLayoutManager(this)
+
+        val min = PreferenceUtils.getIntFromSP(this.applicationContext, "classLen", 50)
+        sb_time_length.progress = min - 30
+        tv_time_length.text = min.toString()
+
+        vp_time_list.adapter = TimeListTabAdapter(supportFragmentManager, nodesNum)
+        vp_time_list.layoutParams.height = SizeUtils.dp2px(this.applicationContext, 65f * nodesNum)
+        //vp_time_list.minimumHeight = SizeUtils.dp2px(this.applicationContext, 17f * nodesNum)
+        tl_time_list.setupWithViewPager(vp_time_list)
     }
 
-    private fun initHeaderView(adapter: TimeSettingsAdapter): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_time_detail_header, null)
-        val sameSwitch = view.findViewById<Switch>(R.id.s_time_same)
-        val summerSwitch = view.findViewById<Switch>(R.id.s_summer)
-        val setLL = view.findViewById<LinearLayout>(R.id.ll_set_length)
-        sameSwitch.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_time_same", true)
-        summerSwitch.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false)
-        if (sameSwitch.isChecked) {
-            setLL.visibility = View.VISIBLE
-        } else {
-            setLL.visibility = View.GONE
+    private fun initEvent() {
+        tv_cancel.setOnClickListener {
+            finish()
         }
-        if (summerSwitch.isChecked) {
-            adapter.data.clear()
-            adapter.data.addAll(viewModel.getSummerTimeList())
-//            adapter.replaceData(viewModel.getSummerTimeList())
-            adapter.notifyDataSetChanged()
-        } else {
-            adapter.data.clear()
-            adapter.data.addAll(viewModel.getTimeList())
-//            adapter.replaceData(viewModel.getTimeList())
-            adapter.notifyDataSetChanged()
+
+        tv_save.setOnClickListener { _ ->
+            saveData()
         }
-        sameSwitch.setOnCheckedChangeListener { _, isChecked ->
-                PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_time_same", isChecked)
-                if (isChecked) {
-                    setLL.visibility = View.VISIBLE
-                } else {
-                    setLL.visibility = View.GONE
-                }
-        }
-        summerSwitch.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_summer", isChecked)
+
+        s_time_same.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_time_same", isChecked)
             if (isChecked) {
-                adapter.data.clear()
-                adapter.data.addAll(viewModel.getSummerTimeList())
-//                adapter.replaceData(viewModel.getSummerTimeList())
-                adapter.notifyDataSetChanged()
+                ll_set_length.visibility = View.VISIBLE
             } else {
-                adapter.data.clear()
-                adapter.data.addAll(viewModel.getTimeList())
-//                adapter.replaceData(viewModel.getTimeList())
-                adapter.notifyDataSetChanged()
+                ll_set_length.visibility = View.GONE
             }
         }
 
-        val seekBar = view.findViewById<SeekBar>(R.id.sb_time_length)
-        val textView = view.findViewById<TextView>(R.id.tv_time_length)
-        val min = PreferenceUtils.getIntFromSP(this.applicationContext, "classLen", 50)
-        seekBar.progress = min - 30
-        textView.text = min.toString()
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        s_summer.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_summer", isChecked)
+        }
+
+        sb_time_length.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                textView.text = "${progress + 30}"
+                tv_time_length.text = "${progress + 30}"
                 PreferenceUtils.saveIntToSP(this@TimeSettingsActivity.applicationContext, "classLen", progress + 30)
             }
 
@@ -131,8 +98,6 @@ class TimeSettingsActivity : AppCompatActivity() {
             }
 
         })
-
-        return view
     }
 
     private fun saveData() {
@@ -148,16 +113,6 @@ class TimeSettingsActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    private fun initEvent() {
-        tv_cancel.setOnClickListener {
-            finish()
-        }
-
-        tv_save.setOnClickListener { _ ->
-            saveData()
-        }
     }
 
     private fun exitBy2Click() {

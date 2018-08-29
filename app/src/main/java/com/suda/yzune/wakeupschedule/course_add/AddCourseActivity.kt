@@ -1,45 +1,33 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.annotation.SuppressLint
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Editable
-import android.util.Log
-import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import kotlinx.android.synthetic.main.activity_add_course.*
-import com.suda.yzune.wakeupschedule.MainActivity
-import android.view.LayoutInflater
-import android.view.View
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
-import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.item_add_course_base.*
-import java.util.*
-import android.content.DialogInterface
-import android.os.CountDownTimer
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
-import com.flask.colorpicker.builder.ColorPickerClickListener
-import com.flask.colorpicker.OnColorSelectedListener
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import kotlinx.android.synthetic.main.fragment_course_detail.*
-import kotlinx.android.synthetic.main.item_add_course_detail.*
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
+import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.activity_add_course.*
 
 
 class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
@@ -126,10 +114,13 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
                         viewModel.getDeleteList().add(position)
-                        val lp = rv_detail.findViewHolderForLayoutPosition(position + 1).itemView.layoutParams as RecyclerView.LayoutParams
-                        lp.height = 0
-                        lp.bottomMargin = 0
-                        rv_detail.findViewHolderForLayoutPosition(position + 1).itemView.layoutParams = lp
+                        val viewHolder = rv_detail.findViewHolderForLayoutPosition(position + 1)
+                        if (viewHolder != null) {
+                            val lp = viewHolder.itemView.layoutParams as RecyclerView.LayoutParams
+                            lp.height = 0
+                            lp.bottomMargin = 0
+                            viewHolder.itemView.layoutParams = lp
+                        }
                     }
                 }
                 R.id.ll_weeks -> {

@@ -189,7 +189,8 @@ object CourseUtils {
 
     @Throws(ParseException::class)
     fun countWeek(context: Context): Int {
-        return daysBetween(context) / 7 + 1
+        val during = daysBetween(context)
+        return if (during < 0) 0 else during / 7 + 1
     }
 
     fun getWeekday(): String {

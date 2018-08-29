@@ -36,6 +36,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
         private val timeList = arrayListOf<TimeDetailBean>()
+        private val summerTimeList = arrayListOf<TimeDetailBean>()
 
         override fun onCreate() {
 
@@ -46,9 +47,15 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
                 timeList.clear()
-                timeList.addAll(timeDao.getTimeListInThread())
+                summerTimeList.clear()
+                if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_summer", false)) {
+                    summerTimeList.addAll(timeDao.getSummerTimeListInThread())
+                } else {
+                    timeList.addAll(timeDao.getTimeListInThread())
+                }
             } else {
                 timeList.clear()
+                summerTimeList.clear()
             }
         }
 
@@ -244,6 +251,9 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 if (timeList.isNotEmpty()) {
                     tv.text = timeList[c.startNode - 1].startTime + "\n" + tv.text
+                }
+                if (summerTimeList.isNotEmpty()) {
+                    tv.text = summerTimeList[c.startNode - 1].startTime + "\n" + tv.text
                 }
 
                 ll.addView(tv)

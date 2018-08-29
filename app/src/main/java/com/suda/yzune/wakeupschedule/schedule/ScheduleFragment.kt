@@ -11,12 +11,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
@@ -27,6 +27,7 @@ class ScheduleFragment : Fragment() {
     private var showWhite = true
     private var showSunday = true
     private var showTimeDetail = false
+    private var showSummerTime = false
     private var showStroke = true
     private var showNone = true
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
@@ -48,6 +49,7 @@ class ScheduleFragment : Fragment() {
         val itemHeightDp = PreferenceUtils.getIntFromSP(context!!.applicationContext, "item_height", 56)
         itemHeight = SizeUtils.dp2px(context, itemHeightDp.toFloat())
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+        showSummerTime = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_summer", false)
         showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true)
         showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
         showWhite = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)
@@ -151,7 +153,7 @@ class ScheduleFragment : Fragment() {
             val myGrad = tv.background as GradientDrawable
             if (!showStroke) {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), resources.getColor(R.color.transparent))
-            }else{
+            } else {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), Color.parseColor("#80ffffff"))
             }
 
@@ -206,7 +208,11 @@ class ScheduleFragment : Fragment() {
             }
 
             if (showTimeDetail) {
-                tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
+                if (showSummerTime) {
+                    tv.text = viewModel.getSummerTimeList()[c.startNode - 1].startTime + "\n" + tv.text
+                } else {
+                    tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
+                }
             }
 
             tv.setOnClickListener {
@@ -222,8 +228,7 @@ class ScheduleFragment : Fragment() {
 
     private fun getCustomizedColor(index: Int): Int {
         val customizedColors = resources.getIntArray(R.array.customizedColors)
-        val customizedColor = customizedColors[index]
-        return customizedColor
+        return customizedColors[index]
     }
 
 }

@@ -5,11 +5,7 @@ import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
-import com.suda.yzune.wakeupschedule.schedule_import.ImportRepository
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class ScheduleViewModel : ViewModel() {
@@ -30,12 +26,20 @@ class ScheduleViewModel : ViewModel() {
         return repository.getTimeDetailLiveList()
     }
 
+    fun getSummerTimeLiveList(): LiveData<List<TimeDetailBean>> {
+        return repository.getSummerTimeLiveList()
+    }
+
     fun updateFromOldVer(context: Context) {
         repository.updateFromOldVer(context)
     }
 
     fun getTimeList(): ArrayList<TimeDetailBean> {
         return repository.getTimeDetailList()
+    }
+
+    fun getSummerTimeList(): ArrayList<TimeDetailBean> {
+        return repository.getSummerTimeList()
     }
 
     fun getScheduleWidgetIds(): LiveData<List<Int>> {

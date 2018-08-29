@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wakeup课程表</string>
+    <string name="app_name">WakeUp课程表</string>
 
     <string name="login_web_title">登录教务系统</string>
     <string name="student_id">学号</string>

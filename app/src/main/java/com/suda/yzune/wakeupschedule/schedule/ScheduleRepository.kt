@@ -2,21 +2,17 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
-import android.os.AsyncTask
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.*
-import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
-import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.courseBean2DetailBean
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import java.util.ArrayList
+import java.util.*
 import kotlin.concurrent.thread
 
 class ScheduleRepository(context: Context) {
@@ -27,6 +23,7 @@ class ScheduleRepository(context: Context) {
     private val widgetDao = dataBase.appWidgetDao()
     private val timeDao = dataBase.timeDetailDao()
     private val timeList = arrayListOf<TimeDetailBean>()
+    private val summerTimeList = arrayListOf<TimeDetailBean>()
     private val json = PreferenceUtils.getStringFromSP(context, "course", "")
 
     private fun oldBean2CourseBean(list: List<CourseOldBean>, tableName: String, context: Context) {
@@ -91,8 +88,16 @@ class ScheduleRepository(context: Context) {
         return timeDao.getTimeList()
     }
 
+    fun getSummerTimeLiveList(): LiveData<List<TimeDetailBean>> {
+        return timeDao.getSummerTimeList()
+    }
+
     fun getTimeDetailList(): ArrayList<TimeDetailBean> {
         return timeList
+    }
+
+    fun getSummerTimeList(): ArrayList<TimeDetailBean> {
+        return summerTimeList
     }
 
     fun getRawCourseByDay(day: Int): LiveData<List<CourseBean>> {

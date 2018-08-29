@@ -1,11 +1,9 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
-import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
 
 class TimeSettingsViewModel : ViewModel() {
     private lateinit var repository: TimeSettingsRepository
@@ -36,7 +34,7 @@ class TimeSettingsViewModel : ViewModel() {
     }
 
     fun getSummerData(): LiveData<List<TimeDetailBean>> {
-        return repository.getDetailData()
+        return repository.getSummerData()
     }
 
     fun getTimeSelectList(): ArrayList<String>{

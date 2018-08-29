@@ -4,41 +4,39 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
-import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import com.suda.yzune.wakeupschedule.*
+import com.suda.yzune.wakeupschedule.AboutActivity
+import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.GlideOptions.bitmapTransform
-import kotlinx.android.synthetic.main.activity_schedule.*
-import com.suda.yzune.wakeupschedule.bean.DonateBean
-import com.suda.yzune.wakeupschedule.bean.TimeBean
-import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
-import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
-import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.utils.*
+import com.suda.yzune.wakeupschedule.settings.SettingsActivity
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import jp.wasabeef.glide.transformations.CropCircleTransformation
+import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -167,6 +165,10 @@ class ScheduleActivity : AppCompatActivity() {
             viewModel.getTimeList().addAll(it!!)
         })
 
+        viewModel.getSummerTimeLiveList().observe(this, Observer {
+            viewModel.getSummerTimeList().clear()
+            viewModel.getSummerTimeList().addAll(it!!)
+        })
 
         whichWeek = countWeek(this)
         tv_week.text = "第${whichWeek}周"
