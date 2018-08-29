@@ -21,6 +21,7 @@ import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.getkeepsafe.taptargetview.TapTargetView
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.*
 import com.suda.yzune.wakeupschedule.GlideOptions.bitmapTransform
@@ -90,10 +91,14 @@ class ScheduleActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                     if (response!!.body() != null) {
                         val gson = Gson()
-                        val updateInfo = gson.fromJson<UpdateInfoBean>(response.body()!!.string(), object : TypeToken<UpdateInfoBean>() {
-                        }.type)
-                        if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
-                            UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
+                        try {
+                            val updateInfo = gson.fromJson<UpdateInfoBean>(response.body()!!.string(), object : TypeToken<UpdateInfoBean>() {
+                            }.type)
+                            if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
+                                UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
+                            }
+                        } catch (e: JsonSyntaxException) {
+
                         }
                     }
                 }
