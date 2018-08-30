@@ -81,9 +81,14 @@ class WebViewLoginFragment : Fragment() {
         }
 
         fab_import.setOnClickListener {
-            wv_course.loadUrl("javascript:window.local_obj.showSource('<head>'+"
-                    + GET_FRAME_CONTENT_STR
-                    + "+'</head>');")
+            if (type == "FZ") {
+                wv_course.loadUrl("javascript:window.local_obj.showSource('<head>'+"
+                        + GET_FRAME_CONTENT_STR
+                        + "+'</head>');")
+            } else if (type == "newFZ") {
+                wv_course.loadUrl("javascript:window.local_obj.showSource(''+" +
+                        "document.documentElement.outerHTML+'');")
+            }
         }
     }
 
