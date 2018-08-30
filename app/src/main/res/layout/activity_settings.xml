@@ -154,6 +154,47 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="格子显示文字大小" />
+
+                <TextView
+                    android:id="@+id/tv_text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
             <LinearLayout style="@style/settings_item_ll">
 
                 <TextView
@@ -446,6 +487,47 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="格子显示文字大小" />
+
+                <TextView
+                    android:id="@+id/tv_widget_text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_widget_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
             <LinearLayout style="@style/settings_item_ll">
 
                 <TextView
@@ -463,7 +545,7 @@
                     android:track="@drawable/switch_track" />
 
 
-                </LinearLayout>
+            </LinearLayout>
 
             <TextView
                 style="@style/settings_subtitle"
@@ -489,18 +571,18 @@
             </LinearLayout>
 
             <View
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:alpha="0.5"
-                android:background="@color/grey" />
+                android:background="@color/grey"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/ll_clean_data"
-                style="@style/settings_item_ll">
+                style="@style/settings_item_ll"
+                android:visibility="gone">
 
                 <TextView
                     style="@style/settings_item_tv_main"

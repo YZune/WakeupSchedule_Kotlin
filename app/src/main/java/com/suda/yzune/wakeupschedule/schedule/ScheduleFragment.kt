@@ -7,7 +7,6 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +31,7 @@ class ScheduleFragment : Fragment() {
     private var showNone = true
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
     private var nodesNum = 11
+    private var textSize = 12
     private lateinit var viewModel: ScheduleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +49,7 @@ class ScheduleFragment : Fragment() {
         val itemHeightDp = PreferenceUtils.getIntFromSP(context!!.applicationContext, "item_height", 56)
         itemHeight = SizeUtils.dp2px(context, itemHeightDp.toFloat())
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+        textSize = PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_text_size", 12)
         showSummerTime = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_summer", false)
         showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true)
         showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
@@ -131,11 +132,10 @@ class ScheduleFragment : Fragment() {
         val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
-            Log.d("旋转", "更新了")
             val c = data[i]
             val tv = TextView(context)
             val lp = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.FILL_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     itemHeight * c.step + marTop * (c.step - 1))
             if (i > 0) {
                 lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (itemHeight + marTop) + marTop, 0, 0)
@@ -144,7 +144,7 @@ class ScheduleFragment : Fragment() {
             }
             tv.layoutParams = lp
             //tv.gravity = Gravity.CENTER_VERTICAL
-            tv.textSize = 12f
+            tv.textSize = textSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             tv.setPadding(8, 8, 8, 8)
             tv.setTextColor(resources.getColor(R.color.white))

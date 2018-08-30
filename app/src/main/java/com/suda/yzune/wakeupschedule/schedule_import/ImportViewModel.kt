@@ -1,10 +1,8 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
@@ -13,7 +11,6 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
-import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
@@ -27,7 +24,7 @@ class ImportViewModel : ViewModel() {
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
-    private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选")
+    private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选", "义修")
     //todo: 在线更新规则
     private var selectedYear = ""
     private var selectedTerm = ""

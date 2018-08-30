@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.Manifest
-import android.app.ActivityManager
 import android.app.DatePickerDialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
@@ -10,12 +9,10 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.database.sqlite.SQLiteConstraintException
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.widget.RemoteViews
+import android.support.v7.app.AppCompatActivity
 import android.widget.SeekBar
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -152,12 +149,18 @@ class SettingsActivity : AppCompatActivity() {
         val widgetItemHeight = PreferenceUtils.getIntFromSP(applicationContext, "widget_item_height", 56)
         val nodesNum = PreferenceUtils.getIntFromSP(applicationContext, "classNum", 11)
         val itemAlpha = PreferenceUtils.getIntFromSP(applicationContext, "sb_alpha", 60)
+        val textSize = PreferenceUtils.getIntFromSP(applicationContext, "sb_text_size", 12)
         val widgetItemAlpha = PreferenceUtils.getIntFromSP(applicationContext, "sb_widget_alpha", 60)
+        val widgetTextSize = PreferenceUtils.getIntFromSP(applicationContext, "sb_widget_text_size", 12)
+        sb_text_size.progress = textSize - 11
+        sb_widget_text_size.progress = widgetTextSize - 11
         sb_widget_item_height.progress = widgetItemHeight - 32
         sb_height.progress = itemHeight - 32
         sb_nodes.progress = nodesNum - 8
         sb_alpha.progress = itemAlpha
         sb_widget_item_alpha.progress = widgetItemAlpha
+        tv_text_size.text = textSize.toString()
+        tv_widget_text_size.text = widgetTextSize.toString()
         tv_height.text = itemHeight.toString()
         tv_widget_item_height.text = widgetItemHeight.toString()
         tv_nodes.text = nodesNum.toString()
@@ -209,6 +212,30 @@ class SettingsActivity : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tv_widget_item_height.text = "${progress + 32}"
                 PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "widget_item_height", progress + 32)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+        })
+
+        sb_text_size.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tv_text_size.text = "${progress + 11}"
+                PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "sb_text_size", progress + 11)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+        })
+
+        sb_widget_text_size.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tv_widget_text_size.text = "${progress + 11}"
+                PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "sb_widget_text_size", progress + 11)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

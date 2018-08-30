@@ -6,7 +6,6 @@ import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import kotlin.concurrent.thread
 
 class ScheduleViewModel : ViewModel() {
 
@@ -14,12 +13,6 @@ class ScheduleViewModel : ViewModel() {
 
     fun initRepository(context: Context) {
         repository = ScheduleRepository(context)
-    }
-
-    fun removeCourseData() {
-        thread(name = "removeCourseDataThread") {
-            repository.removeCourseData()
-        }
     }
 
     fun getTimeDetailLiveList(): LiveData<List<TimeDetailBean>> {

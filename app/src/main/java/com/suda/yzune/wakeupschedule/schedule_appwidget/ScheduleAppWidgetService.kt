@@ -32,6 +32,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private var showStroke = true
         private var showNone = true
         private var nodesNum = 11
+        private var textSize = 12
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
@@ -158,6 +159,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
             showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)
             showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
+            textSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12)
             val daysEnd = if (showSunday) 7 else 6
 
             val view = View.inflate(mContext, R.layout.fragment_schedule, null)
@@ -183,7 +185,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val c = data[i]
                 val tv = TextView(context)
                 val lp = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.FILL_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
                         itemHeight * c.step + marTop * (c.step - 1))
                 if (i > 0) {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (itemHeight + marTop) + marTop, 0, 0)
@@ -192,7 +194,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
                 tv.layoutParams = lp
                 //tv.gravity = Gravity.CENTER_VERTICAL
-                tv.textSize = 12f
+                tv.textSize = textSize.toFloat()
                 tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                 tv.setPadding(8, 8, 8, 8)
                 tv.setTextColor(resources.getColor(R.color.white))
