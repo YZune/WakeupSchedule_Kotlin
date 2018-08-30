@@ -1,35 +1,12 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.app.ActivityOptions
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.text.InputType
-import android.util.Log
-import android.view.View
-import android.view.animation.*
-import android.widget.CompoundButton
-import android.widget.Toast
+import android.support.v7.app.AppCompatActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_login_web.*
-import com.suda.yzune.wakeupschedule.MainActivity
-import android.animation.IntEvaluator
-import android.arch.lifecycle.LiveData
-import android.content.Context
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
-import android.view.inputmethod.InputMethodManager.HIDE_NOT_ALWAYS
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.os.CountDownTimer
-import android.view.inputmethod.InputMethodManager
-import com.suda.yzune.wakeupschedule.AppDatabase
 
 class LoginWebActivity : AppCompatActivity() {
 
@@ -57,7 +34,7 @@ class LoginWebActivity : AppCompatActivity() {
             transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
             transaction.commit()
         } else {
-            val fragment = WebViewLoginFragment.newInstance()
+            val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))
             val transaction = supportFragmentManager.beginTransaction()
             transaction.add(R.id.fl_fragment, fragment, "webLogin")
             transaction.commit()

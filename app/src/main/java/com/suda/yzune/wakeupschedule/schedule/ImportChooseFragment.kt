@@ -5,26 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
-import com.suda.yzune.wakeupschedule.DonateActivity
-
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 
 class ImportChooseFragment : DialogFragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,7 +44,14 @@ class ImportChooseFragment : DialogFragment() {
 
         tv_fangzheng.setOnClickListener {
             val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "fangzheng")
+            intent.putExtra("type", "FZ")
+            startActivity(intent)
+            dismiss()
+        }
+
+        tv_new_fangzheng.setOnClickListener {
+            val intent = Intent(activity!!, LoginWebActivity::class.java)
+            intent.putExtra("type", "newFZ")
             startActivity(intent)
             dismiss()
         }

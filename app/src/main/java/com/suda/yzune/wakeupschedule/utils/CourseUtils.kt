@@ -214,7 +214,9 @@ object CourseUtils {
         if (pInfo != null) {
             for (i in pInfo.indices) {
                 val pn = pInfo[i].packageName
-                if (pn.equals("com.tencent.qqlite", ignoreCase = true) || pn.equals("com.tencent.mobileqq", ignoreCase = true)) {
+                if (pn.equals("com.tencent.qqlite", ignoreCase = true)
+                        || pn.equals("com.tencent.mobileqq", ignoreCase = true)
+                        || pn.equals("com.tencent.tim", ignoreCase = true)) {
                     return true
                 }
             }

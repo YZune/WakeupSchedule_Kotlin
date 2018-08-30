@@ -228,6 +228,118 @@ class ImportViewModel : ViewModel() {
         }
     }
 
+    fun parseNewFZ(html: String, tableName: String, context: Context) {
+        baseList.clear()
+        detailList.clear()
+        var id = 0
+
+        val doc = org.jsoup.Jsoup.parse(html)
+
+        val table1 = doc.getElementById("table1")
+        val trs = table1.getElementsByTag("tr")
+
+        var node = 0
+        var day = 0
+        var teacher = ""
+        var room = ""
+        var step = 0
+        var startWeek = 0
+        var endWeek = 0
+        var type = 0
+        var timeStr = ""
+        for (tr in trs) {
+            val nodeStr = tr.getElementsByClass("festival").text()
+            if (nodeStr.isEmpty()) {
+                continue
+            }
+            node = nodeStr.toInt()
+
+            val tds = tr.getElementsByTag("td")
+            for (td in tds) {
+                val courseValue = td.text().trim()
+
+                if (courseValue.length <= 1) {
+                    continue
+                }
+
+                var courseName = td.getElementsByClass("title").text()
+                if (courseName.isEmpty()) {
+                    continue
+                }
+                if (courseName.contains('★') || courseName.contains('☆')) {
+                    courseName = courseName.substring(0, courseName.length - 1)
+                }
+
+                day = Integer.parseInt(td.attr("id")[0].toString())
+
+                val pList = td.getElementsByTag("p")
+                val weekList = arrayListOf<String>()
+                pList.forEach {
+                    when (it.getElementsByAttribute("title").attr("title")) {
+                        "教师" -> teacher = it.getElementsByTag("font").last().text().trim()
+                        "上课地点" -> room = it.getElementsByTag("font").last().text().trim()
+                        "节/周" -> {
+                            timeStr = it.getElementsByTag("font").last().text().trim()
+                            val leftIndex = timeStr.indexOf('-')
+                            val rightIndex = timeStr.indexOf('节')
+                            if (leftIndex != -1 && rightIndex != -1) {
+                                val endNode = Integer.parseInt(timeStr.substring(leftIndex + 1, rightIndex))
+                                step = endNode - node + 1
+                            }
+                            weekList.clear()
+                            weekList.addAll(timeStr.substring(rightIndex + 2).split(','))
+                        }
+                    }
+                }
+
+                weekList.forEach {
+                    val weeks = it.substring(0, it.indexOf('周')).split('-')
+                    if (weeks.isNotEmpty()) {
+                        startWeek = Integer.decode(weeks[0])!!
+                    }
+                    if (weeks.size > 1) {
+                        endWeek = Integer.decode(weeks[1])!!
+                    }
+
+                    type = when {
+                        it.contains('单') -> 1
+                        it.contains('双') -> 2
+                        else -> 0
+                    }
+
+                    val flag = isContainName(baseList, courseName)
+                    if (flag == -1) {
+                        baseList.add(CourseBaseBean(id, courseName, "", tableName))
+                        detailList.add(CourseDetailBean(
+                                id = id, room = room,
+                                teacher = teacher, day = day,
+                                step = step, startWeek = startWeek, endWeek = endWeek,
+                                type = type, startNode = node,
+                                tableName = tableName
+                        ))
+                        id++
+                    } else {
+                        if (detailList[flag].room == room &&
+                                detailList[flag].startWeek == startWeek &&
+                                (detailList[flag].startNode + detailList[flag].step == node)) {
+                            detailList[flag].step += step
+                        } else {
+                            detailList.add(CourseDetailBean(
+                                    id = flag, room = room,
+                                    teacher = teacher, day = day,
+                                    step = step, startWeek = startWeek, endWeek = endWeek,
+                                    type = type, startNode = node,
+                                    tableName = tableName
+                            ))
+                        }
+                    }
+                }
+            }
+        }
+
+        write2DB(context)
+    }
+
     private fun write2DB(context: Context) {
         val dataBase = AppDatabase.getDatabase(context)
         val baseDao = dataBase.courseBaseDao()

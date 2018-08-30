@@ -1,32 +1,26 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 
-import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
-import com.google.gson.Gson
-
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
-import java.util.regex.Pattern
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
-import android.widget.TextView.OnEditorActionListener
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 
 
 class WebViewLoginFragment : Fragment() {
 
     private val GET_FRAME_CONTENT_STR = "document.getElementById('iframeautoheight').contentWindow.document.body.innerHTML"
+
+    private lateinit var type: String
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -110,7 +104,11 @@ class WebViewLoginFragment : Fragment() {
         fun showSource(html: String) {
             if (html.contains("星期一") && html.contains("星期二")) {
                 val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-                viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)
+                if (type == "FZ") {
+                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)
+                } else if (type == "newFZ") {
+                    viewModel.parseNewFZ(html, "", context!!.applicationContext)
+                }
             } else {
                 Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
             }
@@ -124,9 +122,9 @@ class WebViewLoginFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
+        fun newInstance(param0: String) =
                 WebViewLoginFragment().apply {
-
+                    type = param0
                 }
     }
 }
