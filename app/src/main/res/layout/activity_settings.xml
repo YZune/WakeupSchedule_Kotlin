@@ -384,6 +384,47 @@
                 android:background="@color/grey" />
 
             <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="学期周数" />
+
+                <TextView
+                    android:id="@+id/tv_weeks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="30" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" 周" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_weeks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="20" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
                 android:id="@+id/ll_course_time"
                 style="@style/settings_item_ll">
 

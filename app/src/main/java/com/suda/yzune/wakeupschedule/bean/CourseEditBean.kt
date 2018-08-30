@@ -10,13 +10,6 @@ data class CourseEditBean(
                 },
         var room: String? = "",
         var teacher: String? = "",
-        val weekList: MutableLiveData<ArrayList<Int>> =
-                MutableLiveData<ArrayList<Int>>().apply {
-                    this.value = ArrayList<Int>().apply {
-                        for (i in 1..30) {
-                            this.add(i)
-                        }
-                    }
-                },
+        val weekList: MutableLiveData<ArrayList<Int>>,
         var tableName: String = ""
 )

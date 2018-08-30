@@ -3,14 +3,11 @@ package com.suda.yzune.wakeupschedule.settings
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Adapter
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.course_add.AddCourseViewModel
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.fragment_select_time_detail.*

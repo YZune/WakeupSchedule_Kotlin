@@ -88,6 +88,7 @@ class TimeSettingsActivity : AppCompatActivity() {
         sb_time_length.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tv_time_length.text = "${progress + 30}"
+                viewModel.refreshEndTime(progress + 30)
                 PreferenceUtils.saveIntToSP(this@TimeSettingsActivity.applicationContext, "classLen", progress + 30)
             }
 

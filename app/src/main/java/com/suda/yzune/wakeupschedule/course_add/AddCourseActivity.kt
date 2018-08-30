@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.appwidget.AppWidgetManager
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
@@ -24,6 +25,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
 import es.dmoral.toasty.Toasty
@@ -65,7 +67,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         })
 
         if (intent.extras == null) {
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData()), viewModel.initBaseData())
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30).toLong())), viewModel.initBaseData())
         } else {
             viewModel.initData(intent.extras.getInt("id")).observe(this, Observer { list ->
                 //viewModel.getList().clear()
@@ -187,10 +189,17 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     private fun initFooterView(adapter: AddCourseAdapter): View {
+        val weeksNum = PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
         val cvBtn = view.findViewById<CardView>(R.id.cv_add)
         cvBtn.setOnClickListener {
-            adapter.addData(CourseEditBean())
+            adapter.addData(CourseEditBean(weekList = MutableLiveData<ArrayList<Int>>().apply {
+                this.value = ArrayList<Int>().apply {
+                    for (i in 1..weeksNum) {
+                        this.add(i)
+                    }
+                }
+            }))
         }
         return view
     }

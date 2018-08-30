@@ -152,6 +152,8 @@ class SettingsActivity : AppCompatActivity() {
         val textSize = PreferenceUtils.getIntFromSP(applicationContext, "sb_text_size", 12)
         val widgetItemAlpha = PreferenceUtils.getIntFromSP(applicationContext, "sb_widget_alpha", 60)
         val widgetTextSize = PreferenceUtils.getIntFromSP(applicationContext, "sb_widget_text_size", 12)
+        val weeksNum = PreferenceUtils.getIntFromSP(applicationContext, "sb_weeks", 30)
+        sb_weeks.progress = weeksNum - 10
         sb_text_size.progress = textSize - 11
         sb_widget_text_size.progress = widgetTextSize - 11
         sb_widget_item_height.progress = widgetItemHeight - 32
@@ -166,6 +168,7 @@ class SettingsActivity : AppCompatActivity() {
         tv_nodes.text = nodesNum.toString()
         tv_alpha.text = itemAlpha.toString()
         tv_widget_item_alpha.text = widgetItemAlpha.toString()
+        tv_weeks.text = weeksNum.toString()
 
         val termStart = PreferenceUtils.getStringFromSP(applicationContext, "termStart", "2018-09-03")
         tv_term_start.text = termStart
@@ -260,6 +263,18 @@ class SettingsActivity : AppCompatActivity() {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tv_nodes.text = "${progress + 8}"
                 PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "classNum", progress + 8)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+        })
+
+        sb_weeks.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tv_weeks.text = "${progress + 10}"
+                PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "sb_weeks", progress + 10)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

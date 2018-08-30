@@ -25,6 +25,14 @@ class TimeSettingsViewModel : ViewModel() {
         return repository.getSaveInfo()
     }
 
+    fun refreshEndTime(min: Int) {
+        repository.refreshEndTime(min)
+    }
+
+    fun getRefreshMsg(): LiveData<Int> {
+        return repository.getRefreshMsg()
+    }
+
     fun saveData(){
         repository.saveData()
     }

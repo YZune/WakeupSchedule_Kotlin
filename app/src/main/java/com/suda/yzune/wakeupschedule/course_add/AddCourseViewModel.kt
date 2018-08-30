@@ -1,15 +1,11 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.Context
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
-import com.suda.yzune.wakeupschedule.schedule.ScheduleRepository
-import java.util.*
-import kotlin.collections.ArrayList
 
 class AddCourseViewModel : ViewModel() {
     private var repository: AddCourseRepository? = null
@@ -19,7 +15,7 @@ class AddCourseViewModel : ViewModel() {
         repository!!.preSaveData(newId)
     }
 
-    fun getUpdateFlag(): Boolean{
+    fun getUpdateFlag(): Boolean {
         return repository!!.getUpdateFlag()
     }
 
@@ -37,8 +33,8 @@ class AddCourseViewModel : ViewModel() {
         }
     }
 
-    fun initData(): MutableList<CourseEditBean> {
-        return repository!!.initData()
+    fun initData(weeksNum: Long): MutableList<CourseEditBean> {
+        return repository!!.initData(weeksNum)
     }
 
     fun initData(id: Int): LiveData<List<CourseDetailBean>> {
@@ -74,22 +70,45 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.getDeleteList()
     }
 
-    fun judgeType(list: ArrayList<Int>): Int {
+    fun judgeType(list: ArrayList<Int>, weeksNum: Int): Int {
         var flag = 0
-        //0表示不是全30周的单周也不是全30周的双周
-        if (list.size != 15) return flag
-        if (list.contains(29)) {
+        //0表示不是全部的单周也不是全部的双周
+        if (weeksNum % 2 == 0 && list.size != weeksNum / 2) {
+            return flag
+        }
+        if (weeksNum == list.size) {
+            return flag
+        }
+        if (weeksNum % 2 != 0 && list.contains(weeksNum)) {
             flag = 1
-            for (i in 1..27 step 2) {
+            for (i in 1..weeksNum - 2 step 2) {
                 if (!list.contains(i)) {
                     flag = 0
                     break
                 }
             }
         }
-        if (list.contains(30)) {
+        if (weeksNum % 2 != 0 && !list.contains(weeksNum)) {
             flag = 2
-            for (i in 2..28 step 2) {
+            for (i in 2..weeksNum - 2 step 2) {
+                if (!list.contains(i)) {
+                    flag = 0
+                    break
+                }
+            }
+        }
+        if (weeksNum % 2 == 0 && list.contains(weeksNum)) {
+            flag = 2
+            for (i in 2..weeksNum - 2 step 2) {
+                if (!list.contains(i)) {
+                    flag = 0
+                    break
+                }
+            }
+        }
+        if (weeksNum % 2 == 0 && !list.contains(weeksNum)) {
+            flag = 1
+            for (i in 1..weeksNum - 2 step 2) {
                 if (!list.contains(i)) {
                     flag = 0
                     break

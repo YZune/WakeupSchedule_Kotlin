@@ -3,12 +3,9 @@ package com.suda.yzune.wakeupschedule.settings
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.content.Context
-import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import java.sql.Time
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlin.concurrent.thread
 
 class TimeSettingsRepository(context: Context) {
@@ -18,17 +15,18 @@ class TimeSettingsRepository(context: Context) {
     private val summerTimeList = arrayListOf<TimeDetailBean>()
     private val timeSelectList = arrayListOf<String>()
     private val saveInfo = MutableLiveData<String>()
+    private val refreshMsg = MutableLiveData<Int>()
 
     fun saveData() {
         for (i in 0 until timeList.size - 1) {
-            if (timeList[i].startTime > timeList[i + 1].endTime) {
+            if (timeList[i].endTime > timeList[i + 1].startTime) {
                 saveInfo.value = "时间的顺序不太对哦"
                 return
             }
         }
 
         for (i in 0 until summerTimeList.size - 1) {
-            if (summerTimeList[i].startTime > summerTimeList[i + 1].endTime) {
+            if (summerTimeList[i].endTime > summerTimeList[i + 1].startTime) {
                 saveInfo.value = "时间的顺序不太对哦"
                 return
             }
@@ -39,6 +37,20 @@ class TimeSettingsRepository(context: Context) {
             timeDao.updateTimeDetailList(summerTimeList)
             saveInfo.postValue("ok")
         }
+    }
+
+    fun refreshEndTime(min: Int) {
+        timeList.forEach {
+            it.endTime = CourseUtils.calAfterTime(it.startTime, min)
+        }
+        summerTimeList.forEach {
+            it.endTime = CourseUtils.calAfterTime(it.startTime, min)
+        }
+        refreshMsg.value = min
+    }
+
+    fun getRefreshMsg(): LiveData<Int> {
+        return refreshMsg
     }
 
     fun getSaveInfo(): LiveData<String> {

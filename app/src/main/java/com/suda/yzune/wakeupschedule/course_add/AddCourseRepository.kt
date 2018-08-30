@@ -13,7 +13,6 @@ import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 
 class AddCourseRepository(context: Context) {
@@ -108,8 +107,15 @@ class AddCourseRepository(context: Context) {
         return baseDao.checkSameName(baseBean.courseName, baseBean.tableName)
     }
 
-    fun initData(): MutableList<CourseEditBean> {
-        editList = mutableListOf(CourseEditBean())
+    fun initData(weeksNum: Long): MutableList<CourseEditBean> {
+        editList = mutableListOf(CourseEditBean(
+                weekList = MutableLiveData<ArrayList<Int>>().apply {
+                    this.value = ArrayList<Int>().apply {
+                        for (i in 1..weeksNum.toInt()) {
+                            this.add(i)
+                        }
+                    }
+                }))
         return editList
     }
 

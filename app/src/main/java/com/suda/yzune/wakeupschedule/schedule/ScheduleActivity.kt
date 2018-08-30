@@ -172,6 +172,8 @@ class ScheduleActivity : AppCompatActivity() {
 
         whichWeek = countWeek(this)
         tv_week.text = "第${whichWeek}周"
+        tv_date.text = CourseUtils.getTodayDate()
+        tv_weekday.text = CourseUtils.getWeekday()
 
         val headerLayout = navigation_view.getHeaderView(0)
         val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
@@ -227,9 +229,6 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        tv_date.text = CourseUtils.getTodayDate()
-        tv_weekday.text = CourseUtils.getWeekday()
-
         val headerLayout = navigation_view.getHeaderView(0)
         val ivPersonImage = headerLayout.findViewById(R.id.iv_person_image) as ImageView
 
@@ -305,7 +304,7 @@ class ScheduleActivity : AppCompatActivity() {
         val mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 5
-        for (i in 1..30) {
+        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
         mAdapter.notifyDataSetChanged()

@@ -59,6 +59,9 @@ class TimeSettingsFragment : Fragment() {
         rv_time_detail.isNestedScrollingEnabled = false
         rv_time_detail.adapter = adapter
         rv_time_detail.layoutManager = LinearLayoutManager(activity)
+        viewModel.getRefreshMsg().observe(this, Observer {
+            adapter.notifyDataSetChanged()
+        })
     }
 
     companion object {
