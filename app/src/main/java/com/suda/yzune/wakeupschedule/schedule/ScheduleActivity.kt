@@ -167,10 +167,14 @@ class ScheduleActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
-        if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
-            viewModel.tranClipboardStr(clipStr)
-            ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
+        if (clipboardManager.primaryClip != null) {
+            if (clipboardManager.primaryClip.itemCount > 0) {
+                val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
+                if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
+                    viewModel.tranClipboardStr(clipStr)
+                    ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
+                }
+            }
         }
 
         viewModel.getTimeDetailLiveList().observe(this, Observer {

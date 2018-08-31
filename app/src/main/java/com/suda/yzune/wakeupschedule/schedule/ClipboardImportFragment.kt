@@ -3,6 +3,9 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
@@ -66,6 +69,11 @@ class ClipboardImportFragment : DialogFragment() {
                     Toasty.success(activity!!.applicationContext, "导入成功ヽ(^o^)丿").show()
                     dismiss()
                 }
+            }
+            val clipboardManager = activity!!.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            if (clipboardManager.primaryClip != null) {
+                val clipData = ClipData.newPlainText("WakeUpSchedule", "")
+                clipboardManager.primaryClip = clipData
             }
         })
     }
