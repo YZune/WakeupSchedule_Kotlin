@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    tools:context=".schedule.ClipboardImportFragment">
+
+    <ImageButton
+        android:id="@+id/ib_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="right"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_list_delete" />
+
+
+    <TextView
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="-16dp"
+        android:gravity="center"
+        android:text="ヾ(=･ω･=)o"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="8dp"
+        android:text="有人分享课程给你哦\n你希望怎么导入呀\n情侣课表长按主界面空白处\n即可切换"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_mine"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="覆盖自己的课表"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_lover"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="这是心爱的Ta的课表"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

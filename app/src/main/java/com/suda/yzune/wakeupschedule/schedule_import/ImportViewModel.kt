@@ -348,9 +348,6 @@ class ImportViewModel : ViewModel() {
         thread(name = "InitDataThread") {
             baseDao.removeCourseData("")
             try {
-                detailList.forEach {
-                    println(it.toString())
-                }
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)
                 importInfo.postValue("ok")

@@ -2,12 +2,10 @@ package com.suda.yzune.wakeupschedule.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -15,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.suda.yzune.wakeupschedule.MyAppGlideModule;
 import com.suda.yzune.wakeupschedule.R;
 
 import java.io.File;
@@ -60,21 +56,46 @@ public class ViewUtils {
     }
 
     public static ColorStateList createColorStateList(int normal, int pressed, int focused, int unable) {
-        int[] colors = new int[] { pressed, focused, normal, focused, unable, normal };
+        int[] colors = new int[]{pressed, focused, normal, focused, unable, normal};
         int[][] states = new int[6][];
-        states[0] = new int[] { android.R.attr.state_pressed, android.R.attr.state_enabled };
-        states[1] = new int[] { android.R.attr.state_enabled, android.R.attr.state_focused };
-        states[2] = new int[] { android.R.attr.state_enabled };
-        states[3] = new int[] { android.R.attr.state_focused };
-        states[4] = new int[] { android.R.attr.state_window_focused };
-        states[5] = new int[] {};
+        states[0] = new int[]{android.R.attr.state_pressed, android.R.attr.state_enabled};
+        states[1] = new int[]{android.R.attr.state_enabled, android.R.attr.state_focused};
+        states[2] = new int[]{android.R.attr.state_enabled};
+        states[3] = new int[]{android.R.attr.state_focused};
+        states[4] = new int[]{android.R.attr.state_window_focused};
+        states[5] = new int[]{};
         return new ColorStateList(states, colors);
     }
 
-    public static Point getRealSize(Activity activity){
+    public static Point getRealSize(Activity activity) {
         Point size = new Point();
         activity.getWindowManager().getDefaultDisplay().getRealSize(size);
         return size;
+    }
+
+    public static void saveImg(Bitmap bitmap) {
+        //把图片存储在哪个文件夹
+        File file = new File(Environment.getExternalStorageDirectory(), "DCIM");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        //图片的名称
+        String name = "mz.jpg";
+        File file1 = new File(file, name);
+        if (!file1.exists()) {
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(file1);
+                //这个100表示压缩比,100说明不压缩,90说明压缩到原来的90%
+                //注意:这是对于占用存储空间而言,不是说占用内存的大小
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        //通知图库即使更新,否则不能看到图片
+        //activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file1.getAbsolutePath())));
     }
 
     public static Bitmap getViewBitmap(ScrollView scrollView) {
@@ -92,29 +113,14 @@ public class ViewUtils {
         return bitmap;
     }
 
-    public static void saveImg(Bitmap bitmap) {
-        //把图片存储在哪个文件夹
-        File file = new File(Environment.getExternalStorageDirectory(), "DCIM");
-        if (!file.exists()) {
-            file.mkdir();
-        }
-        //图片的名称
-        String name = "mz.jpg";
-        File file1 = new File(file, name);
-        if (!file1.exists()){
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file1);
-                //这个100表示压缩比,100说明不压缩,90说明压缩到原来的90%
-                //注意:这是对于占用存储空间而言,不是说占用内存的大小
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                fileOutputStream.flush();
-                fileOutputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        //通知图库即使更新,否则不能看到图片
-        //activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file1.getAbsolutePath())));
+    private boolean isLongPressed(float lastX, float lastY,
+                                  float thisX, float thisY,
+                                  long lastDownTime, long thisEventTime,
+                                  long longPressTime) {
+        float offsetX = Math.abs(thisX - lastX);
+        float offsetY = Math.abs(thisY - lastY);
+        long intervalTime = thisEventTime - lastDownTime;
+        return offsetX <= 10 && offsetY <= 10 && intervalTime >= longPressTime;
     }
 
     public static void layoutView(View v, int width, int height) {

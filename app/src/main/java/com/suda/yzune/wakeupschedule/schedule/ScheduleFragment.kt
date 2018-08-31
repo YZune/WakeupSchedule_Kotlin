@@ -8,6 +8,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -101,6 +102,20 @@ class ScheduleFragment : Fragment() {
         }
 
         refresh(view!!, daysEnd)
+
+        ll_contentPanel.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_UP -> {
+                    refresh(view!!, daysEnd)
+                }
+            }
+            return@setOnTouchListener false
+        }
+
+        ll_contentPanel.setOnLongClickListener {
+            refresh(view!!, daysEnd, "lover")
+            return@setOnLongClickListener true
+        }
     }
 
     companion object {
@@ -111,12 +126,11 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun refresh(view: View, daysEnd: Int) {
-
+    private fun refresh(view: View, daysEnd: Int, tableName: String = "") {
         for (i in 1..daysEnd) {
-            viewModel.getRawCourseByDay(i).observe(this, Observer {
-                if (it != null) {
-                    viewModel.getCourseByDay(it).observe(this, Observer {
+            viewModel.getRawCourseByDay(i, tableName).observe(this, Observer { list ->
+                if (list != null) {
+                    viewModel.getCourseByDay(list).observe(this, Observer {
                         initWeekPanel(view, weekPanels, it, i)
                     })
                 }

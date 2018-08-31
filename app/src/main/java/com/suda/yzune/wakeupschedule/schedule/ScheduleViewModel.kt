@@ -15,6 +15,18 @@ class ScheduleViewModel : ViewModel() {
         repository = ScheduleRepository(context)
     }
 
+    fun getClipboardImportInfo(): LiveData<String> {
+        return repository.getClipboardImportInfo()
+    }
+
+    fun tranClipboardStr(str: String) {
+        repository.tranClipboardStr(str)
+    }
+
+    fun tranClipboardList(isLover: Boolean) {
+        repository.tranClipboardCourseList(isLover)
+    }
+
     fun getTimeDetailLiveList(): LiveData<List<TimeDetailBean>> {
         return repository.getTimeDetailLiveList()
     }
@@ -43,8 +55,12 @@ class ScheduleViewModel : ViewModel() {
         return repository.getCourseByDay(raw)
     }
 
-    fun getRawCourseByDay(day: Int): LiveData<List<CourseBean>> {
-        return repository.getRawCourseByDay(day)
+    fun getRawCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>> {
+        return repository.getRawCourseByDay(day, tableName)
+    }
+
+    fun getCourse(): LiveData<List<CourseBean>> {
+        return repository.getCourse()
     }
 
     fun deleteCourseBean(courseBean: CourseBean) {

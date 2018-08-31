@@ -7,17 +7,17 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 
 @Dao
 interface CourseBaseDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCourseBase(courseBaseBean: CourseBaseBean)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(courseBaseList: List<CourseBaseBean>)
 
-    @Query("select * from coursebasebean natural join coursedetailbean")
-    fun getCourse(): LiveData<List<CourseBean>>
+    @Query("select * from coursebasebean natural join coursedetailbean where tableName = :tableName")
+    fun getCourse(tableName: String = ""): LiveData<List<CourseBean>>
 
-    @Query("select * from coursebasebean natural join coursedetailbean where day = :day")
-    fun getCourseByDay(day: Int): LiveData<List<CourseBean>>
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
+    fun getCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>>
 
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day")
     fun getCourseByDayInThread(day: Int): List<CourseBean>

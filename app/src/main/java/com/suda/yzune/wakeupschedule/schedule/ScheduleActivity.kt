@@ -3,6 +3,9 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -12,7 +15,9 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
@@ -49,6 +54,7 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var mainBgContainer: View
     var whichWeek = 1
     private lateinit var viewModel: ScheduleViewModel
+    private lateinit var clipboardManager: ClipboardManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -57,6 +63,7 @@ class ScheduleActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         viewModel.initRepository(applicationContext)
+        clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         Toasty.Config.getInstance()
                 .setToastTypeface(Typeface.DEFAULT_BOLD)
@@ -160,6 +167,12 @@ class ScheduleActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
+        if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
+            viewModel.tranClipboardStr(clipStr)
+            ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
+        }
+
         viewModel.getTimeDetailLiveList().observe(this, Observer {
             viewModel.getTimeList().clear()
             viewModel.getTimeList().addAll(it!!)
@@ -205,19 +218,21 @@ class ScheduleActivity : AppCompatActivity() {
                     .into(headerBg)
         }
         if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", true)) {
-            tv_week.setTextColor(resources.getColor(R.color.white))
-            tv_date.setTextColor(resources.getColor(R.color.white))
-            tv_weekday.setTextColor(resources.getColor(R.color.white))
-            ib_import.setColorFilter(resources.getColor(R.color.white))
-            ib_add.setColorFilter(resources.getColor(R.color.white))
-            ib_nav.setColorFilter(resources.getColor(R.color.white))
+            for (i in 0 until rl_title.childCount) {
+                val view = rl_title.getChildAt(i)
+                when (view) {
+                    is TextView -> view.setTextColor(resources.getColor(R.color.white))
+                    is ImageButton -> view.setColorFilter(resources.getColor(R.color.white))
+                }
+            }
         } else {
-            tv_week.setTextColor(resources.getColor(R.color.black))
-            tv_date.setTextColor(resources.getColor(R.color.black))
-            tv_weekday.setTextColor(resources.getColor(R.color.black))
-            ib_import.setColorFilter(resources.getColor(R.color.black))
-            ib_add.setColorFilter(resources.getColor(R.color.black))
-            ib_nav.setColorFilter(resources.getColor(R.color.black))
+            for (i in 0 until rl_title.childCount) {
+                val view = rl_title.getChildAt(i)
+                when (view) {
+                    is TextView -> view.setTextColor(resources.getColor(R.color.black))
+                    is ImageButton -> view.setColorFilter(resources.getColor(R.color.black))
+                }
+            }
         }
 
         initViewPage()
@@ -312,7 +327,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initEvent() {
-        ib_nav.setOnClickListener(View.OnClickListener { drawerLayout.openDrawer(Gravity.START) })
+        ib_nav.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
 
         ib_import.setOnClickListener {
             //viewModel.removeCourseData()
@@ -323,6 +338,22 @@ class ScheduleActivity : AppCompatActivity() {
         ib_add.setOnClickListener {
             val intent = Intent(this, AddCourseActivity::class.java)
             startActivity(intent)
+        }
+
+        ib_share.setOnClickListener { _ ->
+            viewModel.getCourse().observe(this, Observer {
+                val gson = Gson()
+                val course = gson.toJson(it)
+                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
+                when {
+                    course != "" -> {
+                        clipboardManager.primaryClip = clipData
+                        Toasty.success(this, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
+                    }
+                    course == "" -> Toasty.error(this, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                    else -> Toasty.error(this, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                }
+            })
         }
 
         rl_title.setOnClickListener {
