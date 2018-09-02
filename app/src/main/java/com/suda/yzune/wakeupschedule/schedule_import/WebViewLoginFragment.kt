@@ -85,6 +85,8 @@ class WebViewLoginFragment : Fragment() {
                 wv_course.loadUrl("javascript:window.local_obj.showSource('<head>'+"
                         + GET_FRAME_CONTENT_STR
                         + "+'</head>');")
+                wv_course.loadUrl("javascript:window.local_obj.showSource(''+" +
+                        "document.documentElement.outerHTML+'');")
             } else if (type == "newFZ") {
                 wv_course.loadUrl("javascript:window.local_obj.showSource(''+" +
                         "document.documentElement.outerHTML+'');")
