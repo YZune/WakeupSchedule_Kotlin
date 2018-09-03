@@ -33,8 +33,8 @@ class TimeSettingsViewModel : ViewModel() {
         return repository.getRefreshMsg()
     }
 
-    fun saveData(){
-        repository.saveData()
+    fun saveData(isSummer: Boolean) {
+        repository.saveData(isSummer)
     }
 
     fun getDetailData(): LiveData<List<TimeDetailBean>> {

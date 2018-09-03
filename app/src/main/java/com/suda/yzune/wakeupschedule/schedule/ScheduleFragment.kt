@@ -52,7 +52,7 @@ class ScheduleFragment : Fragment() {
         marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
         textSize = PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_text_size", 12)
         showSummerTime = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_summer", false)
-        showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", true)
+        showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false)
         showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
         showWhite = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)
         showTimeDetail = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false)
@@ -129,11 +129,7 @@ class ScheduleFragment : Fragment() {
     private fun refresh(view: View, daysEnd: Int, tableName: String = "") {
         for (i in 1..daysEnd) {
             viewModel.getRawCourseByDay(i, tableName).observe(this, Observer { list ->
-                if (list != null) {
-                    viewModel.getCourseByDay(list).observe(this, Observer {
-                        initWeekPanel(view, weekPanels, it, i)
-                    })
-                }
+                initWeekPanel(view, weekPanels, list, i)
             })
         }
     }
@@ -180,13 +176,18 @@ class ScheduleFragment : Fragment() {
             }
             myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_alpha", 60) / 100.0)).toInt()
 
+            if (c.room != "") {
+                tv.text = c.courseName + "@" + c.room
+            } else {
+                tv.text = c.courseName
+            }
+
             when (c.type) {
-                0 -> tv.text = c.courseName + "@" + c.room
                 1 -> {
-                    tv.text = c.courseName + "@" + c.room + "\n单周"
+                    tv.text = tv.text.toString() + "\n单周"
                     if (week % 2 == 0) {
                         if (showNone) {
-                            tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
+                            tv.text = tv.text.toString() + "\n单周[非本周]"
                             tv.visibility = View.VISIBLE
                             tv.alpha = 0.6f
                             myGrad.setColor(resources.getColor(R.color.grey))
@@ -196,11 +197,11 @@ class ScheduleFragment : Fragment() {
                     }
                 }
                 2 -> {
-                    tv.text = c.courseName + "@" + c.room + "\n双周"
+                    tv.text = tv.text.toString() + "\n双周"
                     if (week % 2 != 0) {
                         if (showNone) {
                             tv.alpha = 0.6f
-                            tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
+                            tv.text = tv.text.toString() + "\n双周[非本周]"
                             tv.visibility = View.VISIBLE
                             myGrad.setColor(resources.getColor(R.color.grey))
                         } else {
@@ -213,7 +214,8 @@ class ScheduleFragment : Fragment() {
             if (c.startWeek > week || c.endWeek < week) {
                 if (showNone) {
                     tv.alpha = 0.6f
-                    tv.text = c.courseName + "@" + c.room + "[非本周]"
+                    //tv.text = c.courseName + "@" + c.room + "[非本周]"
+                    tv.text = tv.text.toString() + "[非本周]"
                     tv.visibility = View.VISIBLE
                     myGrad.setColor(resources.getColor(R.color.grey))
                 } else {

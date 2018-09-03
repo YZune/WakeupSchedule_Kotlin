@@ -141,7 +141,7 @@ class SettingsActivity : AppCompatActivity() {
         s_stroke.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_stroke", true)
         s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
         s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_time_detail", false)
-        s_show.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show", true)
+        s_show.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show", false)
         s_show_weekend.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_weekend", true)
         s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_color", true)
         s_widget_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_widget_color", false)

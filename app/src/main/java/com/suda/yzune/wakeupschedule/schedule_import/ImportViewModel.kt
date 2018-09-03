@@ -24,7 +24,8 @@ class ImportViewModel : ViewModel() {
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
-    private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必")
+    private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
+            "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选")
     //todo: 在线更新规则
     private var selectedYear = ""
     private var selectedTerm = ""

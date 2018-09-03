@@ -102,7 +102,7 @@ class TimeSettingsActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        viewModel.saveData()
+        viewModel.saveData(PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false))
         viewModel.getSaveInfo().observe(this, Observer { s ->
             when (s) {
                 "ok" -> {

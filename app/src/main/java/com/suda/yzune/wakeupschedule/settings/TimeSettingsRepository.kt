@@ -17,7 +17,7 @@ class TimeSettingsRepository(context: Context) {
     private val saveInfo = MutableLiveData<String>()
     private val refreshMsg = MutableLiveData<Int>()
 
-    fun saveData() {
+    fun saveData(isSummer: Boolean) {
         for (i in 0 until timeList.size - 1) {
             if (timeList[i].endTime > timeList[i + 1].startTime) {
                 saveInfo.value = "时间的顺序不太对哦"
@@ -25,10 +25,12 @@ class TimeSettingsRepository(context: Context) {
             }
         }
 
-        for (i in 0 until summerTimeList.size - 1) {
-            if (summerTimeList[i].endTime > summerTimeList[i + 1].startTime) {
-                saveInfo.value = "时间的顺序不太对哦"
-                return
+        if (isSummer) {
+            for (i in 0 until summerTimeList.size - 1) {
+                if (summerTimeList[i].endTime > summerTimeList[i + 1].startTime) {
+                    saveInfo.value = "时间的顺序不太对哦"
+                    return
+                }
             }
         }
 

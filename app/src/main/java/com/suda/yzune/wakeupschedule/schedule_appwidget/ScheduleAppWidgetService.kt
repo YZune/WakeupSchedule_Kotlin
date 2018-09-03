@@ -155,7 +155,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             }
 
             showStroke = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)
-            showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", true)
+            showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false)
             nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
             showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)
             showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)

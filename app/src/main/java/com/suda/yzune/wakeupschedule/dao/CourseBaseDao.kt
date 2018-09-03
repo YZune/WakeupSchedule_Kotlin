@@ -19,8 +19,8 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
     fun getCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>>
 
-    @Query("select * from coursebasebean natural join coursedetailbean where day = :day")
-    fun getCourseByDayInThread(day: Int): List<CourseBean>
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
+    fun getCourseByDayInThread(day: Int, tableName: String = ""): List<CourseBean>
 
     @Query("select * from coursebasebean where id = :id")
     fun getCourseById(id: Int): LiveData<CourseBaseBean>
