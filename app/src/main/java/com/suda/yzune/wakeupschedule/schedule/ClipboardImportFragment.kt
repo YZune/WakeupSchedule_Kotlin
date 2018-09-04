@@ -50,6 +50,11 @@ class ClipboardImportFragment : DialogFragment() {
             viewModel.tranClipboardList(true)
         }
 
+        tv_clear.setOnClickListener {
+            clearClipboard()
+            dismiss()
+        }
+
         viewModel.getClipboardImportInfo().observe(this, Observer {
             when (it) {
                 "解析异常" -> {
@@ -70,12 +75,16 @@ class ClipboardImportFragment : DialogFragment() {
                     dismiss()
                 }
             }
-            val clipboardManager = activity!!.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            if (clipboardManager.primaryClip != null) {
-                val clipData = ClipData.newPlainText("WakeUpSchedule", "")
-                clipboardManager.primaryClip = clipData
-            }
+            clearClipboard()
         })
+    }
+
+    private fun clearClipboard() {
+        val clipboardManager = activity!!.applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (clipboardManager.primaryClip != null) {
+            val clipData = ClipData.newPlainText("WakeUpSchedule", "")
+            clipboardManager.primaryClip = clipData
+        }
     }
 
     companion object {

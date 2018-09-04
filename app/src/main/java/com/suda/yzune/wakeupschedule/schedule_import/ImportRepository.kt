@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import retrofit2.Call
@@ -21,6 +22,8 @@ class ImportRepository(url: String) {
     var loginResponse = MutableLiveData<String>()
     var prepareResponse = MutableLiveData<String>()
     var scheduleResponse = MutableLiveData<String>()
+    var postHtmlResponse = MutableLiveData<String>()
+    var schoolInfo = Array<String>(2) { "" }
 
     private val retrofit = Retrofit.Builder().baseUrl(url).build()
     private val importService = retrofit.create(ImportService::class.java)
@@ -101,6 +104,22 @@ class ImportRepository(url: String) {
                     Log.d("课表", result.substring(result.indexOf("星期一")))
                 } else {
                     scheduleResponse.value = null
+                }
+            }
+
+        })
+    }
+
+    fun postHtml(school: String, type: String, html: String) {
+        MyRetrofitUtils.instance.getService().postHtml(school, type, html).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                postHtmlResponse.value = "Failure"
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                val result = response.body()?.string()
+                if (result != null) {
+                    postHtmlResponse.value = result
                 }
             }
 

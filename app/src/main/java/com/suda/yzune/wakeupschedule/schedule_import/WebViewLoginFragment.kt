@@ -81,16 +81,19 @@ class WebViewLoginFragment : Fragment() {
         }
 
         fab_import.setOnClickListener {
-            if (type == "FZ") {
-                wv_course.loadUrl("javascript:window.local_obj.showSource('<head>'+"
-                        + GET_FRAME_CONTENT_STR
-                        + "+'</head>');")
-                wv_course.loadUrl("javascript:window.local_obj.showSource(''+" +
-                        "document.documentElement.outerHTML+'');")
-            } else if (type == "newFZ") {
-                wv_course.loadUrl("javascript:window.local_obj.showSource(''+" +
-                        "document.documentElement.outerHTML+'');")
-            }
+            wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
+                    "var iframeContent=\"\";" +
+                    "for(var i=0;i<ifrs.length;i++){" +
+                    "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
+                    "}" +
+                    "var frs=document.getElementsByTagName(\"frame\");" +
+                    "var frameContent=\"\";" +
+                    "for(var j=0;j<frs.length;j++){" +
+                    "var contents = frs[j].contentDocument.getElementsByTagName(\"iframe\");" +
+                    "for(var a=0;a<contents.length;a++){" +
+                    "frameContent=frameContent+contents[a].contentDocument.body.parentElement.outerHTML;}" +
+                    "}" +
+                    "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
         }
     }
 
@@ -116,6 +119,8 @@ class WebViewLoginFragment : Fragment() {
                 } else if (type == "newFZ") {
                     viewModel.parseNewFZ(html, "", context!!.applicationContext)
                 }
+            } else if (type == "apply") {
+
             } else {
                 Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
             }
