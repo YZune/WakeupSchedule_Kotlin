@@ -4,6 +4,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -77,7 +78,7 @@ class WebViewLoginFragment : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 startVisit()
             }
-            false
+            return@setOnEditorActionListener false
         }
 
         fab_import.setOnClickListener {
@@ -86,14 +87,7 @@ class WebViewLoginFragment : Fragment() {
                     "for(var i=0;i<ifrs.length;i++){" +
                     "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
                     "}" +
-                    "var frs=document.getElementsByTagName(\"frame\");" +
-                    "var frameContent=\"\";" +
-                    "for(var j=0;j<frs.length;j++){" +
-                    "var contents = frs[j].contentDocument.getElementsByTagName(\"iframe\");" +
-                    "for(var a=0;a<contents.length;a++){" +
-                    "frameContent=frameContent+contents[a].contentDocument.body.parentElement.outerHTML;}" +
-                    "}" +
-                    "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
+                    "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent);")
         }
     }
 
@@ -113,6 +107,7 @@ class WebViewLoginFragment : Fragment() {
         @JavascriptInterface
         fun showSource(html: String) {
             if (html.contains("星期一") && html.contains("星期二")) {
+                Log.d("方正", html.substring(html.indexOf("星期一")))
                 val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
                 if (type == "FZ") {
                     viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)

@@ -25,8 +25,22 @@ object AppWidgetUtils {
         val showWeekend = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
         if (showWeekend) {
             mRemoteViews.setViewVisibility(R.id.title7, View.VISIBLE)
+            if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)) {
+                mRemoteViews.setViewVisibility(R.id.title7, View.GONE)
+                mRemoteViews.setViewVisibility(R.id.title0, View.VISIBLE)
+            } else {
+                mRemoteViews.setViewVisibility(R.id.title7, View.VISIBLE)
+                mRemoteViews.setViewVisibility(R.id.title0, View.GONE)
+            }
         } else {
             mRemoteViews.setViewVisibility(R.id.title7, View.GONE)
+        }
+
+        val showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true)
+        if (showSat) {
+            mRemoteViews.setViewVisibility(R.id.title6, View.VISIBLE)
+        } else {
+            mRemoteViews.setViewVisibility(R.id.title6, View.GONE)
         }
 
         if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
@@ -41,14 +55,6 @@ object AppWidgetUtils {
             for (i in 0 until 7) {
                 mRemoteViews.setTextColor(R.id.title1 + i, context.resources.getColor(R.color.black))
             }
-        }
-
-        if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)) {
-            mRemoteViews.setViewVisibility(R.id.title7, View.GONE)
-            mRemoteViews.setViewVisibility(R.id.title0, View.VISIBLE)
-        } else {
-            mRemoteViews.setViewVisibility(R.id.title7, View.VISIBLE)
-            mRemoteViews.setViewVisibility(R.id.title0, View.GONE)
         }
 
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)

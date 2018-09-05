@@ -69,13 +69,13 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         if (intent.extras == null) {
             initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30).toLong())), viewModel.initBaseData())
         } else {
-            viewModel.initData(intent.extras.getInt("id")).observe(this, Observer { list ->
+            viewModel.initData(intent.extras.getInt("id"), intent.extras.getString("tableName")).observe(this, Observer { list ->
                 //viewModel.getList().clear()
                 if (!isSaved) {
                     list!!.forEach {
                         viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
                     }
-                    viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
+                    viewModel.initBaseData(intent.extras.getInt("id"), intent.extras.getString("tableName")).observe(this, Observer {
                         viewModel.getBaseData().id = it!!.id
                         viewModel.getBaseData().color = it.color
                         viewModel.getBaseData().courseName = it.courseName

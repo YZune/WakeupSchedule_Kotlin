@@ -119,9 +119,9 @@ class AddCourseRepository(context: Context) {
         return editList
     }
 
-    fun initData(id: Int): LiveData<List<CourseDetailBean>> {
+    fun initData(id: Int, tableName: String): LiveData<List<CourseDetailBean>> {
         editList = mutableListOf()
-        return detailDao.getDetailById(id)
+        return detailDao.getDetailById(id, tableName)
     }
 
     fun getList(): MutableList<CourseEditBean> {
@@ -141,9 +141,9 @@ class AddCourseRepository(context: Context) {
         return baseBean
     }
 
-    fun initBaseData(id: Int): LiveData<CourseBaseBean> {
+    fun initBaseData(id: Int, tableName: String): LiveData<CourseBaseBean> {
         baseBean = CourseBaseBean(-1, "", "", "")
-        return baseDao.getCourseById(id)
+        return baseDao.getCourseById(id, tableName)
     }
 
     fun getBaseData(): CourseBaseBean {

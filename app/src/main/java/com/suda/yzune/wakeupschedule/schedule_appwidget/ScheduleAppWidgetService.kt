@@ -29,6 +29,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private var marTop = 0
         private var showWhite = true
         private var showSunday = true
+        private var showSat = true
         private var showStroke = true
         private var showNone = true
         private var nodesNum = 11
@@ -95,16 +96,20 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initView(view: View) {
             val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
-            val title7 = view.findViewById<View>(R.id.title7)
+            val weekPanel6 = view.findViewById<View>(R.id.weekPanel_6)
             val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
             val weekName = view.findViewById<LinearLayout>(R.id.weekName)
 
             if (showSunday) {
                 weekPanel7.visibility = View.VISIBLE
-                title7.visibility = View.VISIBLE
             } else {
                 weekPanel7.visibility = View.GONE
-                title7.visibility = View.GONE
+            }
+
+            if (showSat) {
+                weekPanel6.visibility = View.VISIBLE
+            } else {
+                weekPanel6.visibility = View.GONE
             }
 
             for (i in 0 until weekPanel0.childCount) {
@@ -158,6 +163,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false)
             nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
             showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)
+            showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true)
             showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
             textSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12)
             val daysEnd = if (showSunday) 7 else 6

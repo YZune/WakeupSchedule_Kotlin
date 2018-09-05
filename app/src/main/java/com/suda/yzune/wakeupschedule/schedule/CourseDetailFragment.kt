@@ -9,12 +9,8 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.os.Vibrator
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +22,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_login_web.*
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 
 class CourseDetailFragment : DialogFragment() {
@@ -126,6 +120,7 @@ class CourseDetailFragment : DialogFragment() {
             dismiss()
             val intent = Intent(activity, AddCourseActivity::class.java)
             intent.putExtra("id", course.id)
+            intent.putExtra("tableName", course.tableName)
             startActivity(intent)
         }
 

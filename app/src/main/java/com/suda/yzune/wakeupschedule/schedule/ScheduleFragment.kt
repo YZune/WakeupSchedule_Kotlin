@@ -26,6 +26,7 @@ class ScheduleFragment : Fragment() {
     private var marTop = 0
     private var showWhite = true
     private var showSunday = true
+    private var showSat = true
     private var showTimeDetail = false
     private var showSummerTime = false
     private var showStroke = true
@@ -56,6 +57,7 @@ class ScheduleFragment : Fragment() {
         showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
         showWhite = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)
         showTimeDetail = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false)
+        showSat = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_sat", true)
         showSunday = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_weekend", true)
         val daysEnd = if (showSunday) 7 else 6
         if (showSunday) {
@@ -64,6 +66,14 @@ class ScheduleFragment : Fragment() {
         } else {
             weekPanel_7.visibility = View.GONE
             title7.visibility = View.GONE
+        }
+
+        if (showSat) {
+            weekPanel_6.visibility = View.VISIBLE
+            title6.visibility = View.VISIBLE
+        } else {
+            weekPanel_6.visibility = View.GONE
+            title6.visibility = View.GONE
         }
 
         for (i in 0 until weekPanel_0.childCount) {

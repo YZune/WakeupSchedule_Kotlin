@@ -22,14 +22,14 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
     fun getCourseByDayInThread(day: Int, tableName: String = ""): List<CourseBean>
 
-    @Query("select * from coursebasebean where id = :id")
-    fun getCourseById(id: Int): LiveData<CourseBaseBean>
+    @Query("select * from coursebasebean where id = :id and tableName = :tableName")
+    fun getCourseById(id: Int, tableName: String = ""): LiveData<CourseBaseBean>
 
     @Query("select * from coursebasebean where id = :id and tableName = :tableName")
     fun getCourseBeanByIdAndTableNameInThread(id: Int, tableName: String): CourseBaseBean
 
-    @Query("select max(id) from coursebasebean")
-    fun getLastId(): LiveData<Int>
+    @Query("select max(id) from coursebasebean where tableName = :tableName")
+    fun getLastId(tableName: String = ""): LiveData<Int>
 
     @Query("delete from coursebasebean where id = :id and tableName = :tableName")
     fun deleteCourseBaseBean(id: Int, tableName: String)

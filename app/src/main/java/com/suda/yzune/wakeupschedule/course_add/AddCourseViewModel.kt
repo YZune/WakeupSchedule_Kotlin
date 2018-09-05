@@ -37,12 +37,12 @@ class AddCourseViewModel : ViewModel() {
         return repository!!.initData(weeksNum)
     }
 
-    fun initData(id: Int): LiveData<List<CourseDetailBean>> {
-        return repository!!.initData(id)
+    fun initData(id: Int, tableName: String): LiveData<List<CourseDetailBean>> {
+        return repository!!.initData(id, tableName)
     }
 
-    fun initBaseData(id: Int): LiveData<CourseBaseBean> {
-        return repository!!.initBaseData(id)
+    fun initBaseData(id: Int, tableName: String): LiveData<CourseBaseBean> {
+        return repository!!.initBaseData(id, tableName)
     }
 
     fun initBaseData(): CourseBaseBean {
