@@ -40,6 +40,16 @@
             android:textSize="12sp" />
 
         <TextView
+            android:id="@+id/title0"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:layout_weight="1"
+            android:background="@color/nodeIndex"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="日"
+            android:textSize="12sp" />
+
+        <TextView
             android:id="@+id/title1"
             android:layout_width="0dp"
             android:layout_height="20dp"

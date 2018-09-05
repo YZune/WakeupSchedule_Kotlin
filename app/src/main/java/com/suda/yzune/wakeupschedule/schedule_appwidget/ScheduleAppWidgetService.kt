@@ -133,11 +133,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
             }
 
-            for (i in 8..nodesNum) {
+            for (i in 3 until nodesNum) {
                 val tv = weekPanel0.getChildAt(i) as TextView
                 tv.visibility = View.VISIBLE
             }
-            for (i in nodesNum + 1 until weekPanel0.childCount) {
+            for (i in nodesNum until weekPanel0.childCount) {
                 val tv = weekPanel0.getChildAt(i) as TextView
                 tv.visibility = View.GONE
             }
@@ -168,6 +168,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             for (i in 1..daysEnd) {
                 val list = baseDao.getCourseByDayInThread(i)
                 initWeekPanel(context, view, list, i)
+            }
+            if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)) {
+                val weekPanel7 = view.findViewById<LinearLayout>(R.id.weekPanel_7)
+                val contentPanel = view.findViewById<LinearLayout>(R.id.ll_contentPanel)
+                contentPanel.removeView(weekPanel7)
+                contentPanel.addView(weekPanel7, 1)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
             ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))
@@ -203,7 +209,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val myGrad = tv.background as GradientDrawable
                 if (!showStroke) {
                     myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), resources.getColor(R.color.transparent))
-                }else{
+                } else {
                     myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), Color.parseColor("#80ffffff"))
                 }
 

@@ -92,11 +92,11 @@ class ScheduleFragment : Fragment() {
         }
 
         nodesNum = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
-        for (i in 8..nodesNum) {
+        for (i in 3 until nodesNum) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.VISIBLE
         }
-        for (i in nodesNum + 1 until weekPanel_0.childCount) {
+        for (i in nodesNum until weekPanel_0.childCount) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.GONE
         }
@@ -131,6 +131,14 @@ class ScheduleFragment : Fragment() {
             viewModel.getRawCourseByDay(i, tableName).observe(this, Observer { list ->
                 initWeekPanel(view, weekPanels, list, i)
             })
+        }
+        if (PreferenceUtils.getBooleanFromSP(activity!!.applicationContext, "s_sunday_first", false)) {
+            val title7 = view.findViewById<TextView>(R.id.title7)
+            val weekPanel7 = view.findViewById<LinearLayout>(R.id.weekPanel_7)
+            weekName.removeView(title7)
+            weekName.addView(title7, 1)
+            ll_contentPanel.removeView(weekPanel7)
+            ll_contentPanel.addView(weekPanel7, 1)
         }
     }
 

@@ -138,6 +138,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        s_sunday_first.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_sunday_first", false)
         s_stroke.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_stroke", true)
         s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
         s_show_time_detail.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_time_detail", false)
@@ -158,7 +159,7 @@ class SettingsActivity : AppCompatActivity() {
         sb_widget_text_size.progress = widgetTextSize - 11
         sb_widget_item_height.progress = widgetItemHeight - 32
         sb_height.progress = itemHeight - 32
-        sb_nodes.progress = nodesNum - 8
+        sb_nodes.progress = nodesNum - 4
         sb_alpha.progress = itemAlpha
         sb_widget_item_alpha.progress = widgetItemAlpha
         tv_text_size.text = textSize.toString()
@@ -261,8 +262,8 @@ class SettingsActivity : AppCompatActivity() {
 
         sb_nodes.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                tv_nodes.text = "${progress + 8}"
-                PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "classNum", progress + 8)
+                tv_nodes.text = "${progress + 4}"
+                PreferenceUtils.saveIntToSP(this@SettingsActivity.applicationContext, "classNum", progress + 4)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -299,6 +300,10 @@ class SettingsActivity : AppCompatActivity() {
 
         s_show.setOnCheckedChangeListener { _, isChecked ->
             PreferenceUtils.saveBooleanToSP(applicationContext, "s_show", isChecked)
+        }
+
+        s_sunday_first.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_sunday_first", isChecked)
         }
 
         s_update.setOnCheckedChangeListener { _, isChecked ->

@@ -18,7 +18,7 @@ object AppWidgetUtils {
         mRemoteViews.setTextViewText(R.id.tv_date, date)
         if (week > 0) {
             mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")
-        }else{
+        } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
         }
 
@@ -41,6 +41,14 @@ object AppWidgetUtils {
             for (i in 0 until 7) {
                 mRemoteViews.setTextColor(R.id.title1 + i, context.resources.getColor(R.color.black))
             }
+        }
+
+        if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)) {
+            mRemoteViews.setViewVisibility(R.id.title7, View.GONE)
+            mRemoteViews.setViewVisibility(R.id.title0, View.VISIBLE)
+        } else {
+            mRemoteViews.setViewVisibility(R.id.title7, View.VISIBLE)
+            mRemoteViews.setViewVisibility(R.id.title0, View.GONE)
         }
 
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
