@@ -17,10 +17,14 @@ interface MyRetrofitService {
     @GET("/school/getupdate")
     fun getUpdateInfo(): Call<ResponseBody>
 
+    @GET("/school/count_html")
+    fun getHtmlCount(): Call<ResponseBody>
+
     @POST("/school/apply_html")
     @FormUrlEncoded
     fun postHtml(@Field("school") school: String,
                  @Field("type") type: String,
-                 @Field("html") html: String
+                 @Field("html") html: String,
+                 @Field("qq") qq: String
     ): Call<ResponseBody>
 }

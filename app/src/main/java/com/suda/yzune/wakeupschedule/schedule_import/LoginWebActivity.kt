@@ -28,16 +28,25 @@ class LoginWebActivity : AppCompatActivity() {
             }
         })
 
-        if (intent.getStringExtra("type") == "suda") {
-            val fragment = LoginWebFragment.newInstance()
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
-            transaction.commit()
-        } else {
-            val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fl_fragment, fragment, "webLogin")
-            transaction.commit()
+        when {
+            intent.getStringExtra("type") == "suda" -> {
+                val fragment = LoginWebFragment.newInstance()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
+                transaction.commit()
+            }
+            intent.getStringExtra("type") == "apply" -> {
+                val fragment = SchoolInfoFragment.newInstance()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "schoolInfo")
+                transaction.commit()
+            }
+            else -> {
+                val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "webLogin")
+                transaction.commit()
+            }
         }
 
 

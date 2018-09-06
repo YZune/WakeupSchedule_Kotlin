@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
@@ -32,6 +33,9 @@ class WebViewLoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
+        if (type == "apply") {
+            tv_tips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
+        }
         wv_course.settings.javaScriptEnabled = true
         wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
         wv_course.webViewClient = object : WebViewClient() {
@@ -106,18 +110,25 @@ class WebViewLoginFragment : Fragment() {
     internal inner class InJavaScriptLocalObj {
         @JavascriptInterface
         fun showSource(html: String) {
-            if (html.contains("星期一") && html.contains("星期二")) {
-                Log.d("方正", html.substring(html.indexOf("星期一")))
-                val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-                if (type == "FZ") {
-                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)
-                } else if (type == "newFZ") {
-                    viewModel.parseNewFZ(html, "", context!!.applicationContext)
+            val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
+            if (type != "apply") {
+                if (html.contains("星期一") && html.contains("星期二")) {
+                    Log.d("方正", html.substring(html.indexOf("星期一")))
+                    if (type == "FZ") {
+                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)
+                    } else if (type == "newFZ") {
+                        viewModel.parseNewFZ(html, "", context!!.applicationContext)
+                    }
+                } else {
+                    Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
                 }
-            } else if (type == "apply") {
-
             } else {
-                Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
+                MyRetrofitUtils.instance.postHtml(
+                        school = viewModel.getSchoolInfo()[0],
+                        type = viewModel.getSchoolInfo()[1],
+                        qq = viewModel.getSchoolInfo()[2],
+                        html = html,
+                        context = activity!!)
             }
         }
     }

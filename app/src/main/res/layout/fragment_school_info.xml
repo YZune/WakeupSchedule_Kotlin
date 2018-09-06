@@ -2,69 +2,166 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".schedule_import.SchoolInfoFragment">
 
-    <ImageButton
-        android:id="@+id/ib_close"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="right"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_list_delete" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:text="使用须知"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:lineSpacingExtra="4dp"
-        android:text="1. 学校名称必须填写全称，否则视作无效\n2. 青果教务暂时不予适配，因为课表是图片无法解析\n3. 本人还是学生，也需顾及学业，请勿催促"
-        android:textSize="12sp" />
-
-    <EditText
-        android:id="@+id/et_school"
+    <View
+        android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:hint="学校名称"
-        android:textSize="12sp" />
+        android:layout_height="24dp"
+        android:background="@color/white" />
 
-    <EditText
-        android:id="@+id/et_type"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginStart="24dp"
-        android:hint="教务类型（可不填）"
-        android:textSize="12sp" />
+        android:layout_height="48dp"
+        android:background="@color/white">
 
-    <TextView
-        android:id="@+id/tv_next"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="32dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="下一步"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="申请适配"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="前言"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="本来，只是想写个本校使用的课程表。\n后来，发现可以顺便适配方正教务。\n但是，单是方正也有很多细节上的差异。所以按照教务来适配，有一定的局限性。于是决定，还是回到按学校来适配吧。\n侧栏 - 探索，点击可以查看目前申请适配的学校名单，我将每周末查看一次，优先适配有效数多的学校。"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="使用须知"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="1. 学校名称必须填写全称，否则视作无效\n2. 青果教务暂时不予适配，因为课表是图片无法解析\n3. 本人还是学生，也需顾及学业，请勿催促"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_school"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@id/ll_time"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="学校全称"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <EditText
+                android:id="@+id/et_type"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="教务类型（可不填）"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <EditText
+                android:id="@+id/et_qq"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginStart="24dp"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="QQ（用于联系）"
+                android:lines="1"
+                android:singleLine="true"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_next"
+                android:layout_width="160dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="32dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="下一步"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

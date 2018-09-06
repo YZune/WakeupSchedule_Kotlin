@@ -2,18 +2,14 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 
 class ImportChooseFragment : DialogFragment() {
@@ -57,12 +53,9 @@ class ImportChooseFragment : DialogFragment() {
         }
 
         tv_feedback.setOnClickListener {
-            if (CourseUtils.isQQClientAvailable(context!!.applicationContext)) {
-                val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))
-            } else {
-                Toasty.info(context!!.applicationContext, "手机上没有安装QQ，无法启动聊天窗口:-(", Toast.LENGTH_LONG).show()
-            }
+            val intent = Intent(activity!!, LoginWebActivity::class.java)
+            intent.putExtra("type", "apply")
+            startActivity(intent)
             dismiss()
         }
     }

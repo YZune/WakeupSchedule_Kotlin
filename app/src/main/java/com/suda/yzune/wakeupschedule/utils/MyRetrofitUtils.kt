@@ -1,9 +1,7 @@
 package com.suda.yzune.wakeupschedule.utils
 
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.util.Log
-import com.suda.yzune.wakeupschedule.schedule_import.ImportService
+import es.dmoral.toasty.Toasty
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,6 +23,22 @@ class MyRetrofitUtils private constructor() {
             }
 
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}
+        })
+    }
+
+    fun postHtml(school: String, type: String, html: String, qq: String, context: Context) {
+        myService.postHtml(school, type, html, qq).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Toasty.error(context.applicationContext, "上传网页源码失败，请检查网络").show()
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.body()!!.string() == "OK") {
+                    Toasty.success(context.applicationContext, "申请成功~").show()
+                } else {
+                    Toasty.error(context.applicationContext, "上传网页源码失败，请检查网络").show()
+                }
+            }
         })
     }
 

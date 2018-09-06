@@ -222,13 +222,18 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 myGrad.setColor(Color.parseColor(c.color))
                 myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60) / 100.0)).toInt()
 
+                if (c.room != "") {
+                    tv.text = c.courseName + "@" + c.room
+                } else {
+                    tv.text = c.courseName
+                }
+
                 when (c.type) {
-                    0 -> tv.text = c.courseName + "@" + c.room
                     1 -> {
-                        tv.text = c.courseName + "@" + c.room + "\n单周"
+                        tv.text = tv.text.toString() + "\n单周"
                         if (week % 2 == 0) {
                             if (showNone) {
-                                tv.text = c.courseName + "@" + c.room + "\n单周[非本周]"
+                                tv.text = tv.text.toString() + "\n单周[非本周]"
                                 tv.visibility = View.VISIBLE
                                 tv.alpha = 0.6f
                                 myGrad.setColor(resources.getColor(R.color.grey))
@@ -238,11 +243,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                         }
                     }
                     2 -> {
-                        tv.text = c.courseName + "@" + c.room + "\n双周"
+                        tv.text = tv.text.toString() + "\n双周"
                         if (week % 2 != 0) {
                             if (showNone) {
                                 tv.alpha = 0.6f
-                                tv.text = c.courseName + "@" + c.room + "\n双周[非本周]"
+                                tv.text = tv.text.toString() + "\n双周[非本周]"
                                 tv.visibility = View.VISIBLE
                                 myGrad.setColor(resources.getColor(R.color.grey))
                             } else {
@@ -255,7 +260,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 if (c.startWeek > week || c.endWeek < week) {
                     if (showNone) {
                         tv.alpha = 0.6f
-                        tv.text = c.courseName + "@" + c.room + "[非本周]"
+                        //tv.text = c.courseName + "@" + c.room + "[非本周]"
+                        tv.text = tv.text.toString() + "[非本周]"
                         tv.visibility = View.VISIBLE
                         myGrad.setColor(resources.getColor(R.color.grey))
                     } else {
