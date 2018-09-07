@@ -38,6 +38,21 @@ object CourseUtils {
         }
     }
 
+    fun getNodeStr(node: Int): String {
+        return when (node) {
+            1 -> "一"
+            2 -> "二"
+            3 -> "三"
+            4 -> "四"
+            5 -> "五"
+            6 -> "六"
+            7 -> "七"
+            8 -> "八"
+            9 -> "九"
+            else -> ""
+        }
+    }
+
     fun countStr(str1: String, str2: String): Int {
         var times = 0
         var startIndex = 0

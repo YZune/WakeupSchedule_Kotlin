@@ -11,6 +11,7 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
@@ -195,7 +196,7 @@ class ImportViewModel : ViewModel() {
         return courses
     }
 
-    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context, sourse: String) {
+    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context, source: String) {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -204,7 +205,7 @@ class ImportViewModel : ViewModel() {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
                 baseList.add(CourseBaseBean(id, importBean.name, "", tableName))
-                val time = parseTime(importBean.timeInfo, importBean.startNode, sourse, importBean.name)
+                val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -217,7 +218,7 @@ class ImportViewModel : ViewModel() {
                 }
                 id++
             } else {
-                val time = parseTime(importBean.timeInfo, importBean.startNode, sourse, importBean.name)
+                val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
@@ -382,8 +383,14 @@ class ImportViewModel : ViewModel() {
             result[0] = day
         }
         if (result[0] == 0) {
-            val startIndex = source.indexOf("<td>第${startNode}节</td>")
-            val endIndex = source.indexOf(courseName, startIndex)
+            var startIndex = source.indexOf(">第${startNode}节</td>")
+            if (startIndex == -1) {
+                startIndex = source.indexOf(">第${CourseUtils.getNodeStr(startNode)}节</td>")
+            }
+            var endIndex = 0
+            if (startIndex != -1) {
+                endIndex = source.indexOf(courseName, startIndex)
+            }
             if (startIndex != -1 && endIndex != -1) {
                 result[0] = countStr(source.substring(startIndex, endIndex), "Center")
             }
