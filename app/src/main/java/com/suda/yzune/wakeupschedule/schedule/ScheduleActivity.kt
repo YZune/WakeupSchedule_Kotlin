@@ -114,6 +114,20 @@ class ScheduleActivity : AppCompatActivity() {
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
             initIntro()
         }
+
+        initCourseData()
+    }
+
+    private fun initCourseData() {
+        for (i in 1..7) {
+            viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
+                viewModel.allCourseList[i - 1].value = list
+            })
+
+            viewModel.getRawCourseByDay(i, "lover").observe(this, Observer { list ->
+                viewModel.loverCourseList[i - 1].value = list
+            })
+        }
     }
 
     private fun initIntro() {
@@ -177,6 +191,8 @@ class ScheduleActivity : AppCompatActivity() {
             }
         }
 
+        viewModel.refreshViewData(applicationContext)
+
         viewModel.getTimeDetailLiveList().observe(this, Observer {
             viewModel.getTimeList().clear()
             viewModel.getTimeList().addAll(it!!)
@@ -221,7 +237,8 @@ class ScheduleActivity : AppCompatActivity() {
                     .override(x, y)
                     .into(headerBg)
         }
-        if (PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_color", true)) {
+
+        if (viewModel.showWhite) {
             for (i in 0 until rl_title.childCount) {
                 val view = rl_title.getChildAt(i)
                 when (view) {

@@ -21,19 +21,8 @@ import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
 
-    private var week = 0
-    private var itemHeight = 0
-    private var marTop = 0
-    private var showWhite = true
-    private var showSunday = true
-    private var showSat = true
-    private var showTimeDetail = false
-    private var showSummerTime = false
-    private var showStroke = true
-    private var showNone = true
+    var week = 0
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
-    private var nodesNum = 11
-    private var textSize = 12
     private lateinit var viewModel: ScheduleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,19 +37,8 @@ class ScheduleFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val itemHeightDp = PreferenceUtils.getIntFromSP(context!!.applicationContext, "item_height", 56)
-        itemHeight = SizeUtils.dp2px(context, itemHeightDp.toFloat())
-        marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-        textSize = PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_text_size", 12)
-        showSummerTime = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_summer", false)
-        showNone = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show", false)
-        showStroke = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_stroke", true)
-        showWhite = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_color", true)
-        showTimeDetail = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_time_detail", false)
-        showSat = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_sat", true)
-        showSunday = PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_show_weekend", true)
-        val daysEnd = if (showSunday) 7 else 6
-        if (showSunday) {
+
+        if (viewModel.showSunday) {
             weekPanel_7.visibility = View.VISIBLE
             title7.visibility = View.VISIBLE
         } else {
@@ -68,7 +46,7 @@ class ScheduleFragment : Fragment() {
             title7.visibility = View.GONE
         }
 
-        if (showSat) {
+        if (viewModel.showSat) {
             weekPanel_6.visibility = View.VISIBLE
             title6.visibility = View.VISIBLE
         } else {
@@ -78,10 +56,10 @@ class ScheduleFragment : Fragment() {
 
         for (i in 0 until weekPanel_0.childCount) {
             val lp = weekPanel_0.getChildAt(i).layoutParams
-            lp.height = itemHeight
+            lp.height = viewModel.itemHeight
             weekPanel_0.getChildAt(i).layoutParams = lp
         }
-        if (showWhite) {
+        if (viewModel.showWhite) {
             for (i in 0 until weekPanel_0.childCount) {
                 val tv = weekPanel_0.getChildAt(i) as TextView
                 tv.setTextColor(resources.getColor(R.color.white))
@@ -101,29 +79,28 @@ class ScheduleFragment : Fragment() {
             }
         }
 
-        nodesNum = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
-        for (i in 3 until nodesNum) {
+        for (i in 3 until viewModel.nodesNum) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.VISIBLE
         }
-        for (i in nodesNum until weekPanel_0.childCount) {
+        for (i in viewModel.nodesNum until weekPanel_0.childCount) {
             val tv = weekPanel_0.getChildAt(i) as TextView
             tv.visibility = View.GONE
         }
 
-        refresh(view!!, daysEnd)
+        refresh(view!!)
 
         ll_contentPanel.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_UP -> {
-                    refresh(view!!, daysEnd)
+                    refresh(view!!)
                 }
             }
             return@setOnTouchListener false
         }
 
         ll_contentPanel.setOnLongClickListener {
-            refresh(view!!, daysEnd, "lover")
+            refresh(view!!, "lover")
             return@setOnLongClickListener true
         }
     }
@@ -136,13 +113,22 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun refresh(view: View, daysEnd: Int, tableName: String = "") {
-        for (i in 1..daysEnd) {
-            viewModel.getRawCourseByDay(i, tableName).observe(this, Observer { list ->
-                initWeekPanel(view, weekPanels, list, i)
-            })
+    private fun refresh(view: View, tableName: String = "") {
+        if (tableName == "lover") {
+            for (i in 1..7) {
+                viewModel.loverCourseList[i - 1].observe(this, Observer {
+                    initWeekPanel(view, weekPanels, it, i)
+                })
+            }
+        } else {
+            for (i in 1..7) {
+                viewModel.allCourseList[i - 1].observe(this, Observer {
+                    initWeekPanel(view, weekPanels, it, i)
+                })
+            }
         }
-        if (PreferenceUtils.getBooleanFromSP(activity!!.applicationContext, "s_sunday_first", false)) {
+
+        if (viewModel.sundayFirst) {
             val title7 = view.findViewById<TextView>(R.id.title7)
             val weekPanel7 = view.findViewById<LinearLayout>(R.id.weekPanel_7)
             weekName.removeView(title7)
@@ -164,22 +150,22 @@ class ScheduleFragment : Fragment() {
             val tv = TextView(context)
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    itemHeight * c.step + marTop * (c.step - 1))
+                    viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
             if (i > 0) {
-                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (itemHeight + marTop) + marTop, 0, 0)
+                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             } else {
-                lp.setMargins(0, (c.startNode - 1) * (itemHeight + marTop) + marTop, 0, 0)
+                lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             }
             tv.layoutParams = lp
             //tv.gravity = Gravity.CENTER_VERTICAL
-            tv.textSize = textSize.toFloat()
+            tv.textSize = viewModel.textSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             tv.setPadding(8, 8, 8, 8)
             tv.setTextColor(resources.getColor(R.color.white))
 
             tv.background = resources.getDrawable(R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
-            if (!showStroke) {
+            if (!viewModel.showStroke) {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), resources.getColor(R.color.transparent))
             } else {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), Color.parseColor("#80ffffff"))
@@ -204,7 +190,7 @@ class ScheduleFragment : Fragment() {
                 1 -> {
                     tv.text = tv.text.toString() + "\n单周"
                     if (week % 2 == 0) {
-                        if (showNone) {
+                        if (viewModel.showNone) {
                             tv.text = tv.text.toString() + "\n单周[非本周]"
                             tv.visibility = View.VISIBLE
                             tv.alpha = 0.6f
@@ -217,7 +203,7 @@ class ScheduleFragment : Fragment() {
                 2 -> {
                     tv.text = tv.text.toString() + "\n双周"
                     if (week % 2 != 0) {
-                        if (showNone) {
+                        if (viewModel.showNone) {
                             tv.alpha = 0.6f
                             tv.text = tv.text.toString() + "\n双周[非本周]"
                             tv.visibility = View.VISIBLE
@@ -230,7 +216,7 @@ class ScheduleFragment : Fragment() {
             }
 
             if (c.startWeek > week || c.endWeek < week) {
-                if (showNone) {
+                if (viewModel.showNone) {
                     tv.alpha = 0.6f
                     //tv.text = c.courseName + "@" + c.room + "[非本周]"
                     tv.text = tv.text.toString() + "[非本周]"
@@ -241,8 +227,8 @@ class ScheduleFragment : Fragment() {
                 }
             }
 
-            if (showTimeDetail) {
-                if (showSummerTime) {
+            if (viewModel.showTimeDetail) {
+                if (viewModel.showSummerTime) {
                     tv.text = viewModel.getSummerTimeList()[c.startNode - 1].startTime + "\n" + tv.text
                 } else {
                     tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
