@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
@@ -24,6 +24,7 @@ class WebViewLoginFragment : Fragment() {
     private val GET_FRAME_CONTENT_STR = "document.getElementById('iframeautoheight').contentWindow.document.body.innerHTML"
 
     private lateinit var type: String
+    private lateinit var viewModel: ImportViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,6 +35,8 @@ class WebViewLoginFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
+
+        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
 
         val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
         if (url != "") {
@@ -75,6 +78,18 @@ class WebViewLoginFragment : Fragment() {
     }
 
     private fun initEvent() {
+        viewModel.getPostHtmlResponse().observe(this, Observer {
+            when (it) {
+                "OK" -> {
+                    Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
+                    activity!!.finish()
+                }
+                "error" -> {
+                    Toasty.error(activity!!.applicationContext, "上传网页源码失败，请检查网络", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
         tv_got_it.setOnClickListener {
             tv_got_it.visibility = View.GONE
             tv_tips.visibility = View.GONE
@@ -118,7 +133,6 @@ class WebViewLoginFragment : Fragment() {
     internal inner class InJavaScriptLocalObj {
         @JavascriptInterface
         fun showSource(html: String) {
-            val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
             if (type != "apply") {
                 if (html.contains("星期一") && html.contains("星期二")) {
                     Log.d("方正", html.substring(html.indexOf("星期一")))
@@ -131,12 +145,11 @@ class WebViewLoginFragment : Fragment() {
                     Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
                 }
             } else {
-                MyRetrofitUtils.instance.postHtml(
+                viewModel.postHtml(
                         school = viewModel.getSchoolInfo()[0],
                         type = viewModel.getSchoolInfo()[1],
                         qq = viewModel.getSchoolInfo()[2],
-                        html = html,
-                        activity = activity!!)
+                        html = html)
             }
         }
     }

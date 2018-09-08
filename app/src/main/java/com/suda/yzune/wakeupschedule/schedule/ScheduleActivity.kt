@@ -119,6 +119,16 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initCourseData() {
+        viewModel.getTimeDetailLiveList().observe(this, Observer {
+            viewModel.getTimeList().clear()
+            viewModel.getTimeList().addAll(it!!)
+        })
+
+        viewModel.getSummerTimeLiveList().observe(this, Observer {
+            viewModel.getSummerTimeList().clear()
+            viewModel.getSummerTimeList().addAll(it!!)
+        })
+
         for (i in 1..7) {
             viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
                 viewModel.allCourseList[i - 1].value = list
@@ -192,16 +202,6 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         viewModel.refreshViewData(applicationContext)
-
-        viewModel.getTimeDetailLiveList().observe(this, Observer {
-            viewModel.getTimeList().clear()
-            viewModel.getTimeList().addAll(it!!)
-        })
-
-        viewModel.getSummerTimeLiveList().observe(this, Observer {
-            viewModel.getSummerTimeList().clear()
-            viewModel.getSummerTimeList().addAll(it!!)
-        })
 
         whichWeek = countWeek(this)
         tv_week.text = "第${whichWeek}周"

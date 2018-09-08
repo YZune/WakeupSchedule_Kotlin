@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
 import retrofit2.Call
@@ -121,4 +122,21 @@ class ImportRepository(url: String) {
         }
         return code
     }
+
+    fun postHtml(school: String, type: String, html: String, qq: String) {
+        MyRetrofitUtils.instance.getService().postHtml(school, type, html, qq).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                postHtmlResponse.value = "error"
+            }
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.body()!!.string() == "OK") {
+                    postHtmlResponse.value = "OK"
+                } else {
+                    postHtmlResponse.value = "error"
+                }
+            }
+        })
+    }
+
 }

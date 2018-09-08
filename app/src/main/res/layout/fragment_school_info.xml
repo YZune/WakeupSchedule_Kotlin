@@ -87,7 +87,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="1. 学校名称必须填写全称，否则视作无效\n2. 青果教务暂时不予适配，因为课表是图片无法解析\n3. 本人还是学生，也需顾及学业，请勿催促"
+                android:text="1. 学校名称必须填写全称，否则视作无效\n2. 青果教务暂时不予适配，因为课表是图片无法解析。实在是不想手动输入，请百度青果教务自己出的喜鹊儿App\n3. 本人还是学生，也需顾及学业，请勿催促"
                 android:textSize="12sp" />
 
             <EditText

@@ -78,6 +78,10 @@ class ImportViewModel : ViewModel() {
         return repository.postHtmlResponse
     }
 
+    fun postHtml(school: String, type: String, html: String, qq: String) {
+        repository.postHtml(school, type, html, qq)
+    }
+
     fun getSchoolInfo(): Array<String> {
         return repository.schoolInfo
     }
@@ -306,18 +310,23 @@ class ImportViewModel : ViewModel() {
                     }
 
                     weekList.forEach {
-                        val weeks = it.substring(0, it.indexOf('周')).split('-')
-                        if (weeks.isNotEmpty()) {
-                            startWeek = Integer.decode(weeks[0])!!
-                        }
-                        if (weeks.size > 1) {
-                            endWeek = Integer.decode(weeks[1])!!
-                        }
+                        if (it.contains('-')) {
+                            val weeks = it.substring(0, it.indexOf('周')).split('-')
+                            if (weeks.isNotEmpty()) {
+                                startWeek = Integer.decode(weeks[0])!!
+                            }
+                            if (weeks.size > 1) {
+                                endWeek = Integer.decode(weeks[1])!!
+                            }
 
-                        type = when {
-                            it.contains('单') -> 1
-                            it.contains('双') -> 2
-                            else -> 0
+                            type = when {
+                                it.contains('单') -> 1
+                                it.contains('双') -> 2
+                                else -> 0
+                            }
+                        } else {
+                            startWeek = Integer.decode(it.substring(0, it.indexOf('周')))
+                            endWeek = Integer.decode(it.substring(0, it.indexOf('周')))
                         }
 
                         val flag = isContainName(baseList, courseName)
