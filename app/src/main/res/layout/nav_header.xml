@@ -37,7 +37,7 @@
         android:layout_above="@id/tv_sign"
         android:layout_marginBottom="2dp"
         android:layout_marginStart="16dp"
-        android:text="点击以登录"
+        android:text="Hello"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -54,6 +54,7 @@
         android:textSize="12sp" />
 
     <TextView
+        android:visibility="gone"
         android:textSize="12sp"
         android:layout_width="64dp"
         android:layout_height="24dp"

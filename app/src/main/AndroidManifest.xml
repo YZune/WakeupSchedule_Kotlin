@@ -53,7 +53,8 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <activity android:name=".AboutActivity" />
-        <activity android:name=".DonateActivity"></activity>
+        <activity android:name=".DonateActivity" />
+        <activity android:name=".apply_info.ApplyInfoActivity"></activity>
     </application>
 
 </manifest>

@@ -229,9 +229,9 @@ class ScheduleFragment : Fragment() {
 
             if (viewModel.showTimeDetail) {
                 if (viewModel.showSummerTime) {
-                    tv.text = viewModel.getSummerTimeList()[c.startNode - 1].startTime + "\n" + tv.text
+                    tv.text = viewModel.summerTimeList[c.startNode - 1].startTime + "\n" + tv.text
                 } else {
-                    tv.text = viewModel.getTimeList()[c.startNode - 1].startTime + "\n" + tv.text
+                    tv.text = viewModel.timeList[c.startNode - 1].startTime + "\n" + tv.text
                 }
             }
 

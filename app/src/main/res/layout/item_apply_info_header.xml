@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingEnd="24dp"
+    android:paddingStart="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:lineSpacingExtra="4dp"
+        android:text="        你以后可以通过侧栏跳转到此页面。"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:lineSpacingExtra="4dp"
+        android:text="        说实话，我也不知道这次会有多少人来申请……但从上一次申请适配直接跳转到我QQ时的情况来看，应该不会很少吧。现在不会直接跳转到我QQ了，因为那时候真的是不堪其扰，深夜还突然有人直接扔一个学校名字给我，叫我去适配，或者问我怎么不能自动导入，说不能导入就卸载App。"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginTop="8dp"
+        android:lineSpacingExtra="4dp"
+        android:text="        不做过多评价，出现在这里的学校名单我都会抽时间去适配。另外由于以前出现在我列表中的消息过多，有些小伙伴提供了很多的数据，但被刷下去了，抱歉。请大家通过这个功能重新提供一下数据吧，都记录在服务器的，管理起来会方便不少。不过要说的是，我目前大三的课都非常的重要，希望各位多多体谅。"
+        android:textSize="12sp" />
+
+
+</LinearLayout>

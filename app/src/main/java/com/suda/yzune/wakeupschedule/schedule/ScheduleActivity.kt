@@ -29,6 +29,7 @@ import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.GlideOptions.bitmapTransform
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
+import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
@@ -55,6 +56,7 @@ class ScheduleActivity : AppCompatActivity() {
     var whichWeek = 1
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var clipboardManager: ClipboardManager
+    private lateinit var mAdapter: SchedulePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -116,17 +118,18 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         initCourseData()
+        initViewPage()
     }
 
     private fun initCourseData() {
         viewModel.getTimeDetailLiveList().observe(this, Observer {
-            viewModel.getTimeList().clear()
-            viewModel.getTimeList().addAll(it!!)
+            //viewModel.getTimeList().clear()
+            viewModel.timeList.addAll(it!!)
         })
 
         viewModel.getSummerTimeLiveList().observe(this, Observer {
-            viewModel.getSummerTimeList().clear()
-            viewModel.getSummerTimeList().addAll(it!!)
+            //viewModel.getSummerTimeList().clear()
+            viewModel.summerTimeList.addAll(it!!)
         })
 
         for (i in 1..7) {
@@ -203,10 +206,28 @@ class ScheduleActivity : AppCompatActivity() {
 
         viewModel.refreshViewData(applicationContext)
 
-        whichWeek = countWeek(this)
+        whichWeek = if (viewModel.savedWeek == -1) {
+            countWeek(this)
+        } else {
+            viewModel.savedWeek
+        }
+
+        if (whichWeek == countWeek(this)) {
+            tv_weekday.text = CourseUtils.getWeekday()
+        } else {
+            tv_weekday.text = "非本周  点击此处以回到本周"
+        }
+
         tv_week.text = "第${whichWeek}周"
         tv_date.text = CourseUtils.getTodayDate()
-        tv_weekday.text = CourseUtils.getWeekday()
+
+        if (whichWeek >= 1) {
+            tv_week.text = "第" + whichWeek + "周"
+        } else {
+            tv_week.text = "还没有开学哦"
+            whichWeek = 1
+        }
+        vp_schedule.currentItem = whichWeek - 1
 
         val headerLayout = navigation_view.getHeaderView(0)
         val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
@@ -255,8 +276,6 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
         }
-
-        initViewPage()
     }
 
     @SuppressLint("MissingSuperCall")
@@ -284,6 +303,13 @@ class ScheduleActivity : AppCompatActivity() {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
                         startActivity(Intent(this, SettingsActivity::class.java))
+                    }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_explore -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity(Intent(this, ApplyInfoActivity::class.java))
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -330,21 +356,13 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initViewPage() {
-        if (whichWeek >= 1) {
-            tv_week.text = "第" + whichWeek + "周"
-        } else {
-            tv_week.text = "还没有开学哦"
-            whichWeek = 1
-        }
-
-        val mAdapter = SchedulePagerAdapter(supportFragmentManager)
+        mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 5
         for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
         mAdapter.notifyDataSetChanged()
-        vp_schedule.currentItem = whichWeek - 1
     }
 
     private fun initEvent() {
@@ -422,5 +440,15 @@ class ScheduleActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.savedWeek = whichWeek
+    }
+
+    override fun onDestroy() {
+        mAdapter.removeAll()
+        super.onDestroy()
     }
 }

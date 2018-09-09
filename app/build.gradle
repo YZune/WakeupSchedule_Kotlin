@@ -12,8 +12,8 @@ android {
         applicationId "com.suda.yzune.wakeupschedule"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 26
-        versionName "3.13"
+        versionCode 27
+        versionName "3.14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

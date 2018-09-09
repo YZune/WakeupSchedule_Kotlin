@@ -106,7 +106,7 @@ class TimeSettingsActivity : AppCompatActivity() {
         viewModel.getSaveInfo().observe(this, Observer { s ->
             when (s) {
                 "ok" -> {
-                    Toasty.success(this.applicationContext, "保存成功").show()
+                    Toasty.success(this.applicationContext, "保存成功，下次启动App生效").show()
                     finish()
                 }
                 else -> {

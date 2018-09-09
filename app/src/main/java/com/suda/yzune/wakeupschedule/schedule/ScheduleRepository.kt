@@ -22,8 +22,6 @@ class ScheduleRepository(context: Context) {
     private val detailDao = dataBase.courseDetailDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val timeDao = dataBase.timeDetailDao()
-    private val timeList = arrayListOf<TimeDetailBean>()
-    private val summerTimeList = arrayListOf<TimeDetailBean>()
     private val json = PreferenceUtils.getStringFromSP(context, "course", "")
     private val clipboardImportInfo = MutableLiveData<String>()
     private var clipboardCourseList: List<CourseBean>? = null
@@ -147,14 +145,6 @@ class ScheduleRepository(context: Context) {
 
     fun getSummerTimeLiveList(): LiveData<List<TimeDetailBean>> {
         return timeDao.getSummerTimeList()
-    }
-
-    fun getTimeDetailList(): ArrayList<TimeDetailBean> {
-        return timeList
-    }
-
-    fun getSummerTimeList(): ArrayList<TimeDetailBean> {
-        return summerTimeList
     }
 
     fun getRawCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>> {

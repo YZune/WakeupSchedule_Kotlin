@@ -51,7 +51,7 @@ public class ViewUtils {
 
     public static void resizeStatusBar(Context context, View view) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
-        layoutParams.height = ViewUtils.getStatusBarHeight(context);
+        layoutParams.height = ViewUtils.getStatusBarHeight(context.getApplicationContext());
         view.setLayoutParams(layoutParams);
     }
 
@@ -113,15 +113,6 @@ public class ViewUtils {
         return bitmap;
     }
 
-    private boolean isLongPressed(float lastX, float lastY,
-                                  float thisX, float thisY,
-                                  long lastDownTime, long thisEventTime,
-                                  long longPressTime) {
-        float offsetX = Math.abs(thisX - lastX);
-        float offsetY = Math.abs(thisY - lastY);
-        long intervalTime = thisEventTime - lastDownTime;
-        return offsetX <= 10 && offsetY <= 10 && intervalTime >= longPressTime;
-    }
 
     public static void layoutView(View v, int width, int height) {
         // validate view.width and view.height

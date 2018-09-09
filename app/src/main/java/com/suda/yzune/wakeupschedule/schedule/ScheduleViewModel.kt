@@ -25,6 +25,9 @@ class ScheduleViewModel : ViewModel() {
     var showNone = true
     var nodesNum = 11
     var textSize = 12
+    var savedWeek = -1
+    val timeList = arrayListOf<TimeDetailBean>()
+    val summerTimeList = arrayListOf<TimeDetailBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val loverCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
 
@@ -72,14 +75,6 @@ class ScheduleViewModel : ViewModel() {
 
     fun updateFromOldVer(context: Context) {
         repository.updateFromOldVer(context)
-    }
-
-    fun getTimeList(): ArrayList<TimeDetailBean> {
-        return repository.getTimeDetailList()
-    }
-
-    fun getSummerTimeList(): ArrayList<TimeDetailBean> {
-        return repository.getSummerTimeList()
     }
 
     fun getScheduleWidgetIds(): LiveData<List<Int>> {

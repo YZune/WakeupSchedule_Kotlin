@@ -104,7 +104,11 @@ class CourseDetailFragment : DialogFragment() {
         }
         weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
         if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "isInitTimeTable", false)) {
-            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.getTimeList()[course.startNode - 1].startTime} - ${viewModel.getTimeList()[course.startNode + course.step - 2].endTime}"
+            if (viewModel.showSummerTime) {
+                time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.summerTimeList[course.startNode - 1].startTime} - ${viewModel.summerTimeList[course.startNode + course.step - 2].endTime}"
+            } else {
+                time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
+            }
         } else {
             time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
         }
