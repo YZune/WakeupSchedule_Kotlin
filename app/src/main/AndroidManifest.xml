@@ -54,7 +54,7 @@
 
         <activity android:name=".AboutActivity" />
         <activity android:name=".DonateActivity" />
-        <activity android:name=".apply_info.ApplyInfoActivity"></activity>
+        <activity android:name=".apply_info.ApplyInfoActivity" />
     </application>
 
 </manifest>

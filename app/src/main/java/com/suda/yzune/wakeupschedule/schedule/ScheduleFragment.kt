@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -39,58 +40,61 @@ class ScheduleFragment : Fragment() {
         super.onResume()
 
         if (viewModel.showSunday) {
-            weekPanel_7.visibility = View.VISIBLE
-            title7.visibility = View.VISIBLE
+            if (viewModel.sundayFirst) {
+                tv_title7.visibility = View.GONE
+                weekPanel_7.visibility = View.GONE
+                tv_title0_1.visibility = View.VISIBLE
+                weekPanel_0.visibility = View.VISIBLE
+            } else {
+                tv_title7.visibility = View.VISIBLE
+                weekPanel_7.visibility = View.VISIBLE
+                tv_title0_1.visibility = View.GONE
+                weekPanel_0.visibility = View.GONE
+            }
         } else {
+            tv_title7.visibility = View.GONE
             weekPanel_7.visibility = View.GONE
-            title7.visibility = View.GONE
+            tv_title0_1.visibility = View.GONE
+            weekPanel_0.visibility = View.GONE
         }
 
         if (viewModel.showSat) {
             weekPanel_6.visibility = View.VISIBLE
-            title6.visibility = View.VISIBLE
+            tv_title6.visibility = View.VISIBLE
         } else {
             weekPanel_6.visibility = View.GONE
-            title6.visibility = View.GONE
+            tv_title6.visibility = View.GONE
         }
 
-        for (i in 0 until weekPanel_0.childCount) {
-            val lp = weekPanel_0.getChildAt(i).layoutParams
+        for (i in 0 until 16) {
+            val tv = view!!.findViewById<TextView>(R.id.tv_node1 + i)
+            val lp = tv.layoutParams
             lp.height = viewModel.itemHeight
-            weekPanel_0.getChildAt(i).layoutParams = lp
-        }
-        if (viewModel.showWhite) {
-            for (i in 0 until weekPanel_0.childCount) {
-                val tv = weekPanel_0.getChildAt(i) as TextView
-                tv.setTextColor(resources.getColor(R.color.white))
+            tv.layoutParams = lp
+            if (viewModel.showWhite) {
+                tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
+            } else {
+                tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
             }
-            for (i in 0 until weekName.childCount) {
-                val tv = weekName.getChildAt(i) as TextView
-                tv.setTextColor(resources.getColor(R.color.white))
-            }
-        } else {
-            for (i in 0 until weekPanel_0.childCount) {
-                val tv = weekPanel_0.getChildAt(i) as TextView
-                tv.setTextColor(resources.getColor(R.color.black))
-            }
-            for (i in 0 until weekName.childCount) {
-                val tv = weekName.getChildAt(i) as TextView
-                tv.setTextColor(resources.getColor(R.color.black))
+            if (i >= viewModel.nodesNum) {
+                tv.visibility = View.GONE
+            } else {
+                tv.visibility = View.VISIBLE
             }
         }
 
-        for (i in 3 until viewModel.nodesNum) {
-            val tv = weekPanel_0.getChildAt(i) as TextView
-            tv.visibility = View.VISIBLE
-        }
-        for (i in viewModel.nodesNum until weekPanel_0.childCount) {
-            val tv = weekPanel_0.getChildAt(i) as TextView
-            tv.visibility = View.GONE
+        for (i in 0 until 8) {
+            val tv = view!!.findViewById<TextView>(R.id.tv_title0_1 + i)
+            if (viewModel.showWhite) {
+                tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
+            } else {
+                tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+            }
         }
 
         refresh(view!!)
 
-        ll_contentPanel.setOnTouchListener { _, event ->
+        contentPanel.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_UP -> {
                     refresh(view!!)
@@ -99,7 +103,7 @@ class ScheduleFragment : Fragment() {
             return@setOnTouchListener false
         }
 
-        ll_contentPanel.setOnLongClickListener {
+        contentPanel.setOnLongClickListener {
             refresh(view!!, "lover")
             return@setOnLongClickListener true
         }
@@ -128,14 +132,6 @@ class ScheduleFragment : Fragment() {
             }
         }
 
-        if (viewModel.sundayFirst) {
-            val title7 = view.findViewById<TextView>(R.id.title7)
-            val weekPanel7 = view.findViewById<LinearLayout>(R.id.weekPanel_7)
-            weekName.removeView(title7)
-            weekName.addView(title7, 1)
-            ll_contentPanel.removeView(weekPanel7)
-            ll_contentPanel.addView(weekPanel7, 1)
-        }
     }
 
     private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int) {
@@ -161,12 +157,12 @@ class ScheduleFragment : Fragment() {
             tv.textSize = viewModel.textSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             tv.setPadding(8, 8, 8, 8)
-            tv.setTextColor(resources.getColor(R.color.white))
+            tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
 
             tv.background = resources.getDrawable(R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
             if (!viewModel.showStroke) {
-                myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), resources.getColor(R.color.transparent))
+                myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), ContextCompat.getColor(activity!!.applicationContext, R.color.transparent))
             } else {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), Color.parseColor("#80ffffff"))
             }
@@ -194,7 +190,7 @@ class ScheduleFragment : Fragment() {
                             tv.text = tv.text.toString() + "\n单周[非本周]"
                             tv.visibility = View.VISIBLE
                             tv.alpha = 0.6f
-                            myGrad.setColor(resources.getColor(R.color.grey))
+                            myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                         } else {
                             tv.visibility = View.INVISIBLE
                         }
@@ -207,7 +203,7 @@ class ScheduleFragment : Fragment() {
                             tv.alpha = 0.6f
                             tv.text = tv.text.toString() + "\n双周[非本周]"
                             tv.visibility = View.VISIBLE
-                            myGrad.setColor(resources.getColor(R.color.grey))
+                            myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                         } else {
                             tv.visibility = View.INVISIBLE
                         }
@@ -221,7 +217,7 @@ class ScheduleFragment : Fragment() {
                     //tv.text = c.courseName + "@" + c.room + "[非本周]"
                     tv.text = tv.text.toString() + "[非本周]"
                     tv.visibility = View.VISIBLE
-                    myGrad.setColor(resources.getColor(R.color.grey))
+                    myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                 } else {
                     tv.visibility = View.INVISIBLE
                 }

@@ -100,7 +100,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title6"
+            android:id="@+id/tv_title6"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -110,7 +110,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title7"
+            android:id="@+id/tv_title7"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"

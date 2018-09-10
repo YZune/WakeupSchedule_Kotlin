@@ -97,7 +97,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         fun initView(view: View) {
             val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
             val weekPanel6 = view.findViewById<View>(R.id.weekPanel_6)
-            val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
+            //todo: change
+            val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_7)
             val weekName = view.findViewById<LinearLayout>(R.id.weekName)
 
             if (showSunday) {

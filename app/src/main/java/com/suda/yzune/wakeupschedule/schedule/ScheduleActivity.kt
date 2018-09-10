@@ -10,11 +10,11 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
-import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -52,7 +52,6 @@ import java.text.ParseException
 
 class ScheduleActivity : AppCompatActivity() {
 
-    private lateinit var mainBgContainer: View
     var whichWeek = 1
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var clipboardManager: ClipboardManager
@@ -74,7 +73,6 @@ class ScheduleActivity : AppCompatActivity() {
 
         viewModel.updateFromOldVer(applicationContext)
         initView()
-        initViewStub()
         initEvent()
 
         val openTimes = PreferenceUtils.getIntFromSP(applicationContext, "open_times", 0)
@@ -125,22 +123,21 @@ class ScheduleActivity : AppCompatActivity() {
         viewModel.getTimeDetailLiveList().observe(this, Observer {
             //viewModel.getTimeList().clear()
             viewModel.timeList.addAll(it!!)
+            for (i in 1..7) {
+                viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
+                    viewModel.allCourseList[i - 1].value = list
+                })
+
+                viewModel.getRawCourseByDay(i, "lover").observe(this, Observer { list ->
+                    viewModel.loverCourseList[i - 1].value = list
+                })
+            }
         })
 
         viewModel.getSummerTimeLiveList().observe(this, Observer {
             //viewModel.getSummerTimeList().clear()
             viewModel.summerTimeList.addAll(it!!)
         })
-
-        for (i in 1..7) {
-            viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
-                viewModel.allCourseList[i - 1].value = list
-            })
-
-            viewModel.getRawCourseByDay(i, "lover").observe(this, Observer { list ->
-                viewModel.loverCourseList[i - 1].value = list
-            })
-        }
     }
 
     private fun initIntro() {
@@ -239,7 +236,7 @@ class ScheduleActivity : AppCompatActivity() {
             GlideApp.with(this.applicationContext)
                     .load(uri)
                     .override(x, y)
-                    .into(mainBgContainer.findViewById(R.id.iv_bg))
+                    .into(iv_bg)
 
             GlideApp.with(this.applicationContext)
                     .load(R.drawable.main_bg)
@@ -251,7 +248,7 @@ class ScheduleActivity : AppCompatActivity() {
             GlideApp.with(this.applicationContext)
                     .load(R.drawable.main_bg)
                     .override(x, y)
-                    .into(mainBgContainer.findViewById(R.id.iv_bg))
+                    .into(iv_bg)
 
             GlideApp.with(this.applicationContext)
                     .load(R.drawable.main_bg)
@@ -260,19 +257,19 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         if (viewModel.showWhite) {
-            for (i in 0 until rl_title.childCount) {
-                val view = rl_title.getChildAt(i)
+            for (i in 0 until cl_schedule.childCount) {
+                val view = cl_schedule.getChildAt(i)
                 when (view) {
-                    is TextView -> view.setTextColor(resources.getColor(R.color.white))
-                    is ImageButton -> view.setColorFilter(resources.getColor(R.color.white))
+                    is TextView -> view.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
+                    is ImageButton -> view.setColorFilter(ContextCompat.getColor(applicationContext, R.color.white))
                 }
             }
         } else {
-            for (i in 0 until rl_title.childCount) {
-                val view = rl_title.getChildAt(i)
+            for (i in 0 until cl_schedule.childCount) {
+                val view = cl_schedule.getChildAt(i)
                 when (view) {
-                    is TextView -> view.setTextColor(resources.getColor(R.color.black))
-                    is ImageButton -> view.setColorFilter(resources.getColor(R.color.black))
+                    is TextView -> view.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
+                    is ImageButton -> view.setColorFilter(ContextCompat.getColor(applicationContext, R.color.black))
                 }
             }
         }
@@ -351,17 +348,16 @@ class ScheduleActivity : AppCompatActivity() {
         }
     }
 
-    private fun initViewStub() {
-        mainBgContainer = vs_main_bg.inflate()
-    }
-
     private fun initViewPage() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 5
-        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
-            mAdapter.addFragment(ScheduleFragment.newInstance(i))
-        }
+//        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
+//            mAdapter.addFragment(ScheduleFragment.newInstance(i))
+//        }
+
+        mAdapter.addFragment(ScheduleFragment.newInstance(1))
+
         mAdapter.notifyDataSetChanged()
     }
 
@@ -395,7 +391,7 @@ class ScheduleActivity : AppCompatActivity() {
             })
         }
 
-        rl_title.setOnClickListener {
+        tv_weekday.setOnClickListener {
             try {
                 whichWeek = countWeek(this)
             } catch (e: ParseException) {
