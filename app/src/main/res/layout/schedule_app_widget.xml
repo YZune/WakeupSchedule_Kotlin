@@ -40,7 +40,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title0"
+            android:id="@+id/tv_title0_1"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -50,7 +50,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title1"
+            android:id="@+id/tv_title1"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -60,7 +60,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title2"
+            android:id="@+id/tv_title2"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -70,7 +70,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title3"
+            android:id="@+id/tv_title3"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -80,7 +80,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title4"
+            android:id="@+id/tv_title4"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"
@@ -90,7 +90,7 @@
             android:textSize="12sp" />
 
         <TextView
-            android:id="@+id/title5"
+            android:id="@+id/tv_title5"
             android:layout_width="0dp"
             android:layout_height="20dp"
             android:layout_weight="1"

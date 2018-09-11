@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.utils
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.R
@@ -22,18 +23,19 @@ object AppWidgetUtils {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
         }
 
-        val showWeekend = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
-        if (showWeekend) {
-            mRemoteViews.setViewVisibility(R.id.tv_title7, View.VISIBLE)
+        val showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
+
+        if (showSunday) {
             if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)) {
                 mRemoteViews.setViewVisibility(R.id.tv_title7, View.GONE)
-                mRemoteViews.setViewVisibility(R.id.title0, View.VISIBLE)
+                mRemoteViews.setViewVisibility(R.id.tv_title0_1, View.VISIBLE)
             } else {
                 mRemoteViews.setViewVisibility(R.id.tv_title7, View.VISIBLE)
-                mRemoteViews.setViewVisibility(R.id.title0, View.GONE)
+                mRemoteViews.setViewVisibility(R.id.tv_title0_1, View.GONE)
             }
         } else {
             mRemoteViews.setViewVisibility(R.id.tv_title7, View.GONE)
+            mRemoteViews.setViewVisibility(R.id.tv_title0_1, View.GONE)
         }
 
         val showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true)
@@ -44,16 +46,16 @@ object AppWidgetUtils {
         }
 
         if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
-            mRemoteViews.setTextColor(R.id.tv_date, context.resources.getColor(R.color.white))
-            mRemoteViews.setTextColor(R.id.tv_week, context.resources.getColor(R.color.white))
-            for (i in 0 until 7) {
-                mRemoteViews.setTextColor(R.id.title1 + i, context.resources.getColor(R.color.white))
+            mRemoteViews.setTextColor(R.id.tv_date, ContextCompat.getColor(context.applicationContext, R.color.white))
+            mRemoteViews.setTextColor(R.id.tv_week, ContextCompat.getColor(context.applicationContext, R.color.white))
+            for (i in 0 until 8) {
+                mRemoteViews.setTextColor(R.id.tv_title0_1 + i, ContextCompat.getColor(context.applicationContext, R.color.white))
             }
         } else {
-            mRemoteViews.setTextColor(R.id.tv_date, context.resources.getColor(R.color.black))
-            mRemoteViews.setTextColor(R.id.tv_week, context.resources.getColor(R.color.black))
-            for (i in 0 until 7) {
-                mRemoteViews.setTextColor(R.id.title1 + i, context.resources.getColor(R.color.black))
+            mRemoteViews.setTextColor(R.id.tv_date, ContextCompat.getColor(context.applicationContext, R.color.black))
+            mRemoteViews.setTextColor(R.id.tv_week, ContextCompat.getColor(context.applicationContext, R.color.black))
+            for (i in 0 until 8) {
+                mRemoteViews.setTextColor(R.id.tv_title0_1 + i, ContextCompat.getColor(context.applicationContext, R.color.black))
             }
         }
 

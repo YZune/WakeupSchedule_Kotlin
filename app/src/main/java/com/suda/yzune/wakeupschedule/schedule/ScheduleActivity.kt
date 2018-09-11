@@ -352,11 +352,9 @@ class ScheduleActivity : AppCompatActivity() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 5
-//        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
-//            mAdapter.addFragment(ScheduleFragment.newInstance(i))
-//        }
-
-        mAdapter.addFragment(ScheduleFragment.newInstance(1))
+        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
+            mAdapter.addFragment(ScheduleFragment.newInstance(i))
+        }
 
         mAdapter.notifyDataSetChanged()
     }

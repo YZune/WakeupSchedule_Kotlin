@@ -138,10 +138,12 @@ class ScheduleFragment : Fragment() {
         val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
+        weekPanel_0.removeAllViews()
         if (data == null || data.isEmpty()) return
         val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
+            val strBuilder = StringBuilder()
             val c = data[i]
             val tv = TextView(context)
             val lp = LinearLayout.LayoutParams(
@@ -159,7 +161,7 @@ class ScheduleFragment : Fragment() {
             tv.setPadding(8, 8, 8, 8)
             tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
 
-            tv.background = resources.getDrawable(R.drawable.course_item_bg)
+            tv.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
             if (!viewModel.showStroke) {
                 myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), ContextCompat.getColor(activity!!.applicationContext, R.color.transparent))
@@ -176,18 +178,18 @@ class ScheduleFragment : Fragment() {
             }
             myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_alpha", 60) / 100.0)).toInt()
 
+            strBuilder.append(c.courseName)
+
             if (c.room != "") {
-                tv.text = c.courseName + "@" + c.room
-            } else {
-                tv.text = c.courseName
+                strBuilder.append("@${c.room}")
             }
 
             when (c.type) {
                 1 -> {
-                    tv.text = tv.text.toString() + "\n单周"
+                    strBuilder.append("\n单周")
                     if (week % 2 == 0) {
                         if (viewModel.showNone) {
-                            tv.text = tv.text.toString() + "\n单周[非本周]"
+                            strBuilder.append("\n单周[非本周]")
                             tv.visibility = View.VISIBLE
                             tv.alpha = 0.6f
                             myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
@@ -197,11 +199,11 @@ class ScheduleFragment : Fragment() {
                     }
                 }
                 2 -> {
-                    tv.text = tv.text.toString() + "\n双周"
+                    strBuilder.append("\n双周")
                     if (week % 2 != 0) {
                         if (viewModel.showNone) {
                             tv.alpha = 0.6f
-                            tv.text = tv.text.toString() + "\n双周[非本周]"
+                            strBuilder.append("\n双周[非本周]")
                             tv.visibility = View.VISIBLE
                             myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                         } else {
@@ -214,8 +216,7 @@ class ScheduleFragment : Fragment() {
             if (c.startWeek > week || c.endWeek < week) {
                 if (viewModel.showNone) {
                     tv.alpha = 0.6f
-                    //tv.text = c.courseName + "@" + c.room + "[非本周]"
-                    tv.text = tv.text.toString() + "[非本周]"
+                    strBuilder.append("[非本周]")
                     tv.visibility = View.VISIBLE
                     myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                 } else {
@@ -225,9 +226,9 @@ class ScheduleFragment : Fragment() {
 
             if (viewModel.showTimeDetail) {
                 if (viewModel.showSummerTime) {
-                    tv.text = viewModel.summerTimeList[c.startNode - 1].startTime + "\n" + tv.text
+                    strBuilder.insert(0, viewModel.summerTimeList[c.startNode - 1].startTime + "\n")
                 } else {
-                    tv.text = viewModel.timeList[c.startNode - 1].startTime + "\n" + tv.text
+                    strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
                 }
             }
 
@@ -237,7 +238,16 @@ class ScheduleFragment : Fragment() {
                 detailFragment.show(fragmentManager, "courseDetail")
             }
 
-            ll.addView(tv)
+            tv.text = strBuilder
+            if (day == 7) {
+                if (viewModel.sundayFirst) {
+                    weekPanel_0.addView(tv)
+                } else {
+                    ll.addView(tv)
+                }
+            } else {
+                ll.addView(tv)
+            }
             pre = c
         }
     }
