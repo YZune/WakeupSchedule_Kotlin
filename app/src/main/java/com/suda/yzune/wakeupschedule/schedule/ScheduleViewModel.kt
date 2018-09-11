@@ -26,6 +26,7 @@ class ScheduleViewModel : ViewModel() {
     var nodesNum = 11
     var textSize = 12
     var savedWeek = -1
+    var alpha = 0
     val timeList = arrayListOf<TimeDetailBean>()
     val summerTimeList = arrayListOf<TimeDetailBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
@@ -47,6 +48,7 @@ class ScheduleViewModel : ViewModel() {
         showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
         sundayFirst = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)
         nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
+        alpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_alpha", 60)
     }
 
     fun initRepository(context: Context) {

@@ -16,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
@@ -170,13 +169,22 @@ class ScheduleFragment : Fragment() {
             }
 
             if (c.color == "") {
-                myGrad.setColor(getCustomizedColor(c.id % 9))
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
                 viewModel.updateCourseBaseBean(c)
-            } else {
-                myGrad.setColor(Color.parseColor(c.color))
             }
-            myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context!!.applicationContext, "sb_alpha", 60) / 100.0)).toInt()
+
+            val alphaInt = Math.round(255 * (viewModel.alpha.toFloat() / 100))
+            val a = if (alphaInt != 0) {
+                Integer.toHexString(alphaInt)
+            } else {
+                "00"
+            }
+
+            if (c.color.length == 7) {
+                myGrad.setColor(Color.parseColor("#$a${c.color.substring(1, 7)}"))
+            } else {
+                myGrad.setColor(Color.parseColor("#$a${c.color.substring(3, 9)}"))
+            }
 
             strBuilder.append(c.courseName)
 

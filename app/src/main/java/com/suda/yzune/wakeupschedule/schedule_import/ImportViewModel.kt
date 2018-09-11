@@ -27,7 +27,7 @@ class ImportViewModel : ViewModel() {
     private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
     private val courseProperty = arrayOf("必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
-            "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践")
+            "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语")
     //todo: 在线更新规则
     private var selectedYear = ""
     private var selectedTerm = ""
@@ -35,6 +35,7 @@ class ImportViewModel : ViewModel() {
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
     private val importInfo = MutableLiveData<String>()
+    private var hasTypeFlag = false
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
 
@@ -169,7 +170,10 @@ class ImportViewModel : ViewModel() {
         for (i in 0 until split.size) {
             if (split[i].contains('{') && split[i].contains('}')) {
                 if (preIndex != -1) {
-                    val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] in courseProperty) split[preIndex - 2] else split[preIndex - 1],
+                    if (split[preIndex - 1] in courseProperty) {
+                        hasTypeFlag = true
+                    }
+                    val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
                             timeInfo = split[preIndex],
                             room = null, teacher = null)
                     if ((i - preIndex - 2) == 1) {
@@ -185,7 +189,10 @@ class ImportViewModel : ViewModel() {
                 }
             }
             if (i == split.size - 1) {
-                val temp = ImportBean(startNode = node, name = if (split[preIndex - 1] in courseProperty) split[preIndex - 2] else split[preIndex - 1],
+                if (split[preIndex - 1] in courseProperty) {
+                    hasTypeFlag = true
+                }
+                val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
                         timeInfo = split[preIndex],
                         room = null, teacher = null)
                 if ((i - preIndex) == 1) {

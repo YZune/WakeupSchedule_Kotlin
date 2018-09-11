@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.getkeepsafe.taptargetview.TapTarget
@@ -26,7 +25,6 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AboutActivity
 import com.suda.yzune.wakeupschedule.GlideApp
-import com.suda.yzune.wakeupschedule.GlideOptions.bitmapTransform
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -41,7 +39,6 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
-import jp.wasabeef.glide.transformations.CropCircleTransformation
 import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -58,6 +55,7 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var mAdapter: SchedulePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
@@ -227,7 +225,7 @@ class ScheduleActivity : AppCompatActivity() {
         vp_schedule.currentItem = whichWeek - 1
 
         val headerLayout = navigation_view.getHeaderView(0)
-        val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
+        //val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
 
         val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
         if (uri != "") {
@@ -238,10 +236,10 @@ class ScheduleActivity : AppCompatActivity() {
                     .override(x, y)
                     .into(iv_bg)
 
-            GlideApp.with(this.applicationContext)
-                    .load(R.drawable.main_bg)
-                    .override(x, y)
-                    .into(headerBg)
+//            GlideApp.with(this.applicationContext)
+//                    .load(R.drawable.main_bg)
+//                    .override(x, y)
+//                    .into(headerBg)
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -250,10 +248,10 @@ class ScheduleActivity : AppCompatActivity() {
                     .override(x, y)
                     .into(iv_bg)
 
-            GlideApp.with(this.applicationContext)
-                    .load(R.drawable.main_bg)
-                    .override(x, y)
-                    .into(headerBg)
+//            GlideApp.with(this.applicationContext)
+//                    .load(R.drawable.main_bg)
+//                    .override(x, y)
+//                    .into(headerBg)
         }
 
         if (viewModel.showWhite) {
@@ -282,12 +280,12 @@ class ScheduleActivity : AppCompatActivity() {
 
     private fun initView() {
         val headerLayout = navigation_view.getHeaderView(0)
-        val ivPersonImage = headerLayout.findViewById(R.id.iv_person_image) as ImageView
+        //val ivPersonImage = headerLayout.findViewById(R.id.iv_person_image) as ImageView
 
-        GlideApp.with(this)
-                .load(R.mipmap.ic_launcher)
-                .apply(bitmapTransform(CropCircleTransformation()))
-                .into(ivPersonImage)
+//        GlideApp.with(this)
+//                .load(R.mipmap.ic_launcher)
+//                .apply(bitmapTransform(CropCircleTransformation()))
+//                .into(ivPersonImage)
 
         headerLayout.setOnClickListener {
             Toasty.info(this.applicationContext, "敬请期待").show()

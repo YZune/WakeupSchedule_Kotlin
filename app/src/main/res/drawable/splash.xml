@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:opacity="opaque">
+    <!--<item>-->
+    <!--<bitmap-->
+    <!--android:gravity="center"-->
+    <!--android:src="@drawable/main_bg" />-->
+    <!--</item>-->
+
+    <item>
+        <color android:color="@color/blue" />
+    </item>
+</layer-list>

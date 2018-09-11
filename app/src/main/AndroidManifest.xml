@@ -20,13 +20,7 @@
         <activity
             android:name=".schedule.ScheduleActivity"
             android:resizeableActivity="false"
-            tools:targetApi="n">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            tools:targetApi="n"></activity>
         <activity
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"
@@ -55,6 +49,15 @@
         <activity android:name=".AboutActivity" />
         <activity android:name=".DonateActivity" />
         <activity android:name=".apply_info.ApplyInfoActivity" />
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

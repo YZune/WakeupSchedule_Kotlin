@@ -35,6 +35,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private var showNone = true
         private var nodesNum = 11
         private var textSize = 12
+        private var alpha = 0
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
@@ -144,6 +145,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
+            alpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60)
             showStroke = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)
             showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false)
             nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
@@ -199,8 +201,18 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), Color.parseColor("#80ffffff"))
                 }
 
-                myGrad.setColor(Color.parseColor(c.color))
-                myGrad.alpha = Math.round(255 * (PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60) / 100.0)).toInt()
+                val alphaInt = Math.round(255 * (alpha.toFloat() / 100))
+                val a = if (alphaInt != 0) {
+                    Integer.toHexString(alphaInt)
+                } else {
+                    "00"
+                }
+
+                if (c.color.length == 7) {
+                    myGrad.setColor(Color.parseColor("#$a${c.color.substring(1, 7)}"))
+                } else {
+                    myGrad.setColor(Color.parseColor("#$a${c.color.substring(3, 9)}"))
+                }
 
                 strBuilder.append(c.courseName)
 
