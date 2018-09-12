@@ -8,7 +8,7 @@ object PreferenceUtils {
     private var sp: SharedPreferences? = null
     private lateinit var editor: SharedPreferences.Editor
 
-    private fun init(context: Context) {
+    fun init(context: Context) {
         if (sp == null) {
             sp = context.applicationContext.getSharedPreferences("config", MODE_PRIVATE)
             editor = sp!!.edit()

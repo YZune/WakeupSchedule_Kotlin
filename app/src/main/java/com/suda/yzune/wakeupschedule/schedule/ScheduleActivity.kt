@@ -55,13 +55,13 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var mAdapter: SchedulePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
+        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
+        viewModel.initRepository(applicationContext)
+        PreferenceUtils.init(applicationContext)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
-        viewModel.initRepository(applicationContext)
         clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         Toasty.Config.getInstance()
@@ -119,7 +119,6 @@ class ScheduleActivity : AppCompatActivity() {
 
     private fun initCourseData() {
         viewModel.getTimeDetailLiveList().observe(this, Observer {
-            //viewModel.getTimeList().clear()
             viewModel.timeList.addAll(it!!)
             for (i in 1..7) {
                 viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
@@ -133,7 +132,6 @@ class ScheduleActivity : AppCompatActivity() {
         })
 
         viewModel.getSummerTimeLiveList().observe(this, Observer {
-            //viewModel.getSummerTimeList().clear()
             viewModel.summerTimeList.addAll(it!!)
         })
     }
@@ -188,7 +186,6 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         if (clipboardManager.primaryClip != null) {
             if (clipboardManager.primaryClip.itemCount > 0) {
                 val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
@@ -224,9 +221,6 @@ class ScheduleActivity : AppCompatActivity() {
         }
         vp_schedule.currentItem = whichWeek - 1
 
-        val headerLayout = navigation_view.getHeaderView(0)
-        //val headerBg = headerLayout.findViewById<ImageView>(R.id.iv_header_bg)
-
         val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
         if (uri != "") {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
@@ -235,11 +229,6 @@ class ScheduleActivity : AppCompatActivity() {
                     .load(uri)
                     .override(x, y)
                     .into(iv_bg)
-
-//            GlideApp.with(this.applicationContext)
-//                    .load(R.drawable.main_bg)
-//                    .override(x, y)
-//                    .into(headerBg)
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -247,11 +236,6 @@ class ScheduleActivity : AppCompatActivity() {
                     .load(R.drawable.main_bg)
                     .override(x, y)
                     .into(iv_bg)
-
-//            GlideApp.with(this.applicationContext)
-//                    .load(R.drawable.main_bg)
-//                    .override(x, y)
-//                    .into(headerBg)
         }
 
         if (viewModel.showWhite) {
@@ -279,18 +263,6 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initView() {
-        val headerLayout = navigation_view.getHeaderView(0)
-        //val ivPersonImage = headerLayout.findViewById(R.id.iv_person_image) as ImageView
-
-//        GlideApp.with(this)
-//                .load(R.mipmap.ic_launcher)
-//                .apply(bitmapTransform(CropCircleTransformation()))
-//                .into(ivPersonImage)
-
-        headerLayout.setOnClickListener {
-            Toasty.info(this.applicationContext, "敬请期待").show()
-        }
-
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -349,7 +321,8 @@ class ScheduleActivity : AppCompatActivity() {
     private fun initViewPage() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
-        vp_schedule.offscreenPageLimit = 5
+        vp_schedule.offscreenPageLimit = 1
+
         for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
@@ -361,9 +334,7 @@ class ScheduleActivity : AppCompatActivity() {
         ib_nav.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
 
         ib_import.setOnClickListener {
-            //viewModel.removeCourseData()
             ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
-            //startActivity(Intent(this, LoginWebActivity::class.java))
         }
 
         ib_add.setOnClickListener {
@@ -395,7 +366,6 @@ class ScheduleActivity : AppCompatActivity() {
             }
 
             tv_weekday.text = CourseUtils.getWeekday()
-            //tv_weekday.text = ""
             vp_schedule.currentItem = whichWeek - 1
         }
 
