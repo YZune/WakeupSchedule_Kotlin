@@ -24,6 +24,17 @@ interface ImportService {
               @Field("hidsc") hs: String
     ): Call<ResponseBody>
 
+    @POST("/")
+    @FormUrlEncoded
+    @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
+    fun login(@Field("TextBox1") xh: String,
+              @Field("TextBox2") pwd: String,
+              @Field("TextBox3") code: String,
+              @Field("Button1") b: String,
+              @Field("__VIEWSTATE") view_state: String,
+              @Header("Cookie") cookies: String
+    ): Call<ResponseBody>
+
     @GET("/xskbcx.aspx")
     //@FormUrlEncoded
     fun getPrepare(@Query("xh") xh: String,

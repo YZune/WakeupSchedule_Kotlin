@@ -15,8 +15,8 @@ import java.net.URLEncoder
 
 class ImportRepository(url: String) {
     var VIEWSTATE_POST_CODE = Array<String>(1) { "" }
-    //var VIEWSTATE_LOGIN_CODE = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
-    val VIEWSTATE_LOGIN_CODE = "dDwxNTMxMDk5Mzc0Ozs+LxNdKu56vO/J6IPIRPAbc74T3WU="
+    val VIEWSTATE_LOGIN_CODE = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    //val VIEWSTATE_LOGIN_CODE = "dDwxNTMxMDk5Mzc0Ozs+LxNdKu56vO/J6IPIRPAbc74T3WU="
     val LOGIN_COOKIE = Array<String>(1) { "" }
     var checkCode = MutableLiveData<Bitmap>()
     var loginResponse = MutableLiveData<String>()
@@ -48,8 +48,7 @@ class ImportRepository(url: String) {
         importService.login(
                 xh = xh, pwd = pwd, code = code,
                 b = "", view_state = VIEWSTATE_LOGIN_CODE,
-                cookies = LOGIN_COOKIE[0], textbox1 = "",
-                rbl = "学生", lang = "", h = "", hs = ""
+                cookies = LOGIN_COOKIE[0]
         ).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
                 loginResponse.value = "Failure"
@@ -58,10 +57,28 @@ class ImportRepository(url: String) {
             override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                 loginResponse.value = response?.body()?.string()
                 Log.d("返回", response?.body()?.string())
-                //VIEWSTATE_POST_CODE.value = parseViewStateCode(loginResponse.value!!)
             }
         })
     }
+
+//    fun login(xh: String, pwd: String, code: String) {
+//        importService.login(
+//                xh = xh, pwd = pwd, code = code,
+//                b = "", view_state = VIEWSTATE_LOGIN_CODE,
+//                cookies = LOGIN_COOKIE[0], textbox1 = "",
+//                rbl = "学生", lang = "", h = "", hs = ""
+//        ).enqueue(object : Callback<ResponseBody> {
+//            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
+//                loginResponse.value = "Failure"
+//            }
+//
+//            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
+//                loginResponse.value = response?.body()?.string()
+//                Log.d("返回", response?.body()?.string())
+//                //VIEWSTATE_POST_CODE.value = parseViewStateCode(loginResponse.value!!)
+//            }
+//        })
+//    }
 
     fun getPrepare(xh: String) {
         importService.getPrepare(

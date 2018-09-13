@@ -15,7 +15,7 @@ class ScheduleViewModel : ViewModel() {
 
     var itemHeight = 0
     var marTop = 0
-    var showWhite = true
+    var showWhite = false
     var showSunday = true
     var sundayFirst = false
     var showSat = true
@@ -42,7 +42,7 @@ class ScheduleViewModel : ViewModel() {
         showSummerTime = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_summer", false)
         showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false)
         showStroke = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)
-        showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_color", true)
+        showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_color", false)
         showTimeDetail = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_time_detail", false)
         showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true)
         showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)

@@ -61,6 +61,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".schedule_manage.ScheduleManageActivity"></activity>
     </application>
 
 </manifest>

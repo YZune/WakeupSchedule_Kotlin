@@ -145,7 +145,7 @@ class SettingsActivity : AppCompatActivity() {
         s_show.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show", false)
         s_show_sat.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_sat", true)
         s_show_weekend.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_show_weekend", true)
-        s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_color", true)
+        s_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_color", false)
         s_widget_text_white.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_widget_color", false)
         val itemHeight = PreferenceUtils.getIntFromSP(applicationContext, "item_height", 56)
         val widgetItemHeight = PreferenceUtils.getIntFromSP(applicationContext, "widget_item_height", 56)
@@ -341,7 +341,7 @@ class SettingsActivity : AppCompatActivity() {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
             } else {
                 Matisse.from(this)
-                        .choose(MimeType.allOf())
+                        .choose(MimeType.ofImage())
                         .countable(true)
                         .maxSelectable(1)
                         .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
@@ -371,7 +371,7 @@ class SettingsActivity : AppCompatActivity() {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Matisse.from(this)
-                            .choose(MimeType.allOf())
+                            .choose(MimeType.ofImage())
                             .countable(true)
                             .maxSelectable(1)
                             .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))

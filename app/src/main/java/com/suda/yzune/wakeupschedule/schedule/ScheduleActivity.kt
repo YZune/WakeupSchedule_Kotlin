@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.widget.ImageButton
 import android.widget.TextView
@@ -188,10 +189,12 @@ class ScheduleActivity : AppCompatActivity() {
         super.onStart()
         if (clipboardManager.primaryClip != null) {
             if (clipboardManager.primaryClip.itemCount > 0) {
-                val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
-                if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
-                    viewModel.tranClipboardStr(clipStr)
-                    ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
+                if (clipboardManager.primaryClip.getItemAt(0).text != null) {
+                    val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
+                    if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
+                        viewModel.tranClipboardStr(clipStr)
+                        ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
+                    }
                 }
             }
         }
@@ -233,7 +236,7 @@ class ScheduleActivity : AppCompatActivity() {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             GlideApp.with(this.applicationContext)
-                    .load(R.drawable.main_bg)
+                    .load(R.drawable.main_background)
                     .override(x, y)
                     .into(iv_bg)
         }
@@ -342,20 +345,33 @@ class ScheduleActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        ib_share.setOnClickListener { _ ->
-            viewModel.getCourse().observe(this, Observer {
-                val gson = Gson()
-                val course = gson.toJson(it)
-                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
-                when {
-                    course != "" -> {
-                        clipboardManager.primaryClip = clipData
-                        Toasty.success(this, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
+        ib_more.setOnClickListener { view ->
+            val popupMenu = PopupMenu(this, view)
+            popupMenu.menuInflater.inflate(R.menu.menu_more, popupMenu.menu)
+            popupMenu.show()
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.ib_share -> {
+                        viewModel.getCourse().observe(this, Observer {
+                            val gson = Gson()
+                            val course = gson.toJson(it)
+                            val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
+                            when {
+                                course != "" -> {
+                                    clipboardManager.primaryClip = clipData
+                                    Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
+                                }
+                                course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                                else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                            }
+                        })
                     }
-                    course == "" -> Toasty.error(this, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-                    else -> Toasty.error(this, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                    R.id.ib_manage -> {
+                        Toasty.info(applicationContext, "很快就能见面啦(￣▽￣)~*", Toast.LENGTH_LONG).show()
+                    }
                 }
-            })
+                return@setOnMenuItemClickListener true
+            }
         }
 
         tv_weekday.setOnClickListener {
