@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.widget.ImageButton
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import com.getkeepsafe.taptargetview.TapTarget
@@ -57,7 +58,6 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
-        viewModel.initRepository(applicationContext)
         PreferenceUtils.init(applicationContext)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
@@ -115,7 +115,7 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         initCourseData()
-        initViewPage()
+
     }
 
     private fun initCourseData() {
@@ -200,6 +200,10 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         viewModel.refreshViewData(applicationContext)
+
+        sb_week.max = viewModel.maxWeek - 1
+
+        initViewPage()
 
         whichWeek = if (viewModel.savedWeek == -1) {
             countWeek(this)
@@ -326,7 +330,7 @@ class ScheduleActivity : AppCompatActivity() {
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
 
-        for (i in 1..PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)) {
+        for (i in 1..viewModel.maxWeek) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
 
@@ -334,6 +338,38 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initEvent() {
+        sb_week.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tv_week.text = "第${progress + 1}周"
+                try {
+                    if (countWeek(this@ScheduleActivity) > 0) {
+                        if (progress + 1 == countWeek(this@ScheduleActivity)) {
+                            tv_week.text = "第${progress + 1}周"
+                            tv_weekday.text = CourseUtils.getWeekday()
+                            tv_date.text = CourseUtils.getTodayDate()
+                        } else {
+                            tv_week.text = "第${progress + 1}周"
+                            tv_weekday.text = "非本周  点击此处以回到本周"
+                        }
+                    } else {
+                        tv_week.text = "还没有开学哦"
+                        tv_weekday.text = CourseUtils.getWeekday()
+                        tv_date.text = CourseUtils.getTodayDate()
+                    }
+                } catch (e: ParseException) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                vp_schedule.currentItem = seekBar!!.progress
+            }
+        })
+
         ib_nav.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
 
         ib_import.setOnClickListener {

@@ -43,11 +43,11 @@ class ClipboardImportFragment : DialogFragment() {
         }
 
         tv_mine.setOnClickListener {
-            viewModel.tranClipboardList(false)
+            viewModel.tranClipboardList("")
         }
 
         tv_lover.setOnClickListener {
-            viewModel.tranClipboardList(true)
+            viewModel.tranClipboardList("lover")
         }
 
         tv_clear.setOnClickListener {
@@ -55,7 +55,7 @@ class ClipboardImportFragment : DialogFragment() {
             dismiss()
         }
 
-        viewModel.getClipboardImportInfo().observe(this, Observer {
+        viewModel.clipboardImportInfo.observe(this, Observer {
             when (it) {
                 "解析异常" -> {
                     Toasty.error(activity!!.applicationContext, "数据解析异常，请确保完整复制").show()

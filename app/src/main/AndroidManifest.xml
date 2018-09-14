@@ -20,9 +20,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".schedule.ScheduleActivity"
-            android:resizeableActivity="false"
-            android:screenOrientation="portrait"
-            tools:targetApi="n" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"
@@ -52,16 +50,18 @@
         <activity android:name=".DonateActivity" />
         <activity android:name=".apply_info.ApplyInfoActivity" />
         <activity
+            android:resizeableActivity="false"
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".schedule_manage.ScheduleManageActivity"></activity>
+        <activity android:name=".schedule_manage.ScheduleManageActivity" />
     </application>
 
 </manifest>

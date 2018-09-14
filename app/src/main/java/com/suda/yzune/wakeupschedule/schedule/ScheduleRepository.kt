@@ -6,7 +6,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.*
@@ -22,61 +21,17 @@ class ScheduleRepository(context: Context) {
     private val detailDao = dataBase.courseDetailDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val timeDao = dataBase.timeDetailDao()
-    private val json = PreferenceUtils.getStringFromSP(context, "course", "")
-    private val clipboardImportInfo = MutableLiveData<String>()
-    private var clipboardCourseList: List<CourseBean>? = null
 
-    fun getClipboardImportInfo(): LiveData<String> {
-        return clipboardImportInfo
-    }
 
-    fun tranClipboardStr(str: String) {
-        val gson = Gson()
-        try {
-            clipboardCourseList = gson.fromJson<List<CourseBean>>(str.substring(15), object : TypeToken<List<CourseBean>>() {}.type)
-        } catch (e: JsonSyntaxException) {
-            clipboardImportInfo.value = "解析异常"
-            clipboardCourseList = null
-        }
-    }
-
-    fun tranClipboardCourseList(isLover: Boolean) {
-        if (clipboardCourseList == null) return
-        val baseList = arrayListOf<CourseBaseBean>()
-        val detailList = arrayListOf<CourseDetailBean>()
-        clipboardCourseList!!.forEach {
-            baseList.add(CourseUtils.courseBean2BaseBean(it).apply {
-                if (isLover) {
-                    this.tableName = "lover"
-                }
-            })
-
-            detailList.add(CourseUtils.courseBean2DetailBean(it).apply {
-                if (isLover) {
-                    this.tableName = "lover"
-                }
-            })
-        }
-
-        write2DB(baseList, detailList, isLover)
-    }
-
-    private fun write2DB(baseList: List<CourseBaseBean>, detailList: List<CourseDetailBean>, isLover: Boolean) {
+    fun write2DB(baseList: List<CourseBaseBean>, detailList: List<CourseDetailBean>, tableName: String = "", clipboardImportInfo: MutableLiveData<String>) {
         thread(name = "ImportClipboardDataThread") {
-            if (isLover) {
-                baseDao.removeCourseData("lover")
-            } else {
-                baseDao.removeCourseData("")
-            }
+            baseDao.removeCourseData(tableName)
             try {
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)
-                clipboardImportInfo.postValue(if (isLover) "love" else "ok")
-                Log.d("数据库", "插入")
+                clipboardImportInfo.postValue("ok")
             } catch (e: SQLiteConstraintException) {
-                Log.d("数据库", "插入异常$e")
                 clipboardImportInfo.postValue("插入异常")
-                //insertResponse.value = "error"
             }
         }
     }
@@ -115,21 +70,15 @@ class ScheduleRepository(context: Context) {
                 }
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)
-                //insertResponse.value = "ok"
                 Log.d("数据库", "插入")
                 PreferenceUtils.saveStringToSP(context.applicationContext, "course", "")
             } catch (e: SQLiteConstraintException) {
                 Log.d("数据库", "插入异常$e")
-                //insertResponse.value = "error"
             }
         }
     }
 
-    fun removeCourseData() {
-        baseDao.removeCourseData("")
-    }
-
-    fun updateFromOldVer(context: Context) {
+    fun updateFromOldVer(context: Context, json: String) {
         if (json != "") {
             val gson = Gson()
             val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
@@ -157,35 +106,6 @@ class ScheduleRepository(context: Context) {
 
     fun getCourse(): LiveData<List<CourseBean>> {
         return baseDao.getCourse()
-    }
-
-    fun getCourseByDay(raw: List<CourseBean>): LiveData<List<CourseBean>> {
-        val result = MutableLiveData<List<CourseBean>>()
-        val list = ArrayList<CourseBean>()
-        val changeIndex = arrayListOf<Int>()
-        result.value = list
-        var i = 0
-        while (i < raw.size) {
-            if (i != raw.size - 1 && raw[i].id == raw[i + 1].id
-                    && raw[i].room == raw[i + 1].room
-                    && raw[i].startNode + raw[i].step == raw[i + 1].startNode) {
-                raw[i].step += raw[i + 1].step
-                list.add(raw[i])
-                changeIndex.add(i)
-                i += 2
-            } else {
-                list.add(raw[i])
-                i++
-            }
-        }
-        result.value = list
-        thread(name = "MakeTogetherThread") {
-            for (index in changeIndex) {
-                detailDao.updateCourseDetail(courseBean2DetailBean(raw[index]))
-                detailDao.deleteCourseDetail(courseBean2DetailBean(raw[index + 1]))
-            }
-        }
-        return result
     }
 
     fun deleteCourseBean(courseBean: CourseBean) {

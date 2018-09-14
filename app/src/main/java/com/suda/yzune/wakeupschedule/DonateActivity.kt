@@ -2,16 +2,14 @@ package com.suda.yzune.wakeupschedule
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.suda.yzune.wakeupschedule.bean.CourseOldBean
 import com.suda.yzune.wakeupschedule.bean.DonateBean
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
@@ -75,6 +73,9 @@ class DonateActivity : AppCompatActivity() {
     }
 
     private fun displayList(list: List<DonateBean>) {
+        ll_right.removeAllViews()
+        ll_left.removeAllViews()
+        ll_middle.removeAllViews()
         for (item in list) {
             val textView = TextView(this)
             val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
