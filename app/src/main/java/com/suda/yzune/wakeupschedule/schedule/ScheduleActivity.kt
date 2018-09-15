@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.widget.ImageButton
@@ -115,7 +116,6 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         initCourseData()
-
     }
 
     private fun initCourseData() {
@@ -203,6 +203,7 @@ class ScheduleActivity : AppCompatActivity() {
 
         sb_week.max = viewModel.maxWeek - 1
 
+        initHeader()
         initViewPage()
 
         whichWeek = if (viewModel.savedWeek == -1) {
@@ -322,6 +323,14 @@ class ScheduleActivity : AppCompatActivity() {
                     return@setNavigationItemSelectedListener true
                 }
             }
+        }
+    }
+
+    private fun initHeader() {
+        srl_main.setOnRefreshListener {}
+        rv_table_name.adapter = TableNameAdapter(R.layout.item_table_name, listOf("大一上", "大二下", "大三上", "大一上", "大二下", "大三上", "大一上", "大二下", "大三上"))
+        rv_table_name.layoutManager = LinearLayoutManager(this).apply {
+            this.orientation = LinearLayoutManager.HORIZONTAL
         }
     }
 

@@ -279,4 +279,31 @@ object CourseUtils {
         intent.data = contentUrl
         context.startActivity(intent)
     }
+
+    fun getDateStringFromWeek(curWeek: Int, targetWeek: Int, sundayFirst: Boolean): List<String> {
+        val calendar = Calendar.getInstance()
+        if (targetWeek == curWeek)
+            return getDateStringFromCalendar(calendar, sundayFirst)
+        val amount = targetWeek - curWeek
+        calendar.add(Calendar.WEEK_OF_YEAR, amount)
+        return getDateStringFromCalendar(calendar, sundayFirst)
+    }
+
+    private fun getDateStringFromCalendar(calendar: Calendar, sundayFirst: Boolean): List<String> {
+        val dateList = ArrayList<String>()
+        if (sundayFirst) {
+            calendar.firstDayOfWeek = Calendar.SUNDAY
+        } else {
+            calendar.firstDayOfWeek = Calendar.MONDAY
+        }
+        while (calendar.get(Calendar.DAY_OF_WEEK) != calendar.firstDayOfWeek) {
+            calendar.add(Calendar.DAY_OF_MONTH, -1)
+        }
+        dateList.add((calendar.get(Calendar.MONTH) + 1).toString())
+        for (i in 0..6) {
+            dateList.add(calendar.get(Calendar.DAY_OF_MONTH).toString())
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        return dateList
+    }
 }

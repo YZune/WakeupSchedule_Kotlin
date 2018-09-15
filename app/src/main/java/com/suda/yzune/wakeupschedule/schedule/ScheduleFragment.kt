@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
@@ -23,6 +24,7 @@ class ScheduleFragment : Fragment() {
 
     var week = 0
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
+    private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +39,6 @@ class ScheduleFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
         if (viewModel.showSunday) {
             if (viewModel.sundayFirst) {
                 tv_title7.visibility = View.GONE
@@ -55,6 +56,21 @@ class ScheduleFragment : Fragment() {
             weekPanel_7.visibility = View.GONE
             tv_title0_1.visibility = View.GONE
             weekPanel_0.visibility = View.GONE
+        }
+
+        weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(activity!!.applicationContext), week, viewModel.sundayFirst)
+        tv_title0.text = weekDate[0] + "\n月"
+        var tvTitle: TextView
+        if (viewModel.sundayFirst) {
+            for (i in 0..6) {
+                tvTitle = view!!.findViewById(R.id.tv_title0_1 + i)
+                tvTitle.text = tvTitle.text.toString() + "\n${weekDate[i + 1]}"
+            }
+        } else {
+            for (i in 0..6) {
+                tvTitle = view!!.findViewById(R.id.tv_title1 + i)
+                tvTitle.text = tvTitle.text.toString() + "\n${weekDate[i + 1]}"
+            }
         }
 
         if (viewModel.showSat) {
@@ -82,8 +98,8 @@ class ScheduleFragment : Fragment() {
             }
         }
 
-        for (i in 0 until 8) {
-            val tv = view!!.findViewById<TextView>(R.id.tv_title0_1 + i)
+        for (i in 0 until 9) {
+            val tv = view!!.findViewById<TextView>(R.id.tv_title0 + i)
             if (viewModel.showWhite) {
                 tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
             } else {

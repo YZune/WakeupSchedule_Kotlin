@@ -9,10 +9,12 @@
     <TextView
         android:id="@+id/tv_title0"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
-        android:text=""
+        android:text="9\n月"
+        android:textStyle="bold"
         android:textSize="12sp"
         app:layout_constraintEnd_toStartOf="@id/tv_title0_1"
         app:layout_constraintHorizontal_weight="0.5"
@@ -22,10 +24,11 @@
     <TextView
         android:id="@+id/tv_title0_1"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="日"
+        android:lineSpacingExtra="2dp"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_title0"
         app:layout_constraintEnd_toStartOf="@id/tv_title1"
@@ -35,7 +38,8 @@
     <TextView
         android:id="@+id/tv_title1"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="一"
@@ -48,7 +52,8 @@
     <TextView
         android:id="@+id/tv_title2"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="二"
@@ -61,7 +66,8 @@
     <TextView
         android:id="@+id/tv_title3"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="三"
@@ -74,7 +80,8 @@
     <TextView
         android:id="@+id/tv_title4"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="四"
@@ -86,8 +93,9 @@
 
     <TextView
         android:id="@+id/tv_title5"
+        android:layout_height="48dp"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="五"
@@ -99,8 +107,9 @@
 
     <TextView
         android:id="@+id/tv_title6"
+        android:layout_height="48dp"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="六"
@@ -113,7 +122,8 @@
     <TextView
         android:id="@+id/tv_title7"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="48dp"
+        android:lineSpacingExtra="2dp"
         android:background="@color/nodeIndex"
         android:gravity="center_horizontal|center_vertical"
         android:text="日"
@@ -125,6 +135,7 @@
 
     <ScrollView
         android:id="@+id/scrollPanel"
+        android:nestedScrollingEnabled="true"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
