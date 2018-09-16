@@ -11,5 +11,5 @@ data class CourseEditBean(
         var room: String? = "",
         var teacher: String? = "",
         val weekList: MutableLiveData<ArrayList<Int>>,
-        var tableName: String = ""
+        var tableId: Int = 0
 )

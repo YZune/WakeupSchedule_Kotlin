@@ -11,5 +11,10 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         startActivity(Intent(this, ScheduleActivity::class.java))
         finish()
+//        UpdateUtils.tranOldData(applicationContext).observe(this, Observer {
+//            if (it == 1){
+//
+//            }
+//        })
     }
 }

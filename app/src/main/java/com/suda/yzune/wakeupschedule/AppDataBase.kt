@@ -1,23 +1,18 @@
 package com.suda.yzune.wakeupschedule
 
 import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.Database
-import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
-import com.suda.yzune.wakeupschedule.dao.CourseBaseDao
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 import android.content.Context
-import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
-import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
-import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
-import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
-import com.suda.yzune.wakeupschedule.dao.TimeDetailDao
+import com.suda.yzune.wakeupschedule.bean.*
+import com.suda.yzune.wakeupschedule.dao.*
 
 
-@Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class, TimeDetailBean::class],
-        version = 7, exportSchema = false)
+@Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class, TimeDetailBean::class,
+    TimeTableBean::class, TableBean::class],
+        version = 10, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
 
@@ -31,11 +26,90 @@ abstract class AppDatabase : RoomDatabase() {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 AppDatabase::class.java, "wakeup")
                                 .allowMainThreadQueries()
+                                .addMigrations(migration7to8, migration8to9, migration9to10)
                                 .build()
                     }
                 }
             }
             return INSTANCE!!
+        }
+
+        private val migration7to8: Migration = object : Migration(7, 8) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE TABLE TimeTableBean (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL);")
+                database.execSQL("INSERT INTO TimeTableBean VALUES(0, '默认');")
+                database.execSQL("CREATE TABLE TableBean (tableName TEXT NOT NULL, nodes INTEGER NOT NULL DEFAULT 11, background TEXT NOT NULL DEFAULT '', timeTable INTEGER NOT NULL DEFAULT 0, startDate TEXT NOT NULL DEFAULT '2018-09-03', maxWeek INTEGER NOT NULL DEFAULT 30, itemHeight INTEGER NOT NULL DEFAULT 56, itemAlpha INTEGER NOT NULL DEFAULT 60, itemTextSize INTEGER NOT NULL DEFAULT 12, widgetItemHeight INTEGER NOT NULL DEFAULT 56, widgetItemAlpha INTEGER NOT NULL DEFAULT 60, widgetItemTextSize INTEGER NOT NULL DEFAULT 12, strokeColor TEXT NOT NULL DEFAULT '#80ffffff', textColor TEXT NOT NULL DEFAULT '#000000', widgetTextColor TEXT NOT NULL DEFAULT '#000000', showSat INTEGER NOT NULL DEFAULT 1, showSun INTEGER NOT NULL DEFAULT 1, sundayFirst INTEGER NOT NULL DEFAULT 0, showOtherWeekCourse INTEGER NOT NULL DEFAULT 0, showTime INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (tableName), FOREIGN KEY (timeTable) REFERENCES TimeTableBean (id) ON DELETE SET DEFAULT ON UPDATE CASCADE);")
+                database.execSQL("CREATE INDEX index_TableBean_id_timeTable ON TableBean (timeTable ASC);")
+                database.execSQL("ALTER TABLE CourseBaseBean RENAME TO CourseBaseBean_old;")
+                database.execSQL("CREATE TABLE CourseBaseBean (id INTEGER NOT NULL, courseName TEXT NOT NULL, color TEXT NOT NULL, tableName TEXT NOT NULL, PRIMARY KEY (id, tableName), FOREIGN KEY (tableName) REFERENCES TableBean (tableName) ON DELETE CASCADE ON UPDATE CASCADE);")
+                database.execSQL("INSERT INTO TableBean (tableName) VALUES('');")
+                database.execSQL("INSERT INTO TableBean (tableName) VALUES('lover');")
+                database.execSQL("INSERT INTO CourseBaseBean (id, courseName, color, tableName) SELECT id, courseName, color, tableName FROM CourseBaseBean_old;")
+                database.execSQL("DROP TABLE CourseBaseBean_old;")
+                database.execSQL("CREATE INDEX index_CourseBaseBean_tableName ON CourseBaseBean (tableName ASC);")
+                database.execSQL("DROP INDEX index_CourseDetailBean_id_tableName;")
+                database.execSQL("ALTER TABLE CourseDetailBean RENAME TO CourseDetailBean_old;")
+                database.execSQL("CREATE TABLE CourseDetailBean (id INTEGER NOT NULL, day INTEGER NOT NULL, room TEXT, teacher TEXT, startNode INTEGER NOT NULL, step INTEGER NOT NULL, startWeek INTEGER NOT NULL, endWeek INTEGER NOT NULL, type INTEGER NOT NULL, tableName TEXT NOT NULL, PRIMARY KEY (day, startNode, startWeek, type, tableName, id), FOREIGN KEY (id, tableName) REFERENCES CourseBaseBean (id, tableName) ON DELETE CASCADE ON UPDATE CASCADE);")
+                database.execSQL("INSERT INTO CourseDetailBean (id, day, room, teacher, startNode, step, startWeek, endWeek, type, tableName) SELECT id, day, room, teacher, startNode, step, startWeek, endWeek, type, tableName FROM CourseDetailBean_old;")
+                database.execSQL("CREATE INDEX index_CourseDetailBean_id_tableName ON CourseDetailBean (id ASC, tableName ASC);")
+                database.execSQL("DROP TABLE CourseDetailBean_old;")
+                database.execSQL("ALTER TABLE TimeDetailBean RENAME TO TimeDetailBean_old;")
+                database.execSQL("CREATE TABLE TimeDetailBean (node INTEGER NOT NULL, startTime TEXT NOT NULL, endTime TEXT NOT NULL, timeTable INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (node, timeTable), FOREIGN KEY (timeTable) REFERENCES TimeTableBean (id) ON DELETE CASCADE ON UPDATE CASCADE);")
+                database.execSQL("INSERT INTO TimeDetailBean (node, startTime, endTime) SELECT node, startTime, endTime FROM TimeDetailBean_old;")
+                database.execSQL("CREATE INDEX index_TimeDetailBean_id_timeTable ON TimeDetailBean(timeTable ASC);")
+                database.execSQL("DROP TABLE TimeDetailBean_old;")
+            }
+        }
+
+        private val migration8to9: Migration = object : Migration(8, 9) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE TableBean ADD COLUMN type INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        private val migration9to10: Migration = object : Migration(9, 10) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("DROP INDEX index_TableBean_id_timeTable;")
+                database.execSQL("ALTER TABLE TableBean RENAME TO TableBean_old;")
+                database.execSQL("CREATE TABLE TableBean (\n" +
+                        "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                        "    tableName TEXT NOT NULL, \n" +
+                        "    nodes INTEGER NOT NULL DEFAULT 11, \n" +
+                        "    background TEXT NOT NULL DEFAULT '',\n" +
+                        "    timeTable INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    startDate TEXT NOT NULL DEFAULT '2018-09-03',\n" +
+                        "    maxWeek INTEGER NOT NULL DEFAULT 30,\n" +
+                        "    itemHeight INTEGER NOT NULL DEFAULT 56,\n" +
+                        "    itemAlpha INTEGER NOT NULL DEFAULT 60,\n" +
+                        "    itemTextSize INTEGER NOT NULL DEFAULT 12,\n" +
+                        "    widgetItemHeight INTEGER NOT NULL DEFAULT 56,\n" +
+                        "    widgetItemAlpha INTEGER NOT NULL DEFAULT 60,\n" +
+                        "    widgetItemTextSize INTEGER NOT NULL DEFAULT 12,\n" +
+                        "    strokeColor TEXT NOT NULL DEFAULT '#80ffffff',\n" +
+                        "    textColor TEXT NOT NULL DEFAULT '#000000',\n" +
+                        "    widgetTextColor TEXT NOT NULL DEFAULT '#000000',\n" +
+                        "    showSat INTEGER NOT NULL DEFAULT 1,\n" +
+                        "    showSun INTEGER NOT NULL DEFAULT 1,\n" +
+                        "    sundayFirst INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    showOtherWeekCourse INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    showTime INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    type INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    FOREIGN KEY (timeTable) REFERENCES TimeTableBean (id) ON DELETE SET DEFAULT ON UPDATE CASCADE\n" +
+                        ");")
+                database.execSQL("INSERT INTO TableBean (tableName, nodes, background, timeTable, startDate, maxWeek, itemHeight, itemAlpha, itemTextSize, widgetItemHeight, widgetItemAlpha, widgetItemTextSize, strokeColor, textColor, widgetTextColor, showSat, showSun, sundayFirst, showOtherWeekCourse, showTime, type) SELECT tableName, nodes, background, timeTable, startDate, maxWeek, itemHeight, itemAlpha, itemTextSize, widgetItemHeight, widgetItemAlpha, widgetItemTextSize, strokeColor, textColor, widgetTextColor, showSat, showSun, sundayFirst, showOtherWeekCourse, showTime, type FROM TableBean_old;")
+                database.execSQL("CREATE INDEX index_TableBean_id_timeTable ON TableBean (timeTable ASC);")
+                database.execSQL("DROP TABLE TableBean_old;")
+
+                database.execSQL("DROP INDEX index_CourseBaseBean_tableName;")
+                database.execSQL("ALTER TABLE CourseBaseBean RENAME TO CourseBaseBean_old;")
+                database.execSQL("CREATE TABLE CourseBaseBean(id INTEGER NOT NULL, courseName TEXT NOT NULL, color TEXT NOT NULL, tableId INTEGER NOT NULL, PRIMARY KEY (id, tableId), FOREIGN KEY (tableId) REFERENCES TableBean (id) ON DELETE CASCADE ON UPDATE CASCADE);")
+                database.execSQL("INSERT INTO TableBean (id, tableName) VALUES(2, '情侣课表');")
+                database.execSQL("INSERT INTO CourseBaseBean (id, courseName, color, tableId) SELECT id, courseName, color, CASE WHEN tableName = '' THEN 1 ELSE 2 END FROM CourseBaseBean_old;")
+                database.execSQL("CREATE INDEX index_CourseBaseBean_tableId ON CourseBaseBean (tableId ASC);")
+                database.execSQL("DROP TABLE CourseBaseBean_old;")
+
+
+            }
         }
 
     }
@@ -47,4 +121,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun appWidgetDao(): AppWidgetDao
 
     abstract fun timeDetailDao(): TimeDetailDao
+
+    abstract fun tableDao(): TableDao
 }

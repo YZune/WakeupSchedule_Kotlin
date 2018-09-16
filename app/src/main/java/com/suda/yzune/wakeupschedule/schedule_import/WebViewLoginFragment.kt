@@ -140,9 +140,9 @@ class WebViewLoginFragment : Fragment() {
                 if (html.contains("星期一") && html.contains("星期二")) {
                     Log.d("方正", html.substring(html.indexOf("星期一")))
                     if (type == "FZ") {
-                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), "", context!!.applicationContext, html)
+                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), 0, context!!.applicationContext, html)
                     } else if (type == "newFZ") {
-                        viewModel.parseNewFZ(html, "", context!!.applicationContext)
+                        viewModel.parseNewFZ(html, 0, context!!.applicationContext)
                     }
                 } else {
                     Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()

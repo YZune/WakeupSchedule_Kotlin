@@ -3,19 +3,14 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.bean.TimeBean
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import kotlinx.android.synthetic.main.activity_add_course.*
-import kotlinx.android.synthetic.main.activity_login_web.*
 import kotlinx.android.synthetic.main.fragment_select_time.*
 
 class SelectTimeFragment : DialogFragment() {
@@ -47,7 +42,7 @@ class SelectTimeFragment : DialogFragment() {
         wp_day.data = dayList
         wp_start.data = nodeList
         wp_end.data = nodeList
-        course = viewModel.getList()[position]
+        course = viewModel.editList[position]
         day = course.time.value!!.day
         start = if (course.time.value!!.startNode > max) max else course.time.value!!.startNode
         end = if (course.time.value!!.endNode > max) max else course.time.value!!.endNode
@@ -89,7 +84,7 @@ class SelectTimeFragment : DialogFragment() {
 
         btn_save.setOnClickListener {
             val result = TimeBean(day, start, end)
-            viewModel.getList()[position].time.value = result
+            viewModel.editList[position].time.value = result
             dismiss()
         }
     }

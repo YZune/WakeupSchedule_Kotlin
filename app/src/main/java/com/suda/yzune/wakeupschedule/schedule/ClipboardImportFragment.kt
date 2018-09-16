@@ -43,11 +43,11 @@ class ClipboardImportFragment : DialogFragment() {
         }
 
         tv_mine.setOnClickListener {
-            viewModel.tranClipboardList("")
+
         }
 
         tv_lover.setOnClickListener {
-            viewModel.tranClipboardList("lover")
+
         }
 
         tv_clear.setOnClickListener {

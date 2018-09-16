@@ -7,13 +7,13 @@ import android.arch.persistence.room.Index
 
 @Entity(foreignKeys = [(
         ForeignKey(entity = CourseBaseBean::class,
-                parentColumns = ["id", "tableName"],
-                childColumns = ["id", "tableName"],
+                parentColumns = ["id", "tableId"],
+                childColumns = ["id", "tableId"],
                 onUpdate = CASCADE,
                 onDelete = CASCADE
         ))],
-        primaryKeys = ["day", "startNode", "startWeek", "type", "tableName"],
-        indices = [Index(value = ["id", "tableName"], unique = false)])
+        primaryKeys = ["day", "startNode", "startWeek", "type", "tableId", "id"],
+        indices = [Index(value = ["id", "tableId"], unique = false)])
 
 data class CourseDetailBean(
         var id: Int,
@@ -25,5 +25,5 @@ data class CourseDetailBean(
         var startWeek: Int,
         var endWeek: Int,
         var type: Int,
-        var tableName: String
+        var tableId: Int
 )

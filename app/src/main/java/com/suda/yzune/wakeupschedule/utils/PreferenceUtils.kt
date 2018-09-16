@@ -53,6 +53,12 @@ object PreferenceUtils {
         return sp!!.getInt(key, defaultInt)
     }
 
+    fun remove(context: Context, key: String) {
+        init(context)
+        editor.remove(key)
+        editor.apply()
+    }
+
     fun clean(context: Context) {
         init(context)
         editor.clear()

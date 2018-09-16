@@ -11,6 +11,7 @@ import android.widget.*
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -39,14 +40,17 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
+        private val tableDao = dataBase.tableDao()
         private val timeList = arrayListOf<TimeDetailBean>()
         private val summerTimeList = arrayListOf<TimeDetailBean>()
+        private lateinit var table: TableBean
 
         override fun onCreate() {
 
         }
 
         override fun onDataSetChanged() {
+            //table = tableDao.getTableByNameInThread()
             itemHeight = SizeUtils.dp2px(mContext, PreferenceUtils.getIntFromSP(mContext, "widget_item_height", 56).toFloat())
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
@@ -136,7 +140,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initData(context: Context, views: RemoteViews) {
             try {
-                week = countWeek(context)
+                week = countWeek("")
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -160,7 +164,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             initView(view, weekPanel0, context)
 
             for (i in 1..7) {
-                val list = baseDao.getCourseByDayInThread(i)
+                val list = baseDao.getCourseByDayOfTableInThread(i)
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)

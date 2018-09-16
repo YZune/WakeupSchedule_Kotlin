@@ -5,8 +5,6 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.app.Fragment
@@ -20,7 +18,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.view.animation.Transformation
 import android.widget.RelativeLayout
-
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
@@ -203,7 +200,7 @@ class LoginWebFragment : Fragment() {
 
     private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
         if (year == viewModel.getSelectedYear() && term == viewModel.getSelectedTerm()) {
-            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), "", context!!.applicationContext, viewModel.getSelectedSchedule())
+            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), 0, context!!.applicationContext, viewModel.getSelectedSchedule())
         } else {
             viewModel.toSchedule(id, name, year, term).observe(this, Observer {
                 if (it == null || it == "Failure") {
@@ -214,7 +211,7 @@ class LoginWebFragment : Fragment() {
                 } else {
                     //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
                     //todo: 多课表管理
-                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "", context!!.applicationContext, it)
+                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), 0, context!!.applicationContext, it)
                 }
             })
         }

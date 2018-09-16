@@ -1,73 +1,43 @@
 package com.suda.yzune.wakeupschedule.course_add
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
-import android.content.Context
+import android.arch.lifecycle.MutableLiveData
+import android.database.sqlite.SQLiteConstraintException
+import android.os.AsyncTask
+import android.util.Log
+import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import kotlin.concurrent.thread
 
-class AddCourseViewModel : ViewModel() {
-    private var repository: AddCourseRepository? = null
+class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
+
+    lateinit var editList: MutableList<CourseEditBean>
+    lateinit var baseBean: CourseBaseBean
+
+    private val dataBase = AppDatabase.getDatabase(application)
+    private val baseDao = dataBase.courseBaseDao()
+    private val detailDao = dataBase.courseDetailDao()
+    private val widgetDao = dataBase.appWidgetDao()
+    private val tableDao = dataBase.tableDao()
+    private val saveList = mutableListOf<CourseDetailBean>()
+
+    var updateFlag = true
+    val deleteList = arrayListOf<Int>()
+    val saveInfo = MutableLiveData<String>()
+    val widgetIds = arrayListOf<Int>()
     var newId = -1
+    var tableId = 0
 
-    fun saveData() {
-        repository!!.preSaveData(newId)
-    }
-
-    fun getUpdateFlag(): Boolean {
-        return repository!!.getUpdateFlag()
-    }
-
-    fun getSaveInfo(): LiveData<String> {
-        return repository!!.getSaveInfo()
-    }
-
-    fun getWidgetIds(): ArrayList<Int> {
-        return repository!!.getWidgetIds()
-    }
-
-    fun initRepository(context: Context) {
-        if (repository == null) {
-            repository = AddCourseRepository(context)
-        }
-    }
-
-    fun initData(weeksNum: Long): MutableList<CourseEditBean> {
-        return repository!!.initData(weeksNum)
-    }
-
-    fun initData(id: Int, tableName: String): LiveData<List<CourseDetailBean>> {
-        return repository!!.initData(id, tableName)
-    }
-
-    fun initBaseData(id: Int, tableName: String): LiveData<CourseBaseBean> {
-        return repository!!.initBaseData(id, tableName)
-    }
-
-    fun initBaseData(): CourseBaseBean {
-        return repository!!.initBaseData()
-    }
-
-
-    fun getLastId(): LiveData<Int> {
-        return repository!!.getLastId()
-    }
-
-    fun getList(): MutableList<CourseEditBean> {
-        return repository!!.getList()
-    }
-
-    fun getBaseData(): CourseBaseBean {
-        return repository!!.getBaseData()
-    }
-
-    fun checkSameName(): LiveData<CourseBaseBean> {
-        return repository!!.checkSameName()
-    }
-
-    fun getDeleteList(): ArrayList<Int> {
-        return repository!!.getDeleteList()
+    fun getTableData(): LiveData<TableBean> {
+        return tableDao.getTableById(tableId)
     }
 
     fun judgeType(list: ArrayList<Int>, weeksNum: Int): Int {
@@ -116,5 +86,126 @@ class AddCourseViewModel : ViewModel() {
             }
         }
         return flag
+    }
+
+    fun preSaveData() {
+        saveList.clear()
+        if (baseBean.id == -1) {
+            updateFlag = false
+            baseBean.id = newId
+            editList.forEach {
+                it.id = newId
+            }
+        } else {
+            editList.forEach {
+                it.id = baseBean.id
+            }
+        }
+        for (i in editList.indices) {
+            if (i !in deleteList) {
+                saveList.addAll(CourseUtils.editBean2DetailBeanList(editList[i]))
+                Log.d("外键", CourseUtils.editBean2DetailBeanList(editList[i])[0].id.toString())
+            }
+        }
+
+        val selfUnique = CourseUtils.checkSelfUnique(saveList)
+
+        if (selfUnique) {
+            CheckUniqueAsyncTask(detailDao).execute(saveList)
+        } else {
+            saveInfo.value = "自身重复"
+        }
+    }
+
+    fun saveData(isUnique: Boolean) {
+        if (isUnique) {
+            if (updateFlag) {
+                thread(name = "updateCourseThread") {
+                    try {
+                        baseDao.updateCourseBaseBean(baseBean)
+                        detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
+                        detailDao.insertList(saveList)
+                        widgetIds.clear()
+                        widgetIds.addAll(widgetDao.getIdsOfWeekTypeOfTableInThread(tableId.toString()))
+                        saveInfo.postValue("ok")
+                    } catch (e: SQLiteConstraintException) {
+                        saveInfo.postValue(e.toString())
+                    }
+                }
+            } else {
+                thread(name = "insertNewCourseThread") {
+                    try {
+                        baseDao.insertCourseBase(baseBean)
+                        detailDao.insertList(saveList)
+                        saveInfo.postValue("ok")
+                    } catch (e: SQLiteConstraintException) {
+                        saveInfo.postValue("异常")
+                    }
+                }
+            }
+        } else {
+            saveInfo.value = "其他重复"
+        }
+    }
+
+    fun checkSameName(): LiveData<CourseBaseBean> {
+        return baseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
+    }
+
+    fun initData(weeksNum: Long): MutableList<CourseEditBean> {
+        editList = mutableListOf(CourseEditBean(
+                weekList = MutableLiveData<ArrayList<Int>>().apply {
+                    this.value = ArrayList<Int>().apply {
+                        for (i in 1..weeksNum.toInt()) {
+                            this.add(i)
+                        }
+                    }
+                }))
+        return editList
+    }
+
+    fun initData(id: Int, tableId: Int): LiveData<List<CourseDetailBean>> {
+        editList = mutableListOf()
+        return detailDao.getDetailByIdOfTable(id, tableId)
+    }
+
+    fun getLastId(): LiveData<Int> {
+        return baseDao.getLastIdOfTable(tableId)
+    }
+
+    fun initBaseData(): CourseBaseBean {
+        baseBean = CourseBaseBean(-1, "", "", tableId)
+        return baseBean
+    }
+
+    fun initBaseData(id: Int, tableName: String): LiveData<CourseBaseBean> {
+        baseBean = CourseBaseBean(-1, "", "", tableId)
+        return baseDao.getCourseByIdOfTable(id, tableId)
+    }
+
+    fun getBaseData(): CourseBaseBean {
+        return baseBean
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    inner class CheckUniqueAsyncTask internal constructor(private val mAsyncTaskDao: CourseDetailDao) : AsyncTask<List<CourseDetailBean>, Void, Boolean>() {
+        override fun doInBackground(vararg params: List<CourseDetailBean>): Boolean {
+            var flag = true
+            params[0].forEach {
+                val result = mAsyncTaskDao.getDetailByKeys(it.day, it.startNode, it.startWeek, it.type, it.tableId)
+                if (result.isNotEmpty()) {
+                    if (result[0].id != it.id) {
+                        flag = false
+                        return flag
+                    }
+                }
+            }
+            return flag
+        }
+
+        override fun onPostExecute(result: Boolean) {
+            super.onPostExecute(result)
+            this@AddCourseViewModel.saveData(result)
+        }
     }
 }

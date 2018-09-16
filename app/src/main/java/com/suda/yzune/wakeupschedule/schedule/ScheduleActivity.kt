@@ -7,14 +7,13 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.widget.ImageButton
@@ -31,6 +30,7 @@ import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
+import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
@@ -52,13 +52,13 @@ import java.text.ParseException
 
 class ScheduleActivity : AppCompatActivity() {
 
-    var whichWeek = 1
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var clipboardManager: ClipboardManager
     private lateinit var mAdapter: SchedulePagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
+
         PreferenceUtils.init(applicationContext)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
@@ -71,9 +71,46 @@ class ScheduleActivity : AppCompatActivity() {
                 .setTextSize(12)
                 .apply()
 
-        viewModel.updateFromOldVer(applicationContext)
-        initView()
-        initEvent()
+        viewModel.updateFromOldVer()
+        viewModel.initViewData().observe(this, Observer {
+            if (it == null) return@Observer
+            if (it.background != "") {
+                val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
+                val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
+                GlideApp.with(this.applicationContext)
+                        .load(it.background)
+                        .override(x, y)
+                        .into(iv_bg)
+            } else {
+                val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
+                val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
+                GlideApp.with(this.applicationContext)
+                        .load(R.drawable.main_background)
+                        .override(x, y)
+                        .into(iv_bg)
+            }
+
+            for (i in 0 until cl_schedule.childCount) {
+                val view = cl_schedule.getChildAt(i)
+                when (view) {
+                    is TextView -> view.setTextColor(Color.parseColor(it.textColor))
+                    is ImageButton -> view.setColorFilter(Color.parseColor(it.textColor))
+                }
+            }
+
+            viewModel.currentWeek.value = countWeek(it.startDate)
+            initCourseData(it.id)
+            sb_week.max = it.maxWeek - 1
+            initViewPage(it.maxWeek, it)
+        })
+
+        viewModel.currentWeek.observe(this, Observer {
+            if (it == null) return@Observer
+            viewModel.selectedWeek = it
+            initEvent(it)
+        })
+
+        initNavView()
 
         val openTimes = PreferenceUtils.getIntFromSP(applicationContext, "open_times", 0)
         if (openTimes < 10) {
@@ -114,27 +151,14 @@ class ScheduleActivity : AppCompatActivity() {
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
             initIntro()
         }
-
-        initCourseData()
     }
 
-    private fun initCourseData() {
-        viewModel.getTimeDetailLiveList().observe(this, Observer {
-            viewModel.timeList.addAll(it!!)
-            for (i in 1..7) {
-                viewModel.getRawCourseByDay(i, "").observe(this, Observer { list ->
-                    viewModel.allCourseList[i - 1].value = list
-                })
-
-                viewModel.getRawCourseByDay(i, "lover").observe(this, Observer { list ->
-                    viewModel.loverCourseList[i - 1].value = list
-                })
-            }
-        })
-
-        viewModel.getSummerTimeLiveList().observe(this, Observer {
-            viewModel.summerTimeList.addAll(it!!)
-        })
+    private fun initCourseData(tableId: Int) {
+        for (i in 1..7) {
+            viewModel.getRawCourseByDay(i, tableId).observe(this, Observer { list ->
+                viewModel.allCourseList[i - 1].value = list
+            })
+        }
     }
 
     private fun initIntro() {
@@ -187,6 +211,9 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
+        tv_date.text = CourseUtils.getTodayDate()
+
         if (clipboardManager.primaryClip != null) {
             if (clipboardManager.primaryClip.itemCount > 0) {
                 if (clipboardManager.primaryClip.getItemAt(0).text != null) {
@@ -198,71 +225,6 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
         }
-
-        viewModel.refreshViewData(applicationContext)
-
-        sb_week.max = viewModel.maxWeek - 1
-
-        initHeader()
-        initViewPage()
-
-        whichWeek = if (viewModel.savedWeek == -1) {
-            countWeek(this)
-        } else {
-            viewModel.savedWeek
-        }
-
-        if (whichWeek == countWeek(this)) {
-            tv_weekday.text = CourseUtils.getWeekday()
-        } else {
-            tv_weekday.text = "非本周  点击此处以回到本周"
-        }
-
-        tv_week.text = "第${whichWeek}周"
-        tv_date.text = CourseUtils.getTodayDate()
-
-        if (whichWeek >= 1) {
-            tv_week.text = "第" + whichWeek + "周"
-        } else {
-            tv_week.text = "还没有开学哦"
-            whichWeek = 1
-        }
-        vp_schedule.currentItem = whichWeek - 1
-
-        val uri = PreferenceUtils.getStringFromSP(this.applicationContext, "pic_uri", "")
-        if (uri != "") {
-            val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
-            val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
-                    .load(uri)
-                    .override(x, y)
-                    .into(iv_bg)
-        } else {
-            val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
-            val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
-                    .load(R.drawable.main_background)
-                    .override(x, y)
-                    .into(iv_bg)
-        }
-
-        if (viewModel.showWhite) {
-            for (i in 0 until cl_schedule.childCount) {
-                val view = cl_schedule.getChildAt(i)
-                when (view) {
-                    is TextView -> view.setTextColor(ContextCompat.getColor(applicationContext, R.color.white))
-                    is ImageButton -> view.setColorFilter(ContextCompat.getColor(applicationContext, R.color.white))
-                }
-            }
-        } else {
-            for (i in 0 until cl_schedule.childCount) {
-                val view = cl_schedule.getChildAt(i)
-                when (view) {
-                    is TextView -> view.setTextColor(ContextCompat.getColor(applicationContext, R.color.black))
-                    is ImageButton -> view.setColorFilter(ContextCompat.getColor(applicationContext, R.color.black))
-                }
-            }
-        }
     }
 
     @SuppressLint("MissingSuperCall")
@@ -270,7 +232,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     }
 
-    private fun initView() {
+    private fun initNavView() {
         navigation_view.itemIconTintList = null
         navigation_view.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -326,33 +288,25 @@ class ScheduleActivity : AppCompatActivity() {
         }
     }
 
-    private fun initHeader() {
-        srl_main.setOnRefreshListener {}
-        rv_table_name.adapter = TableNameAdapter(R.layout.item_table_name, listOf("大一上", "大二下", "大三上", "大一上", "大二下", "大三上", "大一上", "大二下", "大三上"))
-        rv_table_name.layoutManager = LinearLayoutManager(this).apply {
-            this.orientation = LinearLayoutManager.HORIZONTAL
-        }
-    }
-
-    private fun initViewPage() {
+    private fun initViewPage(maxWeek: Int, table: TableBean) {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
 
-        for (i in 1..viewModel.maxWeek) {
-            mAdapter.addFragment(ScheduleFragment.newInstance(i))
+        for (i in 1..maxWeek) {
+            mAdapter.addFragment(ScheduleFragment.newInstance(i, table))
         }
 
         mAdapter.notifyDataSetChanged()
     }
 
-    private fun initEvent() {
+    private fun initEvent(currentWeek: Int) {
         sb_week.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tv_week.text = "第${progress + 1}周"
                 try {
-                    if (countWeek(this@ScheduleActivity) > 0) {
-                        if (progress + 1 == countWeek(this@ScheduleActivity)) {
+                    if (currentWeek > 0) {
+                        if (progress + 1 == currentWeek) {
                             tv_week.text = "第${progress + 1}周"
                             tv_weekday.text = CourseUtils.getWeekday()
                             tv_date.text = CourseUtils.getTodayDate()
@@ -387,6 +341,8 @@ class ScheduleActivity : AppCompatActivity() {
 
         ib_add.setOnClickListener {
             val intent = Intent(this, AddCourseActivity::class.java)
+            intent.putExtra("tableName", viewModel.tableData.value!!.tableName)
+            intent.putExtra("id", -1)
             startActivity(intent)
         }
 
@@ -397,7 +353,7 @@ class ScheduleActivity : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.ib_share -> {
-                        viewModel.getCourse().observe(this, Observer {
+                        viewModel.getCourse(viewModel.tableData.value!!.id).observe(this, Observer {
                             val gson = Gson()
                             val course = gson.toJson(it)
                             val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
@@ -420,28 +376,22 @@ class ScheduleActivity : AppCompatActivity() {
         }
 
         tv_weekday.setOnClickListener {
-            try {
-                whichWeek = countWeek(this)
-            } catch (e: ParseException) {
-                e.printStackTrace()
-            }
-
             tv_weekday.text = CourseUtils.getWeekday()
-            vp_schedule.currentItem = whichWeek - 1
+            vp_schedule.currentItem = currentWeek - 1
         }
 
         vp_schedule.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             override fun onPageSelected(position: Int) {
-                whichWeek = position + 1
+                viewModel.selectedWeek = position + 1
                 try {
-                    if (countWeek(this@ScheduleActivity) > 0) {
-                        if (whichWeek == countWeek(this@ScheduleActivity)) {
-                            tv_week.text = "第${whichWeek}周"
+                    if (currentWeek > 0) {
+                        if (viewModel.selectedWeek == currentWeek) {
+                            tv_week.text = "第${viewModel.selectedWeek}周"
                             tv_weekday.text = CourseUtils.getWeekday()
                             tv_date.text = CourseUtils.getTodayDate()
                         } else {
-                            tv_week.text = "第${whichWeek}周"
+                            tv_week.text = "第${viewModel.selectedWeek}周"
                             tv_weekday.text = "非本周  点击此处以回到本周"
                         }
                     } else {
@@ -463,11 +413,6 @@ class ScheduleActivity : AppCompatActivity() {
 
             }
         })
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.savedWeek = whichWeek
     }
 
     override fun onDestroy() {

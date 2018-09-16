@@ -13,33 +13,33 @@ interface CourseBaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(courseBaseList: List<CourseBaseBean>)
 
-    @Query("select * from coursebasebean natural join coursedetailbean where tableName = :tableName")
-    fun getCourse(tableName: String = ""): LiveData<List<CourseBean>>
+    @Query("select * from coursebasebean natural join coursedetailbean where tableId = :tableId")
+    fun getCourseOfTable(tableId: Int): LiveData<List<CourseBean>>
 
-    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
-    fun getCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>>
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
+    fun getCourseByDayOfTable(day: Int, tableId: Int): LiveData<List<CourseBean>>
 
-    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableName = :tableName")
-    fun getCourseByDayInThread(day: Int, tableName: String = ""): List<CourseBean>
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
+    fun getCourseByDayOfTableInThread(day: Int, tableId: Int = 0): List<CourseBean>
 
-    @Query("select * from coursebasebean where id = :id and tableName = :tableName")
-    fun getCourseById(id: Int, tableName: String = ""): LiveData<CourseBaseBean>
+    @Query("select * from coursebasebean where id = :id and tableId = :tableId")
+    fun getCourseByIdOfTable(id: Int, tableId: Int): LiveData<CourseBaseBean>
 
-    @Query("select * from coursebasebean where id = :id and tableName = :tableName")
-    fun getCourseBeanByIdAndTableNameInThread(id: Int, tableName: String): CourseBaseBean
+    @Query("select * from coursebasebean where id = :id and tableId = :tableId")
+    fun getCourseByIdOfTableInThread(id: Int, tableId: Int = 0): CourseBaseBean
 
-    @Query("select max(id) from coursebasebean where tableName = :tableName")
-    fun getLastId(tableName: String = ""): LiveData<Int>
+    @Query("select max(id) from coursebasebean where tableId = :tableId")
+    fun getLastIdOfTable(tableId: Int): LiveData<Int>
 
-    @Query("delete from coursebasebean where id = :id and tableName = :tableName")
-    fun deleteCourseBaseBean(id: Int, tableName: String)
+    @Query("delete from coursebasebean where id = :id and tableId = :tableId")
+    fun deleteCourseBaseBeanOfTable(id: Int, tableId: Int)
 
     @Update
     fun updateCourseBaseBean(course: CourseBaseBean)
 
-    @Query("select * from coursebasebean natural join coursedetailbean where courseName = :name and tableName = :tableName")
-    fun checkSameName(name: String, tableName: String): LiveData<CourseBaseBean>
+    @Query("select * from coursebasebean natural join coursedetailbean where courseName = :name and tableId = :tableId")
+    fun checkSameNameInTable(name: String, tableId: Int = 0): LiveData<CourseBaseBean>
 
-    @Query("delete from coursebasebean where tableName = :tableName")
-    fun removeCourseData(tableName: String)
+    @Query("delete from coursebasebean where tableId = :tableId")
+    fun removeCourseBaseBeanOfTable(tableId: Int = 0)
 }

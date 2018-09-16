@@ -207,7 +207,7 @@ class ImportViewModel : ViewModel() {
         return courses
     }
 
-    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableName: String, context: Context, source: String) {
+    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableId: Int, context: Context, source: String) {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -215,14 +215,14 @@ class ImportViewModel : ViewModel() {
         for (importBean in importList) {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
-                baseList.add(CourseBaseBean(id, importBean.name, "", tableName))
+                baseList.add(CourseBaseBean(id, importBean.name, "", tableId))
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
-                        tableName = tableName
+                        tableId = tableId
                 ))
                 if (time[0] == 0) {
                     retryList.add(importList.size - 1)
@@ -235,7 +235,7 @@ class ImportViewModel : ViewModel() {
                         teacher = importBean.teacher, day = time[0],
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
-                        tableName = tableName
+                        tableId = tableId
                 ))
                 if (time[0] == 0) {
                     retryList.add(importList.size - 1)
@@ -250,7 +250,7 @@ class ImportViewModel : ViewModel() {
         }
     }
 
-    fun parseNewFZ(html: String, tableName: String, context: Context) {
+    fun parseNewFZ(html: String, tableId: Int, context: Context) {
         baseList.clear()
         detailList.clear()
         var id = 0
@@ -338,13 +338,13 @@ class ImportViewModel : ViewModel() {
 
                         val flag = isContainName(baseList, courseName)
                         if (flag == -1) {
-                            baseList.add(CourseBaseBean(id, courseName, "", tableName))
+                            baseList.add(CourseBaseBean(id, courseName, "", tableId))
                             detailList.add(CourseDetailBean(
                                     id = id, room = room,
                                     teacher = teacher, day = day,
                                     step = step, startWeek = startWeek, endWeek = endWeek,
                                     type = type, startNode = node,
-                                    tableName = tableName
+                                    tableId = tableId
                             ))
                             id++
                         } else {
@@ -358,7 +358,7 @@ class ImportViewModel : ViewModel() {
                                         teacher = teacher, day = day,
                                         step = step, startWeek = startWeek, endWeek = endWeek,
                                         type = type, startNode = node,
-                                        tableName = tableName
+                                        tableId = tableId
                                 ))
                             }
                         }
@@ -376,7 +376,7 @@ class ImportViewModel : ViewModel() {
         val detailDao = dataBase.courseDetailDao()
 
         thread(name = "InitDataThread") {
-            baseDao.removeCourseData("")
+            baseDao.removeCourseBaseBeanOfTable(0)
             try {
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)

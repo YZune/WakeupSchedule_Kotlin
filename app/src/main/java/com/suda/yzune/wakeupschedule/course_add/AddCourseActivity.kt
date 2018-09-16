@@ -54,7 +54,6 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         ViewUtils.resizeStatusBar(this, v_status)
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
-        viewModel.initRepository(applicationContext)
 
         viewModel.getLastId().observe(this, Observer {
             if (viewModel.newId == -1) {
@@ -66,21 +65,23 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
             }
         })
 
-        if (intent.extras == null) {
+        if (intent.extras.getInt("id") == -1) {
+            viewModel.tableId = intent.extras.getInt("tableId")
             initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30).toLong())), viewModel.initBaseData())
         } else {
-            viewModel.initData(intent.extras.getInt("id"), intent.extras.getString("tableName")).observe(this, Observer { list ->
-                //viewModel.getList().clear()
+            viewModel.tableId = intent.extras.getInt("tableId")
+            viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
+                //viewModel.editList.clear()
                 if (!isSaved) {
                     list!!.forEach {
-                        viewModel.getList().add(CourseUtils.detailBean2EditBean(it))
+                        viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
                     }
                     viewModel.initBaseData(intent.extras.getInt("id"), intent.extras.getString("tableName")).observe(this, Observer {
                         viewModel.getBaseData().id = it!!.id
                         viewModel.getBaseData().color = it.color
                         viewModel.getBaseData().courseName = it.courseName
-                        viewModel.getBaseData().tableName = it.tableName
-                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.getList()), viewModel.getBaseData())
+                        viewModel.getBaseData().tableId = it.tableId
+                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.getBaseData())
                     })
                 }
             })
@@ -91,8 +92,8 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
     override fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String) {
         when (what) {
-            "room" -> viewModel.getList()[position].room = editable.toString()
-            "teacher" -> viewModel.getList()[position].teacher = editable.toString()
+            "room" -> viewModel.editList[position].room = editable.toString()
+            "teacher" -> viewModel.editList[position].teacher = editable.toString()
         }
     }
 
@@ -103,7 +104,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         adapter.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ll_time -> {
-                    viewModel.getList()[position].time.observe(this, Observer {
+                    viewModel.editList[position].time.observe(this, Observer {
                         val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_time) as TextView
                         textView.text = "${CourseUtils.getDayInt(it!!.day)}    第${it.startNode} - ${it.endNode}节"
                     })
@@ -112,10 +113,10 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     selectTimeDialog.show(supportFragmentManager, "selectTime")
                 }
                 R.id.ib_delete -> {
-                    if (adapter.data.size - viewModel.getDeleteList().size == 1) {
+                    if (adapter.data.size - viewModel.deleteList.size == 1) {
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
-                        viewModel.getDeleteList().add(position)
+                        viewModel.deleteList.add(position)
                         val viewHolder = rv_detail.findViewHolderForLayoutPosition(position + 1)
                         if (viewHolder != null) {
                             val lp = viewHolder.itemView.layoutParams as RecyclerView.LayoutParams
@@ -126,7 +127,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     }
                 }
                 R.id.ll_weeks -> {
-                    viewModel.getList()[position].weekList.observe(this, Observer {
+                    viewModel.editList[position].weekList.observe(this, Observer {
                         it!!.sort()
                         val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_weeks) as TextView
                         val text = CourseUtils.intList2WeekBeanList(it).toString()
@@ -213,7 +214,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
             if (viewModel.getBaseData().courseName == "") {
                 Toasty.error(this.applicationContext, "请填写课程名称").show()
             } else {
-                if (viewModel.getBaseData().id == -1 || !viewModel.getUpdateFlag()) {
+                if (viewModel.getBaseData().id == -1 || !viewModel.updateFlag) {
                     viewModel.checkSameName().observe(this, Observer {
                         if (it == null) {
                             saveData()
@@ -229,17 +230,19 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     private fun saveData() {
-        viewModel.saveData()
-        viewModel.getSaveInfo().observe(this, Observer { s ->
+        viewModel.preSaveData()
+        viewModel.saveInfo.observe(this, Observer { s ->
             when (s) {
                 "ok" -> {
                     Toasty.success(this.applicationContext, "保存成功").show()
                     isSaved = true
-                    val appWidgetManager = AppWidgetManager.getInstance(this.applicationContext)
-                    viewModel.getWidgetIds().forEach {
-                        AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it)
-                    }
-                    finish()
+                    val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+                    viewModel.getTableData().observe(this, Observer { tableBean ->
+                        viewModel.widgetIds.forEach {
+                            AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it, tableBean!!)
+                        }
+                        finish()
+                    })
                 }
                 "其他重复" -> {
                     Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()

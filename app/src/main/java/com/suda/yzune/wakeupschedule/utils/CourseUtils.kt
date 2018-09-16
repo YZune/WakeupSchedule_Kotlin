@@ -72,14 +72,14 @@ object CourseUtils {
         return CourseDetailBean(
                 id = c.id, room = c.room, day = c.day, teacher = c.teacher,
                 startNode = c.startNode, step = c.step, startWeek = c.startWeek,
-                endWeek = c.endWeek, tableName = c.tableName, type = c.type
+                endWeek = c.endWeek, tableId = c.tableId, type = c.type
         )
     }
 
     fun courseBean2BaseBean(c: CourseBean): CourseBaseBean {
         return CourseBaseBean(
                 id = c.id, courseName = c.courseName,
-                color = c.color, tableName = c.tableName
+                color = c.color, tableId = c.tableId
         )
     }
 
@@ -91,7 +91,7 @@ object CourseUtils {
                     day = editBean.time.value!!.day, startNode = editBean.time.value!!.startNode,
                     step = editBean.time.value!!.endNode - editBean.time.value!!.startNode + 1,
                     startWeek = it.start, endWeek = it.end, type = it.type,
-                    tableName = editBean.tableName
+                    tableId = editBean.tableId
             ))
 
         }
@@ -121,7 +121,7 @@ object CourseUtils {
                         }
                     }
                 },
-                tableName = c.tableName
+                tableId = c.tableId
         )
     }
 
@@ -180,7 +180,7 @@ object CourseUtils {
                         && list[i].startNode == list[j].startNode
                         && list[i].startWeek == list[j].startWeek
                         && list[i].type == list[j].type
-                        && list[i].tableName == list[j].tableName) {
+                        && list[i].tableId == list[j].tableId) {
                     flag = false
                     return flag
                 }
@@ -190,11 +190,11 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun daysBetween(context: Context): Int {
+    fun daysBetween(date: String): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         val todayTime = sdf.format(Date())// 获取当前的日期
         val cal = Calendar.getInstance()
-        cal.time = sdf.parse(PreferenceUtils.getStringFromSP(context, "termStart", "2018-09-03"))
+        cal.time = sdf.parse(date)
         val time1 = cal.timeInMillis
         cal.time = sdf.parse(todayTime)
         val time2 = cal.timeInMillis
@@ -203,8 +203,8 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun countWeek(context: Context): Int {
-        val during = daysBetween(context)
+    fun countWeek(date: String): Int {
+        val during = daysBetween(date)
         return if (during < 0) 0 else during / 7 + 1
     }
 

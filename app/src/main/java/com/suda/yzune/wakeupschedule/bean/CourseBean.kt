@@ -12,5 +12,5 @@ data class CourseBean(
         var endWeek: Int,
         var type: Int,
         var color: String,
-        var tableName: String
+        var tableId: Int
 )

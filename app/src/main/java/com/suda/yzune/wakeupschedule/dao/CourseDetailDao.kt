@@ -10,17 +10,14 @@ interface CourseDetailDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(courseDetailList: List<CourseDetailBean>)
 
-    @Query("select * from coursedetailbean where id = :id and tableName = :tableName")
-    fun getDetailById(id: Int, tableName: String = ""): LiveData<List<CourseDetailBean>>
+    @Query("select * from coursedetailbean where id = :id and tableId = :tableId")
+    fun getDetailByIdOfTable(id: Int, tableId: Int): LiveData<List<CourseDetailBean>>
 
-    @Query("delete from coursedetailbean where tableName = :tableName")
-    fun deleteByTableName(tableName: String)
+    @Query("delete from coursedetailbean where id = :id and tableId = :tableId")
+    fun deleteByIdOfTable(id: Int, tableId: Int)
 
-    @Query("delete from coursedetailbean where id = :id and tableName = :tableName")
-    fun deleteByIdAndTableName(id: Int, tableName: String)
-
-    @Query("select * from coursedetailbean where id = :id and tableName = :tableName")
-    fun getDetailByIdAndTableNameInThread(id: Int, tableName: String): List<CourseDetailBean>
+    @Query("select * from coursedetailbean where id = :id and tableId = :tableId")
+    fun getDetailByIdOfTableInThread(id: Int, tableId: Int): List<CourseDetailBean>
 
     @Update
     fun updateCourseDetail(courseDetailBean: CourseDetailBean)
@@ -28,6 +25,6 @@ interface CourseDetailDao {
     @Delete
     fun deleteCourseDetail(courseDetailBean: CourseDetailBean)
 
-    @Query("select * from coursedetailbean where day = :day and startNode = :startNode and startWeek = :startWeek and type = :type and tableName = :tableName")
-    fun getDetailByKeys(day: Int, startNode: Int, startWeek: Int, type: Int, tableName: String): List<CourseDetailBean>
+    @Query("select * from coursedetailbean where day = :day and startNode = :startNode and startWeek = :startWeek and type = :type and tableId = :tableId")
+    fun getDetailByKeys(day: Int, startNode: Int, startWeek: Int, type: Int, tableId: Int): List<CourseDetailBean>
 }

@@ -53,7 +53,7 @@ class CourseDetailFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-        viewModel.getScheduleWidgetIds().observe(this, Observer {
+        viewModel.getScheduleWidgetIds(viewModel.tableData.value!!.tableName).observe(this, Observer {
             scheduleWidgetIds.clear()
             scheduleWidgetIds.addAll(it!!)
         })
@@ -104,11 +104,7 @@ class CourseDetailFragment : DialogFragment() {
         }
         weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
         if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "isInitTimeTable", false)) {
-            if (viewModel.showSummerTime) {
-                time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.summerTimeList[course.startNode - 1].startTime} - ${viewModel.summerTimeList[course.startNode + course.step - 2].endTime}"
-            } else {
-                time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
-            }
+            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
         } else {
             time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
         }
@@ -124,7 +120,7 @@ class CourseDetailFragment : DialogFragment() {
             dismiss()
             val intent = Intent(activity, AddCourseActivity::class.java)
             intent.putExtra("id", course.id)
-            intent.putExtra("tableName", course.tableName)
+            intent.putExtra("tableId", course.tableId)
             startActivity(intent)
         }
 
@@ -138,7 +134,7 @@ class CourseDetailFragment : DialogFragment() {
                 Toasty.success(context!!.applicationContext, "删除成功").show()
                 val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
                 scheduleWidgetIds.forEach {
-                    AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it)
+                    AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it, viewModel.tableData.value!!)
                 }
                 dismiss()
             }
@@ -146,11 +142,11 @@ class CourseDetailFragment : DialogFragment() {
 
         ib_delete_course.setOnLongClickListener { _ ->
             mVibrator.vibrate(100)
-            viewModel.deleteCourseBaseBean(course)
+            viewModel.deleteCourseBaseBean(course.id, course.tableId)
             Toasty.success(context!!.applicationContext, "删除成功").show()
             val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
             scheduleWidgetIds.forEach {
-                AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it)
+                AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it, viewModel.tableData.value!!)
             }
             dismiss()
             return@setOnLongClickListener true

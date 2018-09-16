@@ -4,78 +4,44 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
-import com.suda.yzune.wakeupschedule.bean.CourseBean
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
-import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import kotlin.concurrent.thread
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
-    var itemHeight = 0
-    var marTop = 0
-    var showWhite = false
-    var showSunday = true
-    var sundayFirst = false
-    var showSat = true
-    var showTimeDetail = false
-    var showSummerTime = false
-    var showStroke = true
-    var showNone = true
-    var nodesNum = 11
-    var textSize = 12
-    var savedWeek = -1
-    var maxWeek = 0
-    var alpha = 0
+    private val dataBase = AppDatabase.getDatabase(application)
+    private val baseDao = dataBase.courseBaseDao()
+    private val detailDao = dataBase.courseDetailDao()
+    private val tableDao = dataBase.tableDao()
+    private val widgetDao = dataBase.appWidgetDao()
+    private val timeDao = dataBase.timeDetailDao()
+    private val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
+
+    lateinit var tableData: LiveData<TableBean>
+    var selectedWeek = 1
+    val currentWeek = MutableLiveData<Int>()
+    val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     val timeList = arrayListOf<TimeDetailBean>()
-    val summerTimeList = arrayListOf<TimeDetailBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
-    val loverCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
-    private val json = PreferenceUtils.getStringFromSP(getApplication(), "course", "")!!
     val clipboardImportInfo = MutableLiveData<String>()
     var clipboardCourseList: List<CourseBean>? = null
-    private val repository = ScheduleRepository(getApplication())
 
-    fun refreshViewData(context: Context) {
-        val itemHeightDp = PreferenceUtils.getIntFromSP(getApplication(), "item_height", 56)
-        itemHeight = SizeUtils.dp2px(getApplication(), itemHeightDp.toFloat())
-        marTop = context.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-        maxWeek = PreferenceUtils.getIntFromSP(getApplication(), "sb_weeks", 30)
-        textSize = PreferenceUtils.getIntFromSP(getApplication(), "sb_text_size", 12)
-        showSummerTime = PreferenceUtils.getBooleanFromSP(getApplication(), "s_summer", false)
-        showNone = PreferenceUtils.getBooleanFromSP(getApplication(), "s_show", false)
-        showStroke = PreferenceUtils.getBooleanFromSP(getApplication(), "s_stroke", true)
-        showWhite = PreferenceUtils.getBooleanFromSP(getApplication(), "s_color", false)
-        showTimeDetail = PreferenceUtils.getBooleanFromSP(getApplication(), "s_show_time_detail", false)
-        showSat = PreferenceUtils.getBooleanFromSP(getApplication(), "s_show_sat", true)
-        showSunday = PreferenceUtils.getBooleanFromSP(getApplication(), "s_show_weekend", true)
-        sundayFirst = PreferenceUtils.getBooleanFromSP(getApplication(), "s_sunday_first", false)
-        nodesNum = PreferenceUtils.getIntFromSP(getApplication(), "classNum", 11)
-        alpha = PreferenceUtils.getIntFromSP(getApplication(), "sb_alpha", 60)
-    }
-
-    fun tranClipboardList(tableName: String) {
-        if (clipboardCourseList == null) return
-        val baseList = arrayListOf<CourseBaseBean>()
-        val detailList = arrayListOf<CourseDetailBean>()
-        clipboardCourseList!!.forEach {
-            baseList.add(CourseUtils.courseBean2BaseBean(it).apply {
-                this.tableName = tableName
-            })
-
-            detailList.add(CourseUtils.courseBean2DetailBean(it).apply {
-                this.tableName = tableName
-            })
+    fun initViewData(tableId: Int? = null): LiveData<TableBean> {
+        tableData = if (tableId == null) {
+            tableDao.getDefaultTable()
+        } else {
+            tableDao.getTableById(tableId)
         }
-
-        repository.write2DB(baseList, detailList, tableName, clipboardImportInfo)
+        return tableData
     }
 
     fun tranClipboardStr(str: String) {
@@ -88,40 +54,97 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun getTimeDetailLiveList(): LiveData<List<TimeDetailBean>> {
-        return repository.getTimeDetailLiveList()
+    fun getScheduleWidgetIds(tableName: String): LiveData<List<Int>> {
+        return widgetDao.getIdsOfWeekTypeOfTable(tableName)
     }
 
-    fun getSummerTimeLiveList(): LiveData<List<TimeDetailBean>> {
-        return repository.getSummerTimeLiveList()
+    fun getRawCourseByDay(day: Int, tableId: Int = 0): LiveData<List<CourseBean>> {
+        return baseDao.getCourseByDayOfTable(day, tableId)
     }
 
-    fun updateFromOldVer(context: Context) {
-        repository.updateFromOldVer(context, json)
-    }
-
-    fun getScheduleWidgetIds(): LiveData<List<Int>> {
-        return repository.getScheduleWidgetIds()
-    }
-
-    fun getRawCourseByDay(day: Int, tableName: String = ""): LiveData<List<CourseBean>> {
-        return repository.getRawCourseByDay(day, tableName)
-    }
-
-    fun getCourse(): LiveData<List<CourseBean>> {
-        return repository.getCourse()
+    fun getCourse(tableId: Int): LiveData<List<CourseBean>> {
+        return baseDao.getCourseOfTable(tableId)
     }
 
     fun deleteCourseBean(courseBean: CourseBean) {
-        repository.deleteCourseBean(courseBean)
+        thread(name = "DeleteCourseBeanThread") {
+            detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
+        }
     }
 
-    fun deleteCourseBaseBean(courseBean: CourseBean) {
-        repository.deleteCourseBaseBean(courseBean.id, courseBean.tableName)
+    fun deleteCourseBaseBean(id: Int, tableId: Int = 0) {
+        thread(name = "DeleteCourseBaseBeanThread") {
+            baseDao.deleteCourseBaseBeanOfTable(id, tableId)
+        }
     }
 
-    fun updateCourseBaseBean(courseBean: CourseBean) {
-        repository.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(courseBean))
+    fun updateCourseBaseBean(course: CourseBean) {
+        thread(name = "UpdateCourseBaseBeanThread") {
+            baseDao.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(course))
+        }
     }
 
+    fun updateFromOldVer() {
+        if (json != "") {
+            val gson = Gson()
+            val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
+            }.type)
+            oldBean2CourseBean(list, 0)
+        }
+    }
+
+    private fun oldBean2CourseBean(list: List<CourseOldBean>, tableId: Int) {
+        val baseList = arrayListOf<CourseBaseBean>()
+        val detailList = arrayListOf<CourseDetailBean>()
+        var id = 0
+        for (oldBean in list) {
+            val flag = CourseUtils.isContainName(baseList, oldBean.name)
+            if (flag == -1) {
+                baseList.add(CourseBaseBean(id, oldBean.name, "", tableId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = oldBean.room,
+                        teacher = oldBean.teach, day = oldBean.day,
+                        step = oldBean.step, startWeek = oldBean.startWeek, endWeek = oldBean.endWeek,
+                        type = oldBean.isOdd, startNode = oldBean.start,
+                        tableId = tableId
+                ))
+                id++
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = oldBean.room,
+                        teacher = oldBean.teach, day = oldBean.day,
+                        step = oldBean.step, startWeek = oldBean.startWeek, endWeek = oldBean.endWeek,
+                        type = oldBean.isOdd, startNode = oldBean.start,
+                        tableId = tableId
+                ))
+            }
+        }
+
+        thread(name = "TransformOldDataThread") {
+            try {
+                detailList.forEach {
+                    println(it.toString())
+                }
+                baseDao.insertList(baseList)
+                detailDao.insertList(detailList)
+                Log.d("数据库", "插入")
+                PreferenceUtils.remove(getApplication(), "course")
+            } catch (e: SQLiteConstraintException) {
+                Log.d("数据库", "插入异常$e")
+            }
+        }
+    }
+
+    private fun writeCourse2DB(baseList: List<CourseBaseBean>, detailList: List<CourseDetailBean>, tableId: Int = 0, clipboardImportInfo: MutableLiveData<String>) {
+        thread(name = "ImportClipboardDataThread") {
+            baseDao.removeCourseBaseBeanOfTable(tableId)
+            try {
+                baseDao.insertList(baseList)
+                detailDao.insertList(detailList)
+                clipboardImportInfo.postValue("ok")
+            } catch (e: SQLiteConstraintException) {
+                clipboardImportInfo.postValue("插入异常")
+            }
+        }
+    }
 }
