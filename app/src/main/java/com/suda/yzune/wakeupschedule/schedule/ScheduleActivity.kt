@@ -34,13 +34,10 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
-import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
@@ -65,11 +62,6 @@ class ScheduleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_schedule)
 
         clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-        Toasty.Config.getInstance()
-                .setToastTypeface(Typeface.DEFAULT_BOLD)
-                .setTextSize(12)
-                .apply()
 
         viewModel.updateFromOldVer()
         viewModel.initViewData().observe(this, Observer {
@@ -98,6 +90,7 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
 
+            viewModel.itemHeight = SizeUtils.dp2px(applicationContext, it.itemHeight.toFloat())
             viewModel.currentWeek.value = countWeek(it.startDate)
             initCourseData(it.id)
             sb_week.max = it.maxWeek - 1
@@ -292,12 +285,15 @@ class ScheduleActivity : AppCompatActivity() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
-
         for (i in 1..maxWeek) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i, table))
         }
-
         mAdapter.notifyDataSetChanged()
+        if (CourseUtils.countWeek(table.startDate) > 0) {
+            vp_schedule.currentItem = CourseUtils.countWeek(table.startDate) - 1
+        } else {
+            vp_schedule.currentItem = 0
+        }
     }
 
     private fun initEvent(currentWeek: Int) {
@@ -377,7 +373,11 @@ class ScheduleActivity : AppCompatActivity() {
 
         tv_weekday.setOnClickListener {
             tv_weekday.text = CourseUtils.getWeekday()
-            vp_schedule.currentItem = currentWeek - 1
+            if (currentWeek > 0) {
+                vp_schedule.currentItem = currentWeek - 1
+            } else {
+                vp_schedule.currentItem = 0
+            }
         }
 
         vp_schedule.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

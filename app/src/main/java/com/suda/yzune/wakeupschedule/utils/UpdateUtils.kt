@@ -1,11 +1,9 @@
 package com.suda.yzune.wakeupschedule.utils
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.content.Context
+import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.TableBean
-import kotlin.concurrent.thread
 
 object UpdateUtils {
 
@@ -27,9 +25,9 @@ object UpdateUtils {
         return packInfo.versionName
     }
 
-    fun tranOldData(context: Context): LiveData<Int> {
-        val tranInfo = MutableLiveData<Int>()
+    fun tranOldData(context: Context) {
         if (PreferenceUtils.getStringFromSP(context.applicationContext, "termStart", "2018-09-03") != "") {
+            Log.d("升级", "还有呢")
             val tableData = TableBean(
                     tableName = "",
                     itemHeight = PreferenceUtils.getIntFromSP(context.applicationContext, "item_height", 56),
@@ -48,7 +46,7 @@ object UpdateUtils {
                     widgetItemHeight = PreferenceUtils.getIntFromSP(context.applicationContext, "widget_item_height", 56),
                     widgetItemTextSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12),
                     type = 1,
-                    id = 0)
+                    id = 1)
 
             if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)) {
                 tableData.strokeColor = "#00ffffff"
@@ -65,35 +63,30 @@ object UpdateUtils {
             val dataBase = AppDatabase.getDatabase(context)
             val tableDao = dataBase.tableDao()
 
-            thread(name = "tranOldDataThread") {
-                try {
-                    tableDao.insertTable(tableData)
-                    PreferenceUtils.remove(context.applicationContext, "termStart")
-                    PreferenceUtils.remove(context.applicationContext, "item_height")
-                    PreferenceUtils.remove(context.applicationContext, "sb_weeks")
-                    PreferenceUtils.remove(context.applicationContext, "sb_text_size")
-                    PreferenceUtils.remove(context.applicationContext, "s_show")
-                    PreferenceUtils.remove(context.applicationContext, "s_show_time_detail")
-                    PreferenceUtils.remove(context.applicationContext, "s_show_sat")
-                    PreferenceUtils.remove(context.applicationContext, "s_show_weekend")
-                    PreferenceUtils.remove(context.applicationContext, "s_sunday_first")
-                    PreferenceUtils.remove(context.applicationContext, "classNum")
-                    PreferenceUtils.remove(context.applicationContext, "sb_alpha")
-                    PreferenceUtils.remove(context.applicationContext, "pic_uri")
-                    PreferenceUtils.remove(context.applicationContext, "sb_widget_alpha")
-                    PreferenceUtils.remove(context.applicationContext, "widget_item_height")
-                    PreferenceUtils.remove(context.applicationContext, "sb_widget_text_size")
-                    PreferenceUtils.remove(context.applicationContext, "s_stroke")
-                    PreferenceUtils.remove(context.applicationContext, "s_color")
-                    PreferenceUtils.remove(context.applicationContext, "s_widget_color")
-                    tranInfo.postValue(1)
-                } catch (e: Exception) {
-                    tranInfo.postValue(2)
-                }
+            try {
+                tableDao.updateTable(tableData)
+                PreferenceUtils.remove(context.applicationContext, "termStart")
+                PreferenceUtils.remove(context.applicationContext, "item_height")
+                PreferenceUtils.remove(context.applicationContext, "sb_weeks")
+                PreferenceUtils.remove(context.applicationContext, "sb_text_size")
+                PreferenceUtils.remove(context.applicationContext, "s_show")
+                PreferenceUtils.remove(context.applicationContext, "s_show_time_detail")
+                PreferenceUtils.remove(context.applicationContext, "s_show_sat")
+                PreferenceUtils.remove(context.applicationContext, "s_show_weekend")
+                PreferenceUtils.remove(context.applicationContext, "s_sunday_first")
+                PreferenceUtils.remove(context.applicationContext, "classNum")
+                PreferenceUtils.remove(context.applicationContext, "sb_alpha")
+                PreferenceUtils.remove(context.applicationContext, "pic_uri")
+                PreferenceUtils.remove(context.applicationContext, "sb_widget_alpha")
+                PreferenceUtils.remove(context.applicationContext, "widget_item_height")
+                PreferenceUtils.remove(context.applicationContext, "sb_widget_text_size")
+                PreferenceUtils.remove(context.applicationContext, "s_stroke")
+                PreferenceUtils.remove(context.applicationContext, "s_color")
+                PreferenceUtils.remove(context.applicationContext, "s_widget_color")
+            } catch (e: Exception) {
+
             }
-        } else {
-            tranInfo.value = 1
+
         }
-        return tranInfo
     }
 }

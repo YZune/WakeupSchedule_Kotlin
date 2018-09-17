@@ -30,10 +30,12 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var selectedWeek = 1
     val currentWeek = MutableLiveData<Int>()
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+    var itemHeight = 0
     val timeList = arrayListOf<TimeDetailBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val clipboardImportInfo = MutableLiveData<String>()
     var clipboardCourseList: List<CourseBean>? = null
+    val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initViewData(tableId: Int? = null): LiveData<TableBean> {
         tableData = if (tableId == null) {

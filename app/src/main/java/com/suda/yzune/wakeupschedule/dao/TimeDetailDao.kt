@@ -12,6 +12,12 @@ interface TimeDetailDao {
     @Insert
     fun insertTimeList(list: List<TimeDetailBean>)
 
+    @Query("insert into timetablebean values (null, :name)")
+    fun insertTimeTable(name: String)
+
+    @Query("insert into timedetailbean select node, startTime, endTime, :id from TimeDetailBean where timeTable = 0")
+    fun initTimeDetail(id: Int)
+
     @Update
     fun updateTimeDetail(timeDetailBean: TimeDetailBean)
 

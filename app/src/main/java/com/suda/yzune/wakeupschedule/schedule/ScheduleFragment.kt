@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.fragment_schedule.*
 class ScheduleFragment : Fragment() {
 
     private var week = 0
-    private lateinit var table: TableBean
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
@@ -34,77 +33,77 @@ class ScheduleFragment : Fragment() {
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_schedule, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (table.showSun) {
-            if (table.sundayFirst) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = inflater.inflate(R.layout.fragment_schedule, container, false)
+        viewModel.tableData.observe(this, Observer { table ->
+            if (table == null) return@Observer
+            if (table.showSun) {
+                if (table.sundayFirst) {
+                    tv_title7.visibility = View.GONE
+                    weekPanel_7.visibility = View.GONE
+                    tv_title0_1.visibility = View.VISIBLE
+                    weekPanel_0.visibility = View.VISIBLE
+                } else {
+                    tv_title7.visibility = View.VISIBLE
+                    weekPanel_7.visibility = View.VISIBLE
+                    tv_title0_1.visibility = View.GONE
+                    weekPanel_0.visibility = View.GONE
+                }
+            } else {
                 tv_title7.visibility = View.GONE
                 weekPanel_7.visibility = View.GONE
-                tv_title0_1.visibility = View.VISIBLE
-                weekPanel_0.visibility = View.VISIBLE
-            } else {
-                tv_title7.visibility = View.VISIBLE
-                weekPanel_7.visibility = View.VISIBLE
                 tv_title0_1.visibility = View.GONE
                 weekPanel_0.visibility = View.GONE
             }
-        } else {
-            tv_title7.visibility = View.GONE
-            weekPanel_7.visibility = View.GONE
-            tv_title0_1.visibility = View.GONE
-            weekPanel_0.visibility = View.GONE
-        }
 
-        weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(table.startDate), week, table.sundayFirst)
-        tv_title0.text = weekDate[0] + "\n月"
-        var tvTitle: TextView
-        if (table.sundayFirst) {
-            for (i in 0..6) {
-                tvTitle = view!!.findViewById(R.id.tv_title0_1 + i)
-                tvTitle.text = tvTitle.text.toString() + "\n${weekDate[i + 1]}"
-            }
-        } else {
-            for (i in 0..6) {
-                tvTitle = view!!.findViewById(R.id.tv_title1 + i)
-                tvTitle.text = tvTitle.text.toString() + "\n${weekDate[i + 1]}"
-            }
-        }
-
-        if (table.showSat) {
-            weekPanel_6.visibility = View.VISIBLE
-            tv_title6.visibility = View.VISIBLE
-        } else {
-            weekPanel_6.visibility = View.GONE
-            tv_title6.visibility = View.GONE
-        }
-
-        for (i in 0 until 16) {
-            val tv = view!!.findViewById<TextView>(R.id.tv_node1 + i)
-            val lp = tv.layoutParams
-            lp.height = table.timeTable
-            tv.layoutParams = lp
-            tv.setTextColor(Color.parseColor(table.textColor))
-            if (i >= table.nodes) {
-                tv.visibility = View.GONE
+            weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(table.startDate), week, table.sundayFirst)
+            tv_title0.text = weekDate[0] + "\n月"
+            var tvTitle: TextView
+            if (table.sundayFirst) {
+                for (i in 0..6) {
+                    tvTitle = view.findViewById(R.id.tv_title0_1 + i)
+                    tvTitle.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
+                }
             } else {
-                tv.visibility = View.VISIBLE
+                for (i in 0..6) {
+                    tvTitle = view.findViewById(R.id.tv_title1 + i)
+                    tvTitle.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
+                }
             }
-        }
 
-        for (i in 0 until 9) {
-            val tv = view!!.findViewById<TextView>(R.id.tv_title0 + i)
-            tv.setTextColor(Color.parseColor(table.textColor))
-        }
+            if (table.showSat) {
+                weekPanel_6.visibility = View.VISIBLE
+                tv_title6.visibility = View.VISIBLE
+            } else {
+                weekPanel_6.visibility = View.GONE
+                tv_title6.visibility = View.GONE
+            }
 
-        for (i in 1..7) {
-            viewModel.allCourseList[i - 1].observe(this, Observer {
-                initWeekPanel(view!!, weekPanels, it, i)
-            })
-        }
+            for (i in 0 until 16) {
+                val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
+                val lp = tv.layoutParams
+                lp.height = viewModel.itemHeight
+                tv.layoutParams = lp
+                tv.setTextColor(Color.parseColor(table.textColor))
+                if (i >= table.nodes) {
+                    tv.visibility = View.GONE
+                } else {
+                    tv.visibility = View.VISIBLE
+                }
+            }
+
+            for (i in 0 until 9) {
+                val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
+                tv.setTextColor(Color.parseColor(table.textColor))
+            }
+
+            for (i in 1..7) {
+                viewModel.allCourseList[i - 1].observe(this, Observer {
+                    initWeekPanel(view, weekPanels, it, i, table)
+                })
+            }
+        })
+        return view
     }
 
     companion object {
@@ -112,11 +111,10 @@ class ScheduleFragment : Fragment() {
         fun newInstance(arg0: Int, arg1: TableBean) =
                 ScheduleFragment().apply {
                     week = arg0
-                    table = arg1
                 }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int) {
+    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, table: TableBean) {
         val llIndex = day - 1
         lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
         lls[llIndex]?.removeAllViews()
@@ -130,11 +128,11 @@ class ScheduleFragment : Fragment() {
             val tv = TextView(context)
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    table.itemHeight * c.step + viewModel.marTop * (c.step - 1))
+                    viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
             if (i > 0) {
-                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (table.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             } else {
-                lp.setMargins(0, (c.startNode - 1) * (table.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             }
             tv.layoutParams = lp
             //tv.gravity = Gravity.CENTER_VERTICAL
