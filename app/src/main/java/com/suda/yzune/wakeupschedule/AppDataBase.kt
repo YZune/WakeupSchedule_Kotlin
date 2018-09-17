@@ -72,7 +72,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP INDEX index_TableBean_id_timeTable;")
                 database.execSQL("ALTER TABLE TableBean RENAME TO TableBean_old;")
                 database.execSQL("CREATE TABLE TableBean (\n" +
-                        "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                        "    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                         "    tableName TEXT NOT NULL, \n" +
                         "    nodes INTEGER NOT NULL DEFAULT 11, \n" +
                         "    background TEXT NOT NULL DEFAULT '',\n" +
@@ -108,7 +108,25 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("CREATE INDEX index_CourseBaseBean_tableId ON CourseBaseBean (tableId ASC);")
                 database.execSQL("DROP TABLE CourseBaseBean_old;")
 
-
+                database.execSQL("DROP INDEX index_CourseDetailBean_id_tableName;")
+                database.execSQL("ALTER TABLE CourseDetailBean RENAME TO CourseDetailBean_old;")
+                database.execSQL("CREATE TABLE CourseDetailBean (\n" +
+                        "  id INTEGER NOT NULL,\n" +
+                        "  day INTEGER NOT NULL,\n" +
+                        "  room TEXT,\n" +
+                        "  teacher TEXT,\n" +
+                        "  startNode INTEGER NOT NULL,\n" +
+                        "  step INTEGER NOT NULL,\n" +
+                        "  startWeek INTEGER NOT NULL,\n" +
+                        "  endWeek INTEGER NOT NULL,\n" +
+                        "  type INTEGER NOT NULL,\n" +
+                        "  tableId INTEGER NOT NULL,\n" +
+                        "  PRIMARY KEY (day, startNode, startWeek, type, tableId, id),\n" +
+                        "  FOREIGN KEY (\"id\", \"tableId\") REFERENCES \"CourseBaseBean\" (\"id\", \"tableId\") ON DELETE CASCADE ON UPDATE CASCADE\n" +
+                        ");")
+                database.execSQL("INSERT INTO CourseDetailBean (id, day, room, teacher, startNode, step, startWeek, endWeek, type, tableId) SELECT id, day, room, teacher, startNode, step, startWeek, endWeek, type, CASE WHEN tableName = '' THEN 1 ELSE 2 END FROM CourseDetailBean_old;")
+                database.execSQL("CREATE INDEX index_CourseDetailBean_id_tableId ON CourseDetailBean (id ASC, tableId ASC);")
+                database.execSQL("DROP TABLE CourseDetailBean_old")
             }
         }
 
