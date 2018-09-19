@@ -9,7 +9,7 @@ class TimeListTabAdapter(private val fragmentManager: FragmentManager,
 
     override fun getItem(position: Int): Fragment {
         val isSummer = position != 0
-        return TimeSettingsFragment.newInstance(nodesNum, isSummer)
+        return TimeSettingsFragment.newInstance(nodesNum)
     }
 
     override fun getCount(): Int {

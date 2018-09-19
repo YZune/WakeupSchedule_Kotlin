@@ -12,27 +12,15 @@ interface TimeDetailDao {
     @Insert
     fun insertTimeList(list: List<TimeDetailBean>)
 
-    @Query("insert into timetablebean values (null, :name)")
-    fun insertTimeTable(name: String)
-
-    @Query("insert into timedetailbean select node, startTime, endTime, :id from TimeDetailBean where timeTable = 0")
-    fun initTimeDetail(id: Int)
-
     @Update
     fun updateTimeDetail(timeDetailBean: TimeDetailBean)
 
     @Update
     fun updateTimeDetailList(timeDetailBeanList: List<TimeDetailBean>)
 
-    @Query("select * from timedetailbean where node < 17 order by node")
-    fun getTimeList(): LiveData<List<TimeDetailBean>>
+    @Query("select * from timedetailbean where timeTable = :id order by node")
+    fun getTimeList(id: Int): LiveData<List<TimeDetailBean>>
 
-    @Query("select * from timedetailbean where node > 16 order by node")
-    fun getSummerTimeList(): LiveData<List<TimeDetailBean>>
-
-    @Query("select * from timedetailbean where node < 17 order by node")
-    fun getTimeListInThread(): List<TimeDetailBean>
-
-    @Query("select * from timedetailbean where node > 16 order by node")
-    fun getSummerTimeListInThread(): List<TimeDetailBean>
+    @Query("select * from timedetailbean where timeTable = :id order by node")
+    fun getTimeListInThread(id: Int): List<TimeDetailBean>
 }

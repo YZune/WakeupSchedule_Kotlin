@@ -27,6 +27,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     private val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
 
     lateinit var tableData: LiveData<TableBean>
+    lateinit var timeData: LiveData<List<TimeDetailBean>>
     var selectedWeek = 1
     val currentWeek = MutableLiveData<Int>()
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
@@ -44,6 +45,11 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             tableDao.getTableById(tableId)
         }
         return tableData
+    }
+
+    fun initTimeData(timeTableId: Int): LiveData<List<TimeDetailBean>> {
+        timeData = timeDao.getTimeList(timeTableId)
+        return timeData
     }
 
     fun tranClipboardStr(str: String) {

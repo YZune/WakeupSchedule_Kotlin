@@ -64,13 +64,16 @@ class ScheduleActivity : AppCompatActivity() {
         clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         viewModel.updateFromOldVer()
-        viewModel.initViewData().observe(this, Observer {
-            if (it == null) return@Observer
-            if (it.background != "") {
+        viewModel.initViewData().observe(this, Observer { table ->
+            if (table == null) return@Observer
+
+            viewModel.initTimeData(table.timeTable)
+
+            if (table.background != "") {
                 val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
                 val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
                 GlideApp.with(this.applicationContext)
-                        .load(it.background)
+                        .load(table.background)
                         .override(x, y)
                         .into(iv_bg)
             } else {
@@ -85,16 +88,53 @@ class ScheduleActivity : AppCompatActivity() {
             for (i in 0 until cl_schedule.childCount) {
                 val view = cl_schedule.getChildAt(i)
                 when (view) {
-                    is TextView -> view.setTextColor(Color.parseColor(it.textColor))
-                    is ImageButton -> view.setColorFilter(Color.parseColor(it.textColor))
+                    is TextView -> view.setTextColor(Color.parseColor(table.textColor))
+                    is ImageButton -> view.setColorFilter(Color.parseColor(table.textColor))
                 }
             }
 
-            viewModel.itemHeight = SizeUtils.dp2px(applicationContext, it.itemHeight.toFloat())
-            viewModel.currentWeek.value = countWeek(it.startDate)
-            initCourseData(it.id)
-            sb_week.max = it.maxWeek - 1
-            initViewPage(it.maxWeek, it)
+            viewModel.itemHeight = SizeUtils.dp2px(applicationContext, table.itemHeight.toFloat())
+            viewModel.currentWeek.value = countWeek(table.startDate)
+            initCourseData(table.id)
+            sb_week.max = table.maxWeek - 1
+            initViewPage(table.maxWeek, table)
+
+            ib_add.setOnClickListener {
+                val intent = Intent(this, AddCourseActivity::class.java)
+                intent.putExtra("tableId", table.id)
+                intent.putExtra("maxWeek", table.maxWeek)
+                intent.putExtra("id", -1)
+                startActivity(intent)
+            }
+
+            ib_more.setOnClickListener { view ->
+                val popupMenu = PopupMenu(this, view)
+                popupMenu.menuInflater.inflate(R.menu.menu_more, popupMenu.menu)
+                popupMenu.show()
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.ib_share -> {
+                            viewModel.getCourse(table.id).observe(this, Observer {
+                                val gson = Gson()
+                                val course = gson.toJson(it)
+                                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
+                                when {
+                                    course != "" -> {
+                                        clipboardManager.primaryClip = clipData
+                                        Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
+                                    }
+                                    course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                                    else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+                                }
+                            })
+                        }
+                        R.id.ib_manage -> {
+                            Toasty.info(applicationContext, "很快就能见面啦(￣▽￣)~*", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    return@setOnMenuItemClickListener true
+                }
+            }
         })
 
         viewModel.currentWeek.observe(this, Observer {
@@ -333,42 +373,6 @@ class ScheduleActivity : AppCompatActivity() {
 
         ib_import.setOnClickListener {
             ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
-        }
-
-        ib_add.setOnClickListener {
-            val intent = Intent(this, AddCourseActivity::class.java)
-            intent.putExtra("tableName", viewModel.tableData.value!!.tableName)
-            intent.putExtra("id", -1)
-            startActivity(intent)
-        }
-
-        ib_more.setOnClickListener { view ->
-            val popupMenu = PopupMenu(this, view)
-            popupMenu.menuInflater.inflate(R.menu.menu_more, popupMenu.menu)
-            popupMenu.show()
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.ib_share -> {
-                        viewModel.getCourse(viewModel.tableData.value!!.id).observe(this, Observer {
-                            val gson = Gson()
-                            val course = gson.toJson(it)
-                            val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
-                            when {
-                                course != "" -> {
-                                    clipboardManager.primaryClip = clipData
-                                    Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
-                                }
-                                course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-                                else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-                            }
-                        })
-                    }
-                    R.id.ib_manage -> {
-                        Toasty.info(applicationContext, "很快就能见面啦(￣▽￣)~*", Toast.LENGTH_LONG).show()
-                    }
-                }
-                return@setOnMenuItemClickListener true
-            }
         }
 
         tv_weekday.setOnClickListener {

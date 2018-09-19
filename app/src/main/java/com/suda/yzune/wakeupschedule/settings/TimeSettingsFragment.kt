@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_time_settings.*
 
 class TimeSettingsFragment : Fragment() {
 
-    private var isSummer = false
     private var nodesNum = 11
     private lateinit var viewModel: TimeSettingsViewModel
 
@@ -33,43 +31,32 @@ class TimeSettingsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-
-        if (isSummer) {
-            viewModel.getSummerData().observe(this, Observer {
-                viewModel.getSummerTimeList().clear()
-                Log.d("显示", it!!.toString())
-                viewModel.getSummerTimeList().addAll(it.subList(0, nodesNum))
-                initAdapter(TimeSettingsAdapter(R.layout.item_time_detail, viewModel.getSummerTimeList()))
-            })
-        } else {
-            viewModel.getDetailData().observe(this, Observer {
-                viewModel.getTimeList().clear()
-                viewModel.getTimeList().addAll(it!!.subList(0, nodesNum))
-                initAdapter(TimeSettingsAdapter(R.layout.item_time_detail, viewModel.getTimeList()))
-            })
-        }
+        viewModel.getTimeData(16, 0).observe(this, Observer {
+            viewModel.timeList.clear()
+            viewModel.timeList.addAll(it!!.subList(0, nodesNum))
+            initAdapter(TimeSettingsAdapter(R.layout.item_time_detail, viewModel.timeList))
+        })
     }
 
     private fun initAdapter(adapter: TimeSettingsAdapter) {
         adapter.setOnItemClickListener { _, _, position ->
-            val selectTimeDialog = SelectTimeDetailFragment.newInstance(position, adapter, isSummer)
+            val selectTimeDialog = SelectTimeDetailFragment.newInstance(position, adapter)
             selectTimeDialog.isCancelable = false
             selectTimeDialog.show(fragmentManager, "selectTimeDetail")
         }
         rv_time_detail.isNestedScrollingEnabled = false
         rv_time_detail.adapter = adapter
         rv_time_detail.layoutManager = LinearLayoutManager(activity)
-        viewModel.getRefreshMsg().observe(this, Observer {
+        viewModel.refreshMsg.observe(this, Observer {
             adapter.notifyDataSetChanged()
         })
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(param0: Int, param1: Boolean) =
+        fun newInstance(param0: Int) =
                 TimeSettingsFragment().apply {
                     nodesNum = param0
-                    isSummer = param1
                 }
     }
 }

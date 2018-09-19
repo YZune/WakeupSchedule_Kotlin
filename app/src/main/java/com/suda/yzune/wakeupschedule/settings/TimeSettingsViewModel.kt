@@ -1,51 +1,48 @@
 package com.suda.yzune.wakeupschedule.settings
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.ViewModel
-import android.content.Context
+import android.arch.lifecycle.MutableLiveData
+import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import kotlin.concurrent.thread
 
-class TimeSettingsViewModel : ViewModel() {
-    private lateinit var repository: TimeSettingsRepository
+class TimeSettingsViewModel(application: Application) : AndroidViewModel(application) {
 
-    fun initRepository(context: Context) {
-        repository = TimeSettingsRepository(context)
-        repository.initTimeSelectList()
+    private val dataBase = AppDatabase.getDatabase(application)
+    private val timeDao = dataBase.timeDetailDao()
+    val timeList = arrayListOf<TimeDetailBean>()
+    val timeSelectList = arrayListOf<String>()
+    val saveInfo = MutableLiveData<String>()
+    val refreshMsg = MutableLiveData<Int>()
+
+    fun getTimeData(maxNode: Int, id: Int): LiveData<List<TimeDetailBean>> {
+        return timeDao.getTimeList(maxNode)
     }
 
-    fun getTimeList(): ArrayList<TimeDetailBean>{
-        return repository.getTimeList()
+    fun saveData() {
+        thread(name = "updateTimeDetailThread") {
+            timeDao.updateTimeDetailList(timeList)
+            saveInfo.postValue("ok")
+        }
     }
 
-    fun getSummerTimeList(): ArrayList<TimeDetailBean>{
-        return repository.getSummerTimeList()
-    }
-
-    fun getSaveInfo(): LiveData<String>{
-        return repository.getSaveInfo()
+    fun initTimeSelectList() {
+        for (i in 6..24) {
+            for (j in 0..55 step 5) {
+                val h = if (i < 10) "0$i" else i.toString()
+                val m = if (j < 10) "0$j" else j.toString()
+                timeSelectList.add("$h:$m")
+            }
+        }
     }
 
     fun refreshEndTime(min: Int) {
-        repository.refreshEndTime(min)
-    }
-
-    fun getRefreshMsg(): LiveData<Int> {
-        return repository.getRefreshMsg()
-    }
-
-    fun saveData(isSummer: Boolean) {
-        repository.saveData(isSummer)
-    }
-
-    fun getDetailData(): LiveData<List<TimeDetailBean>> {
-        return repository.getDetailData()
-    }
-
-    fun getSummerData(): LiveData<List<TimeDetailBean>> {
-        return repository.getSummerData()
-    }
-
-    fun getTimeSelectList(): ArrayList<String>{
-        return repository.getTimeSelectList()
+        timeList.forEach {
+            it.endTime = CourseUtils.calAfterTime(it.startTime, min)
+        }
+        refreshMsg.value = min
     }
 }

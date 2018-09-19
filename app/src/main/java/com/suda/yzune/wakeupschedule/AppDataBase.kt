@@ -12,7 +12,7 @@ import com.suda.yzune.wakeupschedule.dao.*
 
 @Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class, TimeDetailBean::class,
     TimeTableBean::class, TableBean::class],
-        version = 10, exportSchema = false)
+        version = 11, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
 
@@ -26,7 +26,7 @@ abstract class AppDatabase : RoomDatabase() {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 AppDatabase::class.java, "wakeup")
                                 .allowMainThreadQueries()
-                                .addMigrations(migration7to8, migration8to9, migration9to10)
+                                .addMigrations(migration7to8, migration8to9, migration9to10, migration10to11)
                                 .build()
                     }
                 }
@@ -130,6 +130,12 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
+        private val migration10to11: Migration = object : Migration(10, 11) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE TimeTableBean ADD COLUMN sameLen INTEGER NOT NULL DEFAULT 1;")
+                database.execSQL("ALTER TABLE TimeTableBean ADD COLUMN courseLen INTEGER NOT NULL DEFAULT 50;")
+            }
+        }
     }
 
     abstract fun courseBaseDao(): CourseBaseDao

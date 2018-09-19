@@ -21,7 +21,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 
@@ -103,11 +102,10 @@ class CourseDetailFragment : DialogFragment() {
             2 -> type = "双周"
         }
         weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
-        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "isInitTimeTable", false)) {
-            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
-        } else {
-            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节"
-        }
+        viewModel.timeData.observe(this, Observer {
+            if (it == null) return@Observer
+            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${it[course.startNode - 1].startTime} - ${it[course.startNode + course.step - 2].endTime}"
+        })
     }
 
     private fun initEvent() {
@@ -121,6 +119,7 @@ class CourseDetailFragment : DialogFragment() {
             val intent = Intent(activity, AddCourseActivity::class.java)
             intent.putExtra("id", course.id)
             intent.putExtra("tableId", course.tableId)
+            intent.putExtra("maxWeek", viewModel.tableData.value!!.maxWeek)
             startActivity(intent)
         }
 

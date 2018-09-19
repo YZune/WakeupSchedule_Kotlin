@@ -55,6 +55,28 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
 
+        if (intent.extras.getInt("id") == -1) {
+            viewModel.tableId = intent.extras.getInt("tableId")
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(intent.extras.getInt("maxWeek"))), viewModel.initBaseData())
+        } else {
+            viewModel.tableId = intent.extras.getInt("tableId")
+            viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
+                //viewModel.editList.clear()
+                if (!isSaved) {
+                    list!!.forEach {
+                        viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
+                    }
+                    viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
+                        viewModel.baseBean.id = it!!.id
+                        viewModel.baseBean.color = it.color
+                        viewModel.baseBean.courseName = it.courseName
+                        viewModel.baseBean.tableId = it.tableId
+                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.baseBean)
+                    })
+                }
+            })
+        }
+
         viewModel.getLastId().observe(this, Observer {
             if (viewModel.newId == -1) {
                 if (it != null) {
@@ -64,28 +86,6 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                 }
             }
         })
-
-        if (intent.extras.getInt("id") == -1) {
-            viewModel.tableId = intent.extras.getInt("tableId")
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30).toLong())), viewModel.initBaseData())
-        } else {
-            viewModel.tableId = intent.extras.getInt("tableId")
-            viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
-                //viewModel.editList.clear()
-                if (!isSaved) {
-                    list!!.forEach {
-                        viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
-                    }
-                    viewModel.initBaseData(intent.extras.getInt("id"), intent.extras.getString("tableName")).observe(this, Observer {
-                        viewModel.getBaseData().id = it!!.id
-                        viewModel.getBaseData().color = it.color
-                        viewModel.getBaseData().courseName = it.courseName
-                        viewModel.getBaseData().tableId = it.tableId
-                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.getBaseData())
-                    })
-                }
-            })
-        }
 
         initEvent()
     }
@@ -211,10 +211,10 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         }
 
         tv_save.setOnClickListener { _ ->
-            if (viewModel.getBaseData().courseName == "") {
+            if (viewModel.baseBean.courseName == "") {
                 Toasty.error(this.applicationContext, "请填写课程名称").show()
             } else {
-                if (viewModel.getBaseData().id == -1 || !viewModel.updateFlag) {
+                if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
                     viewModel.checkSameName().observe(this, Observer {
                         if (it == null) {
                             saveData()

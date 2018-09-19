@@ -104,7 +104,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         for (i in editList.indices) {
             if (i !in deleteList) {
                 saveList.addAll(CourseUtils.editBean2DetailBeanList(editList[i]))
-                Log.d("外键", CourseUtils.editBean2DetailBeanList(editList[i])[0].id.toString())
             }
         }
 
@@ -126,6 +125,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
                         detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
                         detailDao.insertList(saveList)
                         widgetIds.clear()
+                        //todo: widget
                         widgetIds.addAll(widgetDao.getIdsOfWeekTypeOfTableInThread(tableId.toString()))
                         saveInfo.postValue("ok")
                     } catch (e: SQLiteConstraintException) {
@@ -135,11 +135,13 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
             } else {
                 thread(name = "insertNewCourseThread") {
                     try {
+                        Log.d("保存", baseBean.toString())
+                        Log.d("保存", saveList.toString())
                         baseDao.insertCourseBase(baseBean)
                         detailDao.insertList(saveList)
                         saveInfo.postValue("ok")
                     } catch (e: SQLiteConstraintException) {
-                        saveInfo.postValue("异常")
+                        saveInfo.postValue(e.toString())
                     }
                 }
             }
@@ -152,11 +154,12 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return baseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
     }
 
-    fun initData(weeksNum: Long): MutableList<CourseEditBean> {
+    fun initData(maxWeek: Int): MutableList<CourseEditBean> {
         editList = mutableListOf(CourseEditBean(
+                tableId = tableId,
                 weekList = MutableLiveData<ArrayList<Int>>().apply {
                     this.value = ArrayList<Int>().apply {
-                        for (i in 1..weeksNum.toInt()) {
+                        for (i in 1..maxWeek) {
                             this.add(i)
                         }
                     }
@@ -178,13 +181,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return baseBean
     }
 
-    fun initBaseData(id: Int, tableName: String): LiveData<CourseBaseBean> {
+    fun initBaseData(id: Int): LiveData<CourseBaseBean> {
         baseBean = CourseBaseBean(-1, "", "", tableId)
         return baseDao.getCourseByIdOfTable(id, tableId)
-    }
-
-    fun getBaseData(): CourseBaseBean {
-        return baseBean
     }
 
     @SuppressLint("StaticFieldLeak")

@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.fragment_select_time_detail.*
 class SelectTimeDetailFragment : DialogFragment() {
 
     var position = -1
-    var isSummer = false
     private lateinit var viewModel: TimeSettingsViewModel
     private lateinit var adapter: TimeSettingsAdapter
 
@@ -34,8 +33,8 @@ class SelectTimeDetailFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        wp_start.data = viewModel.getTimeSelectList()
-        wp_end.data = viewModel.getTimeSelectList()
+        wp_start.data = viewModel.timeSelectList
+        wp_end.data = viewModel.timeSelectList
         if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
             tv_title.text = "请选择开始时间"
             wp_end.visibility = View.GONE
@@ -49,13 +48,8 @@ class SelectTimeDetailFragment : DialogFragment() {
     private fun initEvent() {
         var startIndex: Int
         var endIndex: Int
-        if (!isSummer) {
-            startIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].startTime)
-            endIndex = viewModel.getTimeSelectList().indexOf(viewModel.getTimeList()[position].endTime)
-        } else {
-            startIndex = viewModel.getTimeSelectList().indexOf(viewModel.getSummerTimeList()[position].startTime)
-            endIndex = viewModel.getTimeSelectList().indexOf(viewModel.getSummerTimeList()[position].endTime)
-        }
+        startIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].startTime)
+        endIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].endTime)
         wp_start.selectedItemPosition = startIndex
         wp_end.selectedItemPosition = endIndex
 
@@ -75,27 +69,15 @@ class SelectTimeDetailFragment : DialogFragment() {
         }
 
         btn_save.setOnClickListener {
-            if (!isSummer) {
-                val startStr = viewModel.getTimeSelectList()[startIndex]
-                viewModel.getTimeList()[position].startTime = startStr
-                if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
-                    viewModel.getTimeList()[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
-                } else {
-                    viewModel.getTimeList()[position].endTime = viewModel.getTimeSelectList()[endIndex]
-                }
-                adapter.notifyDataSetChanged()
-                dismiss()
+            val startStr = viewModel.timeSelectList[startIndex]
+            viewModel.timeList[position].startTime = startStr
+            if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
+                viewModel.timeList[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
             } else {
-                val startStr = viewModel.getTimeSelectList()[startIndex]
-                viewModel.getSummerTimeList()[position].startTime = startStr
-                if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
-                    viewModel.getSummerTimeList()[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
-                } else {
-                    viewModel.getSummerTimeList()[position].endTime = viewModel.getTimeSelectList()[endIndex]
-                }
-                adapter.notifyDataSetChanged()
-                dismiss()
+                viewModel.timeList[position].endTime = viewModel.timeSelectList[endIndex]
             }
+            adapter.notifyDataSetChanged()
+            dismiss()
         }
 
         btn_cancel.setOnClickListener {
@@ -105,11 +87,10 @@ class SelectTimeDetailFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg1: Int, arg2: TimeSettingsAdapter, arg3: Boolean) =
+        fun newInstance(arg1: Int, arg2: TimeSettingsAdapter) =
                 SelectTimeDetailFragment().apply {
                     position = arg1
                     adapter = arg2
-                    isSummer = arg3
                 }
     }
 }

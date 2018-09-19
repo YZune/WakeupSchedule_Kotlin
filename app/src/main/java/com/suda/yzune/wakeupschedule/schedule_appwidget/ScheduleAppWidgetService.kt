@@ -56,11 +56,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
                 timeList.clear()
                 summerTimeList.clear()
-                if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_summer", false)) {
-                    summerTimeList.addAll(timeDao.getSummerTimeListInThread())
-                } else {
-                    timeList.addAll(timeDao.getTimeListInThread())
-                }
+                //todo:timeList.addAll(timeDao.getTimeListInThread())
             } else {
                 timeList.clear()
                 summerTimeList.clear()

@@ -36,7 +36,7 @@ class TimeSettingsActivity : AppCompatActivity() {
         ViewUtils.resizeStatusBar(this, v_status)
 
         viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
-        viewModel.initRepository(applicationContext)
+        viewModel.initTimeSelectList()
         val nodesNum = PreferenceUtils.getIntFromSP(this.applicationContext, "classNum", 11)
 
         initView(nodesNum)
@@ -102,8 +102,8 @@ class TimeSettingsActivity : AppCompatActivity() {
     }
 
     private fun saveData() {
-        viewModel.saveData(PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false))
-        viewModel.getSaveInfo().observe(this, Observer { s ->
+        viewModel.saveData()
+        viewModel.saveInfo.observe(this, Observer { s ->
             when (s) {
                 "ok" -> {
                     Toasty.success(this.applicationContext, "保存成功，下次启动App生效").show()
