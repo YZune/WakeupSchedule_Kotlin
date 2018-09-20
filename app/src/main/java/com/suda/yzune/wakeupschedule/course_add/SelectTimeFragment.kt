@@ -37,6 +37,7 @@ class SelectTimeFragment : DialogFragment() {
 
     override fun onResume() {
         super.onResume()
+        viewModel
         val max = PreferenceUtils.getIntFromSP(context!!.applicationContext, "classNum", 11)
         initNodeList(max)
         wp_day.data = dayList

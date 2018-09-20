@@ -50,8 +50,8 @@
         <activity android:name=".DonateActivity" />
         <activity android:name=".apply_info.ApplyInfoActivity" />
         <activity
-            android:resizeableActivity="false"
             android:name=".SplashActivity"
+            android:resizeableActivity="false"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme"
             tools:targetApi="n">
@@ -62,6 +62,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".schedule_manage.ScheduleManageActivity" />
+        <activity android:name=".schedule_settings.ScheduleSettingsActivity"></activity>
     </application>
 
 </manifest>

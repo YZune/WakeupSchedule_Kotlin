@@ -35,6 +35,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     val widgetIds = arrayListOf<Int>()
     var newId = -1
     var tableId = 0
+    var maxWeek = 30
 
     fun getTableData(): LiveData<TableBean> {
         return tableDao.getTableById(tableId)

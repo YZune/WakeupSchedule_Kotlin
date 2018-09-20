@@ -92,6 +92,16 @@ class ScheduleFragment : Fragment() {
                 }
             }
 
+            val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
+            viewModel.alphaStr = if (alphaInt != 0) {
+                Integer.toHexString(alphaInt)
+            } else {
+                "00"
+            }
+            if (viewModel.alphaStr.length < 2) {
+                viewModel.alphaStr = "0${viewModel.alphaStr}"
+            }
+
             for (i in 0 until 9) {
                 val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
                 tv.setTextColor(Color.parseColor(table.textColor))
@@ -150,18 +160,16 @@ class ScheduleFragment : Fragment() {
                 viewModel.updateCourseBaseBean(c)
             }
 
-            val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
-            val a = if (alphaInt != 0) {
-                Integer.toHexString(alphaInt)
-            } else {
-                "00"
+            try {
+                if (c.color.length == 7) {
+                    myGrad.setColor(Color.parseColor("#${viewModel.alphaStr}${c.color.substring(1, 7)}"))
+                } else {
+                    myGrad.setColor(Color.parseColor("#${viewModel.alphaStr}${c.color.substring(3, 9)}"))
+                }
+            } catch (e: Exception) {
+                myGrad.setColor(Color.parseColor(c.color))
             }
 
-            if (c.color.length == 7) {
-                myGrad.setColor(Color.parseColor("#$a${c.color.substring(1, 7)}"))
-            } else {
-                myGrad.setColor(Color.parseColor("#$a${c.color.substring(3, 9)}"))
-            }
 
             strBuilder.append(c.courseName)
 

@@ -103,7 +103,6 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP INDEX index_CourseBaseBean_tableName;")
                 database.execSQL("ALTER TABLE CourseBaseBean RENAME TO CourseBaseBean_old;")
                 database.execSQL("CREATE TABLE CourseBaseBean(id INTEGER NOT NULL, courseName TEXT NOT NULL, color TEXT NOT NULL, tableId INTEGER NOT NULL, PRIMARY KEY (id, tableId), FOREIGN KEY (tableId) REFERENCES TableBean (id) ON DELETE CASCADE ON UPDATE CASCADE);")
-                database.execSQL("INSERT INTO TableBean (id, tableName) VALUES(2, '情侣课表');")
                 database.execSQL("INSERT INTO CourseBaseBean (id, courseName, color, tableId) SELECT id, courseName, color, CASE WHEN tableName = '' THEN 1 ELSE 2 END FROM CourseBaseBean_old;")
                 database.execSQL("CREATE INDEX index_CourseBaseBean_tableId ON CourseBaseBean (tableId ASC);")
                 database.execSQL("DROP TABLE CourseBaseBean_old;")

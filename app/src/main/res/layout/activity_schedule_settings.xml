@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".schedule_settings.ScheduleSettingsActivity">
+
+    <View
+        android:id="@+id/v_status"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="课表设置"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#f5f5f5">
+
+                <com.scwang.wave.MultiWaveHeader
+                    android:layout_width="match_parent"
+                    android:layout_height="96dp"
+                    diagonal:mwhStartColor="@color/colorAccent"
+                    diagonal:mwhWaveHeight="24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:padding="16dp"
+                    android:text="求你把下面的设置项都仔细看看吧\n你需要的说不定就在下面呀\n请不要在反馈通道问我怎么设置了"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                style="@style/settings_subtitle"
+                android:text="课程数据" />
+
+            <LinearLayout
+                android:id="@+id/ll_term_start"
+                style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="学期开始日期" />
+
+                <TextView
+                    android:id="@+id/tv_term_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:text="2018-09-03" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="一天课程节数" />
+
+                <TextView
+                    android:id="@+id/tv_nodes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="11" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" 节" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_nodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="12" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="学期周数" />
+
+                <TextView
+                    android:id="@+id/tv_weeks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="30" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" 周" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_weeks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="20" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_course_time"
+                style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="上课时间" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="周日为每周第一天" />
+
+                <Switch
+                    android:id="@+id/s_sunday_first"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="显示周六" />
+
+                <Switch
+                    android:id="@+id/s_show_sat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="显示周日" />
+
+                <Switch
+                    android:id="@+id/s_show_sunday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/settings_subtitle"
+                android:text="外观" />
+
+            <LinearLayout
+                android:id="@+id/ll_schedule_bg"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="课程表背景" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="长按可以恢复默认哦~" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_text_color"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="界面文字颜色" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="还可以调颜色的透明度哦 (●ﾟωﾟ●)" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="课程格子高度" />
+
+                <TextView
+                    android:id="@+id/tv_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="56" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" dp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="64" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="课程格子不透明度" />
+
+                <TextView
+                    android:id="@+id/tv_alpha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="60" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text="％" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_alpha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="100" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="格子显示文字大小" />
+
+                <TextView
+                    android:id="@+id/tv_text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="格子半透明边框" />
+
+                <Switch
+                    android:id="@+id/s_stroke"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="显示非本周课程" />
+
+                <Switch
+                    android:id="@+id/s_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="在格子内显示上课时间" />
+
+                <Switch
+                    android:id="@+id/s_show_time_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/settings_subtitle"
+                android:text="周视图桌面小部件" />
+
+            <TextView
+                style="@style/settings_subtitle"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:gravity="top"
+                android:paddingBottom="8dp"
+                android:text="按返回键退出此界面后，才能使此项中的更改生效。"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="课程格子高度" />
+
+                <TextView
+                    android:id="@+id/tv_widget_item_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="56" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" dp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_widget_item_height"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="64" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="课程格子不透明度" />
+
+                <TextView
+                    android:id="@+id/tv_widget_item_alpha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="60" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text="％" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_widget_item_alpha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="100" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                style="@style/settings_item_ll"
+                android:layout_marginBottom="-8dp">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="格子显示文字大小" />
+
+                <TextView
+                    android:id="@+id/tv_widget_text_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp"
+                    android:text="12" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:text=" sp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/sb_widget_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:max="5" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="界面文字白色" />
+
+                <Switch
+                    android:id="@+id/s_widget_text_white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

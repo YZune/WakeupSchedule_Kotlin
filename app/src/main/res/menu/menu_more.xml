@@ -6,6 +6,10 @@
         android:title="分享当前课表" />
 
     <item
+        android:id="@+id/ib_settings"
+        android:title="设置当前课表" />
+
+    <item
         android:id="@+id/ib_manage"
         android:title="多课表管理" />
 

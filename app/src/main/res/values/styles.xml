@@ -77,6 +77,13 @@
         <item name="android:layout_width">match_parent</item>
     </style>
 
+    <style name="settings_item_ll_with_tips">
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:layout_height">72dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
     <style name="settings_item_tv_main">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -85,6 +92,28 @@
         <item name="android:layout_weight">1</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="settings_item_tv_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="settings_item_tv_tip">
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:gravity">top</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_weight">0.8</item>
     </style>
 
 </resources>

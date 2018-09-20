@@ -33,6 +33,7 @@ import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
@@ -113,6 +114,12 @@ class ScheduleActivity : AppCompatActivity() {
                 popupMenu.show()
                 popupMenu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
+                        R.id.ib_settings -> {
+                            val gson = Gson()
+                            val intent = Intent(this, ScheduleSettingsActivity::class.java)
+                            intent.putExtra("tableData", gson.toJson(table))
+                            startActivity(intent)
+                        }
                         R.id.ib_share -> {
                             viewModel.getCourse(table.id).observe(this, Observer {
                                 val gson = Gson()
