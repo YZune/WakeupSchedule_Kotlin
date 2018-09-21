@@ -136,7 +136,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:max="12" />
+                android:max="24" />
 
             <View
                 android:layout_width="match_parent"
@@ -319,6 +319,28 @@
                 android:background="@color/grey" />
 
             <LinearLayout
+                android:id="@+id/ll_stroke_color"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="格子边框颜色" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="将不透明度调到最低就可以隐藏边框了哦~" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
                 style="@style/settings_item_ll"
                 android:layout_marginBottom="-8dp">
 
@@ -432,31 +454,6 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:max="5" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:alpha="0.5"
-                android:background="@color/grey" />
-
-            <LinearLayout style="@style/settings_item_ll">
-
-                <TextView
-                    style="@style/settings_item_tv_main"
-                    android:text="格子半透明边框" />
-
-                <Switch
-                    android:id="@+id/s_stroke"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:switchMinWidth="48dp"
-                    android:thumb="@drawable/switch_selector"
-                    android:track="@drawable/switch_track" />
-            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -644,22 +641,17 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
-            <LinearLayout style="@style/settings_item_ll">
+            <LinearLayout
+                android:id="@+id/ll_widget_text_color"
+                style="@style/settings_item_ll_with_tips">
 
                 <TextView
-                    style="@style/settings_item_tv_main"
-                    android:text="界面文字白色" />
+                    style="@style/settings_item_tv_title"
+                    android:text="界面文字颜色" />
 
-                <Switch
-                    android:id="@+id/s_widget_text_white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="16dp"
-                    android:switchMinWidth="48dp"
-                    android:thumb="@drawable/switch_selector"
-                    android:track="@drawable/switch_track" />
-
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="还可以调颜色的透明度哦 (●ﾟωﾟ●)" />
 
             </LinearLayout>
 
