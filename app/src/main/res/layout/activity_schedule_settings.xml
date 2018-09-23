@@ -136,7 +136,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:max="24" />
+                android:max="16" />
 
             <View
                 android:layout_width="match_parent"
@@ -303,6 +303,20 @@
                 <TextView
                     style="@style/settings_item_tv_title"
                     android:text="界面文字颜色" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="还可以调颜色的透明度哦 (●ﾟωﾟ●)" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_course_text_color"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="课程文字颜色" />
 
                 <TextView
                     style="@style/settings_item_tv_tip"
@@ -647,7 +661,21 @@
 
                 <TextView
                     style="@style/settings_item_tv_title"
-                    android:text="界面文字颜色" />
+                    android:text="小部件文字颜色" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="还可以调颜色的透明度哦 (●ﾟωﾟ●)" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_widget_course_text_color"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="课程文字颜色" />
 
                 <TextView
                     style="@style/settings_item_tv_tip"

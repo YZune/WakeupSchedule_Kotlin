@@ -12,6 +12,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.SeekBar
 import android.widget.Toast
+import com.flask.colorpicker.ColorPickerView
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -75,6 +77,81 @@ class ScheduleSettingsActivity : AppCompatActivity() {
 
         ll_course_time.setOnClickListener {
 
+        }
+
+        ll_text_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.textColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.textColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
+        }
+
+        ll_widget_text_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.widgetTextColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.widgetTextColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
+        }
+
+        ll_course_text_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.courseTextColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.courseTextColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
+        }
+
+        ll_widget_course_text_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.widgetCourseTextColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.widgetCourseTextColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
+        }
+
+        ll_stroke_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.strokeColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.strokeColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
         }
 
         sb_widget_item_alpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -213,6 +290,12 @@ class ScheduleSettingsActivity : AppCompatActivity() {
                         .forResult(REQUEST_CODE_CHOOSE)
             }
         }
+
+        ll_schedule_bg.setOnLongClickListener {
+            viewModel.table.background = ""
+            Toasty.success(applicationContext, "恢复默认壁纸成功~").show()
+            return@setOnLongClickListener true
+        }
     }
 
     private val mDateListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
@@ -254,7 +337,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            PreferenceUtils.saveStringToSP(applicationContext, "pic_uri", Matisse.obtainResult(data)[0].toString())
+            viewModel.table.background = Matisse.obtainResult(data)[0].toString()
         }
     }
 

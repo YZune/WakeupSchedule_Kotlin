@@ -7,7 +7,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -76,6 +75,7 @@ class ScheduleActivity : AppCompatActivity() {
                 GlideApp.with(this.applicationContext)
                         .load(table.background)
                         .override(x, y)
+                        //.apply(bitmapTransform(BlurTransformation(0, 5)))
                         .into(iv_bg)
             } else {
                 val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
@@ -83,14 +83,15 @@ class ScheduleActivity : AppCompatActivity() {
                 GlideApp.with(this.applicationContext)
                         .load(R.drawable.main_background)
                         .override(x, y)
+                        //.apply(bitmapTransform(BlurTransformation(0, 5)))
                         .into(iv_bg)
             }
 
             for (i in 0 until cl_schedule.childCount) {
                 val view = cl_schedule.getChildAt(i)
                 when (view) {
-                    is TextView -> view.setTextColor(Color.parseColor(table.textColor))
-                    is ImageButton -> view.setColorFilter(Color.parseColor(table.textColor))
+                    is TextView -> view.setTextColor(table.textColor)
+                    is ImageButton -> view.setColorFilter(table.textColor)
                 }
             }
 

@@ -79,12 +79,12 @@ class ScheduleFragment : Fragment() {
                 tv_title6.visibility = View.GONE
             }
 
-            for (i in 0 until 16) {
+            for (i in 0 until 20) {
                 val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
                 val lp = tv.layoutParams
                 lp.height = viewModel.itemHeight
                 tv.layoutParams = lp
-                tv.setTextColor(Color.parseColor(table.textColor))
+                tv.setTextColor(table.textColor)
                 if (i >= table.nodes) {
                     tv.visibility = View.GONE
                 } else {
@@ -104,7 +104,7 @@ class ScheduleFragment : Fragment() {
 
             for (i in 0 until 9) {
                 val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
-                tv.setTextColor(Color.parseColor(table.textColor))
+                tv.setTextColor(table.textColor)
             }
 
             for (i in 1..7) {
@@ -149,11 +149,11 @@ class ScheduleFragment : Fragment() {
             tv.textSize = table.itemTextSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             tv.setPadding(8, 8, 8, 8)
-            tv.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
+            tv.setTextColor(table.courseTextColor)
 
             tv.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
             val myGrad = tv.background as GradientDrawable
-            myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), Color.parseColor(table.strokeColor))
+            myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), table.strokeColor)
 
             if (c.color == "") {
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"

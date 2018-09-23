@@ -46,15 +46,15 @@ object UpdateUtils {
                     id = 1)
 
             if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)) {
-                tableData.strokeColor = "#00ffffff"
+                tableData.strokeColor = 0x00ffffff
             }
 
             if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_color", false)) {
-                tableData.textColor = "#000000"
+                tableData.textColor = 0x000000
             }
 
             if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
-                tableData.widgetTextColor = "#000000"
+                tableData.widgetTextColor = 0x000000
             }
 
             val dataBase = AppDatabase.getDatabase(context)

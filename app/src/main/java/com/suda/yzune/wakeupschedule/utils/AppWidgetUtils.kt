@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.utils
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.View
 import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.R
@@ -42,10 +41,10 @@ object AppWidgetUtils {
             mRemoteViews.setViewVisibility(R.id.tv_title6, View.GONE)
         }
 
-        mRemoteViews.setTextColor(R.id.tv_date, Color.parseColor(tableBean.widgetTextColor))
-        mRemoteViews.setTextColor(R.id.tv_week, Color.parseColor(tableBean.widgetTextColor))
+        mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
+        mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
         for (i in 0 until 8) {
-            mRemoteViews.setTextColor(R.id.tv_title0_1 + i, Color.parseColor(tableBean.widgetTextColor))
+            mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
         }
 
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
