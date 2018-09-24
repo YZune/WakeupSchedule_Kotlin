@@ -211,7 +211,7 @@ class LoginWebFragment : Fragment() {
                 } else {
                     //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
                     //todo: 多课表管理
-                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), 0, context!!.applicationContext, it)
+                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), 1, context!!.applicationContext, it)
                 }
             })
         }

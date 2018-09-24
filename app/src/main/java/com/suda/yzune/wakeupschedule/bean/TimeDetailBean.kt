@@ -16,5 +16,5 @@ data class TimeDetailBean(
         val node: Int,
         var startTime: String,
         var endTime: String,
-        var timeTable: Int = 0
+        var timeTable: Int = 1
 )

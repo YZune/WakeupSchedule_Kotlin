@@ -246,7 +246,7 @@ class ImportViewModel : ViewModel() {
         if (retryList.isNotEmpty()) {
             importInfo.value = "retry"
         } else {
-            write2DB(context)
+            write2DB(context, tableId)
         }
     }
 
@@ -367,16 +367,17 @@ class ImportViewModel : ViewModel() {
             }
         }
 
-        write2DB(context)
+        write2DB(context, tableId)
     }
 
-    private fun write2DB(context: Context) {
+    private fun write2DB(context: Context, tableId: Int) {
         val dataBase = AppDatabase.getDatabase(context)
         val baseDao = dataBase.courseBaseDao()
         val detailDao = dataBase.courseDetailDao()
 
         thread(name = "InitDataThread") {
-            baseDao.removeCourseBaseBeanOfTable(0)
+            //todo: 增量添加课程
+            baseDao.removeCourseBaseBeanOfTable(tableId)
             try {
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)

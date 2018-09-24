@@ -3,6 +3,8 @@ package com.suda.yzune.wakeupschedule.utils
 import android.content.Context
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 
 object UpdateUtils {
 
@@ -50,18 +52,47 @@ object UpdateUtils {
             }
 
             if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_color", false)) {
-                tableData.textColor = 0x000000
+                tableData.textColor = 0xff000000.toInt()
             }
 
             if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
-                tableData.widgetTextColor = 0x000000
+                tableData.widgetTextColor = 0xff000000.toInt()
             }
 
             val dataBase = AppDatabase.getDatabase(context)
             val tableDao = dataBase.tableDao()
+            val timeDao = dataBase.timeDetailDao()
+            val widgetDao = dataBase.appWidgetDao()
 
             try {
                 tableDao.updateTable(tableData)
+                widgetDao.updateFromOldVer()
+                if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "isInitTimeTable", false)) {
+                    val timeList = ArrayList<TimeDetailBean>().apply {
+                        add(TimeDetailBean(1, "08:00", "08:50", 1))
+                        add(TimeDetailBean(2, "09:00", "09:50", 1))
+                        add(TimeDetailBean(3, "10:10", "11:00", 1))
+                        add(TimeDetailBean(4, "11:10", "12:00", 1))
+                        add(TimeDetailBean(5, "13:30", "14:20", 1))
+                        add(TimeDetailBean(6, "14:30", "15:20", 1))
+                        add(TimeDetailBean(7, "15:40", "16:30", 1))
+                        add(TimeDetailBean(8, "16:40", "17:30", 1))
+                        add(TimeDetailBean(9, "18:30", "19:20", 1))
+                        add(TimeDetailBean(10, "19:30", "20:20", 1))
+                        add(TimeDetailBean(11, "20:30", "21:20", 1))
+                        add(TimeDetailBean(12, "00:00", "00:00", 1))
+                        add(TimeDetailBean(13, "00:00", "00:00", 1))
+                        add(TimeDetailBean(14, "00:00", "00:00", 1))
+                        add(TimeDetailBean(15, "00:00", "00:00", 1))
+                        add(TimeDetailBean(16, "00:00", "00:00", 1))
+                        add(TimeDetailBean(17, "00:00", "00:00", 1))
+                        add(TimeDetailBean(18, "00:00", "00:00", 1))
+                        add(TimeDetailBean(19, "00:00", "00:00", 1))
+                        add(TimeDetailBean(20, "00:00", "00:00", 1))
+                    }
+                    timeDao.insertTimeList(timeList)
+                }
+
                 PreferenceUtils.remove(context.applicationContext, "termStart")
                 PreferenceUtils.remove(context.applicationContext, "item_height")
                 PreferenceUtils.remove(context.applicationContext, "sb_weeks")
@@ -88,7 +119,37 @@ object UpdateUtils {
         }
 
         if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false)) {
-            //todo: 首次安装的初始化工作
+            val tableData = TableBean(type = 1, id = 1, tableName = "")
+            val dataBase = AppDatabase.getDatabase(context)
+            val tableDao = dataBase.tableDao()
+            val timeDao = dataBase.timeDetailDao()
+            val timeTableDao = dataBase.timeTableDao()
+            timeTableDao.insertTimeTable(TimeTableBean(id = 1, name = "默认"))
+            val timeList = ArrayList<TimeDetailBean>().apply {
+                add(TimeDetailBean(1, "08:00", "08:50", 1))
+                add(TimeDetailBean(2, "09:00", "09:50", 1))
+                add(TimeDetailBean(3, "10:10", "11:00", 1))
+                add(TimeDetailBean(4, "11:10", "12:00", 1))
+                add(TimeDetailBean(5, "13:30", "14:20", 1))
+                add(TimeDetailBean(6, "14:30", "15:20", 1))
+                add(TimeDetailBean(7, "15:40", "16:30", 1))
+                add(TimeDetailBean(8, "16:40", "17:30", 1))
+                add(TimeDetailBean(9, "18:30", "19:20", 1))
+                add(TimeDetailBean(10, "19:30", "20:20", 1))
+                add(TimeDetailBean(11, "20:30", "21:20", 1))
+                add(TimeDetailBean(12, "00:00", "00:00", 1))
+                add(TimeDetailBean(13, "00:00", "00:00", 1))
+                add(TimeDetailBean(14, "00:00", "00:00", 1))
+                add(TimeDetailBean(15, "00:00", "00:00", 1))
+                add(TimeDetailBean(16, "00:00", "00:00", 1))
+                add(TimeDetailBean(17, "00:00", "00:00", 1))
+                add(TimeDetailBean(18, "00:00", "00:00", 1))
+                add(TimeDetailBean(19, "00:00", "00:00", 1))
+                add(TimeDetailBean(20, "00:00", "00:00", 1))
+            }
+            timeDao.insertTimeList(timeList)
+            tableDao.insertTable(tableData)
+            PreferenceUtils.saveBooleanToSP(context.applicationContext, "has_adjust", true)
         }
     }
 }

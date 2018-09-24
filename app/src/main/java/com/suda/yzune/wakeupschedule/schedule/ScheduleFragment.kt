@@ -179,7 +179,6 @@ class ScheduleFragment : Fragment() {
 
             when (c.type) {
                 1 -> {
-                    strBuilder.append("\n单周")
                     if (week % 2 == 0) {
                         if (table.showOtherWeekCourse) {
                             strBuilder.append("\n单周[非本周]")
@@ -189,10 +188,11 @@ class ScheduleFragment : Fragment() {
                         } else {
                             tv.visibility = View.INVISIBLE
                         }
+                    } else {
+                        strBuilder.append("\n单周")
                     }
                 }
                 2 -> {
-                    strBuilder.append("\n双周")
                     if (week % 2 != 0) {
                         if (table.showOtherWeekCourse) {
                             tv.alpha = 0.6f
@@ -202,6 +202,8 @@ class ScheduleFragment : Fragment() {
                         } else {
                             tv.visibility = View.INVISIBLE
                         }
+                    } else {
+                        strBuilder.append("\n双周")
                     }
                 }
             }
@@ -217,7 +219,15 @@ class ScheduleFragment : Fragment() {
                 }
             }
 
-            //todo: 显示具体时间
+            if (table.showTime) {
+                viewModel.timeData.observe(this, Observer {
+                    if (it == null || it.isEmpty()) return@Observer
+                    strBuilder.insert(0, it[c.startNode - 1].startTime)
+                    tv.text = strBuilder
+                })
+            } else {
+                tv.text = strBuilder
+            }
 
             tv.setOnClickListener {
                 //ViewUtils.saveImg(ViewUtils.getViewBitmap(scrollPanel), activity)
@@ -225,7 +235,7 @@ class ScheduleFragment : Fragment() {
                 detailFragment.show(fragmentManager, "courseDetail")
             }
 
-            tv.text = strBuilder
+
             if (day == 7) {
                 if (table.sundayFirst) {
                     weekPanel_0.addView(tv)

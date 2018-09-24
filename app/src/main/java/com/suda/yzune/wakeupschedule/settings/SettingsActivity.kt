@@ -79,6 +79,10 @@ class SettingsActivity : AppCompatActivity() {
             timeList.add(TimeDetailBean(14, "00:00", "00:00", 0))
             timeList.add(TimeDetailBean(15, "00:00", "00:00", 0))
             timeList.add(TimeDetailBean(16, "00:00", "00:00", 0))
+            timeList.add(TimeDetailBean(17, "00:00", "00:00", 0))
+            timeList.add(TimeDetailBean(18, "00:00", "00:00", 0))
+            timeList.add(TimeDetailBean(19, "00:00", "00:00", 0))
+            timeList.add(TimeDetailBean(20, "00:00", "00:00", 0))
             thread(name = "initTimeTableThread") {
                 try {
                     timeDao.insertTimeList(timeList)

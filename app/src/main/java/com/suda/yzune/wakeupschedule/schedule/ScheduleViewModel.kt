@@ -33,7 +33,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     var itemHeight = 0
     var alphaStr = ""
-    val timeList = arrayListOf<TimeDetailBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val clipboardImportInfo = MutableLiveData<String>()
     var clipboardCourseList: List<CourseBean>? = null

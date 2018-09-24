@@ -310,6 +310,14 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
             <LinearLayout
                 android:id="@+id/ll_course_text_color"
                 style="@style/settings_item_ll_with_tips">
@@ -668,6 +676,14 @@
                     android:text="还可以调颜色的透明度哦 (●ﾟωﾟ●)" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
 
             <LinearLayout
                 android:id="@+id/ll_widget_course_text_color"

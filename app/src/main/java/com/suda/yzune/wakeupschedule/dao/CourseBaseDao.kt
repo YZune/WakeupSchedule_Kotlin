@@ -20,13 +20,13 @@ interface CourseBaseDao {
     fun getCourseByDayOfTable(day: Int, tableId: Int): LiveData<List<CourseBean>>
 
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
-    fun getCourseByDayOfTableInThread(day: Int, tableId: Int = 0): List<CourseBean>
+    fun getCourseByDayOfTableInThread(day: Int, tableId: Int): List<CourseBean>
 
     @Query("select * from coursebasebean where id = :id and tableId = :tableId")
     fun getCourseByIdOfTable(id: Int, tableId: Int): LiveData<CourseBaseBean>
 
     @Query("select * from coursebasebean where id = :id and tableId = :tableId")
-    fun getCourseByIdOfTableInThread(id: Int, tableId: Int = 0): CourseBaseBean
+    fun getCourseByIdOfTableInThread(id: Int, tableId: Int): CourseBaseBean
 
     @Query("select max(id) from coursebasebean where tableId = :tableId")
     fun getLastIdOfTable(tableId: Int): LiveData<Int>
@@ -38,8 +38,8 @@ interface CourseBaseDao {
     fun updateCourseBaseBean(course: CourseBaseBean)
 
     @Query("select * from coursebasebean natural join coursedetailbean where courseName = :name and tableId = :tableId")
-    fun checkSameNameInTable(name: String, tableId: Int = 0): LiveData<CourseBaseBean>
+    fun checkSameNameInTable(name: String, tableId: Int): LiveData<CourseBaseBean>
 
     @Query("delete from coursebasebean where tableId = :tableId")
-    fun removeCourseBaseBeanOfTable(tableId: Int = 0)
+    fun removeCourseBaseBeanOfTable(tableId: Int)
 }

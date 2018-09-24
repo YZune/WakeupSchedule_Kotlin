@@ -1,19 +1,16 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
-import android.os.AsyncTask
 import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
-import com.suda.yzune.wakeupschedule.dao.CourseDetailDao
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlin.concurrent.thread
 
@@ -111,44 +108,41 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         val selfUnique = CourseUtils.checkSelfUnique(saveList)
 
         if (selfUnique) {
-            CheckUniqueAsyncTask(detailDao).execute(saveList)
+            saveData()
         } else {
             saveInfo.value = "自身重复"
         }
     }
 
-    fun saveData(isUnique: Boolean) {
-        if (isUnique) {
-            if (updateFlag) {
-                thread(name = "updateCourseThread") {
-                    try {
-                        baseDao.updateCourseBaseBean(baseBean)
-                        detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
-                        detailDao.insertList(saveList)
-                        widgetIds.clear()
-                        //todo: widget
-                        widgetIds.addAll(widgetDao.getIdsOfWeekTypeOfTableInThread(tableId.toString()))
-                        saveInfo.postValue("ok")
-                    } catch (e: SQLiteConstraintException) {
-                        saveInfo.postValue(e.toString())
-                    }
-                }
-            } else {
-                thread(name = "insertNewCourseThread") {
-                    try {
-                        Log.d("保存", baseBean.toString())
-                        Log.d("保存", saveList.toString())
-                        baseDao.insertCourseBase(baseBean)
-                        detailDao.insertList(saveList)
-                        saveInfo.postValue("ok")
-                    } catch (e: SQLiteConstraintException) {
-                        saveInfo.postValue(e.toString())
-                    }
+    fun saveData() {
+        if (updateFlag) {
+            thread(name = "updateCourseThread") {
+                try {
+                    baseDao.updateCourseBaseBean(baseBean)
+                    detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
+                    detailDao.insertList(saveList)
+                    widgetIds.clear()
+                    //todo: widget
+                    widgetIds.addAll(widgetDao.getIdsOfWeekTypeOfTableInThread(tableId.toString()))
+                    saveInfo.postValue("ok")
+                } catch (e: SQLiteConstraintException) {
+                    saveInfo.postValue(e.toString())
                 }
             }
         } else {
-            saveInfo.value = "其他重复"
+            thread(name = "insertNewCourseThread") {
+                try {
+                    Log.d("保存", baseBean.toString())
+                    Log.d("保存", saveList.toString())
+                    baseDao.insertCourseBase(baseBean)
+                    detailDao.insertList(saveList)
+                    saveInfo.postValue("ok")
+                } catch (e: SQLiteConstraintException) {
+                    saveInfo.postValue(e.toString())
+                }
+            }
         }
+
     }
 
     fun checkSameName(): LiveData<CourseBaseBean> {
@@ -185,27 +179,5 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     fun initBaseData(id: Int): LiveData<CourseBaseBean> {
         baseBean = CourseBaseBean(-1, "", "", tableId)
         return baseDao.getCourseByIdOfTable(id, tableId)
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    inner class CheckUniqueAsyncTask internal constructor(private val mAsyncTaskDao: CourseDetailDao) : AsyncTask<List<CourseDetailBean>, Void, Boolean>() {
-        override fun doInBackground(vararg params: List<CourseDetailBean>): Boolean {
-            var flag = true
-            params[0].forEach {
-                val result = mAsyncTaskDao.getDetailByKeys(it.day, it.startNode, it.startWeek, it.type, it.tableId)
-                if (result.isNotEmpty()) {
-                    if (result[0].id != it.id) {
-                        flag = false
-                        return flag
-                    }
-                }
-            }
-            return flag
-        }
-
-        override fun onPostExecute(result: Boolean) {
-            super.onPostExecute(result)
-            this@AddCourseViewModel.saveData(result)
-        }
     }
 }

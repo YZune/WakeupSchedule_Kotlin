@@ -37,13 +37,13 @@ abstract class AppDatabase : RoomDatabase() {
         private val migration7to8: Migration = object : Migration(7, 8) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE TimeTableBean (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL);")
-                database.execSQL("INSERT INTO TimeTableBean VALUES(0, '默认');")
+                database.execSQL("INSERT INTO TimeTableBean VALUES(1, '默认');")
                 database.execSQL("CREATE TABLE TableBean (\n" +
                         "    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n" +
                         "    tableName TEXT NOT NULL, \n" +
                         "    nodes INTEGER NOT NULL DEFAULT 11, \n" +
                         "    background TEXT NOT NULL DEFAULT '',\n" +
-                        "    timeTable INTEGER NOT NULL DEFAULT 0,\n" +
+                        "    timeTable INTEGER NOT NULL DEFAULT 1,\n" +
                         "    startDate TEXT NOT NULL DEFAULT '2018-09-03',\n" +
                         "    maxWeek INTEGER NOT NULL DEFAULT 30,\n" +
                         "    itemHeight INTEGER NOT NULL DEFAULT 56,\n" +
@@ -54,10 +54,10 @@ abstract class AppDatabase : RoomDatabase() {
                         "    widgetItemTextSize INTEGER NOT NULL DEFAULT 12,\n" +
                         "    strokeColor INTEGER NOT NULL DEFAULT 0x80ffffff,\n" +
                         "    widgetStrokeColor INTEGER NOT NULL DEFAULT 0x80ffffff,\n" +
-                        "    textColor INTEGER NOT NULL DEFAULT 0x000000,\n" +
-                        "    widgetTextColor INTEGER NOT NULL DEFAULT 0x000000,\n" +
-                        "    courseTextColor INTEGER NOT NULL DEFAULT 0x000000,\n" +
-                        "    widgetCourseTextColor INTEGER NOT NULL DEFAULT 0x000000,\n" +
+                        "    textColor INTEGER NOT NULL DEFAULT 0xff000000,\n" +
+                        "    widgetTextColor INTEGER NOT NULL DEFAULT 0xff000000,\n" +
+                        "    courseTextColor INTEGER NOT NULL DEFAULT 0xff000000,\n" +
+                        "    widgetCourseTextColor INTEGER NOT NULL DEFAULT 0xff000000,\n" +
                         "    showSat INTEGER NOT NULL DEFAULT 1,\n" +
                         "    showSun INTEGER NOT NULL DEFAULT 1,\n" +
                         "    sundayFirst INTEGER NOT NULL DEFAULT 0,\n" +
@@ -95,7 +95,7 @@ abstract class AppDatabase : RoomDatabase() {
                 database.execSQL("DROP TABLE CourseDetailBean_old")
 
                 database.execSQL("ALTER TABLE TimeDetailBean RENAME TO TimeDetailBean_old;")
-                database.execSQL("CREATE TABLE TimeDetailBean (node INTEGER NOT NULL, startTime TEXT NOT NULL, endTime TEXT NOT NULL, timeTable INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (node, timeTable), FOREIGN KEY (timeTable) REFERENCES TimeTableBean (id) ON DELETE CASCADE ON UPDATE CASCADE);")
+                database.execSQL("CREATE TABLE TimeDetailBean (node INTEGER NOT NULL, startTime TEXT NOT NULL, endTime TEXT NOT NULL, timeTable INTEGER NOT NULL DEFAULT 1, PRIMARY KEY (node, timeTable), FOREIGN KEY (timeTable) REFERENCES TimeTableBean (id) ON DELETE CASCADE ON UPDATE CASCADE);")
                 database.execSQL("INSERT INTO TimeDetailBean (node, startTime, endTime) SELECT node, startTime, endTime FROM TimeDetailBean_old;")
                 database.execSQL("CREATE INDEX index_TimeDetailBean_id_timeTable ON TimeDetailBean(timeTable ASC);")
                 database.execSQL("DROP TABLE TimeDetailBean_old;")
@@ -110,6 +110,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun courseDetailDao(): CourseDetailDao
 
     abstract fun appWidgetDao(): AppWidgetDao
+
+    abstract fun timeTableDao(): TimeTableDao
 
     abstract fun timeDetailDao(): TimeDetailDao
 

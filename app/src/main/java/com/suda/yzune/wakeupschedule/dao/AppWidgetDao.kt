@@ -11,6 +11,9 @@ interface AppWidgetDao {
     @Insert
     fun insertAppWidget(appWidgetBean: AppWidgetBean)
 
+    @Query("update appwidgetbean set info = '1'")
+    fun updateFromOldVer()
+
     @Query("delete from appwidgetbean where id = :id")
     fun deleteAppWidget(id: Int)
 

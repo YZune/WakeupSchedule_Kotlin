@@ -251,7 +251,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         })
 
         s_show_time_detail.setOnCheckedChangeListener { _, isChecked ->
-
+            viewModel.table.showTime = isChecked
         }
 
         s_show.setOnCheckedChangeListener { _, isChecked ->
