@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Vibrator
 import android.support.v4.app.DialogFragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,12 +80,12 @@ class CourseDetailFragment : DialogFragment() {
         room = include_detail.findViewById(R.id.et_room)
         close = include_detail.findViewById(R.id.ib_delete)
 
-        title.setTextColor(resources.getColor(R.color.black))
+        title.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
         title.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-        weeks.setTextColor(resources.getColor(R.color.black))
-        time.setTextColor(resources.getColor(R.color.black))
-        teacher.setTextColor(resources.getColor(R.color.black))
-        room.setTextColor(resources.getColor(R.color.black))
+        weeks.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+        time.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+        teacher.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+        room.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
 
         teacher.isFocusable = false
         teacher.isFocusableInTouchMode = false

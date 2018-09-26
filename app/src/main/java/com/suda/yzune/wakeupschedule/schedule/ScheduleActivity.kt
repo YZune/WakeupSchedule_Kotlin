@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.widget.ImageButton
@@ -30,6 +31,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
@@ -185,12 +187,24 @@ class ScheduleActivity : AppCompatActivity() {
                         }
                     }
                 }
-
             })
         }
 
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
             initIntro()
+        }
+
+        viewModel.initTableSelectList().observe(this, Observer {
+            if (it == null) return@Observer
+            initHeader(it)
+        })
+    }
+
+    private fun initHeader(data: List<TableSelectBean>) {
+        srl_main.setOnRefreshListener {}
+        rv_table_name.adapter = TableNameAdapter(R.layout.item_table_select_main, data)
+        rv_table_name.layoutManager = LinearLayoutManager(this).apply {
+            this.orientation = LinearLayoutManager.HORIZONTAL
         }
     }
 
@@ -334,7 +348,7 @@ class ScheduleActivity : AppCompatActivity() {
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
         for (i in 1..maxWeek) {
-            mAdapter.addFragment(ScheduleFragment.newInstance(i, table))
+            mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
         mAdapter.notifyDataSetChanged()
         if (CourseUtils.countWeek(table.startDate) > 0) {

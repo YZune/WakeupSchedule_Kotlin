@@ -38,6 +38,10 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var clipboardCourseList: List<CourseBean>? = null
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
+    fun initTableSelectList(): LiveData<List<TableSelectBean>> {
+        return tableDao.getTableSelectList()
+    }
+
     fun initViewData(tableId: Int? = null): LiveData<TableBean> {
         tableData = if (tableId == null) {
             tableDao.getDefaultTable()

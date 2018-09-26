@@ -6,6 +6,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
 import android.arch.persistence.room.Update
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 
 @Dao
 interface TableDao {
@@ -23,4 +24,7 @@ interface TableDao {
 
     @Query("select * from tablebean where type = 1")
     fun getDefaultTable(): LiveData<TableBean>
+
+    @Query("select id, tableName, background, type from tablebean")
+    fun getTableSelectList(): LiveData<List<TableSelectBean>>
 }

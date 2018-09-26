@@ -118,7 +118,7 @@ class ScheduleFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg0: Int, arg1: TableBean) =
+        fun newInstance(arg0: Int) =
                 ScheduleFragment().apply {
                     week = arg0
                 }
