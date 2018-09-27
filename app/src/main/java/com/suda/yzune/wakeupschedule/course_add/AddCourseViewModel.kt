@@ -114,7 +114,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun saveData() {
+    private fun saveData() {
         if (updateFlag) {
             thread(name = "updateCourseThread") {
                 try {

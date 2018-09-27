@@ -25,7 +25,6 @@ import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
 import es.dmoral.toasty.Toasty
@@ -190,17 +189,18 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     private fun initFooterView(adapter: AddCourseAdapter): View {
-        val weeksNum = PreferenceUtils.getIntFromSP(this.applicationContext, "sb_weeks", 30)
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
         val cvBtn = view.findViewById<CardView>(R.id.cv_add)
         cvBtn.setOnClickListener {
-            adapter.addData(CourseEditBean(weekList = MutableLiveData<ArrayList<Int>>().apply {
-                this.value = ArrayList<Int>().apply {
-                    for (i in 1..weeksNum) {
-                        this.add(i)
-                    }
-                }
-            }))
+            adapter.addData(CourseEditBean(
+                    tableId = viewModel.tableId,
+                    weekList = MutableLiveData<ArrayList<Int>>().apply {
+                        this.value = ArrayList<Int>().apply {
+                            for (i in 1..viewModel.maxWeek) {
+                                this.add(i)
+                            }
+                        }
+                    }))
         }
         return view
     }

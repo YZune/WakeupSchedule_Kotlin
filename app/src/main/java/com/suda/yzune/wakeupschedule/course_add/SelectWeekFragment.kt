@@ -10,7 +10,6 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
@@ -18,7 +17,6 @@ import kotlinx.android.synthetic.main.fragment_select_week.*
 class SelectWeekFragment : DialogFragment() {
 
     var position = -1
-    private var weeksNum = 30
     private lateinit var viewModel: AddCourseViewModel
     private val liveData = MutableLiveData<ArrayList<Int>>()
     private val result = ArrayList<Int>()
@@ -27,17 +25,16 @@ class SelectWeekFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
-        weeksNum = PreferenceUtils.getIntFromSP(activity!!.applicationContext, "sb_weeks", 30)
         liveData.observe(this, Observer {
-            if (it?.size == weeksNum) {
+            if (it?.size == viewModel.maxWeek) {
                 tv_all.setTextColor(resources.getColor(R.color.white))
                 tv_all.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
-            if (it?.size != weeksNum) {
+            if (it?.size != viewModel.maxWeek) {
                 tv_all.setTextColor(resources.getColor(R.color.black))
                 tv_all.background = null
             }
-            val flag = viewModel.judgeType(it!!, weeksNum)
+            val flag = viewModel.judgeType(it!!, viewModel.maxWeek)
             if (flag == 1) {
                 tv_type1.setTextColor(resources.getColor(R.color.white))
                 tv_type1.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
@@ -77,7 +74,7 @@ class SelectWeekFragment : DialogFragment() {
         val margin = SizeUtils.dp2px(context, 4f)
         val textViewSize = SizeUtils.dp2px(context, 32f)
         val llHeight = SizeUtils.dp2px(context, 40f)
-        for (i in 0 until Math.ceil(weeksNum / 6.0).toInt()) {
+        for (i in 0 until Math.ceil(viewModel.maxWeek / 6.0).toInt()) {
             val linearLayout = LinearLayout(context)
             linearLayout.orientation = LinearLayout.HORIZONTAL
             ll_week.addView(linearLayout)
@@ -88,7 +85,7 @@ class SelectWeekFragment : DialogFragment() {
 
             for (j in 0..5) {
                 val week = i * 6 + j + 1
-                if (week > weeksNum) {
+                if (week > viewModel.maxWeek) {
                     break
                 }
                 val textView = TextView(context)
@@ -129,7 +126,7 @@ class SelectWeekFragment : DialogFragment() {
         tv_all.setOnClickListener {
             if (tv_all.background == null) {
                 result.clear()
-                for (i in 1..weeksNum) {
+                for (i in 1..viewModel.maxWeek) {
                     result.add(i)
                 }
                 showWeeks()
@@ -144,7 +141,7 @@ class SelectWeekFragment : DialogFragment() {
         tv_type1.setOnClickListener {
             if (tv_type1.background == null) {
                 result.clear()
-                for (i in 1..weeksNum step 2) {
+                for (i in 1..viewModel.maxWeek step 2) {
                     result.add(i)
                 }
                 showWeeks()
@@ -155,7 +152,7 @@ class SelectWeekFragment : DialogFragment() {
         tv_type2.setOnClickListener {
             if (tv_type2.background == null) {
                 result.clear()
-                for (i in 2..weeksNum step 2) {
+                for (i in 2..viewModel.maxWeek step 2) {
                     result.add(i)
                 }
                 showWeeks()
