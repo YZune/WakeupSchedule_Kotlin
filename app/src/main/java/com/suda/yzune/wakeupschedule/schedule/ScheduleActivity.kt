@@ -16,10 +16,9 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.view.Gravity
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.gson.Gson
@@ -40,6 +39,7 @@ import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
+import com.suda.yzune.wakeupschedule.widget.ZoomOutPageTransformer
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
@@ -196,16 +196,27 @@ class ScheduleActivity : AppCompatActivity() {
 
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
-            initHeader(it)
+            initTableMenu(it)
         })
     }
 
-    private fun initHeader(data: List<TableSelectBean>) {
+    private fun initTableMenu(data: List<TableSelectBean>) {
         srl_main.setOnRefreshListener {}
-        rv_table_name.adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         rv_table_name.layoutManager = LinearLayoutManager(this).apply {
             this.orientation = LinearLayoutManager.HORIZONTAL
         }
+        val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
+        adapter.addFooterView(initFooterView(adapter))
+        rv_table_name.adapter = adapter
+    }
+
+    private fun initFooterView(adapter: TableNameAdapter): View {
+        val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, rv_table_name, false)
+        val llAdd = view.findViewById<LinearLayout>(R.id.ll_add_table)
+        llAdd.setOnClickListener {
+            Toasty.success(this.applicationContext, "添加课表").show()
+        }
+        return view
     }
 
     private fun initCourseData(tableId: Int) {
@@ -347,6 +358,7 @@ class ScheduleActivity : AppCompatActivity() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
+        vp_schedule.setPageTransformer(true, ZoomOutPageTransformer())
         for (i in 1..maxWeek) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
@@ -439,10 +451,5 @@ class ScheduleActivity : AppCompatActivity() {
 
             }
         })
-    }
-
-    override fun onDestroy() {
-        mAdapter.removeAll()
-        super.onDestroy()
     }
 }

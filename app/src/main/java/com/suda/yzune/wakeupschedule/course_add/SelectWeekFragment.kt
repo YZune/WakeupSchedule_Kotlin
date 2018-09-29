@@ -27,28 +27,28 @@ class SelectWeekFragment : DialogFragment() {
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
         liveData.observe(this, Observer {
             if (it?.size == viewModel.maxWeek) {
-                tv_all.setTextColor(resources.getColor(R.color.white))
+                tv_all.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
                 tv_all.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (it?.size != viewModel.maxWeek) {
-                tv_all.setTextColor(resources.getColor(R.color.black))
+                tv_all.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
                 tv_all.background = null
             }
             val flag = viewModel.judgeType(it!!, viewModel.maxWeek)
             if (flag == 1) {
-                tv_type1.setTextColor(resources.getColor(R.color.white))
+                tv_type1.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
                 tv_type1.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (flag != 1) {
-                tv_type1.setTextColor(resources.getColor(R.color.black))
+                tv_type1.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
                 tv_type1.background = null
             }
             if (flag == 2) {
-                tv_type2.setTextColor(resources.getColor(R.color.white))
+                tv_type2.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
                 tv_type2.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (flag != 2) {
-                tv_type2.setTextColor(resources.getColor(R.color.black))
+                tv_type2.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
                 tv_type2.background = null
             }
         })
@@ -95,10 +95,10 @@ class SelectWeekFragment : DialogFragment() {
                 textView.text = "$week"
                 textView.gravity = Gravity.CENTER
                 if (week in result) {
-                    textView.setTextColor(resources.getColor(R.color.white))
+                    textView.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
                     textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
                 } else {
-                    textView.setTextColor(resources.getColor(R.color.black))
+                    textView.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
                     textView.background = null
                 }
 
@@ -106,12 +106,12 @@ class SelectWeekFragment : DialogFragment() {
                     if (textView.background == null) {
                         result.add(week)
                         liveData.value = result
-                        textView.setTextColor(resources.getColor(R.color.white))
+                        textView.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.white))
                         textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
                     } else {
                         result.remove(week)
                         liveData.value = result
-                        textView.setTextColor(resources.getColor(R.color.black))
+                        textView.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
                         textView.background = null
                     }
                 }

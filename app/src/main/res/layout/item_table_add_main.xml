@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_table_select"
+    android:id="@+id/ll_add_table"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:foreground="@null"
     android:gravity="center"
     android:orientation="vertical"
-    android:paddingStart="16dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp">
 
     <ImageView
-        android:id="@+id/iv_table_bg"
         android:layout_width="64dp"
         android:layout_height="96dp"
         android:layout_marginTop="64dp"
+        android:background="#3cb3b3b3"
+        android:padding="32dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/main_background" />
+        android:src="@drawable/schedule_add" />
 
     <TextView
-        android:id="@+id/tv_table_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
+        android:text="新建"
         android:textColor="@color/black"
         android:textSize="10sp" />
 

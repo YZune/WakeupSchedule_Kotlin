@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -56,9 +55,11 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
         if (intent.extras.getInt("id") == -1) {
             viewModel.tableId = intent.extras.getInt("tableId")
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(intent.extras.getInt("maxWeek"))), viewModel.initBaseData())
+            viewModel.maxWeek = intent.extras.getInt("maxWeek")
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.initBaseData())
         } else {
             viewModel.tableId = intent.extras.getInt("tableId")
+            viewModel.maxWeek = intent.extras.getInt("maxWeek")
             viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
                 //viewModel.editList.clear()
                 if (!isSaved) {
@@ -98,7 +99,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
     private fun initAdapter(adapter: AddCourseAdapter, baseBean: CourseBaseBean) {
         adapter.setListener(this)
-        adapter.addHeaderView(initHeaderView(adapter, baseBean))
+        adapter.addHeaderView(initHeaderView(baseBean))
         adapter.addFooterView(initFooterView(adapter))
         adapter.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
             when (view.id) {
@@ -142,7 +143,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         rv_detail.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun initHeaderView(adapter: AddCourseAdapter, baseBean: CourseBaseBean): View {
+    private fun initHeaderView(baseBean: CourseBaseBean): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
         etName = view.findViewById<EditText>(R.id.et_name)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
@@ -190,8 +191,8 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
     private fun initFooterView(adapter: AddCourseAdapter): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
-        val cvBtn = view.findViewById<CardView>(R.id.cv_add)
-        cvBtn.setOnClickListener {
+        val tvBtn = view.findViewById<TextView>(R.id.tv_add)
+        tvBtn.setOnClickListener {
             adapter.addData(CourseEditBean(
                     tableId = viewModel.tableId,
                     weekList = MutableLiveData<ArrayList<Int>>().apply {
