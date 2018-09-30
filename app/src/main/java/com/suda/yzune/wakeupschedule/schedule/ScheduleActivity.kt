@@ -18,7 +18,10 @@ import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.SeekBar
+import android.widget.TextView
+import android.widget.Toast
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.gson.Gson
@@ -39,7 +42,6 @@ import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
-import com.suda.yzune.wakeupschedule.widget.ZoomOutPageTransformer
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
@@ -201,10 +203,7 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initTableMenu(data: List<TableSelectBean>) {
-        srl_main.setOnRefreshListener {}
-        rv_table_name.layoutManager = LinearLayoutManager(this).apply {
-            this.orientation = LinearLayoutManager.HORIZONTAL
-        }
+        rv_table_name.layoutManager = LinearLayoutManager(this)
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addFooterView(initFooterView(adapter))
         rv_table_name.adapter = adapter
@@ -212,10 +211,11 @@ class ScheduleActivity : AppCompatActivity() {
 
     private fun initFooterView(adapter: TableNameAdapter): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, rv_table_name, false)
-        val llAdd = view.findViewById<LinearLayout>(R.id.ll_add_table)
-        llAdd.setOnClickListener {
+        val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
+        tableAdd.setOnClickListener {
             Toasty.success(this.applicationContext, "添加课表").show()
         }
+        val tableManage = view.findViewById<ImageButton>(R.id.nav_table_manage)
         return view
     }
 
@@ -358,7 +358,6 @@ class ScheduleActivity : AppCompatActivity() {
         mAdapter = SchedulePagerAdapter(supportFragmentManager)
         vp_schedule.adapter = mAdapter
         vp_schedule.offscreenPageLimit = 1
-        vp_schedule.setPageTransformer(true, ZoomOutPageTransformer())
         for (i in 1..maxWeek) {
             mAdapter.addFragment(ScheduleFragment.newInstance(i))
         }
@@ -382,7 +381,7 @@ class ScheduleActivity : AppCompatActivity() {
                             tv_date.text = CourseUtils.getTodayDate()
                         } else {
                             tv_week.text = "第${progress + 1}周"
-                            tv_weekday.text = "非本周  点击此处以回到本周"
+                            tv_weekday.text = "非本周"
                         }
                     } else {
                         tv_week.text = "还没有开学哦"
@@ -430,7 +429,7 @@ class ScheduleActivity : AppCompatActivity() {
                             tv_date.text = CourseUtils.getTodayDate()
                         } else {
                             tv_week.text = "第${viewModel.selectedWeek}周"
-                            tv_weekday.text = "非本周  点击此处以回到本周"
+                            tv_weekday.text = "非本周"
                         }
                     } else {
                         tv_week.text = "还没有开学哦"

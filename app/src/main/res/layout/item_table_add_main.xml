@@ -1,30 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_add_table"
-    android:layout_width="wrap_content"
+    android:layout_width="96dp"
     android:layout_height="wrap_content"
     android:foreground="@null"
     android:gravity="center"
-    android:orientation="vertical"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:layout_marginTop="16dp"
+    android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="96dp"
-        android:layout_marginTop="64dp"
-        android:background="#3cb3b3b3"
-        android:padding="32dp"
+    <ImageButton
+        android:id="@+id/nav_table_add"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="4dp"
         android:scaleType="centerCrop"
         android:src="@drawable/schedule_add" />
 
     <TextView
+        android:text="新建"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="10sp" />
+
+    <ImageButton
         android:layout_marginTop="8dp"
+        android:id="@+id/nav_table_manage"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:padding="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/setting" />
+
+    <TextView
         android:layout_marginBottom="16dp"
-        android:text="新建"
-        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="管理"
         android:textSize="10sp" />
 
 </LinearLayout>

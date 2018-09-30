@@ -42,6 +42,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        tv_table_name.text = viewModel.table.tableName
         s_sunday_first.isChecked = viewModel.table.sundayFirst
         s_show_time_detail.isChecked = viewModel.table.showTime
         s_show.isChecked = viewModel.table.showOtherWeekCourse

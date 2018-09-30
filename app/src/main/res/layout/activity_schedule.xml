@@ -99,49 +99,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/srl_main"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_schedule"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_week"
-            app:srlEnableHeaderTranslationContent="false"
-            app:srlEnableNestedScrolling="true"
-            app:srlHeaderInsetStart="-32dp"
-            app:srlHeaderMaxDragRate="1.2"
-            app:srlHeaderTriggerRate="0.8">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="-16dp"
-                android:layout_marginEnd="16dp"
-                app:cardElevation="16dp">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rv_table_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:overScrollMode="never"
-                    tools:layoutManager="GridLayoutManager"
-                    tools:listitem="@layout/recycler_view_item"
-                    tools:spanCount="5" />
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vp_schedule"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            app:layout_constraintTop_toBottomOf="@id/tv_week" />
 
         <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginTop="72dp"
-            android:layout_marginBottom="72dp"
+            android:layout_marginTop="192dp"
+            android:layout_marginBottom="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_week">
@@ -166,5 +135,19 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/main_navigation_menu" />
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view_end"
+        android:layout_width="96dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:fitsSystemWindows="true">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_table_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
