@@ -16,6 +16,12 @@ interface TableDao {
     @Update
     fun updateTable(tableBean: TableBean)
 
+    @Query("update tablebean set type = 0 where id = :oldId")
+    fun resetOldDefaultTable(oldId: Int)
+
+    @Query("update tablebean set type = 1 where id = :newId")
+    fun setNewDefaultTable(newId: Int)
+
     @Query("select * from tablebean where id = :tableId")
     fun getTableByIdInThread(tableId: Int): TableBean
 

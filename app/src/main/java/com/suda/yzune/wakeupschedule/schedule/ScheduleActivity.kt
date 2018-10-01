@@ -54,7 +54,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var clipboardManager: ClipboardManager
-    private lateinit var mAdapter: SchedulePagerAdapter
+    private var mAdapter: SchedulePagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
@@ -69,7 +69,6 @@ class ScheduleActivity : AppCompatActivity() {
         viewModel.updateFromOldVer()
         viewModel.initViewData().observe(this, Observer { table ->
             if (table == null) return@Observer
-
             viewModel.initTimeData(table.timeTable)
 
             if (table.background != "") {
@@ -197,7 +196,13 @@ class ScheduleActivity : AppCompatActivity() {
 
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
-            initTableMenu(it)
+            viewModel.tableSelectList.clear()
+            viewModel.tableSelectList.addAll(it)
+            if (rv_table_name.adapter == null) {
+                initTableMenu(viewModel.tableSelectList)
+            } else {
+                rv_table_name.adapter.notifyDataSetChanged()
+            }
         })
     }
 
@@ -205,8 +210,12 @@ class ScheduleActivity : AppCompatActivity() {
         rv_table_name.layoutManager = LinearLayoutManager(this)
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addFooterView(initFooterView(adapter))
+        adapter.setOnItemClickListener { _, _, position ->
+            if (position < data.size) {
+                viewModel.changeDefaultTable(data[position].id)
+            }
+        }
         rv_table_name.adapter = adapter
-
     }
 
     private fun initFooterView(adapter: TableNameAdapter): View {
@@ -372,13 +381,16 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initViewPage(maxWeek: Int, table: TableBean) {
-        mAdapter = SchedulePagerAdapter(supportFragmentManager)
-        vp_schedule.adapter = mAdapter
-        vp_schedule.offscreenPageLimit = 1
-        for (i in 1..maxWeek) {
-            mAdapter.addFragment(ScheduleFragment.newInstance(i))
+        if (mAdapter == null) {
+            mAdapter = SchedulePagerAdapter(supportFragmentManager)
+            vp_schedule.adapter = mAdapter
+            vp_schedule.offscreenPageLimit = 1
         }
-        mAdapter.notifyDataSetChanged()
+        mAdapter!!.removeAll()
+        for (i in 1..maxWeek) {
+            mAdapter!!.addFragment(ScheduleFragment.newInstance(i))
+        }
+        mAdapter!!.notifyDataSetChanged()
         if (CourseUtils.countWeek(table.startDate) > 0) {
             vp_schedule.currentItem = CourseUtils.countWeek(table.startDate) - 1
         } else {

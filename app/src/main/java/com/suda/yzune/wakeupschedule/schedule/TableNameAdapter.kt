@@ -11,6 +11,12 @@ class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
         BaseItemDraggableAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: TableSelectBean) {
+        if (item.type == 1) {
+            helper.setVisible(R.id.iv_selected, true)
+        } else {
+            helper.setVisible(R.id.iv_selected, false)
+        }
+
         if (item.tableName != "") {
             helper.setText(R.id.tv_table_name, item.tableName)
         } else {

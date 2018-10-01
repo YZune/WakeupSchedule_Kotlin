@@ -33,6 +33,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     var itemHeight = 0
     var alphaStr = ""
+    val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val clipboardImportInfo = MutableLiveData<String>()
     val addBlankTableInfo = MutableLiveData<String>()
@@ -54,12 +55,16 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun initViewData(tableId: Int? = null): LiveData<TableBean> {
-        tableData = if (tableId == null) {
-            tableDao.getDefaultTable()
-        } else {
-            tableDao.getTableById(tableId)
+    fun changeDefaultTable(id: Int) {
+        if (tableData.value?.id == null) return
+        if (id != tableData.value?.id) {
+            tableDao.resetOldDefaultTable(tableData.value?.id!!)
+            tableDao.setNewDefaultTable(id)
         }
+    }
+
+    fun initViewData(): LiveData<TableBean> {
+        tableData = tableDao.getDefaultTable()
         return tableData
     }
 
