@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ClipData
@@ -18,10 +19,7 @@ import android.support.v7.widget.PopupMenu
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageButton
-import android.widget.SeekBar
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.gson.Gson
@@ -42,6 +40,7 @@ import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
+import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
@@ -207,13 +206,31 @@ class ScheduleActivity : AppCompatActivity() {
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addFooterView(initFooterView(adapter))
         rv_table_name.adapter = adapter
+
     }
 
     private fun initFooterView(adapter: TableNameAdapter): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, rv_table_name, false)
         val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
-            Toasty.success(this.applicationContext, "添加课表").show()
+            ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun onFinish(editText: EditText, dialog: Dialog) {
+                    if (!editText.text.toString().isEmpty()) {
+                        viewModel.addBlankTable(editText.text.toString())
+                        viewModel.addBlankTableInfo.observe(this@ScheduleActivity, Observer { info ->
+                            if (info == "OK") {
+                                Toasty.success(applicationContext, "新建成功~").show()
+                                dialog.dismiss()
+                            } else {
+                                Toasty.success(applicationContext, "操作失败>_<").show()
+                                dialog.dismiss()
+                            }
+                        })
+                    } else {
+                        Toasty.error(applicationContext, "名称不能为空哦>_<").show()
+                    }
+                }
+            }).show(supportFragmentManager, "addTableFragment")
         }
         val tableManage = view.findViewById<ImageButton>(R.id.nav_table_manage)
         return view

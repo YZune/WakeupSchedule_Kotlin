@@ -35,11 +35,23 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var alphaStr = ""
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val clipboardImportInfo = MutableLiveData<String>()
+    val addBlankTableInfo = MutableLiveData<String>()
     var clipboardCourseList: List<CourseBean>? = null
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectList()
+    }
+
+    fun addBlankTable(tableName: String) {
+        thread(name = "AddBlankTableThread") {
+            try {
+                tableDao.insertTable(TableBean(id = 0, tableName = tableName))
+                addBlankTableInfo.postValue("OK")
+            } catch (e: SQLiteConstraintException) {
+                addBlankTableInfo.postValue("error")
+            }
+        }
     }
 
     fun initViewData(tableId: Int? = null): LiveData<TableBean> {

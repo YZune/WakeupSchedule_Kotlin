@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule_settings
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
 import com.flask.colorpicker.ColorPickerView
@@ -18,6 +20,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
@@ -72,6 +75,20 @@ class ScheduleSettingsActivity : AppCompatActivity() {
     }
 
     private fun initEvent() {
+        ll_table_name.setOnClickListener {
+            ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun onFinish(editText: EditText, dialog: Dialog) {
+                    if (!editText.text.toString().isEmpty()) {
+                        viewModel.table.tableName = editText.text.toString()
+                        tv_table_name.text = editText.text.toString()
+                        dialog.dismiss()
+                    } else {
+                        Toasty.error(applicationContext, "名称不能为空哦>_<").show()
+                    }
+                }
+            }, viewModel.table.tableName).show(supportFragmentManager, "addTableFragment")
+        }
+
         ib_back.setOnClickListener {
             finish()
         }

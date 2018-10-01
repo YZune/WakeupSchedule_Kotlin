@@ -144,6 +144,7 @@
         android:fitsSystemWindows="true">
 
         <android.support.v7.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
             android:id="@+id/rv_table_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

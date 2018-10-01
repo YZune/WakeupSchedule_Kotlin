@@ -4,13 +4,11 @@ import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import android.widget.TextView
 import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import kotlinx.android.synthetic.main.activity_add_course.*
 
 class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
         BaseItemDraggableAdapter<CourseEditBean, BaseViewHolder>(layoutResId, data) {
@@ -67,6 +65,11 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
 
     interface OnItemEditTextChangedListener {
         fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        mListener = null
     }
 
 }
