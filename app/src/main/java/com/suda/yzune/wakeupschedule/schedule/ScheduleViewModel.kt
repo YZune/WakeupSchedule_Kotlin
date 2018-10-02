@@ -57,10 +57,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
 
     fun changeDefaultTable(id: Int) {
         if (tableData.value?.id == null) return
-        if (id != tableData.value?.id) {
-            tableDao.resetOldDefaultTable(tableData.value?.id!!)
-            tableDao.setNewDefaultTable(id)
-        }
+        tableDao.resetOldDefaultTable(tableData.value?.id!!)
+        tableDao.setNewDefaultTable(id)
     }
 
     fun initViewData(): LiveData<TableBean> {

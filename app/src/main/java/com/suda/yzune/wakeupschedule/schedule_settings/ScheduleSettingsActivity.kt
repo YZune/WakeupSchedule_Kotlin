@@ -18,7 +18,6 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
@@ -322,7 +321,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         viewModel.mDay = dayOfMonth
         val mDate = "${viewModel.mYear}-${viewModel.mMonth}-${viewModel.mDay}"
         tv_term_start.text = mDate
-        PreferenceUtils.saveStringToSP(applicationContext, "termStart", mDate)
+        viewModel.table.startDate = mDate
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

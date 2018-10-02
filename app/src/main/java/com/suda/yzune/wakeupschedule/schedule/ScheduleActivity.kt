@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.arch.lifecycle.Observer
@@ -20,6 +21,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.gson.Gson
@@ -67,6 +69,9 @@ class ScheduleActivity : AppCompatActivity() {
         clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
         viewModel.updateFromOldVer()
+
+        val fadeInAni = ObjectAnimator.ofFloat(vp_schedule, "alpha", 0f, 1f)
+        fadeInAni.duration = 500
         viewModel.initViewData().observe(this, Observer { table ->
             if (table == null) return@Observer
             viewModel.initTimeData(table.timeTable)
@@ -77,6 +82,7 @@ class ScheduleActivity : AppCompatActivity() {
                 GlideApp.with(this.applicationContext)
                         .load(table.background)
                         .override(x, y)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         //.apply(bitmapTransform(BlurTransformation(0, 5)))
                         .into(iv_bg)
             } else {
@@ -85,6 +91,7 @@ class ScheduleActivity : AppCompatActivity() {
                 GlideApp.with(this.applicationContext)
                         .load(R.drawable.main_background)
                         .override(x, y)
+                        .transition(DrawableTransitionOptions.withCrossFade())
                         //.apply(bitmapTransform(BlurTransformation(0, 5)))
                         .into(iv_bg)
             }
@@ -102,6 +109,7 @@ class ScheduleActivity : AppCompatActivity() {
             initCourseData(table.id)
             sb_week.max = table.maxWeek - 1
             initViewPage(table.maxWeek, table)
+            fadeInAni.start()
 
             ib_add.setOnClickListener {
                 val intent = Intent(this, AddCourseActivity::class.java)
@@ -208,11 +216,16 @@ class ScheduleActivity : AppCompatActivity() {
 
     private fun initTableMenu(data: List<TableSelectBean>) {
         rv_table_name.layoutManager = LinearLayoutManager(this)
+        val fadeOutAni = ObjectAnimator.ofFloat(vp_schedule, "alpha", 1f, 0f)
+        fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addFooterView(initFooterView(adapter))
         adapter.setOnItemClickListener { _, _, position ->
             if (position < data.size) {
-                viewModel.changeDefaultTable(data[position].id)
+                if (data[position].id != viewModel.tableData.value?.id) {
+                    fadeOutAni.start()
+                    viewModel.changeDefaultTable(data[position].id)
+                }
             }
         }
         rv_table_name.adapter = adapter
@@ -401,13 +414,11 @@ class ScheduleActivity : AppCompatActivity() {
     private fun initEvent(currentWeek: Int) {
         sb_week.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                tv_week.text = "第${progress + 1}周"
                 try {
                     if (currentWeek > 0) {
                         if (progress + 1 == currentWeek) {
                             tv_week.text = "第${progress + 1}周"
                             tv_weekday.text = CourseUtils.getWeekday()
-                            tv_date.text = CourseUtils.getTodayDate()
                         } else {
                             tv_week.text = "第${progress + 1}周"
                             tv_weekday.text = "非本周"
@@ -415,7 +426,6 @@ class ScheduleActivity : AppCompatActivity() {
                     } else {
                         tv_week.text = "还没有开学哦"
                         tv_weekday.text = CourseUtils.getWeekday()
-                        tv_date.text = CourseUtils.getTodayDate()
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()
@@ -450,12 +460,12 @@ class ScheduleActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
+                sb_week.progress = position
                 try {
                     if (currentWeek > 0) {
                         if (viewModel.selectedWeek == currentWeek) {
                             tv_week.text = "第${viewModel.selectedWeek}周"
                             tv_weekday.text = CourseUtils.getWeekday()
-                            tv_date.text = CourseUtils.getTodayDate()
                         } else {
                             tv_week.text = "第${viewModel.selectedWeek}周"
                             tv_weekday.text = "非本周"
@@ -463,7 +473,6 @@ class ScheduleActivity : AppCompatActivity() {
                     } else {
                         tv_week.text = "还没有开学哦"
                         tv_weekday.text = CourseUtils.getWeekday()
-                        tv_date.text = CourseUtils.getTodayDate()
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()
