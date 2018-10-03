@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
@@ -93,7 +94,9 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         }
 
         ll_course_time.setOnClickListener {
-
+            val intent = Intent(this, TimeSettingsActivity::class.java)
+            intent.putExtra("selectedId", viewModel.table.timeTable)
+            startActivity(intent)
         }
 
         ll_text_color.setOnClickListener {

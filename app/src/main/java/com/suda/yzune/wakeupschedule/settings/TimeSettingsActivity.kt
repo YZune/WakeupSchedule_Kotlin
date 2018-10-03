@@ -6,12 +6,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
-import android.view.View
-import android.widget.SeekBar
 import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
@@ -36,31 +32,16 @@ class TimeSettingsActivity : AppCompatActivity() {
         ViewUtils.resizeStatusBar(this, v_status)
 
         viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
-        viewModel.initTimeSelectList()
-        val nodesNum = PreferenceUtils.getIntFromSP(this.applicationContext, "classNum", 11)
 
-        initView(nodesNum)
+        initView()
         initEvent()
     }
 
-    private fun initView(nodesNum: Int) {
-        s_time_same.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_time_same", true)
-        s_summer.isChecked = PreferenceUtils.getBooleanFromSP(this.applicationContext, "s_summer", false)
-
-        if (s_time_same.isChecked) {
-            ll_set_length.visibility = View.VISIBLE
-        } else {
-            ll_set_length.visibility = View.GONE
-        }
-
-        val min = PreferenceUtils.getIntFromSP(this.applicationContext, "classLen", 50)
-        sb_time_length.progress = min - 30
-        tv_time_length.text = min.toString()
-
-        vp_time_list.adapter = TimeListTabAdapter(supportFragmentManager, nodesNum)
-        vp_time_list.layoutParams.height = SizeUtils.dp2px(this.applicationContext, 65f * nodesNum)
-        //vp_time_list.minimumHeight = SizeUtils.dp2px(this.applicationContext, 17f * nodesNum)
-        tl_time_list.setupWithViewPager(vp_time_list)
+    private fun initView() {
+        val fragment = TimeTableFragment.newInstance(intent.extras.getInt("selectedId"))
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.fl_time_setting, fragment, "timeTableFragment")
+        transaction.commit()
     }
 
     private fun initEvent() {
@@ -71,34 +52,6 @@ class TimeSettingsActivity : AppCompatActivity() {
         tv_save.setOnClickListener { _ ->
             saveData()
         }
-
-        s_time_same.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_time_same", isChecked)
-            if (isChecked) {
-                ll_set_length.visibility = View.VISIBLE
-            } else {
-                ll_set_length.visibility = View.GONE
-            }
-        }
-
-        s_summer.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(this.applicationContext, "s_summer", isChecked)
-        }
-
-        sb_time_length.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                tv_time_length.text = "${progress + 30}"
-                viewModel.refreshEndTime(progress + 30)
-                PreferenceUtils.saveIntToSP(this@TimeSettingsActivity.applicationContext, "classLen", progress + 30)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-
-        })
     }
 
     private fun saveData() {

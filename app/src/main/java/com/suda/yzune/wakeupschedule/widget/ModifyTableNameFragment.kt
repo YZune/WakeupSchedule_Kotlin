@@ -16,6 +16,7 @@ class ModifyTableNameFragment : DialogFragment() {
 
     private var listener: TableNameChangeListener? = null
     private var tableName = ""
+    private var title = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -28,6 +29,7 @@ class ModifyTableNameFragment : DialogFragment() {
         val dm = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
         dialog.window.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        tv_title.text = title
         et_table_name.setText(tableName)
         et_table_name.setSelection(tableName.length)
         initEvent()
@@ -54,10 +56,11 @@ class ModifyTableNameFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(changeListener: TableNameChangeListener, string: String = "") =
+        fun newInstance(changeListener: TableNameChangeListener, string: String = "", titleStr: String = "课表名字") =
                 ModifyTableNameFragment().apply {
                     listener = changeListener
                     tableName = string
+                    title = titleStr
                 }
     }
 }
