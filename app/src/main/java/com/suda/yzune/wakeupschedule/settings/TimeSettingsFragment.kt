@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
+import android.widget.Switch
+import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 
 class TimeSettingsFragment : Fragment() {
@@ -51,13 +54,36 @@ class TimeSettingsFragment : Fragment() {
             selectTimeDialog.isCancelable = false
             selectTimeDialog.show(fragmentManager, "selectTimeDetail")
         }
-        //recyclerView.isNestedScrollingEnabled = false
+        adapter.setHeaderView(initHeaderView())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
-    private fun initHeaderView() {
-        val view = LayoutInflater.from(activity).inflate(R.layout.item_add_course_btn, null)
+    private fun initHeaderView(): View {
+        val view = LayoutInflater.from(activity).inflate(R.layout.item_time_detail_header, null)
+        val tvTimeLen = view.findViewById<TextView>(R.id.tv_time_length)
+        val switch = view.findViewById<Switch>(R.id.s_time_same)
+        switch.isChecked = viewModel.timeTableList[position].sameLen
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.timeTableList[position].sameLen = isChecked
+        }
+        val seekBar = view.findViewById<SeekBar>(R.id.sb_time_length)
+        seekBar.progress = viewModel.timeTableList[position].courseLen - 30
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                tvTimeLen.text = "${progress + 30}"
+                viewModel.refreshEndTime(progress + 30)
+                viewModel.timeTableList[position].courseLen = progress + 30
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
+        return view
     }
 
     companion object {

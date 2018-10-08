@@ -46,6 +46,15 @@ class TimeSettingsActivity : AppCompatActivity() {
 
     private fun initEvent() {
         tv_cancel.setOnClickListener {
+            if (supportFragmentManager.fragments.size == 1) {
+                finish()
+            } else {
+                val transaction = supportFragmentManager.beginTransaction()
+                //transaction.setCustomAnimations(R.anim.fragment_out, R.anim.fragment_in)
+                transaction.remove(supportFragmentManager.findFragmentByTag("timeSettingsFragment"))
+                transaction.show(supportFragmentManager.findFragmentByTag("timeTableFragment"))
+                transaction.commit()
+            }
             finish()
         }
 
@@ -75,7 +84,15 @@ class TimeSettingsActivity : AppCompatActivity() {
             Toasty.info(this.applicationContext, "再按一次退出编辑").show()
             tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
         } else {
-            finish()
+            if (supportFragmentManager.fragments.size == 1) {
+                finish()
+            } else {
+                val transaction = supportFragmentManager.beginTransaction()
+                //transaction.setCustomAnimations(R.anim.fragment_out, R.anim.fragment_in)
+                transaction.remove(supportFragmentManager.findFragmentByTag("timeSettingsFragment"))
+                transaction.show(supportFragmentManager.findFragmentByTag("timeTableFragment"))
+                transaction.commit()
+            }
         }
     }
 

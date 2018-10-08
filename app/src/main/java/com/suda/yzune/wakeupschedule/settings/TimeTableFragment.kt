@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -61,11 +62,12 @@ class TimeTableFragment : Fragment() {
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {
-                    Toasty.success(activity!!.applicationContext, "编辑").show()
                     fragmentManager!!
                             .beginTransaction()
+                            .setCustomAnimations(R.anim.fragment_in, R.anim.fragment_out)
                             .hide(this)
-                            .add(R.id.fl_time_setting, TimeSettingsFragment.newInstance(position))
+                            .setTransition(TRANSIT_FRAGMENT_OPEN)
+                            .add(R.id.fl_time_setting, TimeSettingsFragment.newInstance(position), "timeSettingsFragment")
                             .commit()
                 }
             }
