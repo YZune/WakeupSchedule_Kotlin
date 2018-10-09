@@ -29,7 +29,8 @@ import kotlinx.android.synthetic.main.activity_schedule_settings.*
 class ScheduleSettingsActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ScheduleSettingsViewModel
-    private val REQUEST_CODE_CHOOSE = 23
+    private val REQUEST_CODE_CHOOSE_BG = 23
+    private val REQUEST_CODE_CHOOSE_TABLE = 21
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
@@ -38,7 +39,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         ViewUtils.resizeStatusBar(this, v_status)
 
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
-        viewModel.initTableData(intent.extras.getString("tableData"))
+        viewModel.initTableData(intent.extras!!.getString("tableData")!!)
 
         initView()
         initEvent()
@@ -96,7 +97,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         ll_course_time.setOnClickListener {
             val intent = Intent(this, TimeSettingsActivity::class.java)
             intent.putExtra("selectedId", viewModel.table.timeTable)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_CHOOSE_TABLE)
         }
 
         ll_text_color.setOnClickListener {
@@ -307,7 +308,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
                         .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                         .thumbnailScale(0.85f)
                         .imageEngine(GlideAppEngine())
-                        .forResult(REQUEST_CODE_CHOOSE)
+                        .forResult(REQUEST_CODE_CHOOSE_BG)
             }
         }
 
@@ -318,7 +319,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         }
     }
 
-    private val mDateListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+    private val mDateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
         viewModel.mYear = year
         viewModel.mMonth = monthOfYear + 1
         viewModel.mDay = dayOfMonth
@@ -343,7 +344,7 @@ class ScheduleSettingsActivity : AppCompatActivity() {
                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                             .thumbnailScale(0.85f)
                             .imageEngine(GlideAppEngine())
-                            .forResult(REQUEST_CODE_CHOOSE)
+                            .forResult(REQUEST_CODE_CHOOSE_BG)
 
                 } else {
                     // permission denied, boo! Disable the
@@ -356,8 +357,11 @@ class ScheduleSettingsActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_CHOOSE_BG && resultCode == RESULT_OK) {
             viewModel.table.background = Matisse.obtainResult(data)[0].toString()
+        }
+        if (requestCode == REQUEST_CODE_CHOOSE_TABLE && resultCode == RESULT_OK) {
+            viewModel.table.timeTable = data!!.getIntExtra("selectedId", 1)
         }
     }
 

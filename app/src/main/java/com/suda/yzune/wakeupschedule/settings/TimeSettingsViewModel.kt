@@ -5,12 +5,15 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlin.concurrent.thread
 
 class TimeSettingsViewModel(application: Application) : AndroidViewModel(application) {
+
+    lateinit var table: TableBean
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val timeDao = dataBase.timeDetailDao()
@@ -19,6 +22,9 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
     val timeList = arrayListOf<TimeDetailBean>()
     val timeSelectList = arrayListOf<String>()
     val saveInfo = MutableLiveData<String>()
+
+    var entryPosition = 0
+    var selectedId = 1
 
     fun addNewTimeTable(name: String) {
         thread(name = "addNewTimeTableThread") {
@@ -70,10 +76,15 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
         return timeDao.getTimeList(id)
     }
 
-    fun saveData() {
+    fun saveDetailData(tablePosition: Int) {
         thread(name = "updateTimeDetailThread") {
-            timeDao.updateTimeDetailList(timeList)
-            saveInfo.postValue("ok")
+            try {
+                timeTableDao.updateTimeTable(timeTableList[tablePosition])
+                timeDao.updateTimeDetailList(timeList)
+                saveInfo.postValue("detail_ok")
+            } catch (e: Exception) {
+                saveInfo.postValue("error")
+            }
         }
     }
 

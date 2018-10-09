@@ -143,7 +143,7 @@ class ImportViewModel : ViewModel() {
                     //node number
                     val nodeStr = courseSource.substring(1, courseSource.length - 1)
                     try {
-                        node = Integer.decode(nodeStr)!!
+                        node = Integer.decode(nodeStr)
                     } catch (e: Exception) {
                         node = getNodeInt(nodeStr)
                         e.printStackTrace()
@@ -320,10 +320,10 @@ class ImportViewModel : ViewModel() {
                         if (it.contains('-')) {
                             val weeks = it.substring(0, it.indexOf('周')).split('-')
                             if (weeks.isNotEmpty()) {
-                                startWeek = Integer.decode(weeks[0])!!
+                                startWeek = Integer.decode(weeks[0])
                             }
                             if (weeks.size > 1) {
-                                endWeek = Integer.decode(weeks[1])!!
+                                endWeek = Integer.decode(weeks[1])
                             }
 
                             type = when {
@@ -448,11 +448,11 @@ class ImportViewModel : ViewModel() {
             val weeks = weekInfo.substring(2, weekInfo.length - 1).split("-".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
 
             if (weeks.isNotEmpty()) {
-                startWeek = Integer.decode(weeks[0])!!
+                startWeek = Integer.decode(weeks[0])
                 result[2] = startWeek
             }
             if (weeks.size > 1) {
-                endWeek = Integer.decode(weeks[1])!!
+                endWeek = Integer.decode(weeks[1])
                 result[3] = endWeek
             }
         }

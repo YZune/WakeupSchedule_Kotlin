@@ -209,7 +209,7 @@ class ScheduleActivity : AppCompatActivity() {
             if (rv_table_name.adapter == null) {
                 initTableMenu(viewModel.tableSelectList)
             } else {
-                rv_table_name.adapter.notifyDataSetChanged()
+                rv_table_name.adapter?.notifyDataSetChanged()
             }
         })
     }

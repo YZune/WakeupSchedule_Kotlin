@@ -32,7 +32,7 @@ class ApplyInfoActivity : AppCompatActivity() {
         viewModel.countInfo.observe(this, Observer {
             when (it) {
                 "OK" -> {
-                    rv_info.adapter.notifyDataSetChanged()
+                    rv_info.adapter?.notifyDataSetChanged()
                     srl_info.isRefreshing = false
                 }
                 "error" -> {

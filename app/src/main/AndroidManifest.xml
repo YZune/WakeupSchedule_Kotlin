@@ -12,7 +12,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity" />
         <activity
             android:name=".schedule_import.LoginWebActivity"
@@ -62,7 +63,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".schedule_manage.ScheduleManageActivity" />
-        <activity android:name=".schedule_settings.ScheduleSettingsActivity"></activity>
+        <activity android:name=".schedule_settings.ScheduleSettingsActivity" />
     </application>
 
 </manifest>

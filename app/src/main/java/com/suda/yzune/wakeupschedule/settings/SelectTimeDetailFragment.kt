@@ -9,13 +9,13 @@ import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.fragment_select_time_detail.*
 
 
 class SelectTimeDetailFragment : DialogFragment() {
 
     var position = -1
+    var tablePosition = 0
     private lateinit var viewModel: TimeSettingsViewModel
     private lateinit var adapter: TimeSettingsAdapter
 
@@ -35,7 +35,7 @@ class SelectTimeDetailFragment : DialogFragment() {
         super.onResume()
         wp_start.data = viewModel.timeSelectList
         wp_end.data = viewModel.timeSelectList
-        if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
+        if (viewModel.timeTableList[tablePosition].sameLen) {
             tv_title.text = "请选择开始时间"
             wp_end.visibility = View.GONE
         } else {
@@ -71,8 +71,8 @@ class SelectTimeDetailFragment : DialogFragment() {
         btn_save.setOnClickListener {
             val startStr = viewModel.timeSelectList[startIndex]
             viewModel.timeList[position].startTime = startStr
-            if (PreferenceUtils.getBooleanFromSP(context!!.applicationContext, "s_time_same", true)) {
-                viewModel.timeList[position].endTime = CourseUtils.calAfterTime(startStr, PreferenceUtils.getIntFromSP(context!!.applicationContext, "classLen", 50))
+            if (viewModel.timeTableList[tablePosition].sameLen) {
+                viewModel.timeList[position].endTime = CourseUtils.calAfterTime(startStr, viewModel.timeTableList[position].courseLen)
             } else {
                 viewModel.timeList[position].endTime = viewModel.timeSelectList[endIndex]
             }
@@ -87,10 +87,11 @@ class SelectTimeDetailFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg1: Int, arg2: TimeSettingsAdapter) =
+        fun newInstance(arg0: Int, arg1: Int, arg2: TimeSettingsAdapter) =
                 SelectTimeDetailFragment().apply {
                     position = arg1
                     adapter = arg2
+                    tablePosition = arg0
                 }
     }
 }

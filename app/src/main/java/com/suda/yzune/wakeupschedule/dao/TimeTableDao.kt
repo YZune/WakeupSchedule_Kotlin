@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.Query
+import android.arch.persistence.room.Update
 import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 
 @Dao
@@ -13,4 +14,7 @@ interface TimeTableDao {
 
     @Query("select * from timetablebean")
     fun getTimeTableList(): LiveData<List<TimeTableBean>>
+
+    @Update
+    fun updateTimeTable(timeTableBean: TimeTableBean)
 }
