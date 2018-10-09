@@ -64,6 +64,11 @@
         </activity>
         <activity android:name=".schedule_manage.ScheduleManageActivity" />
         <activity android:name=".schedule_settings.ScheduleSettingsActivity" />
+        <activity android:name=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

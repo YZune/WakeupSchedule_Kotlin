@@ -4,16 +4,15 @@
     android:layout_height="wrap_content"
     android:foreground="@null"
     android:gravity="center"
-    android:layout_marginTop="16dp"
     android:orientation="vertical">
 
     <ImageButton
+        android:layout_width="32dp"
         android:id="@+id/nav_table_add"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_height="32dp"
         android:layout_marginTop="16dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:padding="4dp"
+        android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/schedule_add" />
 
@@ -24,12 +23,12 @@
         android:textSize="10sp" />
 
     <ImageButton
-        android:layout_marginTop="8dp"
+        android:layout_width="32dp"
         android:id="@+id/nav_table_manage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:padding="4dp"
+        android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/setting" />
 

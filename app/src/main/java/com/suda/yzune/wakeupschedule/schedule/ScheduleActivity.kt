@@ -17,9 +17,11 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.getkeepsafe.taptargetview.TapTarget
@@ -219,8 +221,12 @@ class ScheduleActivity : AppCompatActivity() {
         val fadeOutAni = ObjectAnimator.ofFloat(vp_schedule, "alpha", 1f, 0f)
         fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
+        adapter.addHeaderView(FrameLayout(this).apply {
+            this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(this@ScheduleActivity.applicationContext, 24f))
+        })
         adapter.addFooterView(initFooterView(adapter))
         adapter.setOnItemClickListener { _, _, position ->
+            Log.d("位置", position.toString())
             if (position < data.size) {
                 if (data[position].id != viewModel.tableData.value?.id) {
                     fadeOutAni.start()

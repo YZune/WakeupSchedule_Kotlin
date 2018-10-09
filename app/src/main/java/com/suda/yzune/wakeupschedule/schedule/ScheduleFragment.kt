@@ -18,6 +18,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_schedule.*
 
 class ScheduleFragment : Fragment() {
@@ -230,9 +231,13 @@ class ScheduleFragment : Fragment() {
             }
 
             tv.setOnClickListener {
-                //ViewUtils.saveImg(ViewUtils.getViewBitmap(scrollPanel), activity)
-                val detailFragment = CourseDetailFragment.newInstance(c)
-                detailFragment.show(fragmentManager, "courseDetail")
+                try {
+                    val detailFragment = CourseDetailFragment.newInstance(c)
+                    detailFragment.show(fragmentManager, "courseDetail")
+                } catch (e: Exception) {
+                    //TODO: 提示是否要删除异常的数据
+                    Toasty.error(activity!!.applicationContext, "哎呀>_<差点崩溃了").show()
+                }
             }
 
 

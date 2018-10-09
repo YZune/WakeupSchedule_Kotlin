@@ -3,6 +3,7 @@
     android:initialKeyguardLayout="@layout/schedule_app_widget"
     android:initialLayout="@layout/schedule_app_widget"
     android:minHeight="180dp"
+    android:configure="com.suda.yzune.wakeupschedule.schedule_appwidget.WeekScheduleAppWidgetConfigActivity"
     android:minWidth="250dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="14400000"
