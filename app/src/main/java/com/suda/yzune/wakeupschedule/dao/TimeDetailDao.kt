@@ -21,6 +21,9 @@ interface TimeDetailDao {
     @Query("select * from timedetailbean where timeTable = :id order by node")
     fun getTimeList(id: Int): LiveData<List<TimeDetailBean>>
 
+    @Query("select count(*) from timedetailbean where timeTable = :id")
+    fun getTimeListSize(id: Int): LiveData<Int>
+
     @Query("select * from timedetailbean where timeTable = :id order by node")
     fun getTimeListInThread(id: Int): List<TimeDetailBean>
 }

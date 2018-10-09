@@ -20,5 +20,6 @@ class TimeTableAdapter(layoutResId: Int, data: List<TimeTableBean>, var selected
         helper.setText(R.id.tv_time_name, item.name)
         helper.addOnClickListener(R.id.ib_edit)
         helper.addOnClickListener(R.id.ib_delete)
+        helper.addOnLongClickListener(R.id.ib_delete)
     }
 }

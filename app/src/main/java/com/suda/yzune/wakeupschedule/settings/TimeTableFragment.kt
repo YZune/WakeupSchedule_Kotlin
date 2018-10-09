@@ -34,11 +34,20 @@ class TimeTableFragment : Fragment() {
         val view = inflater.inflate(R.layout.time_table_fragment, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_time_table)
         initRecyclerView(recyclerView, view)
+
         viewModel.getTimeTableList().observe(this, Observer {
             if (it == null) return@Observer
             viewModel.timeTableList.clear()
             viewModel.timeTableList.addAll(it)
             recyclerView.adapter?.notifyDataSetChanged()
+        })
+
+        viewModel.deleteInfo.observe(this, Observer {
+            if (it == null) return@Observer
+            when (it) {
+                "ok" -> Toasty.success(activity!!.applicationContext, "删除成功~").show()
+                "error" -> Toasty.error(activity!!.applicationContext, "该时间表仍被使用中>_<请确保它不被使用再删除哦").show()
+            }
         })
         return view
     }
@@ -51,6 +60,12 @@ class TimeTableFragment : Fragment() {
             adapter.selectedId = viewModel.timeTableList[position].id
             viewModel.selectedId = viewModel.timeTableList[position].id
             adapter.notifyDataSetChanged()
+            viewModel.getTimeDataSize(viewModel.selectedId).observe(this, Observer {
+                if (it == null) return@Observer
+                if (it == 0) {
+                    viewModel.initTimeTableData(viewModel.selectedId)
+                }
+            })
         }
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
@@ -59,6 +74,20 @@ class TimeTableFragment : Fragment() {
                     val bundle = Bundle()
                     bundle.putInt("position", position)
                     Navigation.findNavController(fragmentView).navigate(R.id.timeTableFragment_to_timeSettingsFragment, bundle)
+                }
+                R.id.ib_delete -> {
+                    Toasty.info(activity!!.applicationContext, "长按确认删除哦~").show()
+                }
+            }
+        }
+        adapter.setOnItemChildLongClickListener { _, view, position ->
+            when (view.id) {
+                R.id.ib_delete -> {
+                    viewModel.deleteTimeTable(viewModel.timeTableList[position])
+                    return@setOnItemChildLongClickListener true
+                }
+                else -> {
+                    true
                 }
             }
         }

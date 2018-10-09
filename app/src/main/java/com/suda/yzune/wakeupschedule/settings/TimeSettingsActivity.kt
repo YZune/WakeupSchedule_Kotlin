@@ -43,12 +43,13 @@ class TimeSettingsActivity : AppCompatActivity() {
         initEvent()
 
         viewModel.saveInfo.observe(this, Observer { s ->
+            if (s == null) return@Observer
             when (s) {
                 "detail_ok" -> {
                     navController.navigateUp()
                     Toasty.success(this.applicationContext, "保存成功").show()
                 }
-                else -> {
+                "error" -> {
                     Toasty.error(this.applicationContext, "出现错误>_<", Toast.LENGTH_LONG).show()
                 }
             }

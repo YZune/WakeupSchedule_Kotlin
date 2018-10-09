@@ -22,6 +22,7 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
     val timeList = arrayListOf<TimeDetailBean>()
     val timeSelectList = arrayListOf<String>()
     val saveInfo = MutableLiveData<String>()
+    val deleteInfo = MutableLiveData<String>()
 
     var entryPosition = 0
     var selectedId = 1
@@ -68,8 +69,23 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    fun deleteTimeTable(timeTableBean: TimeTableBean) {
+        thread(name = "DeleteTimeTableThread") {
+            try {
+                timeTableDao.deleteTimeTable(timeTableBean)
+                deleteInfo.postValue("ok")
+            } catch (e: Exception) {
+                deleteInfo.postValue("error")
+            }
+        }
+    }
+
     fun getTimeTableList(): LiveData<List<TimeTableBean>> {
         return timeTableDao.getTimeTableList()
+    }
+
+    fun getTimeDataSize(id: Int): LiveData<Int> {
+        return timeDao.getTimeListSize(id)
     }
 
     fun getTimeData(id: Int): LiveData<List<TimeDetailBean>> {

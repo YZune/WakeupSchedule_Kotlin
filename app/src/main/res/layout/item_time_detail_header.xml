@@ -4,6 +4,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        style="@style/settings_subtitle"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:text="要用多少节就设置多少节呀，多余的节数不用管~" />
+
     <LinearLayout
         android:id="@+id/ll_table_name"
         style="@style/settings_item_ll">
