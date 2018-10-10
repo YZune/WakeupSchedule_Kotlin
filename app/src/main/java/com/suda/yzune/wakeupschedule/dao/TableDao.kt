@@ -33,4 +33,7 @@ interface TableDao {
 
     @Query("select id, tableName, background, type from tablebean")
     fun getTableSelectList(): LiveData<List<TableSelectBean>>
+
+    @Query("delete from tablebean where id = :id")
+    fun deleteTable(id: Int)
 }

@@ -38,6 +38,7 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.utils.*
@@ -149,7 +150,7 @@ class ScheduleActivity : AppCompatActivity() {
                             })
                         }
                         R.id.ib_manage -> {
-                            Toasty.info(applicationContext, "很快就能见面啦(￣▽￣)~*", Toast.LENGTH_LONG).show()
+                            startActivity(Intent(this, ScheduleManageActivity::class.java))
                         }
                     }
                     return@setOnMenuItemClickListener true
@@ -261,6 +262,9 @@ class ScheduleActivity : AppCompatActivity() {
             }).show(supportFragmentManager, "addTableFragment")
         }
         val tableManage = view.findViewById<ImageButton>(R.id.nav_table_manage)
+        tableManage.setOnClickListener {
+            startActivity(Intent(this, ScheduleManageActivity::class.java))
+        }
         return view
     }
 

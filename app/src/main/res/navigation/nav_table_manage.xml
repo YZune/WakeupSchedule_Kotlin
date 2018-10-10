@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_table_manage"
+    app:startDestination="@id/scheduleManageFragment">
+    <fragment
+        android:id="@+id/scheduleManageFragment"
+        android:name="com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageFragment"
+        android:label="多课表管理"
+        tools:layout="@layout/fragment_schedule_manage" />
+</navigation>

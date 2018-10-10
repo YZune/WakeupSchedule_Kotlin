@@ -11,7 +11,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginRight="24dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:foreground="?attr/selectableItemBackground"
         app:cardCornerRadius="2dp">
 
@@ -20,71 +20,55 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
                 android:id="@+id/tv_table_name"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
                 android:lines="1"
                 android:padding="16dp"
-                app:layout_constraintHorizontal_weight="3"
-                android:text="默认"
+                android:text="高等数学"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/ib_share"
+                app:layout_constraintEnd_toStartOf="@id/ib_edit"
+                app:layout_constraintHorizontal_weight="4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_pic" />
+                app:layout_constraintTop_toBottomOf="@id/v_color" />
 
-            <ImageView
-                android:id="@+id/iv_pic"
+            <View
+                android:id="@+id/v_color"
                 android:layout_width="0dp"
-                android:layout_height="96dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_background"
-                android:transitionName="image"
+                android:layout_height="8dp"
+                android:background="@color/blue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/ib_share"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
-                android:src="@drawable/share"
-                android:tint="@color/orange"
-                app:layout_constraintEnd_toStartOf="@id/ib_edit"
-                app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/tv_table_name"
-                app:layout_constraintTop_toBottomOf="@id/iv_pic" />
-
-            <ImageButton
                 android:id="@+id/ib_edit"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="0dp"
-                app:layout_constraintEnd_toStartOf="@id/ib_delete"
+                android:layout_height="0dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/ic_edit"
                 android:tint="@color/blue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/ib_delete"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/ib_share"
-                app:layout_constraintTop_toBottomOf="@id/iv_pic" />
+                app:layout_constraintStart_toEndOf="@id/tv_table_name"
+                app:layout_constraintTop_toBottomOf="@id/v_color" />
 
             <ImageButton
-                android:layout_height="0dp"
                 android:id="@+id/ib_delete"
-                app:layout_constraintHorizontal_weight="1"
                 android:layout_width="0dp"
-                app:layout_constraintStart_toEndOf="@id/ib_edit"
+                android:layout_height="0dp"
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="8dp"
                 android:src="@drawable/ic_delete"
                 android:tint="@color/red"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_pic" />
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintStart_toEndOf="@id/ib_edit"
+                app:layout_constraintTop_toBottomOf="@id/v_color" />
 
         </android.support.constraint.ConstraintLayout>
 
