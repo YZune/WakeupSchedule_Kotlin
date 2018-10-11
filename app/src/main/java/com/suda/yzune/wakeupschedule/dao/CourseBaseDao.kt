@@ -13,6 +13,9 @@ interface CourseBaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertList(courseBaseList: List<CourseBaseBean>)
 
+    @Query("select * from coursebasebean where tableId = :tableId")
+    fun getCourseBaseBeanOfTable(tableId: Int): LiveData<List<CourseBaseBean>>
+
     @Query("select * from coursebasebean natural join coursedetailbean where tableId = :tableId")
     fun getCourseOfTable(tableId: Int): LiveData<List<CourseBean>>
 

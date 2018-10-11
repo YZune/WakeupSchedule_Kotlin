@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -30,35 +31,38 @@ class ScheduleManageFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_schedule_manage, container, false)
         val rvTableList = view.findViewById<RecyclerView>(R.id.rv_table_list)
-        val gson = Gson()
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
             viewModel.tableSelectList.clear()
             viewModel.tableSelectList.addAll(it)
             if (rvTableList.adapter == null) {
-                initTableRecyclerView(rvTableList, viewModel.tableSelectList)
+                initTableRecyclerView(view, rvTableList, viewModel.tableSelectList)
             } else {
                 rvTableList.adapter?.notifyDataSetChanged()
             }
         })
-        viewModel.editTableLiveData.observe(this, Observer {
-            if (it == null) return@Observer
-            startActivity(Intent(activity, ScheduleSettingsActivity::class.java).putExtra(
-                    "tableData", gson.toJson(it)
-            ))
-        })
         return view
     }
 
-    private fun initTableRecyclerView(rvTableList: RecyclerView, data: List<TableSelectBean>) {
+    private fun initTableRecyclerView(fragmentView: View, rvTableList: RecyclerView, data: List<TableSelectBean>) {
         rvTableList.layoutManager = LinearLayoutManager(context)
         val adapter = TableListAdapter(R.layout.item_table_list, data)
+        val gson = Gson()
+        adapter.setOnItemClickListener { _, _, position ->
+            val bundle = Bundle()
+            bundle.putInt("position", position)
+            Navigation.findNavController(fragmentView).navigate(R.id.scheduleManageFragment_to_courseManageFragment, bundle)
+        }
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_share -> {
                 }
                 R.id.ib_edit -> {
-                    viewModel.getTableById(viewModel.tableSelectList[position].id)
+                    viewModel.getTableById(data[position].id).also {
+                        startActivity(Intent(activity, ScheduleSettingsActivity::class.java).putExtra(
+                                "tableData", gson.toJson(it)
+                        ))
+                    }
                 }
                 R.id.ib_delete -> {
                     Toasty.info(activity!!.applicationContext, "长按删除课程表哦~").show()
@@ -68,7 +72,7 @@ class ScheduleManageFragment : Fragment() {
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {
-                    viewModel.deleteTable(viewModel.tableSelectList[position].id)
+                    viewModel.deleteTable(data[position].id)
                     return@setOnItemChildLongClickListener true
                 }
                 else -> {

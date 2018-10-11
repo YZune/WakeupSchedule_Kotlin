@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
+import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 
 object AppWidgetUtils {
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
+        val gson = Gson()
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
         val week = CourseUtils.countWeek(tableBean.startDate)
         val date = CourseUtils.getTodayDate()
@@ -48,7 +50,7 @@ object AppWidgetUtils {
         }
 
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
-        lvIntent.putExtra("tableName", tableBean.tableName)
+        lvIntent.putExtra("tableJson", gson.toJson(tableBean))
         mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_schedule)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)

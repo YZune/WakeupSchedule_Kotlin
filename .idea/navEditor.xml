@@ -5,17 +5,7 @@
       <map>
         <entry key="nav_table_manage.xml">
           <value>
-            <LayoutPositions>
-              <option name="myPositions">
-                <map>
-                  <entry key="scheduleManageFragment">
-                    <value>
-                      <LayoutPositions />
-                    </value>
-                  </entry>
-                </map>
-              </option>
-            </LayoutPositions>
+            <LayoutPositions />
           </value>
         </entry>
         <entry key="nav_time_settings.xml">

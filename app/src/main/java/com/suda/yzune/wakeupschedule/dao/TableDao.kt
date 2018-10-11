@@ -31,7 +31,7 @@ interface TableDao {
     @Query("select * from tablebean where type = 1")
     fun getDefaultTable(): LiveData<TableBean>
 
-    @Query("select id, tableName, background, type from tablebean")
+    @Query("select id, tableName, background, maxWeek, type from tablebean")
     fun getTableSelectList(): LiveData<List<TableSelectBean>>
 
     @Query("delete from tablebean where id = :id")

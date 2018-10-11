@@ -8,5 +8,16 @@
         android:id="@+id/scheduleManageFragment"
         android:name="com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageFragment"
         android:label="多课表管理"
-        tools:layout="@layout/fragment_schedule_manage" />
+        tools:layout="@layout/fragment_schedule_manage">
+        <action
+            android:id="@+id/scheduleManageFragment_to_courseManageFragment"
+            app:destination="@id/courseManageFragment"
+            app:enterAnim="@anim/fragment_in"
+            app:exitAnim="@anim/fragment_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/courseManageFragment"
+        android:name="com.suda.yzune.wakeupschedule.schedule_manage.CourseManageFragment"
+        android:label="课程管理"
+        tools:layout="@layout/fragment_course_manage" />
 </navigation>

@@ -3,10 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule_appwidget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.database.sqlite.SQLiteConstraintException
 import com.suda.yzune.wakeupschedule.AppDatabase
-
-import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 
@@ -21,11 +18,6 @@ class ScheduleAppWidget : AppWidgetProvider() {
         val dataBase = AppDatabase.getDatabase(context)
         val widgetDao = dataBase.appWidgetDao()
         val tableDao = dataBase.tableDao()
-        try {
-            widgetDao.insertAppWidget(AppWidgetBean(appWidgetIds[0], 0, 0, ""))
-        } catch (e: SQLiteConstraintException) {
-
-        }
 
         for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 0)) {
             AppWidgetUtils.refreshScheduleWidget(context, appWidgetManager, appWidget.id, tableDao.getTableByIdInThread(Integer.parseInt(appWidget.info)))

@@ -6,15 +6,17 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.View
 import android.widget.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import java.text.ParseException
@@ -24,42 +26,39 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         return ScheduleRemoteViewsFactory(this.applicationContext, intent)
     }
 
-    private inner class ScheduleRemoteViewsFactory(private val mContext: Context, intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory(private val mContext: Context, private val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         private var week = 0
-        private var itemHeight = 0
         private var marTop = 0
-        private var showWhite = true
-        private var showSunday = true
-        private var sundayFirst = false
-        private var showSat = true
-        private var showStroke = true
-        private var showNone = true
-        private var nodesNum = 11
-        private var textSize = 12
-        private var alpha = 0
+        private var alphaStr = ""
         private val dataBase = AppDatabase.getDatabase(mContext)
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
-        private val tableDao = dataBase.tableDao()
+        private val widgetDao = dataBase.appWidgetDao()
         private val timeList = arrayListOf<TimeDetailBean>()
-        private val summerTimeList = arrayListOf<TimeDetailBean>()
         private lateinit var table: TableBean
+        private lateinit var gson: Gson
 
         override fun onCreate() {
-
+            gson = Gson()
         }
 
         override fun onDataSetChanged() {
-            //table = tableDao.getTableByNameInThread()
-            itemHeight = SizeUtils.dp2px(mContext, PreferenceUtils.getIntFromSP(mContext, "widget_item_height", 56).toFloat())
+            table = gson.fromJson<TableBean>(intent.extras.getString("tableJson"), object : TypeToken<TableBean>() {}.type)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-            if (PreferenceUtils.getBooleanFromSP(mContext.applicationContext, "s_show_time_detail", false)) {
+            val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
+            alphaStr = if (alphaInt != 0) {
+                Integer.toHexString(alphaInt)
+            } else {
+                "00"
+            }
+            if (alphaStr.length < 2) {
+                alphaStr = "0$alphaStr"
+            }
+            if (table.showTime) {
                 timeList.clear()
-                summerTimeList.clear()
-                //todo:timeList.addAll(timeDao.getTimeListInThread())
+                timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
             } else {
                 timeList.clear()
-                summerTimeList.clear()
             }
         }
 
@@ -73,6 +72,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(mContext.packageName, R.layout.item_schedule_widget)
+            Log.d("小部件", "$position ${mRemoteViews}")
             initData(mContext, mRemoteViews)
             return mRemoteViews
         }
@@ -97,8 +97,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
             val weekPanel6 = view.findViewById<View>(R.id.weekPanel_6)
 
-            if (showSunday) {
-                if (sundayFirst) {
+            if (table.showSun) {
+                if (table.sundayFirst) {
                     weekPanel7.visibility = View.GONE
                     weekPanel0.visibility = View.VISIBLE
                 } else {
@@ -110,7 +110,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 weekPanel0.visibility = View.GONE
             }
 
-            if (showSat) {
+            if (table.showSat) {
                 weekPanel6.visibility = View.VISIBLE
             } else {
                 weekPanel6.visibility = View.GONE
@@ -119,14 +119,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             for (i in 0 until 16) {
                 val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
                 val lp = tv.layoutParams
-                lp.height = itemHeight
+                lp.height = table.widgetItemHeight
                 tv.layoutParams = lp
-                if (showWhite) {
-                    tv.setTextColor(ContextCompat.getColor(context.applicationContext, R.color.white))
-                } else {
-                    tv.setTextColor(ContextCompat.getColor(context.applicationContext, R.color.black))
-                }
-                if (i >= nodesNum) {
+                tv.setTextColor(table.widgetTextColor)
+                if (i >= table.nodes) {
                     tv.visibility = View.GONE
                 } else {
                     tv.visibility = View.VISIBLE
@@ -136,7 +132,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initData(context: Context, views: RemoteViews) {
             try {
-                week = countWeek("")
+                week = countWeek(table.startDate)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -145,22 +141,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
-            alpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60)
-            showStroke = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)
-            showNone = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false)
-            nodesNum = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11)
-            showWhite = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)
-            showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true)
-            showSunday = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true)
-            sundayFirst = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false)
-            textSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12)
-
             val view = View.inflate(mContext, R.layout.fragment_schedule, null)
             val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
             initView(view, weekPanel0, context)
 
             for (i in 1..7) {
-                val list = baseDao.getCourseByDayOfTableInThread(i, 1)
+                val list = baseDao.getCourseByDayOfTableInThread(i, table.id)
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
@@ -180,38 +166,33 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val tv = TextView(context)
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        itemHeight * c.step + marTop * (c.step - 1))
+                        table.widgetItemHeight * c.step + marTop * (c.step - 1))
                 if (i > 0) {
-                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (itemHeight + marTop) + marTop, 0, 0)
+                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (table.widgetItemHeight + marTop) + marTop, 0, 0)
                 } else {
-                    lp.setMargins(0, (c.startNode - 1) * (itemHeight + marTop) + marTop, 0, 0)
+                    lp.setMargins(0, (c.startNode - 1) * (table.widgetItemHeight + marTop) + marTop, 0, 0)
                 }
                 tv.layoutParams = lp
                 //tv.gravity = Gravity.CENTER_VERTICAL
-                tv.textSize = textSize.toFloat()
+                tv.textSize = table.widgetItemTextSize.toFloat()
                 tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
                 tv.setPadding(8, 8, 8, 8)
-                tv.setTextColor(ContextCompat.getColor(context.applicationContext, R.color.white))
+                tv.setTextColor(table.widgetCourseTextColor)
 
                 tv.background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
-                if (!showStroke) {
-                    myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), ContextCompat.getColor(context.applicationContext, R.color.transparent))
-                } else {
-                    myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), Color.parseColor("#80ffffff"))
-                }
-
-                val alphaInt = Math.round(255 * (alpha.toFloat() / 100))
-                val a = if (alphaInt != 0) {
+                myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), table.widgetStrokeColor)
+                val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
+                alphaStr = if (alphaInt != 0) {
                     Integer.toHexString(alphaInt)
                 } else {
                     "00"
                 }
 
                 if (c.color.length == 7) {
-                    myGrad.setColor(Color.parseColor("#$a${c.color.substring(1, 7)}"))
+                    myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
                 } else {
-                    myGrad.setColor(Color.parseColor("#$a${c.color.substring(3, 9)}"))
+                    myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
                 }
 
                 strBuilder.append(c.courseName)
@@ -224,7 +205,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     1 -> {
                         strBuilder.append("\n单周")
                         if (week % 2 == 0) {
-                            if (showNone) {
+                            if (table.showOtherWeekCourse) {
                                 strBuilder.append("\n单周[非本周]")
                                 tv.visibility = View.VISIBLE
                                 tv.alpha = 0.6f
@@ -237,7 +218,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     2 -> {
                         strBuilder.append("\n双周")
                         if (week % 2 != 0) {
-                            if (showNone) {
+                            if (table.showOtherWeekCourse) {
                                 tv.alpha = 0.6f
                                 strBuilder.append("\n双周[非本周]")
                                 tv.visibility = View.VISIBLE
@@ -250,7 +231,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
 
                 if (c.startWeek > week || c.endWeek < week) {
-                    if (showNone) {
+                    if (table.showOtherWeekCourse) {
                         tv.alpha = 0.6f
                         strBuilder.append("[非本周]")
                         tv.visibility = View.VISIBLE
@@ -263,13 +244,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 if (timeList.isNotEmpty()) {
                     strBuilder.insert(0, timeList[c.startNode - 1].startTime + "\n")
                 }
-                if (summerTimeList.isNotEmpty()) {
-                    strBuilder.insert(0, summerTimeList[c.startNode - 1].startTime + "\n")
-                }
 
                 tv.text = strBuilder
                 if (day == 7) {
-                    if (sundayFirst) {
+                    if (table.sundayFirst) {
                         weekPanel0.addView(tv)
                     } else {
                         ll.addView(tv)
