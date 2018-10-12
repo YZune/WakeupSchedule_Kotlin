@@ -5,25 +5,13 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context=".schedule.ImportChooseFragment">
-
-    <ImageButton
-        android:id="@+id/ib_close"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="right"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_list_delete" />
-
+    tools:context=".schedule_import.ImportSettingFragment">
 
     <TextView
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导入课程"
         android:textColor="@android:color/black"
@@ -35,59 +23,47 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:gravity="center"
         android:lineSpacingExtra="8dp"
-        android:text="目前已经支持包括苏大在内的采用正方教务系统的学校的课程自动导入哦。请之前成功导入的学校也去申请适配登记一下哦。"
+        android:text="请问你想以何种方式导入呢？\n新建再导入后，请在右栏找到新导入的课表"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/tv_suda"
+        android:id="@+id/tv_cover"
         android:layout_width="160dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
-        android:text="苏大教务导入"
+        android:text="覆盖当前选中课表"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_fangzheng"
+        android:id="@+id/tv_new"
         android:layout_width="160dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
-        android:text="正方教务导入"
+        android:text="新建课表再导入"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/tv_new_fangzheng"
+        android:id="@+id/tv_cancel"
         android:layout_width="160dp"
         android:layout_height="32dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
-        android:text="新正方教务导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tv_feedback"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="申请适配"
+        android:text="取消导入"
         android:textColor="@color/white"
         android:textSize="12sp"
         android:textStyle="bold" />

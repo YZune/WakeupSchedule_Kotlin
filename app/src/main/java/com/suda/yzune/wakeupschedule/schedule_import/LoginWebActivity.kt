@@ -16,6 +16,17 @@ class LoginWebActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login_web)
 
         val viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
+
+        viewModel.getLastId().observe(this, Observer {
+            if (viewModel.newId == -1) {
+                if (it != null) {
+                    viewModel.newId = it + 1
+                } else {
+                    viewModel.newId = 0
+                }
+            }
+        })
+
         viewModel.getImportInfo().observe(this, Observer {
             when (it) {
                 "ok" -> {
@@ -34,6 +45,7 @@ class LoginWebActivity : AppCompatActivity() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
                 transaction.commit()
+                showImportSettingDialog()
             }
             intent.getStringExtra("type") == "apply" -> {
                 val fragment = SchoolInfoFragment.newInstance()
@@ -46,9 +58,14 @@ class LoginWebActivity : AppCompatActivity() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
                 transaction.commit()
+                showImportSettingDialog()
             }
         }
+    }
 
-
+    private fun showImportSettingDialog() {
+        ImportSettingFragment().apply {
+            isCancelable = false
+        }.show(supportFragmentManager, "showImportSettingDialog")
     }
 }

@@ -40,6 +40,10 @@ class WeekScheduleAppWidgetConfigActivity : AppCompatActivity() {
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID)
         }
+
+        ib_back.setOnClickListener {
+            finish()
+        }
     }
 
     private fun initTableRecyclerView(data: List<TableSelectBean>) {

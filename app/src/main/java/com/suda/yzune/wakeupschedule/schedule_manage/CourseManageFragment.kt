@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
@@ -74,6 +74,22 @@ class CourseManageFragment : Fragment() {
             }
 
         }
+        adapter.addFooterView(initFooterView())
         rvCourseList.adapter = adapter
     }
+
+    private fun initFooterView(): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_add_course_btn, null)
+        val tvBtn = view.findViewById<TextView>(R.id.tv_add)
+        tvBtn.text = "添加"
+        tvBtn.setOnClickListener {
+            val intent = Intent(activity, AddCourseActivity::class.java)
+            intent.putExtra("tableId", viewModel.tableSelectList[tablePosition].id)
+            intent.putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
+            intent.putExtra("id", -1)
+            startActivity(intent)
+        }
+        return view
+    }
+
 }

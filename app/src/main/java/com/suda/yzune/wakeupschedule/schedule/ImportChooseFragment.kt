@@ -1,9 +1,11 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,13 @@ import kotlinx.android.synthetic.main.fragment_import_choose.*
 
 class ImportChooseFragment : DialogFragment() {
 
+    private lateinit var viewModel: ScheduleViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -21,8 +30,11 @@ class ImportChooseFragment : DialogFragment() {
         return inflater.inflate(R.layout.fragment_import_choose, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
+        val dm = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(dm)
+        dialog.window.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
         initEvent()
     }
 
@@ -34,6 +46,7 @@ class ImportChooseFragment : DialogFragment() {
         tv_suda.setOnClickListener {
             val intent = Intent(activity!!, LoginWebActivity::class.java)
             intent.putExtra("type", "suda")
+            intent.putExtra("tableId", viewModel.tableData.value?.id)
             startActivity(intent)
             dismiss()
         }
@@ -41,6 +54,7 @@ class ImportChooseFragment : DialogFragment() {
         tv_fangzheng.setOnClickListener {
             val intent = Intent(activity!!, LoginWebActivity::class.java)
             intent.putExtra("type", "FZ")
+            intent.putExtra("tableId", viewModel.tableData.value?.id)
             startActivity(intent)
             dismiss()
         }
@@ -48,6 +62,7 @@ class ImportChooseFragment : DialogFragment() {
         tv_new_fangzheng.setOnClickListener {
             val intent = Intent(activity!!, LoginWebActivity::class.java)
             intent.putExtra("type", "newFZ")
+            intent.putExtra("tableId", viewModel.tableData.value?.id)
             startActivity(intent)
             dismiss()
         }
@@ -62,9 +77,6 @@ class ImportChooseFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                ImportChooseFragment().apply {
-
-                }
+        fun newInstance() = ImportChooseFragment()
     }
 }

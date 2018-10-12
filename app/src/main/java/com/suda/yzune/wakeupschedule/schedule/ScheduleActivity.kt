@@ -225,7 +225,7 @@ class ScheduleActivity : AppCompatActivity() {
         adapter.addHeaderView(FrameLayout(this).apply {
             this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(this@ScheduleActivity.applicationContext, 24f))
         })
-        adapter.addFooterView(initFooterView(adapter))
+        adapter.addFooterView(initFooterView())
         adapter.setOnItemClickListener { _, _, position ->
             Log.d("位置", position.toString())
             if (position < data.size) {
@@ -238,7 +238,7 @@ class ScheduleActivity : AppCompatActivity() {
         rv_table_name.adapter = adapter
     }
 
-    private fun initFooterView(adapter: TableNameAdapter): View {
+    private fun initFooterView(): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, rv_table_name, false)
         val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
         tableAdd.setOnClickListener {

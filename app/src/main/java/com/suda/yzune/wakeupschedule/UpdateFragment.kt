@@ -5,9 +5,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.fragment_update.*
@@ -16,14 +18,18 @@ class UpdateFragment : DialogFragment() {
 
     private lateinit var updateInfo: UpdateInfoBean
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return inflater.inflate(R.layout.fragment_update, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val dm = DisplayMetrics()
+        activity!!.windowManager.defaultDisplay.getMetrics(dm)
+        dialog.window.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun onResume() {

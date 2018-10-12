@@ -1,9 +1,9 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
-import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
 import android.util.Log
@@ -11,6 +11,7 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.ImportBean
+import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
@@ -19,7 +20,15 @@ import org.jsoup.Jsoup
 import java.util.regex.Pattern
 import kotlin.concurrent.thread
 
-class ImportViewModel : ViewModel() {
+class ImportViewModel(application: Application) : AndroidViewModel(application) {
+
+    var newId = -1
+    var importId = -1
+
+    private val dataBase = AppDatabase.getDatabase(application)
+    private val tableDao = dataBase.tableDao()
+    private val baseDao = dataBase.courseBaseDao()
+    private val detailDao = dataBase.courseDetailDao()
 
     private val pattern = "第.*节"
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
@@ -38,6 +47,10 @@ class ImportViewModel : ViewModel() {
     private var hasTypeFlag = false
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
+
+    fun getLastId(): LiveData<Int> {
+        return tableDao.getLastId()
+    }
 
     fun getImportInfo(): LiveData<String> {
         return importInfo
@@ -207,7 +220,7 @@ class ImportViewModel : ViewModel() {
         return courses
     }
 
-    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, tableId: Int, context: Context, source: String) {
+    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, source: String) {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -215,14 +228,14 @@ class ImportViewModel : ViewModel() {
         for (importBean in importList) {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
-                baseList.add(CourseBaseBean(id, importBean.name, "", tableId))
+                baseList.add(CourseBaseBean(id, importBean.name, "", importId))
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
                         teacher = importBean.teacher, day = time[0],
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
-                        tableId = tableId
+                        tableId = importId
                 ))
                 if (time[0] == 0) {
                     retryList.add(importList.size - 1)
@@ -235,7 +248,7 @@ class ImportViewModel : ViewModel() {
                         teacher = importBean.teacher, day = time[0],
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
-                        tableId = tableId
+                        tableId = importId
                 ))
                 if (time[0] == 0) {
                     retryList.add(importList.size - 1)
@@ -246,11 +259,11 @@ class ImportViewModel : ViewModel() {
         if (retryList.isNotEmpty()) {
             importInfo.value = "retry"
         } else {
-            write2DB(context, tableId)
+            write2DB()
         }
     }
 
-    fun parseNewFZ(html: String, tableId: Int, context: Context) {
+    fun parseNewFZ(html: String) {
         baseList.clear()
         detailList.clear()
         var id = 0
@@ -338,13 +351,13 @@ class ImportViewModel : ViewModel() {
 
                         val flag = isContainName(baseList, courseName)
                         if (flag == -1) {
-                            baseList.add(CourseBaseBean(id, courseName, "", tableId))
+                            baseList.add(CourseBaseBean(id, courseName, "", importId))
                             detailList.add(CourseDetailBean(
                                     id = id, room = room,
                                     teacher = teacher, day = day,
                                     step = step, startWeek = startWeek, endWeek = endWeek,
                                     type = type, startNode = node,
-                                    tableId = tableId
+                                    tableId = importId
                             ))
                             id++
                         } else {
@@ -358,7 +371,7 @@ class ImportViewModel : ViewModel() {
                                         teacher = teacher, day = day,
                                         step = step, startWeek = startWeek, endWeek = endWeek,
                                         type = type, startNode = node,
-                                        tableId = tableId
+                                        tableId = importId
                                 ))
                             }
                         }
@@ -367,17 +380,21 @@ class ImportViewModel : ViewModel() {
             }
         }
 
-        write2DB(context, tableId)
+        write2DB()
     }
 
-    private fun write2DB(context: Context, tableId: Int) {
-        val dataBase = AppDatabase.getDatabase(context)
-        val baseDao = dataBase.courseBaseDao()
-        val detailDao = dataBase.courseDetailDao()
-
+    private fun write2DB() {
         thread(name = "InitDataThread") {
             //todo: 增量添加课程
-            baseDao.removeCourseBaseBeanOfTable(tableId)
+            if (newId != importId) {
+                baseDao.removeCourseBaseBeanOfTable(importId)
+            } else {
+                try {
+                    tableDao.insertTable(TableBean(id = newId, tableName = "未命名"))
+                } catch (e: SQLiteConstraintException) {
+                    importInfo.postValue("插入异常")
+                }
+            }
             try {
                 baseDao.insertList(baseList)
                 detailDao.insertList(detailList)

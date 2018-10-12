@@ -116,7 +116,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 weekPanel6.visibility = View.GONE
             }
 
-            for (i in 0 until 16) {
+            for (i in 0 until 20) {
                 val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
                 val lp = tv.layoutParams
                 lp.height = table.widgetItemHeight

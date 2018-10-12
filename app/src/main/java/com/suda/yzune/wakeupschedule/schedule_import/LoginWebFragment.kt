@@ -90,16 +90,16 @@ class LoginWebFragment : Fragment() {
 
         cvLoginLayoutParams = cv_login.layoutParams as RelativeLayout.LayoutParams
 
-        iv_code.setOnClickListener(View.OnClickListener {
+        iv_code.setOnClickListener {
             rl_progress.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
             viewModel.getCheckCode()
-        })
+        }
 
-        iv_error.setOnClickListener(View.OnClickListener {
+        iv_error.setOnClickListener {
             refreshCode(viewModel)
-        })
+        }
 
         cb_check_pwd.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
@@ -200,7 +200,7 @@ class LoginWebFragment : Fragment() {
 
     private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
         if (year == viewModel.getSelectedYear() && term == viewModel.getSelectedTerm()) {
-            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), 0, context!!.applicationContext, viewModel.getSelectedSchedule())
+            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), viewModel.getSelectedSchedule())
         } else {
             viewModel.toSchedule(id, name, year, term).observe(this, Observer {
                 if (it == null || it == "Failure") {
@@ -209,9 +209,7 @@ class LoginWebFragment : Fragment() {
                     cardC2Dialog(viewModel, years)
                     Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
                 } else {
-                    //viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), "$year ${if (term.isBlank()) "1" else term}", applicationContext)
-                    //todo: 多课表管理
-                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), 1, context!!.applicationContext, it)
+                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), it)
                 }
             })
         }
@@ -335,7 +333,7 @@ class LoginWebFragment : Fragment() {
         contentOn.duration = 500
         contentOn.start()
 
-        cv_to_schedule.setOnClickListener(View.OnClickListener {
+        cv_to_schedule.setOnClickListener {
             cardDialog2C()
             if (!isInitScheduleObserver) {
                 isInitScheduleObserver = true
@@ -343,7 +341,7 @@ class LoginWebFragment : Fragment() {
             } else {
                 viewModel.toSchedule(et_id.text.toString(), name, year, term)
             }
-        })
+        }
     }
 
     private fun cardDialog2C() {
