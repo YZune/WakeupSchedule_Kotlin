@@ -78,6 +78,7 @@
                 android:textStyle="bold" />
 
             <ImageView
+                android:layout_margin="16dp"
                 android:id="@+id/iv_tip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

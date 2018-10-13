@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/ib_share"
-        android:title="分享当前课表" />
+        android:title="导出当前课表" />
 
     <item
         android:id="@+id/ib_settings"

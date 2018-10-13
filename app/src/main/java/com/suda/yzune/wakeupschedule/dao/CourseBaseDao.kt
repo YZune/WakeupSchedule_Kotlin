@@ -16,6 +16,9 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean where tableId = :tableId")
     fun getCourseBaseBeanOfTable(tableId: Int): LiveData<List<CourseBaseBean>>
 
+    @Query("select * from coursebasebean where tableId = :tableId")
+    fun getCourseBaseBeanOfTableInThread(tableId: Int): List<CourseBaseBean>
+
     @Query("select * from coursebasebean natural join coursedetailbean where tableId = :tableId")
     fun getCourseOfTable(tableId: Int): LiveData<List<CourseBean>>
 

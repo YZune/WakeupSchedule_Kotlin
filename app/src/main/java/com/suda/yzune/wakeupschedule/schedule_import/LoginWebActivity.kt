@@ -1,21 +1,26 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 
 class LoginWebActivity : AppCompatActivity() {
 
+    private lateinit var viewModel: ImportViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_web)
 
-        val viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
 
         viewModel.getLastId().observe(this, Observer {
             if (viewModel.newId == -1) {
@@ -27,7 +32,7 @@ class LoginWebActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.getImportInfo().observe(this, Observer {
+        viewModel.importInfo.observe(this, Observer {
             when (it) {
                 "ok" -> {
                     Toasty.success(applicationContext, "导入成功").show()
@@ -36,6 +41,18 @@ class LoginWebActivity : AppCompatActivity() {
                 "retry" -> Toasty.info(applicationContext, "请到侧栏“反馈”中联系作者").show()
                 "插入异常" -> Toasty.error(applicationContext, "数据插入异常").show()
                 else -> Toasty.error(applicationContext, it!!).show()
+            }
+        })
+
+        viewModel.fileImportInfo.observe(this, Observer {
+            when (it) {
+                "ok" -> {
+                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+                    finish()
+                }
+                "error" -> {
+                    Toasty.success(applicationContext, "导入失败/(ㄒoㄒ)/~~").show()
+                }
             }
         })
 
@@ -53,6 +70,12 @@ class LoginWebActivity : AppCompatActivity() {
                 transaction.add(R.id.fl_fragment, fragment, "schoolInfo")
                 transaction.commit()
             }
+            intent.getStringExtra("type") == "file" -> {
+                val fragment = FileImportFragment()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "fileImport")
+                transaction.commit()
+            }
             else -> {
                 val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))
                 val transaction = supportFragmentManager.beginTransaction()
@@ -68,4 +91,13 @@ class LoginWebActivity : AppCompatActivity() {
             isCancelable = false
         }.show(supportFragmentManager, "showImportSettingDialog")
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val filePath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
+            viewModel.importFromFile(filePath)
+        }
+    }
+
 }

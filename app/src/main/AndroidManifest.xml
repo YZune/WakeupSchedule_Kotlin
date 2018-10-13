@@ -21,7 +21,17 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".schedule.ScheduleActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:host="*" />
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.wakeup_schedule" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"

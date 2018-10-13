@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
@@ -34,6 +36,11 @@ class WeekScheduleAppWidgetConfigActivity : AppCompatActivity() {
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID)
         }
+
+        GlideApp.with(this)
+                .load("https://ws2.sinaimg.cn/large/0069RVTdgy1fv5ypjuqs1j30u01hcdlt.jpg")
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(iv_tip)
 
         ib_back.setOnClickListener {
             Toasty.info(applicationContext, "请阅读文字后点击“我知道啦”").show()

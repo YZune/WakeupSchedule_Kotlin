@@ -14,6 +14,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import java.io.File
+import java.util.*
 import kotlin.concurrent.thread
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
@@ -23,6 +25,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     private val detailDao = dataBase.courseDetailDao()
     private val tableDao = dataBase.tableDao()
     private val widgetDao = dataBase.appWidgetDao()
+    private val timeTableDao = dataBase.timeTableDao()
     private val timeDao = dataBase.timeDetailDao()
     private val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
 
@@ -36,6 +39,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val clipboardImportInfo = MutableLiveData<String>()
+    val exportImportInfo = MutableLiveData<String>()
     val addBlankTableInfo = MutableLiveData<String>()
     var clipboardCourseList: List<CourseBean>? = null
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
@@ -162,16 +166,27 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    private fun writeCourse2DB(baseList: List<CourseBaseBean>, detailList: List<CourseDetailBean>, tableId: Int = 0, clipboardImportInfo: MutableLiveData<String>) {
-        thread(name = "ImportClipboardDataThread") {
-            baseDao.removeCourseBaseBeanOfTable(tableId)
-            try {
-                baseDao.insertList(baseList)
-                detailDao.insertList(detailList)
-                clipboardImportInfo.postValue("ok")
-            } catch (e: SQLiteConstraintException) {
-                clipboardImportInfo.postValue("插入异常")
+    fun exportData(currentDir: String) {
+        thread(name = "ExportDataThread") {
+            val myDir = if (currentDir.endsWith(File.separator)) {
+                "${currentDir}WakeUp课程表/"
+            } else {
+                "$currentDir/WakeUp课程表/"
             }
+            val dir = File(myDir)
+            if (!dir.exists()) {
+                dir.mkdir()
+            }
+            val gson = Gson()
+            val strBuilder = StringBuilder()
+            strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(tableData.value!!.timeTable)))
+            strBuilder.append("\n${gson.toJson(timeDao.getTimeListInThread(tableData.value!!.timeTable))}")
+            strBuilder.append("\n${gson.toJson(tableData.value!!)}")
+            strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(tableData.value!!.id))}")
+            strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(tableData.value!!.id))}")
+            val file = File(myDir, "${tableData.value!!.tableName}${Calendar.getInstance().timeInMillis}.wakeup_schedule")
+            file.writeText(strBuilder.toString())
+            exportImportInfo.postValue(file.path)
         }
     }
 }

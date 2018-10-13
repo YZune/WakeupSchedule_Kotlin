@@ -19,6 +19,9 @@ interface CourseDetailDao {
     @Query("select * from coursedetailbean where id = :id and tableId = :tableId")
     fun getDetailByIdOfTableInThread(id: Int, tableId: Int): List<CourseDetailBean>
 
+    @Query("select * from coursedetailbean where tableId = :tableId")
+    fun getDetailOfTableInThread(tableId: Int): List<CourseDetailBean>
+
     @Update
     fun updateCourseDetail(courseDetailBean: CourseDetailBean)
 

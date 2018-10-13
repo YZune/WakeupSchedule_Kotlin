@@ -19,6 +19,9 @@ interface TableDao {
     @Query("select max(id) from tablebean")
     fun getLastId(): LiveData<Int>
 
+    @Query("select max(id) from tablebean")
+    fun getLastIdInThread(): Int
+
     @Query("update tablebean set type = 0 where id = :oldId")
     fun resetOldDefaultTable(oldId: Int)
 

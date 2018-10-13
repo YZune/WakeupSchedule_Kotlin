@@ -43,6 +43,13 @@ class ImportChooseFragment : DialogFragment() {
             dismiss()
         }
 
+        tv_file.setOnClickListener {
+            val intent = Intent(activity!!, LoginWebActivity::class.java)
+            intent.putExtra("type", "file")
+            startActivity(intent)
+            dismiss()
+        }
+
         tv_suda.setOnClickListener {
             val intent = Intent(activity!!, LoginWebActivity::class.java)
             intent.putExtra("type", "suda")

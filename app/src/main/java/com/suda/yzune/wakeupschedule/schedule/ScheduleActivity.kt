@@ -1,18 +1,21 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
@@ -138,19 +141,26 @@ class ScheduleActivity : AppCompatActivity() {
                             startActivity(intent)
                         }
                         R.id.ib_share -> {
-                            viewModel.getCourse(table.id).observe(this, Observer {
-                                val gson = Gson()
-                                val course = gson.toJson(it)
-                                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
-                                when {
-                                    course != "" -> {
-                                        clipboardManager.primaryClip = clipData
-                                        Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
-                                    }
-                                    course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-                                    else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-                                }
-                            })
+                            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                            } else {
+                                ExportSettingsFragment().apply {
+                                    this.isCancelable = false
+                                }.show(supportFragmentManager, "exportSettingsFragment")
+                            }
+//                            viewModel.getCourse(table.id).observe(this, Observer {
+//                                val gson = Gson()
+//                                val course = gson.toJson(it)
+//                                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
+//                                when {
+//                                    course != "" -> {
+//                                        clipboardManager.primaryClip = clipData
+//                                        Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
+//                                    }
+//                                    course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+//                                    else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
+//                                }
+//                            })
                         }
                         R.id.ib_manage -> {
                             startActivity(Intent(this, ScheduleManageActivity::class.java))
@@ -397,12 +407,15 @@ class ScheduleActivity : AppCompatActivity() {
                     drawerLayout.postDelayed({
                         val c = Calendar.getInstance()
                         val hour = c.get(Calendar.HOUR_OF_DAY)
-                        Log.d("时间", hour.toString())
-                        if (isQQClientAvailable(applicationContext)) {
-                            val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))
+                        if (hour !in 8..21) {
+                            Toasty.info(applicationContext, "开发者在休息哦(～﹃～)~zZ请换个时间反馈吧").show()
                         } else {
-                            Toasty.error(applicationContext, "手机上没有安装QQ，无法启动聊天窗口:-(", Toast.LENGTH_LONG).show()
+                            if (isQQClientAvailable(applicationContext)) {
+                                val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
+                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))
+                            } else {
+                                Toasty.error(applicationContext, "手机上没有安装QQ，无法启动聊天窗口:-(", Toast.LENGTH_LONG).show()
+                            }
                         }
                     }, 360)
                     return@setNavigationItemSelectedListener true
@@ -410,6 +423,20 @@ class ScheduleActivity : AppCompatActivity() {
                 else -> {
                     Toasty.info(this.applicationContext, "敬请期待").show()
                     return@setNavigationItemSelectedListener true
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            1 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ExportSettingsFragment().apply {
+                        this.isCancelable = false
+                    }.show(supportFragmentManager, "exportSettingsFragment")
+                } else {
+                    Toasty.error(applicationContext, "你取消了授权>_<无法导出", Toast.LENGTH_LONG).show()
                 }
             }
         }

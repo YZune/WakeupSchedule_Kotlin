@@ -7,16 +7,16 @@ import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
-import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
-import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
-import com.suda.yzune.wakeupschedule.bean.ImportBean
-import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import org.jsoup.Jsoup
+import java.io.File
 import java.util.regex.Pattern
 import kotlin.concurrent.thread
 
@@ -29,6 +29,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val tableDao = dataBase.tableDao()
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
+    private val timeTableDao = dataBase.timeTableDao()
+    private val timeDetailDao = dataBase.timeDetailDao()
 
     private val pattern = "第.*节"
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
@@ -43,17 +45,14 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
-    private val importInfo = MutableLiveData<String>()
+    val importInfo = MutableLiveData<String>()
+    val fileImportInfo = MutableLiveData<String>()
     private var hasTypeFlag = false
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
 
     fun getLastId(): LiveData<Int> {
         return tableDao.getLastId()
-    }
-
-    fun getImportInfo(): LiveData<String> {
-        return importInfo
     }
 
     fun getSelectedYear(): String {
@@ -381,6 +380,46 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         write2DB()
+    }
+
+    fun importFromFile(path: String) {
+        thread(name = "importFromFileThread") {
+            try {
+                val gson = Gson()
+                val file = File(path)
+                val list = file.readLines()
+                val timeTable = gson.fromJson<TimeTableBean>(list[0], object : TypeToken<TimeTableBean>() {}.type)
+                val timeDetails = gson.fromJson<List<TimeDetailBean>>(list[1], object : TypeToken<List<TimeDetailBean>>() {}.type)
+                val table = gson.fromJson<TableBean>(list[2], object : TypeToken<TableBean>() {}.type)
+                val courseBaseList = gson.fromJson<List<CourseBaseBean>>(list[3], object : TypeToken<List<CourseBaseBean>>() {}.type)
+                val courseDetailList = gson.fromJson<List<CourseDetailBean>>(list[4], object : TypeToken<List<CourseDetailBean>>() {}.type)
+                val timeTableId = timeTableDao.getMaxIdInThread() + 1
+                timeTable.id = timeTableId
+                timeTable.name = "分享_" + timeTable.name
+                timeDetails.forEach {
+                    it.timeTable = timeTableId
+                }
+                val tableId = tableDao.getLastIdInThread() + 1
+                table.background = ""
+                table.id = tableId
+                table.timeTable = timeTableId
+                table.type = 0
+                courseBaseList.forEach {
+                    it.tableId = tableId
+                }
+                courseDetailList.forEach {
+                    it.tableId = tableId
+                }
+                timeTableDao.insertTimeTable(timeTable)
+                timeDetailDao.insertTimeList(timeDetails)
+                tableDao.insertTable(table)
+                baseDao.insertList(courseBaseList)
+                detailDao.insertList(courseDetailList)
+                fileImportInfo.postValue("ok")
+            } catch (e: SQLiteConstraintException) {
+                fileImportInfo.postValue("error")
+            }
+        }
     }
 
     private fun write2DB() {

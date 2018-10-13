@@ -21,7 +21,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 30
-        versionName "3.16"
+        versionName "3.18"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -31,7 +31,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 }
 
 dependencies {
@@ -66,6 +66,8 @@ dependencies {
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
     implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha06"
     implementation "android.arch.navigation:navigation-ui:1.0.0-alpha06"
+    implementation 'com.nbsp:library:1.8'
+    implementation 'gdut.bsx:share2:0.9.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
