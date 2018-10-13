@@ -15,11 +15,11 @@
 
     <TextView
         android:id="@+id/tv_week"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp"
         android:text="第1周    周四"
         android:textSize="12sp"
         android:textStyle="bold" />
@@ -31,100 +31,65 @@
         android:orientation="horizontal">
 
         <TextView
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
             android:layout_weight="0.5"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text=""
-            android:textSize="12sp" />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_title0_1"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="日"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title1"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="一"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title2"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="二"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title3"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="三"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title4"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="四"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title5"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="五"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title6"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="六"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title7"
+            style="@style/schedule_header_tv"
             android:layout_width="0dp"
-            android:layout_height="20dp"
-            android:layout_weight="1"
-            android:background="@color/nodeIndex"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="日"
-            android:textSize="12sp" />
+            android:layout_weight="1" />
 
     </LinearLayout>
 
     <ListView
-        android:divider="@null"
         android:id="@+id/lv_schedule"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@null" />
 
 </LinearLayout>

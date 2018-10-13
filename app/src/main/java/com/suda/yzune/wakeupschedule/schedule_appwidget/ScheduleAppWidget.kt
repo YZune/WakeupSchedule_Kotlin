@@ -18,9 +18,9 @@ class ScheduleAppWidget : AppWidgetProvider() {
         val dataBase = AppDatabase.getDatabase(context)
         val widgetDao = dataBase.appWidgetDao()
         val tableDao = dataBase.tableDao()
-
+        val table = tableDao.getDefaultTableInThread()
         for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 0)) {
-            AppWidgetUtils.refreshScheduleWidget(context, appWidgetManager, appWidget.id, tableDao.getTableByIdInThread(Integer.parseInt(appWidget.info)))
+            AppWidgetUtils.refreshScheduleWidget(context, appWidgetManager, appWidget.id, table)
         }
     }
 

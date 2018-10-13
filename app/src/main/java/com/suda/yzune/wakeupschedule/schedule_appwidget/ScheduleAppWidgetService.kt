@@ -6,11 +6,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.View
 import android.widget.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -22,28 +19,30 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import java.text.ParseException
 
 class ScheduleAppWidgetService : RemoteViewsService() {
+    private lateinit var table: TableBean
+
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return ScheduleRemoteViewsFactory(this.applicationContext, intent)
+        return ScheduleRemoteViewsFactory()
     }
 
-    private inner class ScheduleRemoteViewsFactory(private val mContext: Context, private val intent: Intent) : RemoteViewsService.RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory : RemoteViewsService.RemoteViewsFactory {
         private var week = 0
+        private var widgetItemHeight = 0
         private var marTop = 0
         private var alphaStr = ""
-        private val dataBase = AppDatabase.getDatabase(mContext)
+        private val dataBase = AppDatabase.getDatabase(applicationContext)
+        private val tableDao = dataBase.tableDao()
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
-        private val widgetDao = dataBase.appWidgetDao()
         private val timeList = arrayListOf<TimeDetailBean>()
-        private lateinit var table: TableBean
-        private lateinit var gson: Gson
 
         override fun onCreate() {
-            gson = Gson()
+
         }
 
         override fun onDataSetChanged() {
-            table = gson.fromJson<TableBean>(intent.extras.getString("tableJson"), object : TypeToken<TableBean>() {}.type)
+            table = tableDao.getDefaultTableInThread()
+            widgetItemHeight = SizeUtils.dp2px(applicationContext, table.widgetItemHeight.toFloat())
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
             alphaStr = if (alphaInt != 0) {
@@ -71,9 +70,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         override fun getViewAt(position: Int): RemoteViews {
-            val mRemoteViews = RemoteViews(mContext.packageName, R.layout.item_schedule_widget)
-            Log.d("小部件", "$position ${mRemoteViews}")
-            initData(mContext, mRemoteViews)
+            val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
+            initData(applicationContext, mRemoteViews)
             return mRemoteViews
         }
 
@@ -93,7 +91,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             return false
         }
 
-        fun initView(view: View, weekPanel0: View, context: Context) {
+        fun initView(view: View, weekPanel0: View) {
             val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
             val weekPanel6 = view.findViewById<View>(R.id.weekPanel_6)
 
@@ -119,7 +117,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             for (i in 0 until 20) {
                 val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
                 val lp = tv.layoutParams
-                lp.height = table.widgetItemHeight
+                lp.height = widgetItemHeight
                 tv.layoutParams = lp
                 tv.setTextColor(table.widgetTextColor)
                 if (i >= table.nodes) {
@@ -141,9 +139,9 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
-            val view = View.inflate(mContext, R.layout.fragment_schedule, null)
+            val view = View.inflate(applicationContext, R.layout.fragment_schedule, null)
             val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
-            initView(view, weekPanel0, context)
+            initView(view, weekPanel0)
 
             for (i in 1..7) {
                 val list = baseDao.getCourseByDayOfTableInThread(i, table.id)
@@ -166,11 +164,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val tv = TextView(context)
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
-                        table.widgetItemHeight * c.step + marTop * (c.step - 1))
+                        widgetItemHeight * c.step + marTop * (c.step - 1))
                 if (i > 0) {
-                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (table.widgetItemHeight + marTop) + marTop, 0, 0)
+                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (widgetItemHeight + marTop) + marTop, 0, 0)
                 } else {
-                    lp.setMargins(0, (c.startNode - 1) * (table.widgetItemHeight + marTop) + marTop, 0, 0)
+                    lp.setMargins(0, (c.startNode - 1) * (widgetItemHeight + marTop) + marTop, 0, 0)
                 }
                 tv.layoutParams = lp
                 //tv.gravity = Gravity.CENTER_VERTICAL

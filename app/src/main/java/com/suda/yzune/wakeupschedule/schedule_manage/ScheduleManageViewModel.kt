@@ -17,6 +17,7 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
     private val baseDao = dataBase.courseBaseDao()
+    private val widgetDao = dataBase.appWidgetDao()
 
     val tableSelectList = arrayListOf<TableSelectBean>()
     val courseList = arrayListOf<CourseBaseBean>()
@@ -63,5 +64,9 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
                 Log.d("删除", e.toString())
             }
         }
+    }
+
+    fun getScheduleWidgetIds(): LiveData<List<Int>> {
+        return widgetDao.getWidgetIdsByTypes(0, 0)
     }
 }

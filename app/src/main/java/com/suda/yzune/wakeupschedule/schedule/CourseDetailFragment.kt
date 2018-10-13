@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 
-import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -9,7 +8,6 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Vibrator
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -21,7 +19,6 @@ import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 
@@ -35,7 +32,7 @@ class CourseDetailFragment : DialogFragment() {
     lateinit var room: TextView
     lateinit var close: ImageButton
     private lateinit var viewModel: ScheduleViewModel
-    private val scheduleWidgetIds = arrayListOf<Int>()
+
     var makeSure = 0
 
     private val timer = object : CountDownTimer(5000, 1000) {
@@ -53,10 +50,6 @@ class CourseDetailFragment : DialogFragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-        viewModel.getScheduleWidgetIds(viewModel.tableData.value!!.tableName).observe(this, Observer {
-            scheduleWidgetIds.clear()
-            scheduleWidgetIds.addAll(it!!)
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -110,7 +103,6 @@ class CourseDetailFragment : DialogFragment() {
     }
 
     private fun initEvent() {
-        val mVibrator = context!!.getSystemService(Service.VIBRATOR_SERVICE) as Vibrator
         close.setOnClickListener {
             dismiss()
         }
@@ -132,23 +124,20 @@ class CourseDetailFragment : DialogFragment() {
             } else {
                 viewModel.deleteCourseBean(course)
                 Toasty.success(context!!.applicationContext, "删除成功").show()
-                val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
-                scheduleWidgetIds.forEach {
-                    AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it, viewModel.tableData.value!!)
-                }
                 dismiss()
             }
         }
 
         ib_delete_course.setOnLongClickListener { _ ->
-            mVibrator.vibrate(100)
+            val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
             viewModel.deleteCourseBaseBean(course.id, course.tableId)
             Toasty.success(context!!.applicationContext, "删除成功").show()
-            val appWidgetManager = AppWidgetManager.getInstance(context!!.applicationContext)
-            scheduleWidgetIds.forEach {
-                AppWidgetUtils.refreshScheduleWidget(context!!.applicationContext, appWidgetManager, it, viewModel.tableData.value!!)
-            }
-            dismiss()
+            viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
+                list?.forEach {
+                    appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
+                }
+                dismiss()
+            })
             return@setOnLongClickListener true
         }
     }

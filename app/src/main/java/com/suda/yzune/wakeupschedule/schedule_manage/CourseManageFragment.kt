@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
 
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -66,6 +67,12 @@ class CourseManageFragment : Fragment() {
             when (view.id) {
                 R.id.ib_delete -> {
                     viewModel.deleteCourse(data[position])
+                    val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
+                    viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
+                        list?.forEach {
+                            appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
+                        }
+                    })
                     return@setOnItemChildLongClickListener true
                 }
                 else -> {

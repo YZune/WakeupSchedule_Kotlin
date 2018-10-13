@@ -145,6 +145,10 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
 
     }
 
+    fun getScheduleWidgetIds(): LiveData<List<Int>> {
+        return widgetDao.getWidgetIdsByTypes(0, 0)
+    }
+
     fun checkSameName(): LiveData<CourseBaseBean> {
         return baseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
     }

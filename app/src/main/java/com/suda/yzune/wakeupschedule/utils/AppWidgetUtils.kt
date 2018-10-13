@@ -5,14 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
-import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 
 object AppWidgetUtils {
+    val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
-        val gson = Gson()
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
         val week = CourseUtils.countWeek(tableBean.startDate)
         val date = CourseUtils.getTodayDate()
@@ -45,12 +44,21 @@ object AppWidgetUtils {
 
         mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
         mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
-        for (i in 0 until 8) {
-            mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
+        val weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(tableBean.startDate), week, tableBean.sundayFirst)
+        mRemoteViews.setTextColor(R.id.tv_title0, tableBean.widgetTextColor)
+        mRemoteViews.setTextViewText(R.id.tv_title0, weekDate[0] + "\n月")
+        if (tableBean.sundayFirst) {
+            for (i in 0..6) {
+                mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
+                mRemoteViews.setTextViewText(R.id.tv_title0_1 + i, daysArray[i] + "\n${weekDate[i + 1]}")
+            }
+        } else {
+            for (i in 0..6) {
+                mRemoteViews.setTextColor(R.id.tv_title1 + i, tableBean.widgetTextColor)
+                mRemoteViews.setTextViewText(R.id.tv_title1 + i, daysArray[i + 1] + "\n${weekDate[i + 1]}")
+            }
         }
-
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
-        lvIntent.putExtra("tableJson", gson.toJson(tableBean))
         mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_schedule)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)

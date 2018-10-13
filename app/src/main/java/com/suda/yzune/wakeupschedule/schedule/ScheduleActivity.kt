@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ClipData
@@ -53,6 +54,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.ParseException
+import java.util.*
 
 
 class ScheduleActivity : AppCompatActivity() {
@@ -70,6 +72,7 @@ class ScheduleActivity : AppCompatActivity() {
         setContentView(R.layout.activity_schedule)
 
         clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
 
         viewModel.updateFromOldVer()
 
@@ -156,6 +159,12 @@ class ScheduleActivity : AppCompatActivity() {
                     return@setOnMenuItemClickListener true
                 }
             }
+
+            viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
+                list?.forEach {
+                    AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it, table)
+                }
+            })
         })
 
         viewModel.currentWeek.observe(this, Observer {
@@ -386,6 +395,9 @@ class ScheduleActivity : AppCompatActivity() {
                 R.id.nav_feedback -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
+                        val c = Calendar.getInstance()
+                        val hour = c.get(Calendar.HOUR_OF_DAY)
+                        Log.d("时间", hour.toString())
                         if (isQQClientAvailable(applicationContext)) {
                             val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))

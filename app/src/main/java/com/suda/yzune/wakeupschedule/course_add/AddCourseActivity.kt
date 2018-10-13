@@ -22,7 +22,6 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
@@ -235,12 +234,12 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         viewModel.saveInfo.observe(this, Observer { s ->
             when (s) {
                 "ok" -> {
+                    val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                     Toasty.success(this.applicationContext, "保存成功").show()
                     isSaved = true
-                    val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                    viewModel.getTableData().observe(this, Observer { tableBean ->
-                        viewModel.widgetIds.forEach {
-                            AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it, tableBean!!)
+                    viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
+                        list?.forEach {
+                            appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
                         }
                         finish()
                     })

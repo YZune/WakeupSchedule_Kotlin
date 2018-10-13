@@ -22,6 +22,10 @@ class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidVi
         return tableDao.getTableById(id)
     }
 
+    fun getDefaultTable(): LiveData<TableBean> {
+        return tableDao.getDefaultTable()
+    }
+
     fun insertWeekAppWidgetData(appWidget: AppWidgetBean) {
         thread(name = "insertWeekAppWidgetDataThread") {
             try {

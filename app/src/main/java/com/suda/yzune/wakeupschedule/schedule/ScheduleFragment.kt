@@ -58,16 +58,19 @@ class ScheduleFragment : Fragment() {
             }
 
             weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(table.startDate), week, table.sundayFirst)
+            tv_title0.setTextColor(table.textColor)
             tv_title0.text = weekDate[0] + "\n月"
             var tvTitle: TextView
             if (table.sundayFirst) {
                 for (i in 0..6) {
                     tvTitle = view.findViewById(R.id.tv_title0_1 + i)
+                    tvTitle.setTextColor(table.textColor)
                     tvTitle.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
                 }
             } else {
                 for (i in 0..6) {
                     tvTitle = view.findViewById(R.id.tv_title1 + i)
+                    tvTitle.setTextColor(table.textColor)
                     tvTitle.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
                 }
             }
@@ -103,10 +106,10 @@ class ScheduleFragment : Fragment() {
                 viewModel.alphaStr = "0${viewModel.alphaStr}"
             }
 
-            for (i in 0 until 9) {
-                val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
-                tv.setTextColor(table.textColor)
-            }
+//            for (i in 0 until 9) {
+//                val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
+//                tv.setTextColor(table.textColor)
+//            }
 
             for (i in 1..7) {
                 viewModel.allCourseList[i - 1].observe(this, Observer {
@@ -146,7 +149,7 @@ class ScheduleFragment : Fragment() {
                 lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             }
             tv.layoutParams = lp
-            //tv.gravity = Gravity.CENTER_VERTICAL
+//            tv.gravity = Gravity.CENTER_HORIZONTAL
             tv.textSize = table.itemTextSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             tv.setPadding(8, 8, 8, 8)
