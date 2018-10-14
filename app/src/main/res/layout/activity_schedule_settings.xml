@@ -725,6 +725,28 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:id="@+id/ll_widget_stroke_color"
+                style="@style/settings_item_ll_with_tips">
+
+                <TextView
+                    style="@style/settings_item_tv_title"
+                    android:text="格子边框颜色" />
+
+                <TextView
+                    style="@style/settings_item_tv_tip"
+                    android:text="将不透明度调到最低就可以隐藏边框了哦~" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

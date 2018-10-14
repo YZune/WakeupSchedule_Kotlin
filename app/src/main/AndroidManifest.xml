@@ -72,6 +72,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".intro.IntroActivity" />
         <activity android:name=".schedule_manage.ScheduleManageActivity" />
         <activity android:name=".schedule_settings.ScheduleSettingsActivity" />
         <activity android:name=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity">

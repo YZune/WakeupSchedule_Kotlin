@@ -175,6 +175,21 @@ class ScheduleSettingsActivity : AppCompatActivity() {
                     .show()
         }
 
+        ll_widget_stroke_color.setOnClickListener {
+            ColorPickerDialogBuilder
+                    .with(this)
+                    .setTitle("选取颜色")
+                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                    .density(12)
+                    .initialColor(viewModel.table.widgetStrokeColor)
+                    .setPositiveButton("确定") { _, colorInt, _ ->
+                        viewModel.table.widgetStrokeColor = colorInt
+                    }
+                    .setNegativeButton("取消") { _, _ -> }
+                    .build()
+                    .show()
+        }
+
         sb_widget_item_alpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 tv_widget_item_alpha.text = "$progress"

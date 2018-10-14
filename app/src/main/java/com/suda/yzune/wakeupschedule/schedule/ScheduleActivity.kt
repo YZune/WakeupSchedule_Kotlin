@@ -7,11 +7,8 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -42,6 +39,8 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.intro.IntroActivity
+import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
@@ -63,7 +62,6 @@ import java.util.*
 class ScheduleActivity : AppCompatActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var clipboardManager: ClipboardManager
     private var mAdapter: SchedulePagerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +72,6 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        clipboardManager = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
 
         viewModel.updateFromOldVer()
@@ -148,19 +145,6 @@ class ScheduleActivity : AppCompatActivity() {
                                     this.isCancelable = false
                                 }.show(supportFragmentManager, "exportSettingsFragment")
                             }
-//                            viewModel.getCourse(table.id).observe(this, Observer {
-//                                val gson = Gson()
-//                                val course = gson.toJson(it)
-//                                val clipData = ClipData.newPlainText("WakeUpSchedule", "来自WakeUp课程表的分享：$course")
-//                                when {
-//                                    course != "" -> {
-//                                        clipboardManager.primaryClip = clipData
-//                                        Toasty.success(applicationContext, "课程已经复制到剪贴板啦，快原封不动地发给小伙伴吧~", Toast.LENGTH_LONG).show()
-//                                    }
-//                                    course == "" -> Toasty.error(applicationContext, "看起来你的课表还是空的哦w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-//                                    else -> Toasty.error(applicationContext, "分享失败w(ﾟДﾟ)w", Toast.LENGTH_LONG).show()
-//                                }
-//                            })
                         }
                         R.id.ib_manage -> {
                             startActivity(Intent(this, ScheduleManageActivity::class.java))
@@ -222,6 +206,14 @@ class ScheduleActivity : AppCompatActivity() {
 
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
             initIntro()
+        }
+
+        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "v3.20", false)) {
+            try {
+                startActivity(Intent(this, IntroActivity::class.java))
+            } catch (e: Exception) {
+                Toasty.error(applicationContext, "使用教程载入失败>_<请劳烦自己探索").show()
+            }
         }
 
         viewModel.initTableSelectList().observe(this, Observer {
@@ -299,35 +291,61 @@ class ScheduleActivity : AppCompatActivity() {
         TapTargetSequence(this)
                 .targets(
                         TapTarget.forView(ib_add, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.red)      // Specify a color for the outer circle
-                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
-                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
-                                .titleTextSize(16)                  // Specify the size (in sp) of the title text
-                                .titleTextColor(R.color.white)      // Specify the color of the title text
-                                .descriptionTextSize(12)            // Specify the size (in sp) of the description text
-                                .textColor(R.color.white)            // Specify a color for both the title and description text
-                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
-                                .drawShadow(true)                   // Whether to draw a drop shadow or not
-                                .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
-                                .tintTarget(true)                   // Whether to tint the target view's color
-                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
-                                .targetRadius(60),                  // Specify the target radius (in dp)
-                        TapTarget.forView(ib_import, "这是自动导入课程的按钮", "现在已经支持包括苏大在内的采用正方教务系统的学校的课程自动导入了！\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.lightBlue)      // Specify a color for the outer circle
-                                .outerCircleAlpha(0.96f)            // Specify the alpha amount for the outer circle
-                                .targetCircleColor(R.color.white)   // Specify a color for the target circle
-                                .titleTextSize(16)                  // Specify the size (in sp) of the title text
-                                .titleTextColor(R.color.white)      // Specify the color of the title text
-                                .descriptionTextSize(12)            // Specify the size (in sp) of the description text
-                                .textColor(R.color.white)            // Specify a color for both the title and description text
-                                .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                                .dimColor(R.color.black)            // If set, will dim behind the view with 30% opacity of the given color
-                                .drawShadow(true)                   // Whether to draw a drop shadow or not
-                                .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
-                                .tintTarget(true)                   // Whether to tint the target view's color
-                                .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
-                                .targetRadius(60)                // Specify the target radius (in dp)
+                                .outerCircleColor(R.color.red)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.white)
+                                .titleTextSize(16)
+                                .titleTextColor(R.color.white)
+                                .descriptionTextSize(12)
+                                .textColor(R.color.white)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(false)
+                                .targetRadius(60),
+                        TapTarget.forView(ib_import, "这是导入课程的按钮", "现在已经支持采用正方教务系统的学校的课程自动导入了！\n还有别人分享给你的文件也要从这里导入哦~\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.lightBlue)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.white)
+                                .titleTextSize(16)
+                                .titleTextColor(R.color.white)
+                                .descriptionTextSize(12)
+                                .textColor(R.color.white)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(false)
+                                .targetRadius(60),
+                        TapTarget.forView(ib_more, "点这里发现更多", "比如可以分享课表给别人哦~\n多点去探索吧\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.blue)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.white)
+                                .titleTextSize(16)
+                                .titleTextColor(R.color.white)
+                                .descriptionTextSize(12)
+                                .textColor(R.color.white)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(false)
+                                .targetRadius(60),
+                        TapTarget.forView(tv_weekday, "点击此处可快速回到当前周", "主界面左右滑动可以切换周数\n点击这里就可以快速回到当前周啦\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.deepOrange)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColor(R.color.white)
+                                .titleTextSize(16)
+                                .titleTextColor(R.color.white)
+                                .descriptionTextSize(12)
+                                .textColor(R.color.white)
+                                .dimColor(R.color.black)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(false)
+                                .targetRadius(60)
                 ).listener(object : TapTargetSequence.Listener {
                     override fun onSequenceCanceled(lastTarget: TapTarget?) {
 
@@ -345,20 +363,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
         tv_date.text = CourseUtils.getTodayDate()
-
-        if (clipboardManager.primaryClip != null) {
-            if (clipboardManager.primaryClip.itemCount > 0) {
-                if (clipboardManager.primaryClip.getItemAt(0).text != null) {
-                    val clipStr = clipboardManager.primaryClip.getItemAt(0).text.toString()
-                    if (clipStr.startsWith("来自WakeUp课程表的分享：")) {
-                        viewModel.tranClipboardStr(clipStr)
-                        ClipboardImportFragment.newInstance().show(supportFragmentManager, "ClipboardImportFragment")
-                    }
-                }
-            }
-        }
     }
 
     @SuppressLint("MissingSuperCall")
@@ -437,6 +442,15 @@ class ScheduleActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, "exportSettingsFragment")
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法导出", Toast.LENGTH_LONG).show()
+                }
+            }
+            2 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    val intent = Intent(this, LoginWebActivity::class.java)
+                    intent.putExtra("type", "file")
+                    startActivity(intent)
+                } else {
+                    Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
         }

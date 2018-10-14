@@ -20,8 +20,8 @@ android {
         applicationId "com.suda.yzune.wakeupschedule"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 30
-        versionName "3.18"
+        versionCode 32
+        versionName "3.20"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -68,6 +68,7 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui:1.0.0-alpha06"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
+    implementation 'com.github.paolorotolo:appintro:v4.2.3'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

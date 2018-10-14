@@ -1,10 +1,14 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 
+import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.DialogFragment
+import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -44,10 +48,15 @@ class ImportChooseFragment : DialogFragment() {
         }
 
         tv_file.setOnClickListener {
-            val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "file")
-            startActivity(intent)
-            dismiss()
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
+                dismiss()
+            } else {
+                val intent = Intent(activity!!, LoginWebActivity::class.java)
+                intent.putExtra("type", "file")
+                startActivity(intent)
+                dismiss()
+            }
         }
 
         tv_suda.setOnClickListener {

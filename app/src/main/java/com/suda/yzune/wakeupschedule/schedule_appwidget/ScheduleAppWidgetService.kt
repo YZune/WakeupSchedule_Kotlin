@@ -180,17 +180,13 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 tv.background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
                 myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), table.widgetStrokeColor)
-                val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
-                alphaStr = if (alphaInt != 0) {
-                    Integer.toHexString(alphaInt)
-                } else {
-                    "00"
-                }
 
-                if (c.color.length == 7) {
-                    myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
-                } else {
-                    myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
+                when {
+                    c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
+                    c.color.isEmpty() -> {
+                        myGrad.setColor(Color.parseColor("#${alphaStr}fa6278"))
+                    }
+                    else -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
                 }
 
                 strBuilder.append(c.courseName)
