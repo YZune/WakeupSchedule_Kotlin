@@ -50,6 +50,12 @@ class SelectTimeDetailFragment : DialogFragment() {
         var endIndex: Int
         startIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].startTime)
         endIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].endTime)
+        if (startIndex == -1) {
+            startIndex = 0
+        }
+        if (endIndex == -1) {
+            endIndex = 0
+        }
         wp_start.selectedItemPosition = startIndex
         wp_end.selectedItemPosition = endIndex
 
@@ -72,7 +78,7 @@ class SelectTimeDetailFragment : DialogFragment() {
             val startStr = viewModel.timeSelectList[startIndex]
             viewModel.timeList[position].startTime = startStr
             if (viewModel.timeTableList[tablePosition].sameLen) {
-                viewModel.timeList[position].endTime = CourseUtils.calAfterTime(startStr, viewModel.timeTableList[position].courseLen)
+                viewModel.timeList[position].endTime = CourseUtils.calAfterTime(startStr, viewModel.timeTableList[tablePosition].courseLen)
             } else {
                 viewModel.timeList[position].endTime = viewModel.timeSelectList[endIndex]
             }

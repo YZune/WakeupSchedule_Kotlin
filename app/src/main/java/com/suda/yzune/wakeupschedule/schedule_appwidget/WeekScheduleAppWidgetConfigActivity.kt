@@ -53,7 +53,7 @@ class WeekScheduleAppWidgetConfigActivity : AppCompatActivity() {
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                 AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, mAppWidgetId, it)
                 val resultValue = Intent()
-                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, arrayListOf(mAppWidgetId))
+                resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
                 setResult(Activity.RESULT_OK, resultValue)
                 finish()
             })
