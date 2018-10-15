@@ -5,5 +5,6 @@ data class TableSelectBean(
         var tableName: String,
         var background: String = "",
         var maxWeek: Int,
+        var nodes: Int,
         var type: Int = 0
 )

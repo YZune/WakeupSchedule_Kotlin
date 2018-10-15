@@ -121,6 +121,7 @@ class ScheduleActivity : AppCompatActivity() {
                 val intent = Intent(this, AddCourseActivity::class.java)
                 intent.putExtra("tableId", table.id)
                 intent.putExtra("maxWeek", table.maxWeek)
+                intent.putExtra("nodes", table.nodes)
                 intent.putExtra("id", -1)
                 startActivity(intent)
             }
@@ -212,7 +213,8 @@ class ScheduleActivity : AppCompatActivity() {
             try {
                 startActivity(Intent(this, IntroActivity::class.java))
             } catch (e: Exception) {
-                Toasty.error(applicationContext, "使用教程载入失败>_<请劳烦自己探索").show()
+                Toasty.error(applicationContext, "使用教程载入失败>_<请查看侧栏的使用技巧").show()
+                PreferenceUtils.saveBooleanToSP(applicationContext, "v3.20", true)
             }
         }
 

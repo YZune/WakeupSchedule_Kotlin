@@ -10,7 +10,6 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
-import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlin.concurrent.thread
 
@@ -23,20 +22,15 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
     private val widgetDao = dataBase.appWidgetDao()
-    private val tableDao = dataBase.tableDao()
     private val saveList = mutableListOf<CourseDetailBean>()
 
     var updateFlag = true
     val deleteList = arrayListOf<Int>()
     val saveInfo = MutableLiveData<String>()
-    val widgetIds = arrayListOf<Int>()
     var newId = -1
     var tableId = 0
     var maxWeek = 30
-
-    fun getTableData(): LiveData<TableBean> {
-        return tableDao.getTableById(tableId)
-    }
+    var nodes = 11
 
     fun judgeType(list: ArrayList<Int>, weeksNum: Int): Int {
         var flag = 0
@@ -121,9 +115,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
                     baseDao.updateCourseBaseBean(baseBean)
                     detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
                     detailDao.insertList(saveList)
-                    widgetIds.clear()
-                    //todo: widget
-                    widgetIds.addAll(widgetDao.getIdsOfWeekTypeOfTableInThread(tableId.toString()))
                     saveInfo.postValue("ok")
                 } catch (e: SQLiteConstraintException) {
                     saveInfo.postValue(e.toString())

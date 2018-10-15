@@ -55,12 +55,13 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
         if (intent.extras.getInt("id") == -1) {
             viewModel.tableId = intent.extras.getInt("tableId")
             viewModel.maxWeek = intent.extras.getInt("maxWeek")
+            viewModel.nodes = intent.extras.getInt("nodes")
             initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.initBaseData())
         } else {
             viewModel.tableId = intent.extras.getInt("tableId")
             viewModel.maxWeek = intent.extras.getInt("maxWeek")
+            viewModel.nodes = intent.extras.getInt("nodes")
             viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
-                //viewModel.editList.clear()
                 if (!isSaved) {
                     list!!.forEach {
                         viewModel.editList.add(CourseUtils.detailBean2EditBean(it))

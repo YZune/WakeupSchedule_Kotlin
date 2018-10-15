@@ -56,6 +56,7 @@ class CourseManageFragment : Fragment() {
                     intent.putExtra("id", data[position].id)
                     intent.putExtra("tableId", data[position].tableId)
                     intent.putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
+                    intent.putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
                     startActivity(intent)
                 }
                 R.id.ib_delete -> {
@@ -93,6 +94,7 @@ class CourseManageFragment : Fragment() {
             val intent = Intent(activity, AddCourseActivity::class.java)
             intent.putExtra("tableId", viewModel.tableSelectList[tablePosition].id)
             intent.putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
+            intent.putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
             intent.putExtra("id", -1)
             startActivity(intent)
         }

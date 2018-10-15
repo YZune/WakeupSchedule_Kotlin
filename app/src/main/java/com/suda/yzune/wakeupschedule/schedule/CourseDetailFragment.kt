@@ -113,6 +113,7 @@ class CourseDetailFragment : DialogFragment() {
             intent.putExtra("id", course.id)
             intent.putExtra("tableId", course.tableId)
             intent.putExtra("maxWeek", viewModel.tableData.value!!.maxWeek)
+            intent.putExtra("nodes", viewModel.tableData.value!!.nodes)
             startActivity(intent)
         }
 
