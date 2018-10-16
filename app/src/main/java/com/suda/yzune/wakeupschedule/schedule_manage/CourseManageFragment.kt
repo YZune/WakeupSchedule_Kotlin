@@ -40,7 +40,7 @@ class CourseManageFragment : Fragment() {
             if (rvCourseList.adapter == null) {
                 initRecyclerView(rvCourseList, viewModel.courseList)
             } else {
-                rvCourseList.adapter.notifyDataSetChanged()
+                rvCourseList!!.adapter!!.notifyDataSetChanged()
             }
         })
         return view
