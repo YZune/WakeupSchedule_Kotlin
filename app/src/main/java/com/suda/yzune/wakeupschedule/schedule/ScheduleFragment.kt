@@ -243,7 +243,6 @@ class ScheduleFragment : Fragment() {
                 }
             }
 
-
             if (day == 7) {
                 if (table.sundayFirst) {
                     weekPanel_0.addView(tv)

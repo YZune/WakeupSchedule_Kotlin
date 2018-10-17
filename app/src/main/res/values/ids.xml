@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="anko_iv_bg" type="id" />
+    <item name="anko_tv_date" type="id" />
+    <item name="anko_tv_week" type="id" />
+</resources>
