@@ -3,4 +3,14 @@
     <item name="anko_iv_bg" type="id" />
     <item name="anko_tv_date" type="id" />
     <item name="anko_tv_week" type="id" />
+    <item name="anko_tv_weekday" type="id" />
+    <item name="anko_ib_nav" type="id" />
+    <item name="anko_ib_add" type="id" />
+    <item name="anko_ib_import" type="id" />
+    <item name="anko_ib_more" type="id" />
+    <item name="anko_vp_schedule" type="id" />
+    <item name="anko_sb_week" type="id" />
+    <item name="anko_nv" type="id" />
+    <item name="anko_nv_end" type="id" />
+    <item name="anko_rv_table_name" type="id" />
 </resources>

@@ -70,6 +70,7 @@ class ScheduleActivity : AppCompatActivity() {
         PreferenceUtils.init(applicationContext)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
+        //ScheduleActivityUI().setContentView(this)
         setContentView(R.layout.activity_schedule)
 
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
