@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="anko_cl_schedule" type="id" />
     <item name="anko_iv_bg" type="id" />
     <item name="anko_tv_date" type="id" />
     <item name="anko_tv_week" type="id" />
@@ -13,4 +14,47 @@
     <item name="anko_nv" type="id" />
     <item name="anko_nv_end" type="id" />
     <item name="anko_rv_table_name" type="id" />
+    <item name="anko_drawer_layout" type="id" />
+
+    <item name="anko_cl_fragment_schedule" type="id" />
+    <item name="anko_tv_title0" type="id" />
+    <item name="anko_tv_title0_1" type="id" />
+    <item name="anko_tv_title1" type="id" />
+    <item name="anko_tv_title2" type="id" />
+    <item name="anko_tv_title3" type="id" />
+    <item name="anko_tv_title4" type="id" />
+    <item name="anko_tv_title5" type="id" />
+    <item name="anko_tv_title6" type="id" />
+    <item name="anko_tv_title7" type="id" />
+    <item name="anko_sv_schedule" type="id" />
+    <item name="anko_cl_content_panel" type="id" />
+    <item name="anko_tv_node1" type="id" />
+    <item name="anko_tv_node2" type="id" />
+    <item name="anko_tv_node3" type="id" />
+    <item name="anko_tv_node4" type="id" />
+    <item name="anko_tv_node5" type="id" />
+    <item name="anko_tv_node6" type="id" />
+    <item name="anko_tv_node7" type="id" />
+    <item name="anko_tv_node8" type="id" />
+    <item name="anko_tv_node9" type="id" />
+    <item name="anko_tv_node91" type="id" />
+    <item name="anko_tv_node92" type="id" />
+    <item name="anko_tv_node93" type="id" />
+    <item name="anko_tv_node94" type="id" />
+    <item name="anko_tv_node95" type="id" />
+    <item name="anko_tv_node96" type="id" />
+    <item name="anko_tv_node97" type="id" />
+    <item name="anko_tv_node98" type="id" />
+    <item name="anko_tv_node99" type="id" />
+    <item name="anko_tv_node991" type="id" />
+    <item name="anko_tv_node992" type="id" />
+    <item name="anko_ll_week_panel_0" type="id" />
+    <item name="anko_ll_week_panel_1" type="id" />
+    <item name="anko_ll_week_panel_2" type="id" />
+    <item name="anko_ll_week_panel_3" type="id" />
+    <item name="anko_ll_week_panel_4" type="id" />
+    <item name="anko_ll_week_panel_5" type="id" />
+    <item name="anko_ll_week_panel_6" type="id" />
+    <item name="anko_ll_week_panel_7" type="id" />
+
 </resources>

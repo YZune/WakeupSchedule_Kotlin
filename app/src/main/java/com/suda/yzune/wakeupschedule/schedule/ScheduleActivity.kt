@@ -11,13 +11,17 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -30,6 +34,7 @@ import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.suda.yzune.wakeupschedule.AboutActivity
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
@@ -50,8 +55,9 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_schedule.*
 import okhttp3.ResponseBody
+import org.jetbrains.anko.find
+import org.jetbrains.anko.setContentView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -64,20 +70,49 @@ class ScheduleActivity : AppCompatActivity() {
     private lateinit var viewModel: ScheduleViewModel
     private var mAdapter: SchedulePagerAdapter? = null
 
+    private lateinit var scheduleViewPager: ViewPager
+    private lateinit var bgImageView: ImageView
+    private lateinit var scheduleConstraintLayout: ConstraintLayout
+    private lateinit var weekSeekBar: VerticalSeekBar
+    private lateinit var navImageButton: ImageButton
+    private lateinit var addImageButton: ImageButton
+    private lateinit var importImageButton: ImageButton
+    private lateinit var moreImageButton: ImageButton
+    private lateinit var tableNameRecyclerView: RecyclerView
+    private lateinit var dateTextView: TextView
+    private lateinit var weekTextView: TextView
+    private lateinit var weekdayTextView: TextView
+    private lateinit var navigationView: NavigationView
+    private lateinit var drawerLayout: DrawerLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
 
         PreferenceUtils.init(applicationContext)
         ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
-        //ScheduleActivityUI().setContentView(this)
-        setContentView(R.layout.activity_schedule)
+        ScheduleActivityUI().setContentView(this)
+
+        scheduleViewPager = find(R.id.anko_vp_schedule)
+        bgImageView = find(R.id.anko_iv_bg)
+        scheduleConstraintLayout = find(R.id.anko_cl_schedule)
+        weekSeekBar = find(R.id.anko_sb_week)
+        navImageButton = find(R.id.anko_ib_nav)
+        addImageButton = find(R.id.anko_ib_add)
+        importImageButton = find(R.id.anko_ib_import)
+        moreImageButton = find(R.id.anko_ib_more)
+        tableNameRecyclerView = find(R.id.anko_rv_table_name)
+        dateTextView = find(R.id.anko_tv_date)
+        weekTextView = find(R.id.anko_tv_week)
+        weekdayTextView = find(R.id.anko_tv_weekday)
+        navigationView = find(R.id.anko_nv)
+        drawerLayout = find(R.id.anko_drawer_layout)
 
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
 
         viewModel.updateFromOldVer()
 
-        val fadeInAni = ObjectAnimator.ofFloat(vp_schedule, "alpha", 0f, 1f)
+        val fadeInAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 0f, 1f)
         fadeInAni.duration = 500
         viewModel.initViewData().observe(this, Observer { table ->
             if (table == null) return@Observer
@@ -91,7 +126,7 @@ class ScheduleActivity : AppCompatActivity() {
                         .override(x, y)
                         .transition(DrawableTransitionOptions.withCrossFade())
                         //.apply(bitmapTransform(BlurTransformation(0, 5)))
-                        .into(iv_bg)
+                        .into(bgImageView)
             } else {
                 val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
                 val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -100,11 +135,11 @@ class ScheduleActivity : AppCompatActivity() {
                         .override(x, y)
                         .transition(DrawableTransitionOptions.withCrossFade())
                         //.apply(bitmapTransform(BlurTransformation(0, 5)))
-                        .into(iv_bg)
+                        .into(bgImageView)
             }
 
-            for (i in 0 until cl_schedule.childCount) {
-                val view = cl_schedule.getChildAt(i)
+            for (i in 0 until scheduleConstraintLayout.childCount) {
+                val view = scheduleConstraintLayout.getChildAt(i)
                 when (view) {
                     is TextView -> view.setTextColor(table.textColor)
                     is ImageButton -> view.setColorFilter(table.textColor)
@@ -114,11 +149,11 @@ class ScheduleActivity : AppCompatActivity() {
             viewModel.itemHeight = SizeUtils.dp2px(applicationContext, table.itemHeight.toFloat())
             viewModel.currentWeek.value = countWeek(table.startDate)
             initCourseData(table.id)
-            sb_week.max = table.maxWeek - 1
+            weekSeekBar.max = table.maxWeek - 1
             initViewPage(table.maxWeek, table)
             fadeInAni.start()
 
-            ib_add.setOnClickListener {
+            addImageButton.setOnClickListener {
                 val intent = Intent(this, AddCourseActivity::class.java)
                 intent.putExtra("tableId", table.id)
                 intent.putExtra("maxWeek", table.maxWeek)
@@ -127,7 +162,7 @@ class ScheduleActivity : AppCompatActivity() {
                 startActivity(intent)
             }
 
-            ib_more.setOnClickListener { view ->
+            moreImageButton.setOnClickListener { view ->
                 val popupMenu = PopupMenu(this, view)
                 popupMenu.menuInflater.inflate(R.menu.menu_more, popupMenu.menu)
                 popupMenu.show()
@@ -223,17 +258,17 @@ class ScheduleActivity : AppCompatActivity() {
             if (it == null) return@Observer
             viewModel.tableSelectList.clear()
             viewModel.tableSelectList.addAll(it)
-            if (rv_table_name.adapter == null) {
+            if (tableNameRecyclerView.adapter == null) {
                 initTableMenu(viewModel.tableSelectList)
             } else {
-                rv_table_name.adapter?.notifyDataSetChanged()
+                tableNameRecyclerView.adapter?.notifyDataSetChanged()
             }
         })
     }
 
     private fun initTableMenu(data: List<TableSelectBean>) {
-        rv_table_name.layoutManager = LinearLayoutManager(this)
-        val fadeOutAni = ObjectAnimator.ofFloat(vp_schedule, "alpha", 1f, 0f)
+        tableNameRecyclerView.layoutManager = LinearLayoutManager(this)
+        val fadeOutAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 1f, 0f)
         fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addHeaderView(FrameLayout(this).apply {
@@ -249,11 +284,11 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
         }
-        rv_table_name.adapter = adapter
+        tableNameRecyclerView.adapter = adapter
     }
 
     private fun initFooterView(): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, rv_table_name, false)
+        val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, tableNameRecyclerView, false)
         val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
@@ -293,7 +328,7 @@ class ScheduleActivity : AppCompatActivity() {
     private fun initIntro() {
         TapTargetSequence(this)
                 .targets(
-                        TapTarget.forView(ib_add, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
+                        TapTarget.forView(addImageButton, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
                                 .outerCircleColor(R.color.red)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.white)
@@ -307,7 +342,7 @@ class ScheduleActivity : AppCompatActivity() {
                                 .tintTarget(true)
                                 .transparentTarget(false)
                                 .targetRadius(60),
-                        TapTarget.forView(ib_import, "这是导入课程的按钮", "现在已经支持采用正方教务系统的学校的课程自动导入了！\n还有别人分享给你的文件也要从这里导入哦~\n点击白色区域告诉我你get到了")
+                        TapTarget.forView(importImageButton, "这是导入课程的按钮", "现在已经支持采用正方教务系统的学校的课程自动导入了！\n还有别人分享给你的文件也要从这里导入哦~\n点击白色区域告诉我你get到了")
                                 .outerCircleColor(R.color.lightBlue)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.white)
@@ -321,7 +356,7 @@ class ScheduleActivity : AppCompatActivity() {
                                 .tintTarget(true)
                                 .transparentTarget(false)
                                 .targetRadius(60),
-                        TapTarget.forView(ib_more, "点这里发现更多", "比如可以分享课表给别人哦~\n多点去探索吧\n点击白色区域告诉我你get到了")
+                        TapTarget.forView(moreImageButton, "点这里发现更多", "比如可以分享课表给别人哦~\n多点去探索吧\n点击白色区域告诉我你get到了")
                                 .outerCircleColor(R.color.blue)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.white)
@@ -335,7 +370,7 @@ class ScheduleActivity : AppCompatActivity() {
                                 .tintTarget(true)
                                 .transparentTarget(false)
                                 .targetRadius(60),
-                        TapTarget.forView(tv_weekday, "点击此处可快速回到当前周", "主界面左右滑动可以切换周数\n点击这里就可以快速回到当前周啦\n点击白色区域告诉我你get到了")
+                        TapTarget.forView(weekdayTextView, "点击此处可快速回到当前周", "主界面左右滑动可以切换周数\n点击这里就可以快速回到当前周啦\n点击白色区域告诉我你get到了")
                                 .outerCircleColor(R.color.deepOrange)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColor(R.color.white)
@@ -366,7 +401,7 @@ class ScheduleActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        tv_date.text = CourseUtils.getTodayDate()
+        dateTextView.text = CourseUtils.getTodayDate()
     }
 
     @SuppressLint("MissingSuperCall")
@@ -375,8 +410,8 @@ class ScheduleActivity : AppCompatActivity() {
     }
 
     private fun initNavView() {
-        navigation_view.itemIconTintList = null
-        navigation_view.setNavigationItemSelectedListener {
+        navigationView.itemIconTintList = null
+        navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
@@ -462,8 +497,8 @@ class ScheduleActivity : AppCompatActivity() {
     private fun initViewPage(maxWeek: Int, table: TableBean) {
         if (mAdapter == null) {
             mAdapter = SchedulePagerAdapter(supportFragmentManager)
-            vp_schedule.adapter = mAdapter
-            vp_schedule.offscreenPageLimit = 1
+            scheduleViewPager.adapter = mAdapter
+            scheduleViewPager.offscreenPageLimit = 1
         }
         mAdapter!!.removeAll()
         for (i in 1..maxWeek) {
@@ -471,27 +506,27 @@ class ScheduleActivity : AppCompatActivity() {
         }
         mAdapter!!.notifyDataSetChanged()
         if (CourseUtils.countWeek(table.startDate) > 0) {
-            vp_schedule.currentItem = CourseUtils.countWeek(table.startDate) - 1
+            scheduleViewPager.currentItem = CourseUtils.countWeek(table.startDate) - 1
         } else {
-            vp_schedule.currentItem = 0
+            scheduleViewPager.currentItem = 0
         }
     }
 
     private fun initEvent(currentWeek: Int) {
-        sb_week.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        weekSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 try {
                     if (currentWeek > 0) {
                         if (progress + 1 == currentWeek) {
-                            tv_week.text = "第${progress + 1}周"
-                            tv_weekday.text = CourseUtils.getWeekday()
+                            weekTextView.text = "第${progress + 1}周"
+                            weekdayTextView.text = CourseUtils.getWeekday()
                         } else {
-                            tv_week.text = "第${progress + 1}周"
-                            tv_weekday.text = "非本周"
+                            weekTextView.text = "第${progress + 1}周"
+                            weekdayTextView.text = "非本周"
                         }
                     } else {
-                        tv_week.text = "还没有开学哦"
-                        tv_weekday.text = CourseUtils.getWeekday()
+                        weekTextView.text = "还没有开学哦"
+                        weekdayTextView.text = CourseUtils.getWeekday()
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()
@@ -503,42 +538,42 @@ class ScheduleActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                vp_schedule.currentItem = seekBar!!.progress
+                scheduleViewPager.currentItem = seekBar!!.progress
             }
         })
 
-        ib_nav.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
+        navImageButton.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
 
-        ib_import.setOnClickListener {
+        importImageButton.setOnClickListener {
             ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
         }
 
-        tv_weekday.setOnClickListener {
-            tv_weekday.text = CourseUtils.getWeekday()
+        weekdayTextView.setOnClickListener {
+            weekdayTextView.text = CourseUtils.getWeekday()
             if (currentWeek > 0) {
-                vp_schedule.currentItem = currentWeek - 1
+                scheduleViewPager.currentItem = currentWeek - 1
             } else {
-                vp_schedule.currentItem = 0
+                scheduleViewPager.currentItem = 0
             }
         }
 
-        vp_schedule.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        scheduleViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
-                sb_week.progress = position
+                weekSeekBar.progress = position
                 try {
                     if (currentWeek > 0) {
                         if (viewModel.selectedWeek == currentWeek) {
-                            tv_week.text = "第${viewModel.selectedWeek}周"
-                            tv_weekday.text = CourseUtils.getWeekday()
+                            weekTextView.text = "第${viewModel.selectedWeek}周"
+                            weekdayTextView.text = CourseUtils.getWeekday()
                         } else {
-                            tv_week.text = "第${viewModel.selectedWeek}周"
-                            tv_weekday.text = "非本周"
+                            weekTextView.text = "第${viewModel.selectedWeek}周"
+                            weekdayTextView.text = "非本周"
                         }
                     } else {
-                        tv_week.text = "还没有开学哦"
-                        tv_weekday.text = CourseUtils.getWeekday()
+                        weekTextView.text = "还没有开学哦"
+                        weekdayTextView.text = CourseUtils.getWeekday()
                     }
                 } catch (e: ParseException) {
                     e.printStackTrace()

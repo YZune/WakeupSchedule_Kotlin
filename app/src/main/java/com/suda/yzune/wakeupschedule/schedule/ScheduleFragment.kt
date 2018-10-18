@@ -6,8 +6,11 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.support.constraint.ConstraintSet.CHAIN_PACKED
+import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +22,10 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_schedule.*
+import org.jetbrains.anko.*
+import org.jetbrains.anko.constraint.layout.constraintLayout
+import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.find
 
 class ScheduleFragment : Fragment() {
 
@@ -35,64 +41,168 @@ class ScheduleFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater.inflate(R.layout.fragment_schedule, container, false)
+        val view = UI {
+            constraintLayout {
+                for (i in 0..8) {
+                    textView {
+                        id = R.id.anko_tv_title0 + i
+                        setPadding(0, dip(8), 0, dip(8))
+                        textSize = 12f
+                        gravity = Gravity.CENTER
+                        setLineSpacing(dip(2).toFloat(), 1f)
+                        if (i == 0) {
+                            typeface = Typeface.DEFAULT_BOLD
+                        }
+                    }.lparams(0, wrapContent) {
+                        when (i) {
+                            0 -> {
+                                horizontalWeight = 0.5f
+                                startToStart = PARENT_ID
+                                topToTop = PARENT_ID
+                            }
+                            8 -> {
+                                horizontalWeight = 1f
+                                startToEnd = R.id.anko_tv_title0 + i - 1
+                                endToEnd = PARENT_ID
+                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
+                            }
+                            else -> {
+                                horizontalWeight = 1f
+                                startToEnd = R.id.anko_tv_title0 + i - 1
+                                endToStart = R.id.anko_tv_title0 + i + 1
+                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
+                            }
+                        }
+                    }
+                }
+                scrollView {
+                    id = R.id.anko_sv_schedule
+                    //isNestedScrollingEnabled = true
+                    constraintLayout {
+                        id = R.id.anko_cl_content_panel
+                        for (i in 1..20) {
+                            textView(i.toString()) {
+                                id = R.id.anko_tv_node1 + i - 1
+                                textSize = 12f
+                                gravity = Gravity.CENTER
+                            }.lparams(0, dip(56)) {
+                                topMargin = dip(2)
+                                when (i) {
+                                    1 -> {
+                                        bottomToTop = R.id.anko_tv_node1 + i
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = PARENT_ID
+                                        topToTop = PARENT_ID
+                                        verticalBias = 0f
+                                        verticalChainStyle = CHAIN_PACKED
+                                    }
+                                    20 -> {
+                                        bottomToBottom = PARENT_ID
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = PARENT_ID
+                                        topToBottom = R.id.anko_tv_node1 + i - 2
+                                    }
+                                    else -> {
+                                        bottomToTop = R.id.anko_tv_node1 + i
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = PARENT_ID
+                                        topToBottom = R.id.anko_tv_node1 + i - 2
+                                    }
+                                }
+                            }
+                        }
+                        for (i in 0..7) {
+                            verticalLayout {
+                                id = R.id.anko_ll_week_panel_0 + i
+                            }.lparams(0, wrapContent) {
+                                marginStart = dip(1)
+                                marginEnd = dip(1)
+                                horizontalWeight = 1f
+                                when (i) {
+                                    0 -> {
+                                        startToEnd = R.id.anko_tv_node1
+                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
+                                    }
+                                    7 -> {
+                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
+                                        endToEnd = PARENT_ID
+                                    }
+                                    else -> {
+                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
+                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
+                                    }
+                                }
+                            }
+                        }
+
+                    }.lparams(matchParent, wrapContent)
+                }.lparams(matchParent, 0) {
+                    bottomToBottom = PARENT_ID
+                    topToBottom = R.id.anko_tv_title0
+                }
+            }
+        }.view
+
         viewModel.tableData.observe(this, Observer { table ->
             if (table == null) return@Observer
             if (table.showSun) {
                 if (table.sundayFirst) {
-                    tv_title7.visibility = View.GONE
-                    weekPanel_7.visibility = View.GONE
-                    tv_title0_1.visibility = View.VISIBLE
-                    weekPanel_0.visibility = View.VISIBLE
+                    find<View>(R.id.anko_tv_title7).visibility = View.GONE
+                    find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+                    find<View>(R.id.anko_tv_title0_1).visibility = View.VISIBLE
+                    find<View>(R.id.anko_ll_week_panel_0).visibility = View.VISIBLE
                 } else {
-                    tv_title7.visibility = View.VISIBLE
-                    weekPanel_7.visibility = View.VISIBLE
-                    tv_title0_1.visibility = View.GONE
-                    weekPanel_0.visibility = View.GONE
+                    find<View>(R.id.anko_tv_title7).visibility = View.VISIBLE
+                    find<View>(R.id.anko_ll_week_panel_7).visibility = View.VISIBLE
+                    find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
+                    find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
                 }
             } else {
-                tv_title7.visibility = View.GONE
-                weekPanel_7.visibility = View.GONE
-                tv_title0_1.visibility = View.GONE
-                weekPanel_0.visibility = View.GONE
+                find<View>(R.id.anko_tv_title7).visibility = View.GONE
+                find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+                find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
+                find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
             }
 
             weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(table.startDate), week, table.sundayFirst)
-            tv_title0.setTextColor(table.textColor)
-            tv_title0.text = weekDate[0] + "\n月"
-            var tvTitle: TextView
+            find<TextView>(R.id.anko_tv_title0).setTextColor(table.textColor)
+            find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
+            var textView: TextView
             if (table.sundayFirst) {
                 for (i in 0..6) {
-                    tvTitle = view.findViewById(R.id.tv_title0_1 + i)
-                    tvTitle.setTextColor(table.textColor)
-                    tvTitle.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
+                    textView = find(R.id.anko_tv_title0_1 + i)
+                    textView.setTextColor(table.textColor)
+                    textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
                 }
             } else {
                 for (i in 0..6) {
-                    tvTitle = view.findViewById(R.id.tv_title1 + i)
-                    tvTitle.setTextColor(table.textColor)
-                    tvTitle.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
+                    textView = find(R.id.anko_tv_title1 + i)
+                    textView.setTextColor(table.textColor)
+                    textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
                 }
             }
 
             if (table.showSat) {
-                weekPanel_6.visibility = View.VISIBLE
-                tv_title6.visibility = View.VISIBLE
+                find<View>(R.id.anko_tv_title6).visibility = View.VISIBLE
+                find<View>(R.id.anko_ll_week_panel_6).visibility = View.VISIBLE
             } else {
-                weekPanel_6.visibility = View.GONE
-                tv_title6.visibility = View.GONE
+                find<View>(R.id.anko_tv_title6).visibility = View.GONE
+                find<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
             }
 
             for (i in 0 until 20) {
-                val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
-                val lp = tv.layoutParams
+                textView = find(R.id.anko_tv_node1 + 1)
+                val lp = textView.layoutParams
                 lp.height = viewModel.itemHeight
-                tv.layoutParams = lp
-                tv.setTextColor(table.textColor)
+                textView.layoutParams = lp
+                textView.setTextColor(table.textColor)
                 if (i >= table.nodes) {
-                    tv.visibility = View.GONE
+                    textView.visibility = View.GONE
                 } else {
-                    tv.visibility = View.VISIBLE
+                    textView.visibility = View.VISIBLE
                 }
             }
 
@@ -106,14 +216,9 @@ class ScheduleFragment : Fragment() {
                 viewModel.alphaStr = "0${viewModel.alphaStr}"
             }
 
-//            for (i in 0 until 9) {
-//                val tv = view.findViewById<TextView>(R.id.tv_title0 + i)
-//                tv.setTextColor(table.textColor)
-//            }
-
             for (i in 1..7) {
                 viewModel.allCourseList[i - 1].observe(this, Observer {
-                    initWeekPanel(view, weekPanels, it, i, table)
+                    initWeekPanel(weekPanels, it, i, table)
                 })
             }
         })
@@ -128,11 +233,11 @@ class ScheduleFragment : Fragment() {
                 }
     }
 
-    private fun initWeekPanel(view: View, lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, table: TableBean) {
+    private fun initWeekPanel(lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, table: TableBean) {
         val llIndex = day - 1
-        lls[llIndex] = view.findViewById<View>(R.id.weekPanel_1 + llIndex) as LinearLayout?
+        lls[llIndex] = find(R.id.anko_ll_week_panel_1 + llIndex)
         lls[llIndex]?.removeAllViews()
-        weekPanel_0.removeAllViews()
+        find<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
         if (data == null || data.isEmpty()) return
         val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
@@ -245,7 +350,7 @@ class ScheduleFragment : Fragment() {
 
             if (day == 7) {
                 if (table.sundayFirst) {
-                    weekPanel_0.addView(tv)
+                    find<LinearLayout>(R.id.anko_ll_week_panel_0).addView(tv)
                 } else {
                     ll.addView(tv)
                 }

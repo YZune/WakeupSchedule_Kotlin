@@ -28,16 +28,18 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
         drawerLayout {
+            id = R.id.anko_drawer_layout
 
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
             constraintLayout {
+                id = R.id.anko_cl_schedule
 
                 imageView {
                     id = R.id.anko_iv_bg
                     scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams {
+                }.lparams(matchParent, matchParent) {
                     startToStart = PARENT_ID
                     endToEnd = PARENT_ID
                     topToTop = PARENT_ID
@@ -53,7 +55,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                     startToStart = PARENT_ID
                     topToTop = PARENT_ID
                     marginStart = dip(24)
-                    topMargin = dip(24)
+                    topMargin = dip(48)
                 }
 
                 textView {
@@ -115,13 +117,14 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                     scaleType = ImageView.ScaleType.CENTER_CROP
                 }.lparams(dip(32), dip(32)) {
                     topMargin = dip(48)
+                    marginEnd = dip(8)
                     endToEnd = PARENT_ID
                     topToTop = PARENT_ID
                 }
 
                 viewPager {
                     id = R.id.anko_vp_schedule
-                }.lparams {
+                }.lparams(matchParent, 0) {
                     topToBottom = R.id.anko_tv_week
                     bottomToBottom = PARENT_ID
                     startToStart = PARENT_ID
@@ -135,7 +138,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                         splitTrack = false
                         thumb = context.getDrawable(R.color.transparent)
                     }
-                }.lparams {
+                }.lparams(wrapContent, 0) {
                     topToBottom = R.id.anko_tv_week
                     bottomToBottom = PARENT_ID
                     endToEnd = PARENT_ID
