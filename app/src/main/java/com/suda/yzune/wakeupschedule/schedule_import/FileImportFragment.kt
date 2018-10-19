@@ -44,6 +44,12 @@ class FileImportFragment : Fragment() {
             "$basePath/tencent/TIMfile_recv/"
         }
 
+        val wechatPath = if (basePath.endsWith(File.separator)) {
+            "${basePath}tencent/micromsg/Download/"
+        } else {
+            "$basePath/tencent/micromsg/Download/"
+        }
+
         tv_qq.setOnClickListener {
             MaterialFilePicker()
                     .withActivity(activity)
@@ -58,6 +64,15 @@ class FileImportFragment : Fragment() {
                     .withActivity(activity)
                     .withRequestCode(1)
                     .withPath(timPath)
+                    .withFilter(Pattern.compile(".*\\.wakeup_schedule$")) // Filtering files and directories by file name using regexp
+                    .start()
+        }
+
+        tv_wechat.setOnClickListener {
+            MaterialFilePicker()
+                    .withActivity(activity)
+                    .withRequestCode(1)
+                    .withPath(wechatPath)
                     .withFilter(Pattern.compile(".*\\.wakeup_schedule$")) // Filtering files and directories by file name using regexp
                     .start()
         }

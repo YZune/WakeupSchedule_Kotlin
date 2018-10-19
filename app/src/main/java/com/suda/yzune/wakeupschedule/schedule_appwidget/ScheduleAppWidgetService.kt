@@ -44,7 +44,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             table = tableDao.getDefaultTableInThread()
             widgetItemHeight = SizeUtils.dp2px(applicationContext, table.widgetItemHeight.toFloat())
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-            val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
+            val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
             alphaStr = if (alphaInt != 0) {
                 Integer.toHexString(alphaInt)
             } else {

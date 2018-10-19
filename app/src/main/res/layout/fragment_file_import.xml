@@ -69,7 +69,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:lineSpacingExtra="4dp"
-                android:text="如果是从QQ或Tim收到分享的导出文件，请点击对应的按钮。如果存放在其他路径，请自行选择。"
+                android:text="如果是从QQ或Tim或者微信收到分享的导出文件，请点击对应的按钮。如果存放在其他路径，请自行选择。"
                 android:textSize="12sp" />
 
             <TextView
@@ -98,6 +98,21 @@
                 android:background="@drawable/select_textview_bg"
                 android:gravity="center"
                 android:text="我从Tim接收的分享文件"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_wechat"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="我从微信接收的分享文件"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />

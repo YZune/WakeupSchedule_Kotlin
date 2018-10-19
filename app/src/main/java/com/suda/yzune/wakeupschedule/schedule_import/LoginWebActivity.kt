@@ -6,10 +6,12 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.activityManager
 
 class LoginWebActivity : AppCompatActivity() {
 
@@ -47,7 +49,8 @@ class LoginWebActivity : AppCompatActivity() {
         viewModel.fileImportInfo.observe(this, Observer {
             when (it) {
                 "ok" -> {
-                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                    activityManager
                     finish()
                 }
                 "error" -> {
@@ -75,6 +78,13 @@ class LoginWebActivity : AppCompatActivity() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
+            }
+            intent.action == Intent.ACTION_VIEW -> {
+                val fragment = FileImportFragment()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "fileImport")
+                transaction.commit()
+                viewModel.importFromFile(intent.data!!.path!!)
             }
             else -> {
                 val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))

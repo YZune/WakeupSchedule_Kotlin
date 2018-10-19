@@ -59,6 +59,7 @@ class ScheduleFragment : Fragment() {
                                 horizontalWeight = 0.5f
                                 startToStart = PARENT_ID
                                 topToTop = PARENT_ID
+                                endToStart = R.id.anko_tv_title0 + i + 1
                             }
                             8 -> {
                                 horizontalWeight = 1f
@@ -194,7 +195,7 @@ class ScheduleFragment : Fragment() {
             }
 
             for (i in 0 until 20) {
-                textView = find(R.id.anko_tv_node1 + 1)
+                textView = find(R.id.anko_tv_node1 + i)
                 val lp = textView.layoutParams
                 lp.height = viewModel.itemHeight
                 textView.layoutParams = lp
