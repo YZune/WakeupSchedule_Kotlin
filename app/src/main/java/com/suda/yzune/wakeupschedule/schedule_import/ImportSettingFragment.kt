@@ -32,7 +32,7 @@ class ImportSettingFragment : DialogFragment() {
         super.onStart()
         val dm = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 
         tv_cover.setOnClickListener {
             viewModel.importId = activity!!.intent.extras.getInt("tableId")

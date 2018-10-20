@@ -16,6 +16,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_donate.*
+import org.jetbrains.anko.startActivity
 import java.util.*
 
 
@@ -79,7 +80,7 @@ class DonateFragment : DialogFragment() {
         }
 
         tv_donate_list.setOnClickListener {
-            startActivity(Intent(activity, DonateActivity::class.java))
+            activity!!.startActivity<DonateActivity>()
         }
     }
 

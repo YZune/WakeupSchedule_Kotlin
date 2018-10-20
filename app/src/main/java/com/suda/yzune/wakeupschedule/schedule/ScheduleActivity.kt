@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.Manifest
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
@@ -58,6 +57,7 @@ import es.dmoral.toasty.Toasty
 import okhttp3.ResponseBody
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -154,12 +154,11 @@ class ScheduleActivity : AppCompatActivity() {
             fadeInAni.start()
 
             addImageButton.setOnClickListener {
-                val intent = Intent(this, AddCourseActivity::class.java)
-                intent.putExtra("tableId", table.id)
-                intent.putExtra("maxWeek", table.maxWeek)
-                intent.putExtra("nodes", table.nodes)
-                intent.putExtra("id", -1)
-                startActivity(intent)
+                startActivity<AddCourseActivity>(
+                        "tableId" to table.id,
+                        "maxWeek" to table.maxWeek,
+                        "nodes" to table.nodes,
+                        "id" to -1)
             }
 
             moreImageButton.setOnClickListener { view ->
@@ -170,9 +169,7 @@ class ScheduleActivity : AppCompatActivity() {
                     when (menuItem.itemId) {
                         R.id.ib_settings -> {
                             val gson = Gson()
-                            val intent = Intent(this, ScheduleSettingsActivity::class.java)
-                            intent.putExtra("tableData", gson.toJson(table))
-                            startActivity(intent)
+                            startActivity<ScheduleSettingsActivity>("tableData" to gson.toJson(table))
                         }
                         R.id.ib_share -> {
                             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -184,7 +181,7 @@ class ScheduleActivity : AppCompatActivity() {
                             }
                         }
                         R.id.ib_manage -> {
-                            startActivity(Intent(this, ScheduleManageActivity::class.java))
+                            startActivity<ScheduleManageActivity>()
                         }
                     }
                     return@setOnMenuItemClickListener true
@@ -247,7 +244,7 @@ class ScheduleActivity : AppCompatActivity() {
 
         if (!PreferenceUtils.getBooleanFromSP(applicationContext, "v3.20", false)) {
             try {
-                startActivity(Intent(this, IntroActivity::class.java))
+                startActivity<IntroActivity>()
             } catch (e: Exception) {
                 Toasty.error(applicationContext, "使用教程载入失败>_<请查看侧栏的使用技巧").show()
                 PreferenceUtils.saveBooleanToSP(applicationContext, "v3.20", true)
@@ -312,7 +309,7 @@ class ScheduleActivity : AppCompatActivity() {
         }
         val tableManage = view.findViewById<ImageButton>(R.id.nav_table_manage)
         tableManage.setOnClickListener {
-            startActivity(Intent(this, ScheduleManageActivity::class.java))
+            startActivity<ScheduleManageActivity>()
         }
         return view
     }
@@ -404,11 +401,6 @@ class ScheduleActivity : AppCompatActivity() {
         dateTextView.text = CourseUtils.getTodayDate()
     }
 
-    @SuppressLint("MissingSuperCall")
-    override fun onSaveInstanceState(outState: Bundle?) {
-
-    }
-
     private fun initNavView() {
         navigationView.itemIconTintList = null
         navigationView.setNavigationItemSelectedListener {
@@ -416,14 +408,14 @@ class ScheduleActivity : AppCompatActivity() {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity(Intent(this, SettingsActivity::class.java))
+                        startActivity<SettingsActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_explore -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity(Intent(this, ApplyInfoActivity::class.java))
+                        startActivity<ApplyInfoActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -437,7 +429,7 @@ class ScheduleActivity : AppCompatActivity() {
                 R.id.nav_about -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity(Intent(this, AboutActivity::class.java))
+                        startActivity<AboutActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -484,9 +476,7 @@ class ScheduleActivity : AppCompatActivity() {
             }
             2 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    val intent = Intent(this, LoginWebActivity::class.java)
-                    intent.putExtra("type", "file")
-                    startActivity(intent)
+                    startActivity<LoginWebActivity>("type" to "file")
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }

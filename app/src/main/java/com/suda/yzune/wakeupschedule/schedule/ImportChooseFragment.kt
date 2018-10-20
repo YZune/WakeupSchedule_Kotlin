@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.Manifest
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
@@ -17,6 +16,7 @@ import android.view.Window
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import kotlinx.android.synthetic.main.fragment_import_choose.*
+import org.jetbrains.anko.startActivity
 
 class ImportChooseFragment : DialogFragment() {
 
@@ -38,7 +38,7 @@ class ImportChooseFragment : DialogFragment() {
         super.onStart()
         val dm = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
         initEvent()
     }
 
@@ -52,41 +52,37 @@ class ImportChooseFragment : DialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
                 dismiss()
             } else {
-                val intent = Intent(activity!!, LoginWebActivity::class.java)
-                intent.putExtra("type", "file")
-                startActivity(intent)
+                activity!!.startActivity<LoginWebActivity>("type" to "file")
                 dismiss()
             }
         }
 
         tv_suda.setOnClickListener {
-            val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "suda")
-            intent.putExtra("tableId", viewModel.tableData.value?.id)
-            startActivity(intent)
+            activity!!.startActivity<LoginWebActivity>(
+                    "type" to "suda",
+                    "tableId" to viewModel.tableData.value?.id
+            )
             dismiss()
         }
 
         tv_fangzheng.setOnClickListener {
-            val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "FZ")
-            intent.putExtra("tableId", viewModel.tableData.value?.id)
-            startActivity(intent)
+            activity!!.startActivity<LoginWebActivity>(
+                    "type" to "FZ",
+                    "tableId" to viewModel.tableData.value?.id
+            )
             dismiss()
         }
 
         tv_new_fangzheng.setOnClickListener {
-            val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "newFZ")
-            intent.putExtra("tableId", viewModel.tableData.value?.id)
-            startActivity(intent)
+            activity!!.startActivity<LoginWebActivity>(
+                    "type" to "newFZ",
+                    "tableId" to viewModel.tableData.value?.id
+            )
             dismiss()
         }
 
         tv_feedback.setOnClickListener {
-            val intent = Intent(activity!!, LoginWebActivity::class.java)
-            intent.putExtra("type", "apply")
-            startActivity(intent)
+            activity!!.startActivity<LoginWebActivity>("type" to "apply")
             dismiss()
         }
     }

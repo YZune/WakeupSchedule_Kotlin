@@ -27,6 +27,8 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.find
 
+private const val weekParam = "week"
+
 class ScheduleFragment : Fragment() {
 
     private var week = 0
@@ -36,7 +38,9 @@ class ScheduleFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        arguments?.let {
+            week = it.getInt(weekParam)
+        }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
@@ -230,7 +234,9 @@ class ScheduleFragment : Fragment() {
         @JvmStatic
         fun newInstance(arg0: Int) =
                 ScheduleFragment().apply {
-                    week = arg0
+                    arguments = Bundle().apply {
+                        putInt(weekParam, arg0)
+                    }
                 }
     }
 

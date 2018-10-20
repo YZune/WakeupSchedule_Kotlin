@@ -8,7 +8,7 @@
         android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:text="8月9日"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -17,7 +17,7 @@
         android:id="@+id/tv_week"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:text="第1周    周四"
@@ -31,6 +31,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/tv_title0"
             style="@style/schedule_header_tv"
             android:layout_width="0dp"
             android:layout_weight="0.5"

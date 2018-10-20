@@ -4,7 +4,6 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -21,6 +20,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
+import org.jetbrains.anko.startActivity
 
 class CourseDetailFragment : DialogFragment() {
 
@@ -109,12 +109,12 @@ class CourseDetailFragment : DialogFragment() {
 
         ib_edit.setOnClickListener {
             dismiss()
-            val intent = Intent(activity, AddCourseActivity::class.java)
-            intent.putExtra("id", course.id)
-            intent.putExtra("tableId", course.tableId)
-            intent.putExtra("maxWeek", viewModel.tableData.value!!.maxWeek)
-            intent.putExtra("nodes", viewModel.tableData.value!!.nodes)
-            startActivity(intent)
+            activity!!.startActivity<AddCourseActivity>(
+                    "id" to course.id,
+                    "tableId" to course.tableId,
+                    "maxWeek" to viewModel.tableData.value!!.maxWeek,
+                    "nodes" to viewModel.tableData.value!!.nodes
+            )
         }
 
         ib_delete_course.setOnClickListener { _ ->

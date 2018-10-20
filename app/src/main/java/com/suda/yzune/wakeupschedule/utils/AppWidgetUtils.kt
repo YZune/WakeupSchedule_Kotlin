@@ -10,7 +10,7 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 
 object AppWidgetUtils {
-    val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
+    private val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
         val week = CourseUtils.countWeek(tableBean.startDate)

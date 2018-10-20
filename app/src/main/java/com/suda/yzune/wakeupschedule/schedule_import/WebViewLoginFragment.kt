@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -19,6 +18,7 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
+import org.jetbrains.anko.startActivity
 
 
 class WebViewLoginFragment : Fragment() {
@@ -84,7 +84,7 @@ class WebViewLoginFragment : Fragment() {
             when (it) {
                 "OK" -> {
                     Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
-                    activity!!.startActivity(Intent(activity, ApplyInfoActivity::class.java))
+                    activity!!.startActivity<ApplyInfoActivity>()
                     activity!!.finish()
                 }
                 "error" -> {

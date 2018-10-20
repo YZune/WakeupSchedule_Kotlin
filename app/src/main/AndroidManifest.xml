@@ -31,9 +31,7 @@
                 <data android:pathPattern=".*\\.wakeup_schedule" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".schedule.ScheduleActivity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".schedule.ScheduleActivity" />
         <activity
             android:name=".course_add.AddCourseActivity"
             android:screenOrientation="portrait"
@@ -64,10 +62,7 @@
         <activity android:name=".apply_info.ApplyInfoActivity" />
         <activity
             android:name=".SplashActivity"
-            android:resizeableActivity="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
-            tools:targetApi="n">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

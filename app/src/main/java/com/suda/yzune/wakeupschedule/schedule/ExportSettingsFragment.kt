@@ -40,7 +40,7 @@ class ExportSettingsFragment : DialogFragment() {
         super.onStart()
         val dm = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 
         tv_export.setOnClickListener { _ ->
             viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
