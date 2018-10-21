@@ -1,12 +1,12 @@
 package com.suda.yzune.wakeupschedule
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.suda.yzune.wakeupschedule.schedule.ScheduleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.startActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -17,7 +17,7 @@ class SplashActivity : AppCompatActivity() {
                 .setToastTypeface(Typeface.DEFAULT_BOLD)
                 .setTextSize(12)
                 .apply()
-        startActivity(Intent(this, ScheduleActivity::class.java))
+        startActivity<ScheduleActivity>()
         finish()
     }
 }

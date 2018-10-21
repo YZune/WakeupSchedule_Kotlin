@@ -4,7 +4,6 @@ package com.suda.yzune.wakeupschedule.schedule_manage
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -17,6 +16,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.support.v4.startActivity
 
 class CourseManageFragment : Fragment() {
 
@@ -52,12 +52,12 @@ class CourseManageFragment : Fragment() {
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {
-                    val intent = Intent(activity, AddCourseActivity::class.java)
-                    intent.putExtra("id", data[position].id)
-                    intent.putExtra("tableId", data[position].tableId)
-                    intent.putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
-                    intent.putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
-                    startActivity(intent)
+                    startActivity<AddCourseActivity>(
+                            "id" to data[position].id,
+                            "tableId" to data[position].tableId,
+                            "maxWeek" to viewModel.tableSelectList[tablePosition].maxWeek,
+                            "nodes" to viewModel.tableSelectList[tablePosition].nodes
+                    )
                 }
                 R.id.ib_delete -> {
                     Toasty.info(activity!!.applicationContext, "长按删除课程哦~").show()
@@ -91,12 +91,12 @@ class CourseManageFragment : Fragment() {
         val tvBtn = view.findViewById<TextView>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
-            val intent = Intent(activity, AddCourseActivity::class.java)
-            intent.putExtra("tableId", viewModel.tableSelectList[tablePosition].id)
-            intent.putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
-            intent.putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
-            intent.putExtra("id", -1)
-            startActivity(intent)
+            startActivity<AddCourseActivity>(
+                    "id" to -1,
+                    "tableId" to viewModel.tableSelectList[tablePosition].id,
+                    "maxWeek" to viewModel.tableSelectList[tablePosition].maxWeek,
+                    "nodes" to viewModel.tableSelectList[tablePosition].nodes
+            )
         }
         return view
     }

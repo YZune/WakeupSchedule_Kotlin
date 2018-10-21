@@ -4,7 +4,6 @@ package com.suda.yzune.wakeupschedule.schedule_manage
 import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -21,6 +20,7 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.support.v4.startActivity
 
 class ScheduleManageFragment : Fragment() {
 
@@ -63,9 +63,7 @@ class ScheduleManageFragment : Fragment() {
                 }
                 R.id.ib_edit -> {
                     viewModel.getTableById(data[position].id).also {
-                        startActivity(Intent(activity, ScheduleSettingsActivity::class.java).putExtra(
-                                "tableData", gson.toJson(it)
-                        ))
+                        startActivity<ScheduleSettingsActivity>("tableData" to gson.toJson(it))
                     }
                 }
                 R.id.ib_delete -> {

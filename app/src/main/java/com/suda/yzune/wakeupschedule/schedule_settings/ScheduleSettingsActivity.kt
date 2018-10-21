@@ -25,6 +25,7 @@ import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule_settings.*
+import org.jetbrains.anko.startActivityForResult
 
 class ScheduleSettingsActivity : AppCompatActivity() {
 
@@ -95,9 +96,8 @@ class ScheduleSettingsActivity : AppCompatActivity() {
         }
 
         ll_course_time.setOnClickListener {
-            val intent = Intent(this, TimeSettingsActivity::class.java)
-            intent.putExtra("selectedId", viewModel.table.timeTable)
-            startActivityForResult(intent, REQUEST_CODE_CHOOSE_TABLE)
+            startActivityForResult<TimeSettingsActivity>(REQUEST_CODE_CHOOSE_TABLE,
+                    "selectedId" to viewModel.table.timeTable)
         }
 
         ll_text_color.setOnClickListener {

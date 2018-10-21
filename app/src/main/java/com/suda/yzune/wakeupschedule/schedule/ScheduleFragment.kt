@@ -338,7 +338,7 @@ class ScheduleFragment : Fragment() {
             if (table.showTime) {
                 viewModel.timeData.observe(this, Observer {
                     if (it == null || it.isEmpty()) return@Observer
-                    strBuilder.insert(0, it[c.startNode - 1].startTime)
+                    strBuilder.insert(0, it[c.startNode - 1].startTime + "\n")
                     tv.text = strBuilder
                 })
             } else {
