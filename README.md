@@ -1,4 +1,4 @@
-# WakeUp课程表 3.16
+# WakeUp课程表 3.22
 
 <img src="https://ws4.sinaimg.cn/large/0069RVTdgy1fuaoudaytwj30e80e8jtg.jpg" height="256">
 
@@ -6,24 +6,24 @@
 
 ## 上架情况
 
-截止2018.09.27
+截止2018.10.23
 
-- 酷安[√] 3.6万
-- 应用宝[√] 1799
-- 魅族应用商店[√] 1700 
-- 小米应用商店[√] 3359
-- OPPO应用商店[√] 2.6万
-- VIVO应用商店[√] 7000
-- 华为应用商店[√] 3万
+- 酷安[√] 4.8万
+- 应用宝[√] 2667
+- 魅族应用商店[√] 2053 
+- 小米应用商店[√] 6144
+- OPPO应用商店[√] 2.9万
+- VIVO应用商店[√] 9000
+- 华为应用商店[√] 4万
 
 更新一下在各应用商店的情况。在移除主界面账户登录的提示字样后，在华为应用商店终于过审上架啦。个人感觉好像华为用户比较多，今天登录华为开发者平台才发现这个下载量在短短不到一个月暴涨2w+，这真是出乎我的意料，毕竟自己一直在把下载量往酷安上引。关于评分的话，目测评分最低的是在OPPO应用商店，看到上面一些带评分的评论也是醉了，不过算啦。随着用户数量的增多，我渐渐意识到，用户的使用习惯是存在差异的，哪怕使用主体是在校大学生。更多人似乎都希望一种开箱即用的方式，而且是随自己喜好的开箱即用，而不喜欢自己去设置里面折腾 _(:з」∠)_ 已经有点厌烦反反复复被问到的一些使用问题，大部分都是我已经在设置算是精心布置好了的。我甚至已经想为App做一个问答系统了ﾍ(;´Д｀ﾍ)
 
 下面是一些截图。
 
 <div align="center">
-    <img src="https://ws4.sinaimg.cn/large/0069RVTdgy1fuaptapzioj30u01hcaib.jpg" height="500">
-    <img src="https://ws2.sinaimg.cn/large/0069RVTdgy1fuaptksyycj30u01hcgqa.jpg" height="500">
-    <img src="https://ws1.sinaimg.cn/large/0069RVTdgy1fuaptsxu6lj30u01hcwi5.jpg" height="500">
+    <img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fw81qicpytj30dc0nqjxa.jpg" height="500">
+    <img src="https://ws4.sinaimg.cn/large/006tNbRwgy1fw81qzeiwdj30dc0nqq7c.jpg" height="500">
+    <img src="https://ws2.sinaimg.cn/large/006tNbRwgy1fw81sts3agj30dc0nqkef.jpg" height="500">
 </div>
 
 
@@ -46,7 +46,6 @@
 - 数据选择器[WheelPicker](https://github.com/AigeStudio/WheelPicker)
 - 令RecyclerView的使用更简单[BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
 - 颜色选择器[ColorPicker](https://github.com/QuadFlask/colorpicker)
-- 斜切角布局[DiagonalLayout](https://github.com/florent37/DiagonalLayout)
 - 图片变换[glide-transformations](https://github.com/wasabeef/glide-transformations)
 - 图片加载[Glide](https://github.com/bumptech/glide)
 - 知乎的图片选择库[Matisse](https://github.com/zhihu/Matisse)
@@ -61,7 +60,10 @@
 
 - 集成“咩咩”（这意味着咩咩也要用Kotlin重构啦）
 - 完善对方正教务课程的解析
-- 数据备份和恢复
-- 课程分享
-- 增加对夏冬令时的支持
+- 适配已经提交数据的学校
+- ~~数据备份和恢复（用课程文件导出导入实现了，还支持分享）~~
+- ~~课程分享~~
+- ~~增加对夏冬令时的支持（可以设置任意数量的时间表）~~
 - 注册登录，小范围的社交，主要是为社团的活动服务
+- 完全迁移至AndroidX
+- 国际化
