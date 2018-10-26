@@ -1,14 +1,38 @@
 <resources>
     <string name="app_name">WakeUp课程表</string>
 
-    <string name="login_web_title">登录教务系统</string>
-    <string name="student_id">学号</string>
-    <string name="password">密码</string>
-    <string name="check_code">验证码</string>
-    <string name="check_code_get_error">获取验证码失败</string>
-    <string name="login">登录</string>
+    <string name="text_login_web_title">登录教务系统</string>
+    <string name="hint_student_id">学号</string>
+    <string name="hint_password">密码</string>
+    <string name="hint_check_code">验证码</string>
+    <string name="toast_check_code_get_error">获取验证码失败</string>
+    <string name="text_login">登录</string>
+    <string name="text_setting_schedule_data">课程数据</string>
+    <string name="text_setting_start_date">学期开始日期</string>
+    <string name="text_setting_node">一天课程节数</string>
+    <string name="text_setting_weeks">学期周数</string>
+    <string name="text_setting_course_time">上课时间</string>
+    <string name="text_setting_sunday_first">周日为每周第一天</string>
+    <string name="text_setting_show_sat">显示周六</string>
+    <string name="text_setting_show_sun">显示周日</string>
+    <string name="text_setting_main_appearance">外观</string>
+    <string name="text_setting_schedule_background">课程表背景</string>
+    <string name="text_setting_content_to_default">长按可以恢复默认哦~</string>
+    <string name="text_setting_main_text_color">界面文字颜色</string>
+    <string name="text_setting_course_text_color">课程文字颜色</string>
+    <string name="text_setting_stroke_color">格子边框颜色</string>
+    <string name="text_setting_course_item_height">课程格子高度</string>
+    <string name="text_setting_course_item_alpha">课程格子不透明度</string>
+    <string name="text_setting_course_text_size">格子显示文字大小</string>
+    <string name="text_setting_show_other_week_course">显示非本周课程</string>
+    <string name="text_setting_show_time_in_item">在格子内显示上课时间</string>
+    <string name="text_setting_week_appwidget">周视图桌面小部件</string>
+    <string name="text_setting_appwidget_tip">按返回键退出此界面后，才能使此项中的更改生效</string>
+    <string name="text_setting_color_tip">还可以调颜色的透明度哦(´^ω^`)</string>
+    <string name="text_setting_stroke_color_tip">将不透明度调到最低就可以隐藏边框了哦~</string>
+    <string name="text_node">节</string>
+    <string name="text_week">周</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

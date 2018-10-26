@@ -71,6 +71,9 @@ dependencies {
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.paolorotolo:appintro:v4.2.3'
+    implementation('me.drakeet.multitype:multitype-kotlin:3.4.4', {
+        exclude group: 'com.android.support'
+    })
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

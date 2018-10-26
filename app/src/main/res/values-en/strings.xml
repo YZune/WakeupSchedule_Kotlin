@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WakeUpSchedule</string>
+    <string name="text_login_web_title">Login</string>
+    <string name="hint_student_id">Student ID</string>
+    <string name="hint_password">Password</string>
+</resources>
