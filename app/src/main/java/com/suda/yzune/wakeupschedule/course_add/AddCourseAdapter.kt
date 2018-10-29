@@ -27,7 +27,7 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
         val week = CourseUtils.intList2WeekBeanList(item.weekList.value!!).toString()
         helper.setText(R.id.et_weeks, week.substring(1, week.length - 1))
 
-        helper.setText(R.id.et_time, "${CourseUtils.getDayInt(item.time.value!!.day)}    第${item.time.value!!.startNode} - ${item.time.value!!.endNode}节")
+        helper.setText(R.id.et_time, "${CourseUtils.getDayStr(item.time.value!!.day)}    第${item.time.value!!.startNode} - ${item.time.value!!.endNode}节")
 
         helper.addOnClickListener(R.id.ib_delete)
         helper.addOnClickListener(R.id.ll_weeks)

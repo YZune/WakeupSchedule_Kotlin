@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object CourseUtils {
-    fun getDayInt(weekDay: Int): String {
+    fun getDayStr(weekDay: Int): String {
         return when (weekDay) {
             1 -> "周一"
             2 -> "周二"
@@ -215,7 +215,17 @@ object CourseUtils {
         } else {
             weekDay -= 1
         }
-        return getDayInt(weekDay)
+        return getDayStr(weekDay)
+    }
+
+    fun getWeekdayInt(): Int {
+        var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
+        if (weekDay == 1) {
+            weekDay = 7
+        } else {
+            weekDay -= 1
+        }
+        return weekDay
     }
 
     fun getTodayDate(): String {

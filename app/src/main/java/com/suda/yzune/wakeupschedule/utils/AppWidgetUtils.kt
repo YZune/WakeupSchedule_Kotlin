@@ -8,9 +8,11 @@ import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
+import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
 
 object AppWidgetUtils {
     private val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
+
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
         val week = CourseUtils.countWeek(tableBean.startDate)
@@ -61,6 +63,24 @@ object AppWidgetUtils {
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
         mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_schedule)
+        appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
+    }
+
+    fun refreshTodayWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
+        val mRemoteViews = RemoteViews(context.packageName, R.layout.today_course_app_widget)
+        val week = CourseUtils.countWeek(tableBean.startDate)
+        val date = CourseUtils.getTodayDate()
+        val weekDay = CourseUtils.getWeekday()
+        mRemoteViews.setTextViewText(R.id.tv_date, date)
+        if (week > 0) {
+            mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")
+        } else {
+            mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
+        }
+
+        val lvIntent = Intent(context, TodayCourseAppWidgetService::class.java)
+        mRemoteViews.setRemoteAdapter(R.id.lv_course, lvIntent)
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_course)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
     }
 }

@@ -106,7 +106,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                 R.id.ll_time -> {
                     viewModel.editList[position].time.observe(this, Observer {
                         val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_time) as TextView
-                        textView.text = "${CourseUtils.getDayInt(it!!.day)}    第${it.startNode} - ${it.endNode}节"
+                        textView.text = "${CourseUtils.getDayStr(it!!.day)}    第${it.startNode} - ${it.endNode}节"
                     })
                     val selectTimeDialog = SelectTimeFragment.newInstance(position)
                     selectTimeDialog.isCancelable = false

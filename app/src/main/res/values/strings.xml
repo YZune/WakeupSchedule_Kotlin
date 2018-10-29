@@ -32,6 +32,8 @@
     <string name="text_setting_stroke_color_tip">将不透明度调到最低就可以隐藏边框了哦~</string>
     <string name="text_node">节</string>
     <string name="text_week">周</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 
