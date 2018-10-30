@@ -71,7 +71,10 @@ class CourseManageFragment : Fragment() {
                     val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
                     viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
                         list?.forEach {
-                            appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
+                            when (it.detailType) {
+                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                            }
                         }
                     })
                     return@setOnItemChildLongClickListener true

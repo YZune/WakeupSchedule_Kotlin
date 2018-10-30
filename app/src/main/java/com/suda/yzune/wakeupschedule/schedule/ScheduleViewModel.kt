@@ -85,8 +85,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun getScheduleWidgetIds(): LiveData<List<Int>> {
-        return widgetDao.getWidgetIdsByTypes(0, 0)
+    fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     fun getRawCourseByDay(day: Int, tableId: Int = 0): LiveData<List<CourseBean>> {

@@ -71,6 +71,8 @@ object AppWidgetUtils {
         val week = CourseUtils.countWeek(tableBean.startDate)
         val date = CourseUtils.getTodayDate()
         val weekDay = CourseUtils.getWeekday()
+        mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
+        mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
         mRemoteViews.setTextViewText(R.id.tv_date, date)
         if (week > 0) {
             mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")

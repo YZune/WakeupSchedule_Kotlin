@@ -190,7 +190,10 @@ class ScheduleActivity : AppCompatActivity() {
 
             viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
                 list?.forEach {
-                    AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it, table)
+                    when (it.detailType) {
+                        0 -> AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, it.id, table)
+                        1 -> AppWidgetUtils.refreshTodayWidget(this.applicationContext, appWidgetManager, it.id, table)
+                    }
                 }
             })
         })

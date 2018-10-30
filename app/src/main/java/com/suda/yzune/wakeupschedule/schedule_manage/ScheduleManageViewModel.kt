@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -66,7 +67,7 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
         }
     }
 
-    fun getScheduleWidgetIds(): LiveData<List<Int>> {
-        return widgetDao.getWidgetIdsByTypes(0, 0)
+    fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
+        return widgetDao.getWidgetsByBaseType(0)
     }
 }

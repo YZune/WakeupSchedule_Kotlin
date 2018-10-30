@@ -6,11 +6,6 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp">
 
-    <ImageView
-        android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:layout_marginStart="8dp" />
-
     <LinearLayout
         android:layout_width="16dp"
         android:layout_height="match_parent"
@@ -22,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:text="01"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -32,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:text="12"
             android:textSize="12sp"
             android:textStyle="bold" />
@@ -49,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:text="08:00"
             android:textSize="12sp" />
 
@@ -58,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:alpha="0.5"
+            android:alpha="0.8"
             android:text="08:50"
             android:textSize="12sp" />
     </LinearLayout>
@@ -76,7 +71,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="数据结构"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,8 +80,10 @@
             android:layout_marginTop="4dp">
 
             <ImageView
+                android:id="@+id/iv_room"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
+                android:alpha="0.8"
                 android:src="@drawable/ic_edit_room" />
 
             <TextView
@@ -93,14 +91,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:alpha="0.5"
+                android:alpha="0.8"
                 android:text="理工楼二楼"
                 android:textSize="12sp" />
 
             <ImageView
+                android:id="@+id/iv_teacher"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="16dp"
+                android:alpha="0.8"
                 android:src="@drawable/ic_person" />
 
             <TextView
@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:alpha="0.5"
+                android:alpha="0.8"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="唐自立"

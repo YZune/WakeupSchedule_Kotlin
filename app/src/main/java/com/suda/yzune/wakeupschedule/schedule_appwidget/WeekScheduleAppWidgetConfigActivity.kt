@@ -47,11 +47,19 @@ class WeekScheduleAppWidgetConfigActivity : AppCompatActivity() {
         }
 
         tv_got_it.setOnClickListener { _ ->
-            viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
             viewModel.getDefaultTable().observe(this, Observer {
                 if (it == null) return@Observer
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                AppWidgetUtils.refreshScheduleWidget(this.applicationContext, appWidgetManager, mAppWidgetId, it)
+                when (appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName) {
+                    ".schedule_appwidget.ScheduleAppWidget" -> {
+                        viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
+                        AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, it)
+                    }
+                    ".today_appwidget.TodayCourseAppWidget" -> {
+                        viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
+                        AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, it)
+                    }
+                }
                 val resultValue = Intent()
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
                 setResult(Activity.RESULT_OK, resultValue)

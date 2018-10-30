@@ -135,7 +135,10 @@ class CourseDetailFragment : DialogFragment() {
             Toasty.success(context!!.applicationContext, "删除成功").show()
             viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
                 list?.forEach {
-                    appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
+                    when (it.detailType) {
+                        0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                        1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                    }
                 }
                 dismiss()
             })

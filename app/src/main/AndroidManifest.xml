@@ -85,7 +85,9 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".today_appwidget.TodayCourseAppWidget">
+        <receiver
+            android:name=".today_appwidget.TodayCourseAppWidget"
+            android:label="当天课程">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
@@ -136,8 +137,8 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
 
     }
 
-    fun getScheduleWidgetIds(): LiveData<List<Int>> {
-        return widgetDao.getWidgetIdsByTypes(0, 0)
+    fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     fun checkSameName(): LiveData<CourseBaseBean> {

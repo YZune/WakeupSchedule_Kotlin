@@ -52,21 +52,21 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
 
-        if (intent.extras.getInt("id") == -1) {
-            viewModel.tableId = intent.extras.getInt("tableId")
-            viewModel.maxWeek = intent.extras.getInt("maxWeek")
-            viewModel.nodes = intent.extras.getInt("nodes")
+        if (intent.extras!!.getInt("id") == -1) {
+            viewModel.tableId = intent.extras!!.getInt("tableId")
+            viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
+            viewModel.nodes = intent.extras!!.getInt("nodes")
             initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.initBaseData())
         } else {
-            viewModel.tableId = intent.extras.getInt("tableId")
-            viewModel.maxWeek = intent.extras.getInt("maxWeek")
-            viewModel.nodes = intent.extras.getInt("nodes")
-            viewModel.initData(intent.extras.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
+            viewModel.tableId = intent.extras!!.getInt("tableId")
+            viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
+            viewModel.nodes = intent.extras!!.getInt("nodes")
+            viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
                 if (!isSaved) {
                     list!!.forEach {
                         viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
                     }
-                    viewModel.initBaseData(intent.extras.getInt("id")).observe(this, Observer {
+                    viewModel.initBaseData(intent.extras!!.getInt("id")).observe(this, Observer {
                         viewModel.baseBean.id = it!!.id
                         viewModel.baseBean.color = it.color
                         viewModel.baseBean.courseName = it.courseName
@@ -240,7 +240,10 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     isSaved = true
                     viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
                         list?.forEach {
-                            appWidgetManager.notifyAppWidgetViewDataChanged(it, R.id.lv_schedule)
+                            when (it.detailType) {
+                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                            }
                         }
                         finish()
                     })

@@ -50,19 +50,46 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         }
 
         override fun getCount(): Int {
-            return courseList.size
+            return if (courseList.isEmpty()) {
+                1
+            } else {
+                courseList.size
+            }
         }
 
         override fun getViewAt(position: Int): RemoteViews {
-            val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_today_course_widget)
-            mRemoteViews.setTextViewText(R.id.tv_startTime, timeList[courseList[position].startNode - 1].startTime)
-            mRemoteViews.setTextViewText(R.id.tv_endTime, timeList[courseList[position].startNode + courseList[position].step - 2].startTime)
-            mRemoteViews.setTextViewText(R.id.widget_name, courseList[position].courseName)
-            mRemoteViews.setTextViewText(R.id.widget_room, courseList[position].room)
-            mRemoteViews.setTextViewText(R.id.widget_teacher, courseList[position].teacher)
-            mRemoteViews.setTextViewText(R.id.tv_start, courseList[position].startNode.toString())
-            mRemoteViews.setTextViewText(R.id.tv_end, "${courseList[position].startNode + courseList[position].step - 1}")
-            return mRemoteViews
+            if (courseList.isNotEmpty()) {
+                val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_today_course_widget)
+                mRemoteViews.setTextColor(R.id.tv_startTime, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.tv_endTime, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.widget_name, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.widget_room, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.widget_teacher, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.tv_start, table.widgetTextColor)
+                mRemoteViews.setTextColor(R.id.tv_end, table.widgetTextColor)
+                mRemoteViews.setInt(R.id.iv_room, "setColorFilter", table.widgetTextColor)
+                mRemoteViews.setInt(R.id.iv_teacher, "setColorFilter", table.widgetTextColor)
+                mRemoteViews.setTextViewText(R.id.tv_startTime, timeList[courseList[position].startNode - 1].startTime)
+                mRemoteViews.setTextViewText(R.id.tv_endTime, timeList[courseList[position].startNode + courseList[position].step - 2].endTime)
+                mRemoteViews.setTextViewText(R.id.widget_name, courseList[position].courseName)
+                if (courseList[position].room != "") {
+                    mRemoteViews.setTextViewText(R.id.widget_room, courseList[position].room)
+                } else {
+                    mRemoteViews.setTextViewText(R.id.widget_room, "无")
+                }
+                if (courseList[position].teacher != "") {
+                    mRemoteViews.setTextViewText(R.id.widget_teacher, courseList[position].teacher)
+                } else {
+                    mRemoteViews.setTextViewText(R.id.widget_teacher, "无")
+                }
+                mRemoteViews.setTextViewText(R.id.tv_start, courseList[position].startNode.toString())
+                mRemoteViews.setTextViewText(R.id.tv_end, "${courseList[position].startNode + courseList[position].step - 1}")
+                return mRemoteViews
+            } else {
+                val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_today_course_empty)
+                mRemoteViews.setTextColor(R.id.tv_empty, table.widgetTextColor)
+                return mRemoteViews
+            }
         }
 
         override fun getLoadingView(): RemoteViews? {
