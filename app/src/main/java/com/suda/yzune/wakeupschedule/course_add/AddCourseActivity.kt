@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -174,7 +175,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                     .setTitle("选取颜色")
                     .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                     .density(12)
-                    .initialColor(if (baseBean.color != "") tvColor.textColors.defaultColor else resources.getColor(R.color.red))
+                    .initialColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
                     .lightnessSliderOnly()
                     .setPositiveButton("确定") { _, colorInt, _ ->
                         ivColor.imageTintList = createColorStateList(colorInt, colorInt, colorInt, colorInt)
@@ -220,7 +221,7 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
                         if (it == null) {
                             saveData()
                         } else if (!isSaved) {
-                            Toasty.error(this.applicationContext, "已存在相同名称的课程，请编辑该课程，然后添加不同的时间段").show()
+                            AddCourseTipFragment.newInstance().apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
                         }
                     })
                 } else {

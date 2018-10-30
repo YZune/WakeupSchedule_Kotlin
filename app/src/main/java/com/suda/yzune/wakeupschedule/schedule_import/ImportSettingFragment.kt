@@ -35,7 +35,7 @@ class ImportSettingFragment : DialogFragment() {
         dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 
         tv_cover.setOnClickListener {
-            viewModel.importId = activity!!.intent.extras.getInt("tableId")
+            viewModel.importId = activity!!.intent.extras!!.getInt("tableId")
             dismiss()
         }
 

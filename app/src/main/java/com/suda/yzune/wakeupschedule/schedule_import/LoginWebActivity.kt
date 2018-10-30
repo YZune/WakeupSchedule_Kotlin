@@ -11,7 +11,6 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.activityManager
 
 class LoginWebActivity : AppCompatActivity() {
 
@@ -37,7 +36,7 @@ class LoginWebActivity : AppCompatActivity() {
         viewModel.importInfo.observe(this, Observer {
             when (it) {
                 "ok" -> {
-                    Toasty.success(applicationContext, "导入成功").show()
+                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
                     finish()
                 }
                 "retry" -> Toasty.info(applicationContext, "请到侧栏“反馈”中联系作者").show()
@@ -50,7 +49,6 @@ class LoginWebActivity : AppCompatActivity() {
             when (it) {
                 "ok" -> {
                     Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                    activityManager
                     finish()
                 }
                 "error" -> {

@@ -6,9 +6,7 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
@@ -50,7 +48,6 @@ import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
-import com.suda.yzune.wakeupschedule.utils.CourseUtils.isQQClientAvailable
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
@@ -62,7 +59,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.ParseException
-import java.util.*
 
 
 class ScheduleActivity : AppCompatActivity() {
@@ -443,18 +439,9 @@ class ScheduleActivity : AppCompatActivity() {
                 R.id.nav_feedback -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        val c = Calendar.getInstance()
-                        val hour = c.get(Calendar.HOUR_OF_DAY)
-                        if (hour !in 8..21) {
-                            Toasty.info(applicationContext, "开发者在休息哦(～﹃～)~zZ请换个时间反馈吧").show()
-                        } else {
-                            if (isQQClientAvailable(applicationContext)) {
-                                val qqUrl = "mqqwpa://im/chat?chat_type=wpa&uin=1055614742&version=1"
-                                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(qqUrl)))
-                            } else {
-                                Toasty.error(applicationContext, "手机上没有安装QQ，无法启动聊天窗口:-(", Toast.LENGTH_LONG).show()
-                            }
-                        }
+                        BeforeFeedbackFragment.newInstance().apply {
+                            isCancelable = false
+                        }.show(supportFragmentManager, "BeforeFeedbackFragment")
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }

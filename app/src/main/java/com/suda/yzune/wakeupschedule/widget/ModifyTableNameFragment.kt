@@ -28,7 +28,7 @@ class ModifyTableNameFragment : DialogFragment() {
         super.onStart()
         val dm = DisplayMetrics()
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
         tv_title.text = title
         et_table_name.setText(tableName)
         et_table_name.setSelection(tableName.length)

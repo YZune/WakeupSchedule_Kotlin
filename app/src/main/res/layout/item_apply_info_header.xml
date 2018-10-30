@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingEnd="24dp"
-    android:paddingStart="24dp">
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp">
 
     <TextView
         android:layout_width="match_parent"
@@ -26,8 +26,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="24dp"
         android:lineSpacingExtra="4dp"
         android:text="        不做过多评价，出现在这里的学校名单我都会抽时间去适配。另外由于以前出现在我列表中的消息过多，有些小伙伴提供了很多的数据，但被刷下去了，抱歉。请大家通过这个功能重新提供一下数据吧，都记录在服务器的，管理起来会方便不少。不过要说的是，我目前大三的课都非常的重要，希望各位多多体谅。"
         android:textSize="12sp" />

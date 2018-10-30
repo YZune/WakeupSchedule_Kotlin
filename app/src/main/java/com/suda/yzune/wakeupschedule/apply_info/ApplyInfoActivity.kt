@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.apply_info
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -27,7 +28,7 @@ class ApplyInfoActivity : AppCompatActivity() {
         }
         rv_info.layoutManager = LinearLayoutManager(this)
         viewModel.initData()
-        srl_info.setColorSchemeColors(resources.getColor(R.color.colorAccent))
+        srl_info.setColorSchemeColors(ContextCompat.getColor(applicationContext, R.color.colorAccent))
         srl_info.isRefreshing = true
         viewModel.countInfo.observe(this, Observer {
             when (it) {
