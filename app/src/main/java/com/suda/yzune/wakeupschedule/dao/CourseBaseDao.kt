@@ -28,8 +28,8 @@ interface CourseBaseDao {
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
     fun getCourseByDayOfTableInThread(day: Int, tableId: Int): List<CourseBean>
 
-    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId and startWeek <= :week and endWeek >= :week")
-    fun getCourseByDayOfTableInThread(day: Int, week: Int, tableId: Int): List<CourseBean>
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId and startWeek <= :week and endWeek >= :week and (type = 0 or type = :type)")
+    fun getCourseByDayOfTableInThread(day: Int, week: Int, type: Int, tableId: Int): List<CourseBean>
 
     @Query("select * from coursebasebean where id = :id and tableId = :tableId")
     fun getCourseByIdOfTable(id: Int, tableId: Int): LiveData<CourseBaseBean>

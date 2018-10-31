@@ -1,11 +1,13 @@
 package com.suda.yzune.wakeupschedule.utils
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
@@ -62,6 +64,9 @@ object AppWidgetUtils {
         }
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
         mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
+        val intent = Intent(context, SplashActivity::class.java)
+        val pIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        mRemoteViews.setOnClickPendingIntent(R.id.tv_date, pIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_schedule)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
     }
@@ -79,9 +84,11 @@ object AppWidgetUtils {
         } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
         }
-
         val lvIntent = Intent(context, TodayCourseAppWidgetService::class.java)
         mRemoteViews.setRemoteAdapter(R.id.lv_course, lvIntent)
+        val intent = Intent(context, SplashActivity::class.java)
+        val pIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        mRemoteViews.setOnClickPendingIntent(R.id.tv_date, pIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_course)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
     }

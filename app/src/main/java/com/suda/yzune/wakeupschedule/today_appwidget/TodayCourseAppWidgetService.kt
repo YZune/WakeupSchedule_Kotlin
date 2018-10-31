@@ -40,7 +40,11 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
                 e.printStackTrace()
             }
             courseList.clear()
-            courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, table.id))
+            if (week % 2 == 0) {
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id))
+            } else {
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id))
+            }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
         }
