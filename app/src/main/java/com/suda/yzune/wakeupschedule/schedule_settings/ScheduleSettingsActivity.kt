@@ -10,16 +10,15 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.Toast
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -27,17 +26,16 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule_settings.*
 import org.jetbrains.anko.startActivityForResult
 
-class ScheduleSettingsActivity : AppCompatActivity() {
+class ScheduleSettingsActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule_settings)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
         viewModel.initTableData(intent.extras!!.getString("tableData")!!)

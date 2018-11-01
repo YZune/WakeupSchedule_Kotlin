@@ -15,7 +15,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
@@ -32,10 +31,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-import com.suda.yzune.wakeupschedule.AboutActivity
-import com.suda.yzune.wakeupschedule.GlideApp
-import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.UpdateFragment
+import com.suda.yzune.wakeupschedule.*
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -61,7 +57,7 @@ import retrofit2.Response
 import java.text.ParseException
 
 
-class ScheduleActivity : AppCompatActivity() {
+class ScheduleActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
     private var mAdapter: SchedulePagerAdapter? = null
@@ -85,7 +81,6 @@ class ScheduleActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
 
         PreferenceUtils.init(applicationContext)
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         ScheduleActivityUI().setContentView(this)
 
