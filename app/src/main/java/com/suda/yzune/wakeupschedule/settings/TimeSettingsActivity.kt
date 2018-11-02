@@ -6,18 +6,17 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
 
-class TimeSettingsActivity : AppCompatActivity() {
+class TimeSettingsActivity : BaseActivity() {
 
     private lateinit var viewModel: TimeSettingsViewModel
     private lateinit var navController: NavController
@@ -32,10 +31,9 @@ class TimeSettingsActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_time_settings)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
 

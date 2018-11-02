@@ -5,19 +5,17 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 
-class LoginWebActivity : AppCompatActivity() {
+class LoginWebActivity : BaseActivity() {
 
     private lateinit var viewModel: ImportViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_web)
 

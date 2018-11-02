@@ -8,7 +8,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -20,17 +19,17 @@ import android.widget.*
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_course.*
 
 
-class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
 
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
@@ -46,10 +45,9 @@ class AddCourseActivity : AppCompatActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_course)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
 

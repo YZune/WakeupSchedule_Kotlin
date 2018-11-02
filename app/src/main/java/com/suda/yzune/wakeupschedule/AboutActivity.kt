@@ -1,19 +1,16 @@
 package com.suda.yzune.wakeupschedule
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.activity_about.*
 import org.jetbrains.anko.startActivity
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
 
         try {
             tv_version.text = "版本号：${UpdateUtils.getVersionName(this)}"

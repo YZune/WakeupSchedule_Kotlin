@@ -6,27 +6,25 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
 
-class WeekScheduleAppWidgetConfigActivity : AppCompatActivity() {
+class WeekScheduleAppWidgetConfigActivity : BaseActivity() {
 
     private lateinit var viewModel: WeekScheduleAppWidgetConfigViewModel
     private var mAppWidgetId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_week_schedule_app_widget_config)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(WeekScheduleAppWidgetConfigViewModel::class.java)
 

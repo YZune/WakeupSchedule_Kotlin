@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -14,7 +13,6 @@ import com.suda.yzune.wakeupschedule.bean.DonateBean
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_donate.*
 import okhttp3.ResponseBody
@@ -22,13 +20,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DonateActivity : AppCompatActivity() {
+class DonateActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_donate)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
         initEvent()
     }
 

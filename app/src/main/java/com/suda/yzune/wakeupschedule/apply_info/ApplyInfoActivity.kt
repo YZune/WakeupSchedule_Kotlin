@@ -4,24 +4,22 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_apply_info.*
 
-class ApplyInfoActivity : AppCompatActivity() {
+class ApplyInfoActivity : BaseActivity() {
 
     private lateinit var viewModel: ApplyInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ViewUtils.fullScreen(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_apply_info)
-        ViewUtils.resizeStatusBar(this, v_status)
+        resizeStatusBar(v_status)
         viewModel = ViewModelProviders.of(this).get(ApplyInfoViewModel::class.java)
         rv_info.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.countList).apply {
             this.setHeaderView(initHeaderView())
