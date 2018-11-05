@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'io.fabric'
+
 android {
     signingConfigs {
         config {
@@ -66,15 +68,20 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.6.1'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha06"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha06"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha07"
+    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha07"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.paolorotolo:appintro:v4.2.3'
     implementation('me.drakeet.multitype:multitype-kotlin:3.4.4', {
         exclude group: 'com.android.support'
     })
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true
+    }
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+

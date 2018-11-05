@@ -96,6 +96,10 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/today_course_app_widget_info" />
         </receiver>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="a57a060f716a43947ae097820d16fa1f9e678075" />
     </application>
 
 </manifest>
