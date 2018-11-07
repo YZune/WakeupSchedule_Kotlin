@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     tools:context=".MainActivity">
 
-    <Switch
-        android:switchMinWidth="48dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:thumb="@drawable/switch_selector"
-        android:track="@drawable/switch_track" />
-
     <TextView
+        android:layout_width="wrap_content"
         android:id="@+id/tv_test"
         android:layout_marginTop="24dp"
-        android:layout_width="48dp"
-        android:text="哈哈哈"
-        android:textColor="@color/white"
+        android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_height="72dp"
-        />
+        android:layout_centerInParent="true" />
+
+    <ProgressBar
+        android:id="@+id/pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="24dp" />
 
 </RelativeLayout>
