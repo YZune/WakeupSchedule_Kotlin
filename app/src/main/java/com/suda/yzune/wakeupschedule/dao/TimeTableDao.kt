@@ -16,7 +16,7 @@ interface TimeTableDao {
     fun getMaxIdInThread(): Int
 
     @Query("select * from timetablebean where id = :id")
-    fun getTimeTableInThread(id: Int): TimeTableBean
+    fun getTimeTableInThread(id: Int): TimeTableBean?
 
     @Update
     fun updateTimeTable(timeTableBean: TimeTableBean)

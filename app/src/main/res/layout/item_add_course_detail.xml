@@ -163,6 +163,7 @@
         android:background="@null"
         android:gravity="center_vertical"
         android:hint="上课地点（可不填）"
+        android:imeOptions="actionDone"
         android:lines="1"
         android:singleLine="true"
         android:textSize="14sp" />

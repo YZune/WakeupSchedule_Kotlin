@@ -15,7 +15,10 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Fabric.with(this, Crashlytics())
+        if (!BuildConfig.DEBUG) {
+            Fabric.with(this, Crashlytics())
+            Toasty.success(applicationContext, "正式版本").show()
+        }
         UpdateUtils.tranOldData(applicationContext)
         Toasty.Config.getInstance()
                 .setToastTypeface(Typeface.DEFAULT_BOLD)

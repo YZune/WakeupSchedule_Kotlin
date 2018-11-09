@@ -7,7 +7,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
@@ -38,10 +37,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var alphaStr = ""
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
-    val clipboardImportInfo = MutableLiveData<String>()
     val exportImportInfo = MutableLiveData<String>()
     val addBlankTableInfo = MutableLiveData<String>()
-    var clipboardCourseList: List<CourseBean>? = null
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
@@ -73,16 +70,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     fun initTimeData(timeTableId: Int): LiveData<List<TimeDetailBean>> {
         timeData = timeDao.getTimeList(timeTableId)
         return timeData
-    }
-
-    fun tranClipboardStr(str: String) {
-        val gson = Gson()
-        try {
-            clipboardCourseList = gson.fromJson<List<CourseBean>>(str.substring(15), object : TypeToken<List<CourseBean>>() {}.type)
-        } catch (e: JsonSyntaxException) {
-            clipboardImportInfo.value = "解析异常"
-            clipboardCourseList = null
-        }
     }
 
     fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {

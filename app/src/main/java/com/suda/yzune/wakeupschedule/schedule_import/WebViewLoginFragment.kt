@@ -4,6 +4,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,13 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
-import android.widget.Toast
+import android.widget.*
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.fragment_web_view_login.*
+import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 
 
@@ -27,56 +28,70 @@ class WebViewLoginFragment : Fragment() {
 
     private lateinit var type: String
     private lateinit var viewModel: ImportViewModel
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_web_view_login, container, false)
-    }
+    private lateinit var etUrl: EditText
+    private lateinit var tvTips: TextView
+    private lateinit var wvCourse: WebView
+    private lateinit var llError: LinearLayout
+    private lateinit var pbLoad: ProgressBar
+    private lateinit var tvGotIt: TextView
+    private lateinit var fabImport: FloatingActionButton
+    private lateinit var tvGo: TextView
 
     @JavascriptInterface
-    override fun onResume() {
-        super.onResume()
-        ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_web_view_login, container, false)
+        ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
 
         viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
 
+        etUrl = view.find(R.id.et_url)
+        tvTips = view.find(R.id.tv_tips)
+        wvCourse = view.find(R.id.wv_course)
+        llError = view.find(R.id.ll_error)
+        pbLoad = view.find(R.id.pb_load)
+        tvGotIt = view.find(R.id.tv_got_it)
+        fabImport = view.find(R.id.fab_import)
+        tvGo = view.find(R.id.tv_go)
+
         val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
         if (url != "") {
-            et_url.setText(url)
+            etUrl.setText(url)
         }
 
         if (type == "apply") {
-            tv_tips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
+            tvTips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
         }
-        wv_course.settings.javaScriptEnabled = true
-        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wv_course.webViewClient = object : WebViewClient() {
+        wvCourse.settings.javaScriptEnabled = true
+        wvCourse.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
+        wvCourse.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
-                ll_error.visibility = View.VISIBLE
-                wv_course.visibility = View.GONE
+                llError.visibility = View.VISIBLE
+                wvCourse.visibility = View.GONE
             }
         }
-        wv_course.webChromeClient = object : WebChromeClient() {
+        wvCourse.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
-                    pb_load.progress = newProgress
-                    pb_load.visibility = View.GONE
+                    pbLoad.progress = newProgress
+                    pbLoad.visibility = View.GONE
                 } else {
-                    pb_load.progress = newProgress * 5
-                    pb_load.visibility = View.VISIBLE
+                    pbLoad.progress = newProgress * 5
+                    pbLoad.visibility = View.VISIBLE
                 }
             }
         }
         //设置自适应屏幕，两者合用
-        wv_course.settings.useWideViewPort = true //将图片调整到适合WebView的大小
-        wv_course.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
+        wvCourse.settings.useWideViewPort = true //将图片调整到适合WebView的大小
+        wvCourse.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
         // 缩放操作
-        wv_course.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-        wv_course.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        wv_course.settings.displayZoomControls = false //隐藏原生的缩放控件
+        wvCourse.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        wvCourse.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        wvCourse.settings.displayZoomControls = false //隐藏原生的缩放控件
         initEvent()
+        return view
     }
 
     private fun initEvent() {
@@ -93,25 +108,25 @@ class WebViewLoginFragment : Fragment() {
             }
         })
 
-        tv_got_it.setOnClickListener {
-            tv_got_it.visibility = View.GONE
-            tv_tips.visibility = View.GONE
-            v_tips.visibility = View.GONE
+        tvGotIt.setOnClickListener {
+            tvGotIt.visibility = View.GONE
+            tvTips.visibility = View.GONE
+            tvTips.visibility = View.GONE
         }
 
-        tv_go.setOnClickListener {
+        tvGo.setOnClickListener {
             startVisit()
         }
 
-        et_url.setOnEditorActionListener { _, actionId, _ ->
+        etUrl.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 startVisit()
             }
             return@setOnEditorActionListener false
         }
 
-        fab_import.setOnClickListener {
-            wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
+        fabImport.setOnClickListener {
+            wvCourse.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
                     "var iframeContent=\"\";" +
                     "for(var i=0;i<ifrs.length;i++){" +
                     "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
@@ -121,12 +136,12 @@ class WebViewLoginFragment : Fragment() {
     }
 
     private fun startVisit() {
-        wv_course.visibility = View.VISIBLE
-        ll_error.visibility = View.GONE
-        val url = if (et_url.text.toString().startsWith("http://") || et_url.text.toString().startsWith("https://"))
-            et_url.text.toString() else "http://" + et_url.text.toString()
+        wvCourse.visibility = View.VISIBLE
+        llError.visibility = View.GONE
+        val url = if (etUrl.text.toString().startsWith("http://") || etUrl.text.toString().startsWith("https://"))
+            etUrl.text.toString() else "http://" + etUrl.text.toString()
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
-            wv_course.loadUrl(url)
+            wvCourse.loadUrl(url)
             PreferenceUtils.saveStringToSP(activity!!.applicationContext, "school_url", url)
         } else {
             Toasty.error(context!!.applicationContext, "请输入正确的网址╭(╯^╰)╮").show()
@@ -158,7 +173,7 @@ class WebViewLoginFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        wv_course.clearCache(true)
+        wvCourse.clearCache(true)
         super.onDestroyView()
     }
 
