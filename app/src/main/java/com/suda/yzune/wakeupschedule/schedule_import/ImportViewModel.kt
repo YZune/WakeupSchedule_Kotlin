@@ -219,7 +219,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return courses
     }
 
-    fun importBean2CourseBean(importList: java.util.ArrayList<ImportBean>, source: String) {
+    fun importBean2CourseBean(importList: ArrayList<ImportBean>, source: String) {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -380,6 +380,100 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         write2DB()
+    }
+
+    fun parseQZ(html: String) {
+        baseList.clear()
+        detailList.clear()
+        val doc = org.jsoup.Jsoup.parse(html, "utf-8")
+
+        val kbtable = doc.getElementById("kbtable")
+        val trs = kbtable.getElementsByTag("tr")
+
+        var nodeCount = 0
+        for (tr in trs) {
+            val tds = tr.getElementsByTag("td")
+            if (tds.isEmpty()) {
+                continue
+            }
+            nodeCount++
+
+            var day = 0
+
+            for (td in tds) {
+                day++
+                val divs = td.getElementsByTag("div")
+                for (div in divs) {
+                    val courseElements = div.getElementsByClass("kbcontent")
+                    if (courseElements.text().isBlank()) {
+                        continue
+                    }
+                    val courseHtml = courseElements.html()
+                    var startIndex = 0
+                    var splitIndex = courseHtml.indexOf("-----")
+                    while (splitIndex != -1) {
+                        convertQZ(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                        startIndex = courseHtml.indexOf("<br>", splitIndex) + 4
+                        splitIndex = courseHtml.indexOf("-----", startIndex)
+                    }
+                    convertQZ(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                }
+            }
+        }
+        write2DB()
+    }
+
+    private fun convertQZ(day: Int, nodeCount: Int, infoStr: String) {
+        val node = if (nodeCount <= 3) {
+            nodeCount * 2 - 1
+        } else {
+            nodeCount * 2 - 2
+        }
+        val courseHtml = Jsoup.parse(infoStr)
+        val courseName = infoStr.substringBefore("<br>").trim()
+        val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().substringBefore("(周)")
+        val weekList = weekStr.split(',')
+        var startWeek = 0
+        var endWeek = 0
+        var id = 0
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    endWeek = Integer.decode(weeks[1])
+                }
+            } else {
+                startWeek = Integer.decode(it)
+                endWeek = Integer.decode(it)
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = if (node == 12) 1 else 2,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = 0, startNode = node,
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = if (node == 12) 1 else 2, startWeek = startWeek, endWeek = endWeek,
+                        type = 0, startNode = node,
+                        tableId = importId
+                ))
+            }
+        }
     }
 
     fun importFromFile(path: String) {
