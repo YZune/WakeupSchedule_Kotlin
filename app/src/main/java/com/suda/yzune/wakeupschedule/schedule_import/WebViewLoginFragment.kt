@@ -59,6 +59,11 @@ class WebViewLoginFragment : Fragment() {
             etUrl.setText(url)
         }
 
+        if (type == "bjld") {
+            etUrl.setText("http://newjwxt.bjfu.edu.cn/")
+            startVisit()
+        }
+
         if (type == "apply") {
             tvTips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
         }
@@ -158,6 +163,8 @@ class WebViewLoginFragment : Fragment() {
                         viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                     } else if (type == "newFZ") {
                         viewModel.parseNewFZ(html)
+                    } else if (type == "bjld") {
+                        viewModel.parseQZ(html)
                     }
                 } else {
                     Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()

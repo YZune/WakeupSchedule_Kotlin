@@ -459,7 +459,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
-                        step = if (node == 12) 1 else 2,
+                        step = if (node == 5 || node == 12) 1 else 2,
                         startWeek = startWeek, endWeek = endWeek,
                         type = 0, startNode = node,
                         tableId = importId
@@ -468,7 +468,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 detailList.add(CourseDetailBean(
                         id = flag, room = room,
                         teacher = teacher, day = day,
-                        step = if (node == 12) 1 else 2, startWeek = startWeek, endWeek = endWeek,
+                        step = if (node == 5 || node == 12) 1 else 2, startWeek = startWeek, endWeek = endWeek,
                         type = 0, startNode = node,
                         tableId = importId
                 ))

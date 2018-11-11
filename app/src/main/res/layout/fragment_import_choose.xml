@@ -53,6 +53,19 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/tv_BJLD"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="北京林业大学导入"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/tv_file"
         android:layout_width="160dp"
         android:layout_height="32dp"

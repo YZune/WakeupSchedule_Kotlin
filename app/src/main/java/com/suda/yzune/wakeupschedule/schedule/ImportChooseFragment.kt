@@ -65,6 +65,14 @@ class ImportChooseFragment : DialogFragment() {
             dismiss()
         }
 
+        tv_BJLD.setOnClickListener {
+            activity!!.startActivity<LoginWebActivity>(
+                    "type" to "bjld",
+                    "tableId" to viewModel.tableData.value?.id
+            )
+            dismiss()
+        }
+
         tv_fangzheng.setOnClickListener {
             activity!!.startActivity<LoginWebActivity>(
                     "type" to "FZ",
