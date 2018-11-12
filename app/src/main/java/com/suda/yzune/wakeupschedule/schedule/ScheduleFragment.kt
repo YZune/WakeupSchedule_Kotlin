@@ -265,7 +265,7 @@ class ScheduleFragment : Fragment() {
 //            tv.gravity = Gravity.CENTER_HORIZONTAL
             tv.textSize = table.itemTextSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            tv.setPadding(dip(8), dip(8), dip(8), dip(8))
+            tv.setPadding(dip(4), dip(4), dip(4), dip(4))
             tv.setTextColor(table.courseTextColor)
 
             tv.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
