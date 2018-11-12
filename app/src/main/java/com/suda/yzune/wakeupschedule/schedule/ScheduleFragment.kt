@@ -25,6 +25,7 @@ import es.dmoral.toasty.Toasty
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
 
 private const val weekParam = "week"
@@ -264,7 +265,7 @@ class ScheduleFragment : Fragment() {
 //            tv.gravity = Gravity.CENTER_HORIZONTAL
             tv.textSize = table.itemTextSize.toFloat()
             tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            tv.setPadding(8, 8, 8, 8)
+            tv.setPadding(dip(8), dip(8), dip(8), dip(8))
             tv.setTextColor(table.courseTextColor)
 
             tv.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
@@ -290,7 +291,7 @@ class ScheduleFragment : Fragment() {
             strBuilder.append(c.courseName)
 
             if (c.room != "") {
-                strBuilder.append("@${c.room}")
+                strBuilder.append("\n@${c.room}")
             }
 
             when (c.type) {

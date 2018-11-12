@@ -35,7 +35,7 @@
             android:id="@+id/tv_go"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            style="@style/ButtonBackground"
             android:gravity="center_vertical"
             android:paddingEnd="24dp"
             android:paddingStart="24dp"

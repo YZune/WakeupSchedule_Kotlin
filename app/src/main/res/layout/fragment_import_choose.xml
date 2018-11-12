@@ -11,10 +11,10 @@
         android:id="@+id/ib_close"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_gravity="right"
+        style="@style/ButtonBackground"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_gravity="end"
         android:src="@drawable/ic_list_delete" />
 
 

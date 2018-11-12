@@ -22,7 +22,7 @@
             android:id="@+id/ib_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            style="@style/ButtonBackground"
             android:padding="8dp"
             android:src="@drawable/ic_back" />
 

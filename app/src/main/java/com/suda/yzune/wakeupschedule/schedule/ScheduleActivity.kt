@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
@@ -65,7 +66,7 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var scheduleViewPager: ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
-    private lateinit var weekSeekBar: VerticalSeekBar
+    private var weekSeekBar: VerticalSeekBar? = null
     private lateinit var navImageButton: ImageButton
     private lateinit var addImageButton: ImageButton
     private lateinit var importImageButton: ImageButton
@@ -87,7 +88,9 @@ class ScheduleActivity : BaseActivity() {
         scheduleViewPager = find(R.id.anko_vp_schedule)
         bgImageView = find(R.id.anko_iv_bg)
         scheduleConstraintLayout = find(R.id.anko_cl_schedule)
-        weekSeekBar = find(R.id.anko_sb_week)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            weekSeekBar = find(R.id.anko_sb_week)
+        }
         navImageButton = find(R.id.anko_ib_nav)
         addImageButton = find(R.id.anko_ib_add)
         importImageButton = find(R.id.anko_ib_import)
@@ -140,7 +143,7 @@ class ScheduleActivity : BaseActivity() {
             viewModel.itemHeight = SizeUtils.dp2px(applicationContext, table.itemHeight.toFloat())
             viewModel.currentWeek.value = countWeek(table.startDate)
             initCourseData(table.id)
-            weekSeekBar.max = table.maxWeek - 1
+            weekSeekBar?.max = table.maxWeek - 1
             initViewPage(table.maxWeek, table)
             fadeInAni.start()
 
@@ -488,7 +491,7 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initEvent(currentWeek: Int) {
-        weekSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        weekSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 try {
                     if (currentWeek > 0) {
@@ -536,7 +539,7 @@ class ScheduleActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
-                weekSeekBar.progress = position
+                weekSeekBar?.progress = position
                 try {
                     if (currentWeek > 0) {
                         if (viewModel.selectedWeek == currentWeek) {

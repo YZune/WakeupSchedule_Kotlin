@@ -149,8 +149,12 @@ object UpdateUtils {
                 add(TimeDetailBean(19, "00:00", "00:00", 1))
                 add(TimeDetailBean(20, "00:00", "00:00", 1))
             }
-            timeDao.insertTimeList(timeList)
-            tableDao.insertTable(tableData)
+            try {
+                timeDao.insertTimeList(timeList)
+                tableDao.insertTable(tableData)
+            } catch (e: Exception) {
+
+            }
             PreferenceUtils.saveBooleanToSP(context.applicationContext, "has_adjust", true)
         }
     }

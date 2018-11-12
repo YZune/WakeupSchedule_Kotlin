@@ -26,7 +26,9 @@ abstract class BaseActivity : AppCompatActivity() {
             window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.transparent)
 
         }
-        window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
+        }
         super.onCreate(savedInstanceState)
     }
 

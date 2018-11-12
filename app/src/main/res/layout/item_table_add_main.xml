@@ -7,35 +7,35 @@
     android:orientation="vertical">
 
     <ImageButton
-        android:layout_width="32dp"
         android:id="@+id/nav_table_add"
+        style="@style/ButtonBackground"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_width="32dp"
         android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/schedule_add" />
 
     <TextView
-        android:text="新建"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="新建"
         android:textSize="10sp" />
 
     <ImageButton
-        android:layout_width="32dp"
         android:id="@+id/nav_table_manage"
+        style="@style/ButtonBackground"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"
-        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:layout_width="32dp"
         android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/setting" />
 
     <TextView
-        android:layout_marginBottom="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="管理"
         android:textSize="10sp" />
 

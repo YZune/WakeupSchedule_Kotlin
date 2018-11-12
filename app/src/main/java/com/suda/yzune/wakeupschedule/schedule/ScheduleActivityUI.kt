@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.os.Build
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.design.widget.NavigationView
 import android.support.v7.widget.RecyclerView
@@ -131,19 +132,21 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                     endToEnd = PARENT_ID
                 }
 
-                verticalSeekBarWrapper {
-                    verticalSeekBar {
-                        id = R.id.anko_sb_week
-                        progressDrawable = context.getDrawable(R.color.transparent)
-                        splitTrack = false
-                        thumb = context.getDrawable(R.color.transparent)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    verticalSeekBarWrapper {
+                        verticalSeekBar {
+                            id = R.id.anko_sb_week
+                            progressDrawable = context.getDrawable(R.color.transparent)
+                            splitTrack = false
+                            thumb = context.getDrawable(R.color.transparent)
+                        }
+                    }.lparams(wrapContent, 0) {
+                        topToBottom = R.id.anko_tv_week
+                        bottomToBottom = PARENT_ID
+                        endToEnd = PARENT_ID
+                        topMargin = dip(192)
+                        bottomMargin = dip(48)
                     }
-                }.lparams(wrapContent, 0) {
-                    topToBottom = R.id.anko_tv_week
-                    bottomToBottom = PARENT_ID
-                    endToEnd = PARENT_ID
-                    topMargin = dip(192)
-                    bottomMargin = dip(48)
                 }
             }
 

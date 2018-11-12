@@ -53,8 +53,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:background="@null"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                style="@style/ButtonBackground"
                 android:gravity="center"
                 android:text="取消" />
 
@@ -64,7 +63,7 @@
                 android:layout_height="48dp"
                 android:layout_weight="1"
                 android:background="@null"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                style="@style/ButtonBackground"
                 android:gravity="center"
                 android:text="保存"
                 android:textColor="@color/colorAccent"

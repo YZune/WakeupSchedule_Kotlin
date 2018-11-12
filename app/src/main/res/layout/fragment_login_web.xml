@@ -169,7 +169,7 @@
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
         android:layout_marginTop="96dp"
-        android:foreground="?android:attr/selectableItemBackgroundBorderless"
+        style="@style/ButtonBackground"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp">
 
@@ -251,7 +251,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    style="@style/ButtonBackground"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp">
 

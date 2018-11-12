@@ -20,10 +20,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.suda.yzune.wakeupschedule"
-        minSdkVersion 21
+        minSdkVersion 18
         targetSdkVersion 28
-        versionCode 39
-        versionName "3.24"
+        versionCode 40
+        versionName "3.25"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

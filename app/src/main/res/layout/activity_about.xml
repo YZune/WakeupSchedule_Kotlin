@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,9 +19,9 @@
 
         <ImageButton
             android:id="@+id/ib_back"
+            style="@style/ButtonBackground"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_back" />
 
@@ -39,10 +38,10 @@
             android:id="@+id/tv_donate"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            style="@style/ButtonBackground"
             android:gravity="center_vertical"
-            android:paddingEnd="24dp"
             android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             android:text="捐赠"
             android:textSize="14sp" />
 
@@ -77,8 +76,8 @@
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="8dp"
                 android:paddingLeft="48dp"
-                android:paddingRight="48dp"
                 android:paddingTop="16dp"
+                android:paddingRight="48dp"
                 android:text="版本号：1.03"
                 android:textSize="12sp" />
 
@@ -89,9 +88,9 @@
                 android:autoLink="web"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="8dp"
-                android:paddingBottom="16dp"
                 android:paddingLeft="48dp"
                 android:paddingRight="48dp"
+                android:paddingBottom="16dp"
                 android:text="WakeUp课程表\n由WakeUp俱乐部开发\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/WakeupSchedule_Kotlin"
                 android:textSize="12sp" />
 
@@ -178,8 +177,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="240dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginBottom="240dp"
                 android:gravity="center_horizontal"
                 android:lineSpacingExtra="8dp"
                 android:text="对App有任何的建议\n欢迎点击侧栏的“反馈”"

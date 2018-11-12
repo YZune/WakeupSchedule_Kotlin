@@ -17,7 +17,7 @@
     </style>
 
     <style name="ButtonBackground">
-        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <style name="LoginEditText">
