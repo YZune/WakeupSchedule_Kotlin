@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.widget.ImageView
 import com.chad.library.adapter.base.BaseItemDraggableAdapter
@@ -14,7 +13,7 @@ class CourseListAdapter(layoutResId: Int, data: List<CourseBaseBean>) :
     override fun convert(helper: BaseViewHolder, item: CourseBaseBean) {
         helper.setText(R.id.tv_course_name, item.courseName)
         try {
-            helper.getView<ImageView>(R.id.iv_color).imageTintList = ColorStateList.valueOf(Color.parseColor(item.color))
+            helper.getView<ImageView>(R.id.iv_color).setColorFilter(Color.parseColor(item.color))
         } catch (e: Exception) {
 
         }

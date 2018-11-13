@@ -152,7 +152,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
             navigationView {
                 id = R.id.anko_nv
-                fitsSystemWindows = true
+                fitsSystemWindows = false
                 inflateHeaderView(R.layout.nav_header)
                 inflateMenu(R.menu.main_navigation_menu)
             }.lparams(matchParent, matchParent) {
@@ -161,7 +161,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
             navigationView {
                 id = R.id.anko_nv_end
-                fitsSystemWindows = true
+                fitsSystemWindows = false
                 recyclerView {
                     id = R.id.anko_rv_table_name
                     isNestedScrollingEnabled = false

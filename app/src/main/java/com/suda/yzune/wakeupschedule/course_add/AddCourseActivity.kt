@@ -24,7 +24,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils.createColorStateList
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_course.*
 
@@ -163,7 +162,7 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
         tvColor.text = baseBean.color
         if (baseBean.color != "") {
             val colorInt = Color.parseColor(baseBean.color)
-            ivColor.imageTintList = createColorStateList(colorInt, colorInt, colorInt, colorInt)
+            ivColor.setColorFilter(colorInt)
             tvColor.text = "点此更改颜色"
             tvColor.setTextColor(colorInt)
         }
@@ -176,7 +175,7 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
                     .initialColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
                     .lightnessSliderOnly()
                     .setPositiveButton("确定") { _, colorInt, _ ->
-                        ivColor.imageTintList = createColorStateList(colorInt, colorInt, colorInt, colorInt)
+                        ivColor.setColorFilter(colorInt)
                         tvColor.text = "点此更改颜色"
                         tvColor.setTextColor(colorInt)
                         baseBean.color = "#${Integer.toHexString(colorInt)}"
