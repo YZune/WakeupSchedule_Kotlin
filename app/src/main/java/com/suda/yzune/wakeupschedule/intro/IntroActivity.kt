@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.intro
 
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
@@ -11,7 +12,9 @@ class IntroActivity : AppIntro() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addSlide(IntroFragment.newInstance("https://ws2.sinaimg.cn/large/006tNbRwgy1fw81qicpytj30dc0nqjxa.jpg", "上下滑动右侧下半部分\n可以快速切换周数哦~"))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            addSlide(IntroFragment.newInstance("https://ws2.sinaimg.cn/large/006tNbRwgy1fw81qicpytj30dc0nqjxa.jpg", "上下滑动右侧下半部分\n可以快速切换周数哦~"))
+        }
         addSlide(IntroFragment.newInstance("https://ws4.sinaimg.cn/large/006tNbRwgy1fw81qzeiwdj30dc0nqq7c.jpg", "从右侧上半部分往左划\n进行多课表的管理\n每个课表都可以有完全不同的设置哦\n如开学日期、背景图片……"))
         addSlide(IntroFragment.newInstance("https://ws3.sinaimg.cn/large/006tNbRwgy1fw81rjkb2vj30dc0nq3zr.jpg", "点击多课表管理界面的卡片\n可以看到一个课表里有哪些科目\n可以进行统一管理~"))
         addSlide(IntroFragment.newInstance("https://ws1.sinaimg.cn/large/006tNbRwgy1fw81s4ny0hj30dc0nq425.jpg", "全新设计的课程导出导入功能\n可以导入朋友分享的文件\n共享包括上课时间、课程表设置等内容"))

@@ -1,11 +1,9 @@
-package com.suda.yzune.wakeupschedule.schedule
-
+package android.support.v4.app
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import es.dmoral.toasty.Toasty
 import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
@@ -70,6 +69,14 @@ class ExportSettingsFragment : DialogFragment() {
         tv_cancel.setOnClickListener {
             dismiss()
         }
+    }
+
+    override fun show(manager: FragmentManager, tag: String) {
+        mDismissed = false
+        mShownByMe = true
+        val ft = manager.beginTransaction()
+        ft.add(this, tag)
+        ft.commitAllowingStateLoss()
     }
 
 }
