@@ -6,4 +6,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".settings.TimeTableFragment"
-    tools:listitem="@layout/recycler_view_item_1" />
+    tools:listitem="@layout/item_time_table" />

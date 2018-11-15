@@ -69,7 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#f2f2f2"
-        android:overScrollMode="never">
+        android:overScrollMode="never"
+        tools:listitem="@layout/item_add_course_detail">
 
     </android.support.v7.widget.RecyclerView>
 

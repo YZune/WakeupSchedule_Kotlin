@@ -43,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity() {
         view.layoutParams = layoutParams
     }
 
-    private fun getStatusBarHeight(): Int {
+    fun getStatusBarHeight(): Int {
         var result = 0
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {

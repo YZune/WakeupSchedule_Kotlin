@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_root"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".schedule_manage.ScheduleManageActivity">
 
@@ -20,9 +21,9 @@
 
         <ImageButton
             android:id="@+id/ib_back"
+            style="@style/ButtonBackground"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/ButtonBackground"
             android:padding="8dp"
             android:src="@drawable/ic_back" />
 

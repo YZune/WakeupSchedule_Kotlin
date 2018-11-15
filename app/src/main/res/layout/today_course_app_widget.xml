@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/transparent">
 
     <LinearLayout
@@ -32,6 +33,7 @@
         <ListView
             android:id="@+id/lv_course"
             android:divider="@null"
+            tools:listitem="@layout/item_today_course_widget"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

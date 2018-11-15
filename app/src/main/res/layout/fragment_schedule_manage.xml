@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".schedule_manage.ScheduleManageFragment"
-    tools:listitem="@layout/recycler_view_item_2">
+    tools:listitem="@layout/item_table_list">
 
 </android.support.v7.widget.RecyclerView>

@@ -19,9 +19,9 @@
 
         <ImageButton
             android:id="@+id/ib_back"
+            style="@style/ButtonBackground"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/ButtonBackground"
             android:padding="8dp"
             android:src="@drawable/ic_back" />
 
@@ -50,7 +50,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_apply_info">
 
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
