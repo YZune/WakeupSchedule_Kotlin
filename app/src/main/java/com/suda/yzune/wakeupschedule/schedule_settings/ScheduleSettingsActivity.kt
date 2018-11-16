@@ -15,7 +15,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
-import com.suda.yzune.wakeupschedule.BaseActivity
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
@@ -26,7 +26,9 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule_settings.*
 import org.jetbrains.anko.startActivityForResult
 
-class ScheduleSettingsActivity : BaseActivity() {
+class ScheduleSettingsActivity : BaseTitleActivity() {
+    override val layoutId: Int
+        get() = R.layout.activity_schedule_settings
 
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val REQUEST_CODE_CHOOSE_BG = 23
@@ -34,8 +36,6 @@ class ScheduleSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_schedule_settings)
-        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
         viewModel.initTableData(intent.extras!!.getString("tableData")!!)
@@ -87,10 +87,6 @@ class ScheduleSettingsActivity : BaseActivity() {
                     }
                 }
             }, viewModel.table.tableName).show(supportFragmentManager, "addTableFragment")
-        }
-
-        ib_back.setOnClickListener {
-            finish()
         }
 
         ll_course_time.setOnClickListener {

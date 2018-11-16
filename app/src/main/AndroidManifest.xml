@@ -35,10 +35,15 @@
         <activity android:name=".schedule.ScheduleActivity" />
         <activity
             android:name=".course_add.AddCourseActivity"
+            android:label="添加课程"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".settings.SettingsActivity" />
-        <activity android:name=".settings.TimeSettingsActivity" />
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:label="设置" />
+        <activity
+            android:name=".settings.TimeSettingsActivity"
+            android:label="选择时间表" />
 
         <receiver
             android:name=".schedule_appwidget.ScheduleAppWidget"
@@ -64,9 +69,15 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".AboutActivity" />
-        <activity android:name=".DonateActivity" />
-        <activity android:name=".apply_info.ApplyInfoActivity" />
+        <activity
+            android:name=".AboutActivity"
+            android:label="关于" />
+        <activity
+            android:name=".DonateActivity"
+            android:label="捐赠" />
+        <activity
+            android:name=".apply_info.ApplyInfoActivity"
+            android:label="申请适配情况" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
@@ -77,9 +88,15 @@
             </intent-filter>
         </activity>
         <activity android:name=".intro.IntroActivity" />
-        <activity android:name=".schedule_manage.ScheduleManageActivity" />
-        <activity android:name=".schedule_settings.ScheduleSettingsActivity" />
-        <activity android:name=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity">
+        <activity
+            android:name=".schedule_manage.ScheduleManageActivity"
+            android:label="多课表管理" />
+        <activity
+            android:name=".schedule_settings.ScheduleSettingsActivity"
+            android:label="课表设置" />
+        <activity
+            android:name=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity"
+            android:label="提示">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
