@@ -4,19 +4,42 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.KeyEvent
+import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
-import com.suda.yzune.wakeupschedule.BaseActivity
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
+import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.textColorResource
 
-class TimeSettingsActivity : BaseActivity() {
+class TimeSettingsActivity : BaseTitleActivity() {
+    override val layoutId: Int
+        get() = R.layout.activity_time_settings
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        tvButton.text = "保存"
+        tvButton.typeface = Typeface.DEFAULT_BOLD
+        tvButton.textColorResource = R.color.colorAccent
+        tvButton.setOnClickListener {
+            when (navController.currentDestination?.id) {
+                R.id.timeTableFragment -> {
+                    setResult(Activity.RESULT_OK, Intent().putExtra("selectedId", viewModel.selectedId))
+                    finish()
+                }
+                R.id.timeSettingsFragment -> {
+                    viewModel.saveDetailData(viewModel.entryPosition)
+                }
+            }
+        }
+        return tvButton
+    }
 
     private lateinit var viewModel: TimeSettingsViewModel
     private lateinit var navController: NavController
@@ -32,13 +55,10 @@ class TimeSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_time_settings)
-        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
 
         initView()
-        initEvent()
 
         viewModel.saveInfo.observe(this, Observer { s ->
             if (s == null) return@Observer
@@ -64,39 +84,14 @@ class TimeSettingsActivity : BaseActivity() {
         navHostFragment.navController.graph = navGraph
         navController = Navigation.findNavController(this, R.id.nav_fragment)
         navController.addOnNavigatedListener { _, destination ->
-            tv_title.text = destination.label
-        }
-    }
-
-    private fun initEvent() {
-        tv_cancel.setOnClickListener {
-            when (navController.currentDestination?.id) {
-                R.id.timeTableFragment -> {
-                    finish()
-                }
-                R.id.timeSettingsFragment -> {
-                    navController.navigateUp()
-                }
-            }
-        }
-
-        tv_save.setOnClickListener {
-            when (navController.currentDestination?.id) {
-                R.id.timeTableFragment -> {
-                    setResult(Activity.RESULT_OK, Intent().putExtra("selectedId", viewModel.selectedId))
-                    finish()
-                }
-                R.id.timeSettingsFragment -> {
-                    viewModel.saveDetailData(viewModel.entryPosition)
-                }
-            }
+            mainTitle.text = destination.label
         }
     }
 
     private fun exitBy2Click() {
         if (!isExit) {
             isExit = true // 准备退出
-            Toasty.info(this.applicationContext, "再按一次退出编辑").show()
+            ll_root.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。")
             tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
         } else {
             when (navController.currentDestination?.id) {
@@ -110,11 +105,8 @@ class TimeSettingsActivity : BaseActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitBy2Click()  //退出应用的操作
-        }
-        return false
+    override fun onBackPressed() {
+        exitBy2Click()
     }
 
     override fun onDestroy() {

@@ -7,19 +7,26 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
-import com.suda.yzune.wakeupschedule.BaseActivity
+import android.widget.TextView
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_apply_info.*
 
-class ApplyInfoActivity : BaseActivity() {
+class ApplyInfoActivity : BaseTitleActivity() {
+
+    override val layoutId: Int
+        get() = R.layout.activity_apply_info
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     private lateinit var viewModel: ApplyInfoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_apply_info)
-        resizeStatusBar(v_status)
+
         viewModel = ViewModelProviders.of(this).get(ApplyInfoViewModel::class.java)
         rv_info.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.countList).apply {
             this.setHeaderView(initHeaderView())
@@ -43,10 +50,6 @@ class ApplyInfoActivity : BaseActivity() {
 
         srl_info.setOnRefreshListener {
             viewModel.initData()
-        }
-
-        ib_back.setOnClickListener {
-            finish()
         }
     }
 

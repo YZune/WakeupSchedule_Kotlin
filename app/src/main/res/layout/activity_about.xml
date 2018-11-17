@@ -7,53 +7,6 @@
     android:orientation="vertical"
     tools:context=".AboutActivity">
 
-    <View
-        android:id="@+id/v_status"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@color/white" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white">
-
-        <ImageButton
-            android:id="@+id/ib_back"
-            style="@style/ButtonBackground"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="8dp"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="关于"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_donate"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            style="@style/ButtonBackground"
-            android:gravity="center_vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:text="捐赠"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

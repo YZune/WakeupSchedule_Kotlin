@@ -7,12 +7,17 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
 import org.jetbrains.anko.*
 
 abstract class BaseTitleActivity : BaseActivity() {
 
     @get:LayoutRes
     protected abstract val layoutId: Int
+
+    abstract fun onSetupSubButton(tvButton: TextView): TextView?
+
+    lateinit var mainTitle: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +38,11 @@ abstract class BaseTitleActivity : BaseActivity() {
                         backgroundResource = outValue.resourceId
                         padding = dip(8)
                         setOnClickListener {
-                            finish()
+                            onBackPressed()
                         }
                     }.lparams(wrapContent, dip(48))
 
-                    textView(this@BaseTitleActivity.title) {
+                    mainTitle = textView(this@BaseTitleActivity.title) {
                         gravity = Gravity.CENTER_VERTICAL
                         textSize = 16f
                         typeface = Typeface.DEFAULT_BOLD
@@ -45,10 +50,13 @@ abstract class BaseTitleActivity : BaseActivity() {
                         weight = 1f
                     }
 
-                    textView("保存") {
-                        gravity = Gravity.CENTER_VERTICAL
-                        horizontalPadding = dip(24)
-                    }.lparams(wrapContent, dip(48))
+                    onSetupSubButton(
+                            textView {
+                                gravity = Gravity.CENTER_VERTICAL
+                                backgroundResource = outValue.resourceId
+                                horizontalPadding = dip(24)
+                            }.lparams(wrapContent, dip(48))
+                    )
 
                 }
 

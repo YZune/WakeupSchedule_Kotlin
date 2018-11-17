@@ -20,12 +20,17 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DonateActivity : BaseActivity() {
+class DonateActivity : BaseTitleActivity() {
+
+    override val layoutId: Int
+        get() = R.layout.activity_donate
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_donate)
-        resizeStatusBar(v_status)
         initEvent()
     }
 
@@ -89,10 +94,6 @@ class DonateActivity : BaseActivity() {
     }
 
     private fun initEvent() {
-        ib_back.setOnClickListener {
-            finish()
-        }
-
         tv_donate.setOnClickListener {
             if (DonateUtils.isAppInstalled(applicationContext, "com.eg.android.AlipayGphone")) {
                 val intent = Intent()

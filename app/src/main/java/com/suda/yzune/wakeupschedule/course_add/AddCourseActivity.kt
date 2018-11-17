@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.v4.content.ContextCompat
@@ -12,23 +13,51 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
-import com.suda.yzune.wakeupschedule.BaseActivity
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_course.*
+import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.textColorResource
 
 
-class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+
+    override val layoutId: Int
+        get() = R.layout.activity_add_course
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        tvButton.text = "保存"
+        tvButton.typeface = Typeface.DEFAULT_BOLD
+        tvButton.textColorResource = R.color.colorAccent
+        tvButton.setOnClickListener {
+            if (viewModel.baseBean.courseName == "") {
+                Toasty.error(this.applicationContext, "请填写课程名称").show()
+            } else {
+                if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
+                    viewModel.checkSameName().observe(this, Observer { courseBaseBean ->
+                        if (courseBaseBean == null) {
+                            saveData()
+                        } else if (!isSaved) {
+                            AddCourseTipFragment.newInstance().apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
+                        }
+                    })
+                } else {
+                    saveData()
+                }
+            }
+        }
+        return tvButton
+    }
 
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
@@ -45,8 +74,6 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_course)
-        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
 
@@ -84,8 +111,6 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
                 }
             }
         })
-
-        initEvent()
     }
 
     override fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String) {
@@ -204,30 +229,6 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
         return view
     }
 
-    private fun initEvent() {
-        tv_cancel.setOnClickListener {
-            finish()
-        }
-
-        tv_save.setOnClickListener { _ ->
-            if (viewModel.baseBean.courseName == "") {
-                Toasty.error(this.applicationContext, "请填写课程名称").show()
-            } else {
-                if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
-                    viewModel.checkSameName().observe(this, Observer {
-                        if (it == null) {
-                            saveData()
-                        } else if (!isSaved) {
-                            AddCourseTipFragment.newInstance().apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
-                        }
-                    })
-                } else {
-                    saveData()
-                }
-            }
-        }
-    }
-
     private fun saveData() {
         viewModel.preSaveData()
         viewModel.saveInfo.observe(this, Observer { s ->
@@ -262,18 +263,15 @@ class AddCourseActivity : BaseActivity(), AddCourseAdapter.OnItemEditTextChanged
     private fun exitBy2Click() {
         if (!isExit) {
             isExit = true // 准备退出
-            Toasty.info(this.applicationContext, "再按一次退出编辑").show()
+            ll_root.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。", "退出编辑") { finish() }
             tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
         } else {
             finish()
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exitBy2Click()  //退出应用的操作
-        }
-        return false
+    override fun onBackPressed() {
+        exitBy2Click()  //退出应用的操作
     }
 
     override fun onDestroy() {

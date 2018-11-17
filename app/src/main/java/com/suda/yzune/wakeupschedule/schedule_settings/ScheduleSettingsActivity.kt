@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.widget.EditText
 import android.widget.SeekBar
+import android.widget.TextView
 import android.widget.Toast
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
@@ -27,8 +28,13 @@ import kotlinx.android.synthetic.main.activity_schedule_settings.*
 import org.jetbrains.anko.startActivityForResult
 
 class ScheduleSettingsActivity : BaseTitleActivity() {
+
     override val layoutId: Int
         get() = R.layout.activity_schedule_settings
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val REQUEST_CODE_CHOOSE_BG = 23

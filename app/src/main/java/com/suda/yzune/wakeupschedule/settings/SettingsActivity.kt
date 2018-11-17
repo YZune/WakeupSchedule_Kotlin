@@ -1,17 +1,22 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.os.Bundle
-import com.suda.yzune.wakeupschedule.BaseActivity
+import android.widget.TextView
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.activity_settings.*
 
-class SettingsActivity : BaseActivity() {
+class SettingsActivity : BaseTitleActivity() {
+    override val layoutId: Int
+        get() = R.layout.activity_settings
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
-        resizeStatusBar(v_status)
 
         initView()
         initEvent()
@@ -22,10 +27,6 @@ class SettingsActivity : BaseActivity() {
     }
 
     private fun initEvent() {
-        ib_back.setOnClickListener {
-            finish()
-        }
-
         s_update.setOnCheckedChangeListener { _, isChecked ->
             PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
         }

@@ -6,25 +6,30 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.view.KeyEvent
+import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.suda.yzune.wakeupschedule.BaseActivity
+import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
+import org.jetbrains.anko.design.longSnackbar
 
-class WeekScheduleAppWidgetConfigActivity : BaseActivity() {
+class WeekScheduleAppWidgetConfigActivity : BaseTitleActivity() {
+
+    override val layoutId: Int
+        get() = R.layout.activity_week_schedule_app_widget_config
+
+    override fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     private lateinit var viewModel: WeekScheduleAppWidgetConfigViewModel
     private var mAppWidgetId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_week_schedule_app_widget_config)
-        resizeStatusBar(v_status)
 
         viewModel = ViewModelProviders.of(this).get(WeekScheduleAppWidgetConfigViewModel::class.java)
 
@@ -39,10 +44,6 @@ class WeekScheduleAppWidgetConfigActivity : BaseActivity() {
                 .load("https://ws2.sinaimg.cn/large/0069RVTdgy1fv5ypjuqs1j30u01hcdlt.jpg")
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(iv_tip)
-
-        ib_back.setOnClickListener {
-            Toasty.info(applicationContext, "请阅读文字后点击“我知道啦”").show()
-        }
 
         tv_got_it.setOnClickListener { _ ->
             viewModel.getDefaultTable().observe(this, Observer {
@@ -66,8 +67,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseActivity() {
         }
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        Toasty.info(applicationContext, "请阅读文字后点击“我知道啦”").show()
-        return false
+    override fun onBackPressed() {
+        ll_root.longSnackbar("请阅读文字后点击“我知道啦”")
     }
 }
