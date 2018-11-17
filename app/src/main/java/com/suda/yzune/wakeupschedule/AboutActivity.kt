@@ -5,6 +5,7 @@ import android.widget.TextView
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.activity_about.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.textColorResource
 
 class AboutActivity : BaseTitleActivity() {
     override val layoutId: Int
@@ -12,6 +13,7 @@ class AboutActivity : BaseTitleActivity() {
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "捐赠"
+        tvButton.textColorResource = R.color.colorAccent
         tvButton.setOnClickListener {
             startActivity<DonateActivity>()
         }

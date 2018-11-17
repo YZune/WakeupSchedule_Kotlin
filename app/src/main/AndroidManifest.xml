@@ -62,7 +62,6 @@
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
         <service
             android:name=".today_appwidget.TodayCourseAppWidgetService"
             android:enabled="true"
@@ -117,6 +116,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="a57a060f716a43947ae097820d16fa1f9e678075" />
+
+        <activity
+            android:name=".schedule_import.SchoolListActivity"
+            android:label="选择学校" />
     </application>
 
 </manifest>

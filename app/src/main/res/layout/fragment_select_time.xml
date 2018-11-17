@@ -48,7 +48,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="8dp">
 
-            <Button
+            <TextView
                 android:id="@+id/btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
@@ -57,7 +57,7 @@
                 android:gravity="center"
                 android:text="取消" />
 
-            <Button
+            <TextView
                 android:id="@+id/btn_save"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
