@@ -37,6 +37,9 @@ interface TableDao {
     @Query("select * from tablebean where type = 1")
     fun getDefaultTable(): LiveData<TableBean>
 
+    @Query("select id from tablebean where type = 1")
+    fun getDefaultTableId(): LiveData<Int>
+
     @Query("select * from tablebean where type = 1")
     fun getDefaultTableInThread(): TableBean
 

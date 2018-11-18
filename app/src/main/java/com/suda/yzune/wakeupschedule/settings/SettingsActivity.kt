@@ -1,11 +1,13 @@
 package com.suda.yzune.wakeupschedule.settings
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.activity_settings.*
+import org.jetbrains.anko.design.longSnackbar
 
 class SettingsActivity : BaseTitleActivity() {
     override val layoutId: Int
@@ -24,11 +26,20 @@ class SettingsActivity : BaseTitleActivity() {
 
     private fun initView() {
         s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            s_nav_bar_color.isEnabled = false
+        } else {
+            s_nav_bar_color.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_color", true)
+        }
     }
 
     private fun initEvent() {
         s_update.setOnCheckedChangeListener { _, isChecked ->
             PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
+        }
+        s_nav_bar_color.setOnCheckedChangeListener { view, isChecked ->
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_nav_bar_color", isChecked)
+            view.longSnackbar("重启App后生效哦~")
         }
     }
 }

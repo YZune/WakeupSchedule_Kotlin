@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
+import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 
@@ -59,33 +60,14 @@ class ImportChooseFragment : DialogFragment() {
 
         tv_suda.setOnClickListener {
             activity!!.startActivity<LoginWebActivity>(
-                    "type" to "suda",
+                    "type" to "苏州大学",
                     "tableId" to viewModel.tableData.value?.id
             )
             dismiss()
         }
 
-        tv_BJLD.setOnClickListener {
-            activity!!.startActivity<LoginWebActivity>(
-                    "type" to "bjld",
-                    "tableId" to viewModel.tableData.value?.id
-            )
-            dismiss()
-        }
-
-        tv_fangzheng.setOnClickListener {
-            activity!!.startActivity<LoginWebActivity>(
-                    "type" to "FZ",
-                    "tableId" to viewModel.tableData.value?.id
-            )
-            dismiss()
-        }
-
-        tv_new_fangzheng.setOnClickListener {
-            activity!!.startActivity<LoginWebActivity>(
-                    "type" to "newFZ",
-                    "tableId" to viewModel.tableData.value?.id
-            )
+        tv_more.setOnClickListener {
+            activity!!.startActivity<SchoolListActivity>()
             dismiss()
         }
 

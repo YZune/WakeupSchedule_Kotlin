@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.today_appwidget
 
 import android.content.Intent
+import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -76,6 +77,15 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
                 mRemoteViews.setTextViewText(R.id.tv_startTime, timeList[courseList[position].startNode - 1].startTime)
                 mRemoteViews.setTextViewText(R.id.tv_endTime, timeList[courseList[position].startNode + courseList[position].step - 2].endTime)
                 mRemoteViews.setTextViewText(R.id.widget_name, courseList[position].courseName)
+
+                mRemoteViews.setTextViewTextSize(R.id.tv_startTime, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+                mRemoteViews.setTextViewTextSize(R.id.tv_endTime, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+                mRemoteViews.setTextViewTextSize(R.id.widget_name, COMPLEX_UNIT_SP, table.widgetItemTextSize + 2f)
+                mRemoteViews.setTextViewTextSize(R.id.widget_room, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+                mRemoteViews.setTextViewTextSize(R.id.widget_teacher, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+                mRemoteViews.setTextViewTextSize(R.id.tv_start, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+                mRemoteViews.setTextViewTextSize(R.id.tv_end, COMPLEX_UNIT_SP, table.widgetItemTextSize.toFloat())
+
                 if (courseList[position].room != "") {
                     mRemoteViews.setTextViewText(R.id.widget_room, courseList[position].room)
                 } else {

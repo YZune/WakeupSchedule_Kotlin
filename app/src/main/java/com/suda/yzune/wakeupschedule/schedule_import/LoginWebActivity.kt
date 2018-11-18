@@ -56,7 +56,7 @@ class LoginWebActivity : BaseActivity() {
         })
 
         when {
-            intent.getStringExtra("type") == "suda" -> {
+            intent.getStringExtra("type") == "苏州大学" -> {
                 val fragment = LoginWebFragment.newInstance()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
@@ -83,7 +83,7 @@ class LoginWebActivity : BaseActivity() {
                 viewModel.importFromFile(intent.data!!.path!!)
             }
             else -> {
-                val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"))
+                val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"), intent.getStringExtra("url"))
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
                 transaction.commit()

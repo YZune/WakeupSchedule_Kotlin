@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 
 abstract class BaseActivity : AppCompatActivity() {
 
@@ -20,19 +21,21 @@ abstract class BaseActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = applicationContext.getColor(R.color.transparent)
-                window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(applicationContext, R.color.transparent)
-                window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
                 window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
+        }
+        if (PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_color", true)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
         }
         super.onCreate(savedInstanceState)
     }

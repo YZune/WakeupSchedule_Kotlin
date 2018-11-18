@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
 import com.suda.yzune.wakeupschedule.R
@@ -78,6 +79,7 @@ object AppWidgetUtils {
         val weekDay = CourseUtils.getWeekday()
         mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
         mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
+        mRemoteViews.setTextViewTextSize(R.id.tv_week, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
         mRemoteViews.setTextViewText(R.id.tv_date, date)
         if (week > 0) {
             mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")

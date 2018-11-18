@@ -16,6 +16,7 @@ import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.design.longSnackbar
 
 class TimeTableFragment : Fragment() {
 
@@ -83,7 +84,11 @@ class TimeTableFragment : Fragment() {
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {
-                    viewModel.deleteTimeTable(viewModel.timeTableList[position])
+                    if (viewModel.timeTableList[position].id == viewModel.selectedId) {
+                        view.longSnackbar("不能删除已选中的时间表哦>_<")
+                    } else {
+                        viewModel.deleteTimeTable(viewModel.timeTableList[position])
+                    }
                     return@setOnItemChildLongClickListener true
                 }
                 else -> {

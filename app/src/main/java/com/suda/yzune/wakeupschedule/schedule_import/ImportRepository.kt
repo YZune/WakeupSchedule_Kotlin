@@ -147,7 +147,7 @@ class ImportRepository(url: String) {
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if (response.body()!!.string() == "OK") {
+                if (response.body()?.string() == "OK") {
                     postHtmlResponse.value = "OK"
                 } else {
                     postHtmlResponse.value = "error"

@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ class WebViewLoginFragment : Fragment() {
     private val GET_FRAME_CONTENT_STR = "document.getElementById('iframeautoheight').contentWindow.document.body.innerHTML"
 
     private lateinit var type: String
+    private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
     private lateinit var etUrl: EditText
     private lateinit var tvTips: TextView
@@ -54,14 +54,15 @@ class WebViewLoginFragment : Fragment() {
         fabImport = view.find(R.id.fab_import)
         tvGo = view.find(R.id.tv_go)
 
-        val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
         if (url != "") {
             etUrl.setText(url)
-        }
-
-        if (type == "bjld") {
-            etUrl.setText("http://newjwxt.bjfu.edu.cn/")
             startVisit()
+        } else {
+            val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
+            if (url != "") {
+                etUrl.setText(url)
+                startVisit()
+            }
         }
 
         if (type == "apply") {
@@ -158,13 +159,15 @@ class WebViewLoginFragment : Fragment() {
         fun showSource(html: String) {
             if (type != "apply") {
                 if (html.contains("星期一") && html.contains("星期二")) {
-                    Log.d("方正", html.substring(html.indexOf("星期一")))
-                    if (type == "FZ") {
-                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                    } else if (type == "newFZ") {
-                        viewModel.parseNewFZ(html)
-                    } else if (type == "bjld") {
-                        viewModel.parseQZ(html)
+                    when (type) {
+                        "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                        "新正方教务" -> viewModel.parseNewZF(html)
+                        "北京林业大学" -> viewModel.parseQZ(html, type)
+                        "广东外语外贸大学" -> viewModel.parseQZ(html, type)
+                        "长春大学" -> viewModel.parseQZ(html, type)
+                        in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
+                        in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
+                        in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
                     }
                 } else {
                     Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
@@ -186,9 +189,10 @@ class WebViewLoginFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param0: String) =
+        fun newInstance(param0: String, param1: String = "") =
                 WebViewLoginFragment().apply {
                     type = param0
+                    url = param1
                 }
     }
 }

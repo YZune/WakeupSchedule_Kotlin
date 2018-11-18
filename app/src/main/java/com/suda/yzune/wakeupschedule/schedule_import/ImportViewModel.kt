@@ -40,6 +40,13 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向")
     //todo: 在线更新规则
+    val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+            "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
+            "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学")
+    val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "山东科技大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
+            "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院", "中南财经政法大学")
+    val qzMoreNodeSchoolList = arrayListOf("华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
+            "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院")
     private var selectedYear = ""
     private var selectedTerm = ""
     private val baseList = arrayListOf<CourseBaseBean>()
@@ -262,7 +269,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun parseNewFZ(html: String) {
+    fun parseNewZF(html: String) {
         baseList.clear()
         detailList.clear()
         var id = 0
@@ -360,19 +367,13 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                             ))
                             id++
                         } else {
-                            if (detailList[flag].room == room &&
-                                    detailList[flag].startWeek == startWeek &&
-                                    (detailList[flag].startNode + detailList[flag].step == node)) {
-                                detailList[flag].step += step
-                            } else {
-                                detailList.add(CourseDetailBean(
-                                        id = flag, room = room,
-                                        teacher = teacher, day = day,
-                                        step = step, startWeek = startWeek, endWeek = endWeek,
-                                        type = type, startNode = node,
-                                        tableId = importId
-                                ))
-                            }
+                            detailList.add(CourseDetailBean(
+                                    id = flag, room = room,
+                                    teacher = teacher, day = day,
+                                    step = step, startWeek = startWeek, endWeek = endWeek,
+                                    type = type, startNode = node,
+                                    tableId = importId
+                            ))
                         }
                     }
                 }
@@ -382,7 +383,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         write2DB()
     }
 
-    fun parseQZ(html: String) {
+    fun parseQZ(html: String, type: String) {
         baseList.clear()
         detailList.clear()
         val doc = org.jsoup.Jsoup.parse(html, "utf-8")
@@ -412,18 +413,142 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     var startIndex = 0
                     var splitIndex = courseHtml.indexOf("-----")
                     while (splitIndex != -1) {
-                        convertQZ(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                        when (type) {
+                            in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                            in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                            "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                            "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                            "广东外语外贸大学" -> convertGuangWai(day, courseHtml.substring(startIndex, splitIndex))
+                            "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                        }
                         startIndex = courseHtml.indexOf("<br>", splitIndex) + 4
                         splitIndex = courseHtml.indexOf("-----", startIndex)
                     }
-                    convertQZ(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                    when (type) {
+                        in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                        in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                        "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                        "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                        "广东外语外贸大学" -> convertGuangWai(day, courseHtml.substring(startIndex, courseHtml.length))
+                        "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                    }
                 }
             }
         }
         write2DB()
     }
 
-    private fun convertQZ(day: Int, nodeCount: Int, infoStr: String) {
+    private fun convertQZMore(day: Int, nodeCount: Int, infoStr: String) {
+        val node = nodeCount * 2 - 1
+        val courseHtml = Jsoup.parse(infoStr)
+        val courseName = Jsoup.parse(infoStr.substringBefore("<font").trim()).text()
+        val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
+        val weekList = weekStr.split(',')
+        var startWeek = 0
+        var endWeek = 0
+        var type = 0
+        var id = 0
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    type = when {
+                        weeks[1].contains('单') -> 1
+                        weeks[1].contains('双') -> 2
+                        else -> 0
+                    }
+                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                }
+            } else {
+                startWeek = Integer.decode(it.substringBefore('('))
+                endWeek = Integer.decode(it.substringBefore('('))
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = 2,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = node,
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = 2, startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = node,
+                        tableId = importId
+                ))
+            }
+        }
+    }
+
+    private fun convertQZLess(day: Int, nodeCount: Int, infoStr: String) {
+        val courseHtml = Jsoup.parse(infoStr)
+        val courseName = Jsoup.parse(infoStr.substringBefore("<font").trim()).text()
+        val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
+        val weekList = weekStr.split(',')
+        var startWeek = 0
+        var endWeek = 0
+        var type = 0
+        var id = 0
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    type = when {
+                        weeks[1].contains('单') -> 1
+                        weeks[1].contains('双') -> 2
+                        else -> 0
+                    }
+                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                }
+            } else {
+                startWeek = Integer.decode(it.substringBefore('('))
+                endWeek = Integer.decode(it.substringBefore('('))
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = 1,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = nodeCount,
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = 1, startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = nodeCount,
+                        tableId = importId
+                ))
+            }
+        }
+    }
+
+    // 北京林业大学
+    private fun convertBeijingLinYeDaXue(day: Int, nodeCount: Int, infoStr: String) {
         val node = if (nodeCount <= 3) {
             nodeCount * 2 - 1
         } else {
@@ -438,6 +563,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         var startWeek = 0
         var endWeek = 0
         var id = 0
+        var type = 0
         weekList.forEach {
             if (it.contains('-')) {
                 val weeks = it.split('-')
@@ -445,11 +571,16 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     startWeek = Integer.decode(weeks[0])
                 }
                 if (weeks.size > 1) {
-                    endWeek = Integer.decode(weeks[1])
+                    type = when {
+                        weeks[1].contains('单') -> 1
+                        weeks[1].contains('双') -> 2
+                        else -> 0
+                    }
+                    endWeek = Integer.decode(weeks[1].substringBefore('('))
                 }
             } else {
-                startWeek = Integer.decode(it)
-                endWeek = Integer.decode(it)
+                startWeek = Integer.decode(it.substringBefore('('))
+                endWeek = Integer.decode(it.substringBefore('('))
             }
 
             val flag = isContainName(baseList, courseName)
@@ -470,6 +601,116 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         teacher = teacher, day = day,
                         step = if (node == 5 || node == 12) 1 else 2, startWeek = startWeek, endWeek = endWeek,
                         type = 0, startNode = node,
+                        tableId = importId
+                ))
+            }
+        }
+    }
+
+    private fun convertChangChunDaXue(day: Int, nodeCount: Int, infoStr: String) {
+        val node = nodeCount * 2 - 1
+        val courseHtml = Jsoup.parse(infoStr)
+        val courseName = infoStr.substringBefore("<br>").trim()
+        val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
+        val weekList = weekStr.split(',')
+        var startWeek = 0
+        var endWeek = 0
+        var type = 0
+        var id = 0
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    type = when {
+                        weeks[1].contains('单') -> 1
+                        weeks[1].contains('双') -> 2
+                        else -> 0
+                    }
+                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                }
+            } else {
+                startWeek = Integer.decode(it.substringBefore('('))
+                endWeek = Integer.decode(it.substringBefore('('))
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = 2,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = node,
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = 2, startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = node,
+                        tableId = importId
+                ))
+            }
+        }
+    }
+
+    private fun convertGuangWai(day: Int, infoStr: String) {
+        val courseHtml = Jsoup.parse(infoStr)
+        val courseName = infoStr.substringBefore("<br>").trim()
+        val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[0]
+        val nodeList = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[1].removeSurrounding("[", "]").split('-')
+        val weekList = weekStr.split(',')
+        var startWeek = 0
+        var endWeek = 0
+        var id = 0
+        var type = 0
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    type = when {
+                        weeks[1].contains('单') -> 1
+                        weeks[1].contains('双') -> 2
+                        else -> 0
+                    }
+                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                }
+            } else {
+                startWeek = Integer.decode(it.substringBefore('('))
+                endWeek = Integer.decode(it.substringBefore('('))
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().toInt() + 1,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = nodeList.first().toInt(),
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().toInt() + 1, startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = nodeList.first().toInt(),
                         tableId = importId
                 ))
             }
@@ -510,7 +751,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 baseDao.insertList(courseBaseList)
                 detailDao.insertList(courseDetailList)
                 fileImportInfo.postValue("ok")
-            } catch (e: SQLiteConstraintException) {
+            } catch (e: Exception) {
                 fileImportInfo.postValue("error")
             }
         }

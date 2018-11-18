@@ -41,7 +41,9 @@ class CourseDetailFragment : DialogFragment() {
         }
 
         override fun onFinish() {
-            tv_tips.visibility = View.GONE
+            if (tv_tips != null) {
+                tv_tips.visibility = View.GONE
+            }
             makeSure = 0
         }
     }
