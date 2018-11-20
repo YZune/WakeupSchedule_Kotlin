@@ -1,5 +1,9 @@
 package com.suda.yzune.wakeupschedule.bean
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class CourseBean(
         var id: Int,
         var courseName: String,
@@ -13,4 +17,4 @@ data class CourseBean(
         var type: Int,
         var color: String,
         var tableId: Int
-)
+) : Parcelable

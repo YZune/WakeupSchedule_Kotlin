@@ -50,7 +50,9 @@ class CourseDetailFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        arguments?.let {
+            course = it.getParcelable("course") as CourseBean
+        }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
@@ -157,7 +159,9 @@ class CourseDetailFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(arg: CourseBean) =
                 CourseDetailFragment().apply {
-                    course = arg
+                    arguments = Bundle().apply {
+                        putParcelable("course", arg)
+                    }
                 }
     }
 }

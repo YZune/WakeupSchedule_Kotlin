@@ -37,6 +37,14 @@ class WebViewLoginFragment : Fragment() {
     private lateinit var fabImport: FloatingActionButton
     private lateinit var tvGo: TextView
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            type = it.getString("type")!!
+            url = it.getString("url")!!
+        }
+    }
+
     @JavascriptInterface
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -191,8 +199,10 @@ class WebViewLoginFragment : Fragment() {
         @JvmStatic
         fun newInstance(param0: String, param1: String = "") =
                 WebViewLoginFragment().apply {
-                    type = param0
-                    url = param1
+                    arguments = Bundle().apply {
+                        putString("type", param0)
+                        putString("url", param1)
+                    }
                 }
     }
 }

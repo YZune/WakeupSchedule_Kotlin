@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat
 import com.github.paolorotolo.appintro.AppIntro
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import org.jetbrains.anko.backgroundColorResource
 
 class IntroActivity : AppIntro() {
 
@@ -20,6 +21,7 @@ class IntroActivity : AppIntro() {
         addSlide(IntroFragment.newInstance("https://ws1.sinaimg.cn/large/006tNbRwgy1fw81s4ny0hj30dc0nq425.jpg", "全新设计的课程导出导入功能\n可以导入朋友分享的文件\n共享包括上课时间、课程表设置等内容"))
         addSlide(IntroFragment.newInstance("https://ws2.sinaimg.cn/large/006tNbRwgy1fw81sts3agj30dc0nqkef.jpg", "本App是有桌面小部件的哦\n长按桌面可以添加，可能位置比较靠后\n小部件的外观设置在课表设置的最下面哦"))
         setBarColor(ContextCompat.getColor(this, R.color.transparent))
+        doneButton.backgroundColorResource = R.color.transparent
         setColorDoneText(ContextCompat.getColor(this, R.color.colorAccent))
         setIndicatorColor(ContextCompat.getColor(this, R.color.colorAccent), ContextCompat.getColor(this, R.color.grey))
         setNextArrowColor(ContextCompat.getColor(this, R.color.colorAccent))

@@ -18,6 +18,13 @@ class UpdateFragment : DialogFragment() {
 
     private lateinit var updateInfo: UpdateInfoBean
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            updateInfo = it.getParcelable("updateInfo")!!
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -55,7 +62,9 @@ class UpdateFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(arg: UpdateInfoBean) =
                 UpdateFragment().apply {
-                    updateInfo = arg
+                    arguments = Bundle().apply {
+                        putParcelable("updateInfo", arg)
+                    }
                 }
     }
 }

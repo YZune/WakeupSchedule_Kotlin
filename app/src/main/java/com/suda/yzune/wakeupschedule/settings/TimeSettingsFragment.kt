@@ -23,7 +23,6 @@ class TimeSettingsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         val arguments = arguments
         position = arguments!!.getInt("position")
         viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)

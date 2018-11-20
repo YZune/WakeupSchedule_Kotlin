@@ -9,6 +9,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'io.fabric'
 
 android {
+    androidExtensions {
+        experimental = true
+    }
     signingConfigs {
         config {
             keyAlias 'yzune'

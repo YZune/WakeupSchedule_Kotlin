@@ -24,7 +24,6 @@ class TimeTableFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
         val arguments = arguments
         viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
         viewModel.selectedId = arguments!!.getInt("selectedId")

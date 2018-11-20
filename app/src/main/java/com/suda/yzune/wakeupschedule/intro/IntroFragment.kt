@@ -9,13 +9,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.suda.yzune.wakeupschedule.GlideApp
-
 import com.suda.yzune.wakeupschedule.R
 
 class IntroFragment : Fragment() {
 
     private var imageUrl = ""
     private var description = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            imageUrl = it.getString("imageUrl")!!
+            description = it.getString("description")!!
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -34,8 +41,10 @@ class IntroFragment : Fragment() {
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
                 IntroFragment().apply {
-                    imageUrl = param1
-                    description = param2
+                    arguments = Bundle().apply {
+                        putString("imageUrl", param1)
+                        putString("description", param2)
+                    }
                 }
     }
 }

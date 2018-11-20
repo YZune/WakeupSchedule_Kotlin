@@ -23,7 +23,9 @@ class SelectWeekFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        arguments?.let {
+            position = it.getInt("position")
+        }
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
         liveData.observe(this, Observer {
             if (it?.size == viewModel.maxWeek) {
@@ -180,7 +182,9 @@ class SelectWeekFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(arg: Int) =
                 SelectWeekFragment().apply {
-                    position = arg
+                    arguments = Bundle().apply {
+                        putInt("position", arg)
+                    }
                 }
     }
 }

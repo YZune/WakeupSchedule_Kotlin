@@ -25,7 +25,9 @@ class SelectTimeFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
+        arguments?.let {
+            position = it.getInt("position")
+        }
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
     }
 
@@ -91,7 +93,9 @@ class SelectTimeFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(arg: Int) =
                 SelectTimeFragment().apply {
-                    position = arg
+                    arguments = Bundle().apply {
+                        putInt("position", arg)
+                    }
                 }
     }
 }
