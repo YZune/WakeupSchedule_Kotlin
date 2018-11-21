@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.widget
 
 import android.app.Dialog
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -17,6 +18,15 @@ class ModifyTableNameFragment : DialogFragment() {
     private var listener: TableNameChangeListener? = null
     private var tableName = ""
     private var title = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            listener = it.getParcelable("listener")
+            tableName = it.getString("tableName")!!
+            title = it.getString("title")!!
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -50,7 +60,7 @@ class ModifyTableNameFragment : DialogFragment() {
         listener = null
     }
 
-    interface TableNameChangeListener {
+    interface TableNameChangeListener : Parcelable {
         fun onFinish(editText: EditText, dialog: Dialog)
     }
 
@@ -58,9 +68,11 @@ class ModifyTableNameFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(changeListener: TableNameChangeListener, string: String = "", titleStr: String = "课表名字") =
                 ModifyTableNameFragment().apply {
-                    listener = changeListener
-                    tableName = string
-                    title = titleStr
+                    arguments = Bundle().apply {
+                        putParcelable("listener", changeListener)
+                        putString("tableName", string)
+                        putString("title", titleStr)
+                    }
                 }
     }
 }

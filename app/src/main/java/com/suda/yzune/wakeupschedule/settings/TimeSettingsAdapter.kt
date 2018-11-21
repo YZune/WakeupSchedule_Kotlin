@@ -1,12 +1,16 @@
 package com.suda.yzune.wakeupschedule.settings
 
+import android.os.Parcelable
 import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
-class TimeSettingsAdapter(layoutResId: Int, data: List<TimeDetailBean>) :
-        BaseItemDraggableAdapter<TimeDetailBean, BaseViewHolder>(layoutResId, data) {
+@Parcelize
+class TimeSettingsAdapter(private val layoutResId: Int, val list: @RawValue List<TimeDetailBean>) :
+        BaseItemDraggableAdapter<TimeDetailBean, BaseViewHolder>(layoutResId, list), Parcelable {
 
     override fun convert(helper: BaseViewHolder, item: TimeDetailBean) {
         val name = "第 ${item.node} 节"

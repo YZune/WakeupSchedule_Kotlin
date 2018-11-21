@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.Parcel
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -109,6 +110,14 @@ class TimeSettingsFragment : Fragment() {
                 return@setOnClickListener
             }
             ModifyTableNameFragment.newInstance(changeListener = object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         tvName.text = editText.text.toString()

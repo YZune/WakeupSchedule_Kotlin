@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.Parcel
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -93,6 +94,14 @@ class ScheduleManageFragment : Fragment() {
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         viewModel.addBlankTable(editText.text.toString())

@@ -252,24 +252,42 @@ class ScheduleFragment : Fragment() {
         for (i in data.indices) {
             val strBuilder = StringBuilder()
             val c = data[i]
-            val tv = TextView(context)
+
+            if (!table.showOtherWeekCourse) {
+                if (week % 2 == 0 && c.type == 1) {
+                    continue
+                }
+                if (week % 2 == 1 && c.type == 2) {
+                    continue
+                }
+                if (c.startWeek > week || c.endWeek < week) {
+                    continue
+                }
+            }
+
+            val textView = TextView(context)
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
-            if (i > 0) {
-                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
-            } else {
+            if (ll.childCount == 0) {
                 lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+            } else {
+                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
             }
-            tv.layoutParams = lp
+//            if (i > 0) {
+//                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+//            } else {
+//                lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+//            }
+            textView.layoutParams = lp
 //            tv.gravity = Gravity.CENTER_HORIZONTAL
-            tv.textSize = table.itemTextSize.toFloat()
-            tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            tv.setPadding(dip(4), dip(4), dip(4), dip(4))
-            tv.setTextColor(table.courseTextColor)
+            textView.textSize = table.itemTextSize.toFloat()
+            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
+            textView.setTextColor(table.courseTextColor)
 
-            tv.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
-            val myGrad = tv.background as GradientDrawable
+            textView.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
+            val myGrad = textView.background as GradientDrawable
             myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), table.strokeColor)
 
             if (c.color == "") {
@@ -287,7 +305,6 @@ class ScheduleFragment : Fragment() {
                 myGrad.setColor(Color.parseColor(c.color))
             }
 
-
             strBuilder.append(c.courseName)
 
             if (c.room != "") {
@@ -299,11 +316,11 @@ class ScheduleFragment : Fragment() {
                     if (week % 2 == 0) {
                         if (table.showOtherWeekCourse) {
                             strBuilder.append("\n单周[非本周]")
-                            tv.visibility = View.VISIBLE
-                            tv.alpha = 0.6f
+                            textView.visibility = View.VISIBLE
+                            textView.alpha = 0.6f
                             myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                         } else {
-                            tv.visibility = View.INVISIBLE
+                            textView.visibility = View.INVISIBLE
                         }
                     } else {
                         strBuilder.append("\n单周")
@@ -312,12 +329,12 @@ class ScheduleFragment : Fragment() {
                 2 -> {
                     if (week % 2 != 0) {
                         if (table.showOtherWeekCourse) {
-                            tv.alpha = 0.6f
+                            textView.alpha = 0.6f
                             strBuilder.append("\n双周[非本周]")
-                            tv.visibility = View.VISIBLE
+                            textView.visibility = View.VISIBLE
                             myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                         } else {
-                            tv.visibility = View.INVISIBLE
+                            textView.visibility = View.INVISIBLE
                         }
                     } else {
                         strBuilder.append("\n双周")
@@ -327,12 +344,12 @@ class ScheduleFragment : Fragment() {
 
             if (c.startWeek > week || c.endWeek < week) {
                 if (table.showOtherWeekCourse) {
-                    tv.alpha = 0.6f
+                    textView.alpha = 0.6f
                     strBuilder.append("[非本周]")
-                    tv.visibility = View.VISIBLE
+                    textView.visibility = View.VISIBLE
                     myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                 } else {
-                    tv.visibility = View.INVISIBLE
+                    textView.visibility = View.INVISIBLE
                 }
             }
 
@@ -340,13 +357,13 @@ class ScheduleFragment : Fragment() {
                 viewModel.timeData.observe(this, Observer {
                     if (it == null || it.isEmpty()) return@Observer
                     strBuilder.insert(0, it[c.startNode - 1].startTime + "\n")
-                    tv.text = strBuilder
+                    textView.text = strBuilder
                 })
             } else {
-                tv.text = strBuilder
+                textView.text = strBuilder
             }
 
-            tv.setOnClickListener {
+            textView.setOnClickListener {
                 try {
                     val detailFragment = CourseDetailFragment.newInstance(c)
                     detailFragment.show(fragmentManager, "courseDetail")
@@ -358,12 +375,12 @@ class ScheduleFragment : Fragment() {
 
             if (day == 7) {
                 if (table.sundayFirst) {
-                    find<LinearLayout>(R.id.anko_ll_week_panel_0).addView(tv)
+                    find<LinearLayout>(R.id.anko_ll_week_panel_0).addView(textView)
                 } else {
-                    ll.addView(tv)
+                    ll.addView(textView)
                 }
             } else {
-                ll.addView(tv)
+                ll.addView(textView)
             }
             pre = c
         }

@@ -171,7 +171,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
 
                 if (inArray(other, courseSource)) {
-                    //other data
+                    //other list
                     continue
                 }
                 courses.addAll(parseImportBean(courseSource, node))

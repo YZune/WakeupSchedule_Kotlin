@@ -21,6 +21,11 @@ class SelectTimeDetailFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            position = it.getInt("position")
+            tablePosition = it.getInt("tablePosition")
+            adapter = it.getParcelable("adapter")!!
+        }
         viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
     }
 
@@ -95,9 +100,11 @@ class SelectTimeDetailFragment : DialogFragment() {
         @JvmStatic
         fun newInstance(arg0: Int, arg1: Int, arg2: TimeSettingsAdapter) =
                 SelectTimeDetailFragment().apply {
-                    position = arg1
-                    adapter = arg2
-                    tablePosition = arg0
+                    arguments = Bundle().apply {
+                        putInt("position", arg1)
+                        putInt("tablePosition", arg0)
+                        putParcelable("adapter", arg2)
+                    }
                 }
     }
 }

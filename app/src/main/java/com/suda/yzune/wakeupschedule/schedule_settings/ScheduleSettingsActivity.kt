@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Parcel
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.widget.EditText
@@ -83,6 +84,14 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
     private fun initEvent() {
         ll_table_name.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         viewModel.table.tableName = editText.text.toString()

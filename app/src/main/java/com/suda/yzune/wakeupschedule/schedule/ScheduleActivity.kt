@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
@@ -287,6 +288,13 @@ class ScheduleActivity : BaseActivity() {
         val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         viewModel.addBlankTable(editText.text.toString())
