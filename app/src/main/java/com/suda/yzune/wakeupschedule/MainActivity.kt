@@ -1,47 +1,62 @@
 package com.suda.yzune.wakeupschedule
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 import com.suda.yzune.wakeupschedule.dao.TimeTableDao
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity() {
 
+    private lateinit var job: Job
+    private lateinit var database: AppDatabase
+    private lateinit var dao: TimeTableDao
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val database = AppDatabase.getDatabase(application)
-        val dao = database.timeTableDao()
+
+        database = AppDatabase.getDatabase(application)
+        dao = database.timeTableDao()
+
+        job = loadData()
 
         fab.setOnClickListener {
-            GlobalScope.launch(Dispatchers.Main) {
-                //                // 挂起当前上下文而非阻塞1000ms
-//                for (i in 0..100) {
-//                    tv_test.text = i.toString()
-//                    delay(100)
-//                }
-//                tv_test.text = "done!"
-                showIOData(dao)
+            if (!job.isActive) {
+                job.start()
+            } else {
+                job.cancel()
             }
-            pb.visibility = View.VISIBLE
-            fab.hide()
+            if (job.isCancelled) {
+                job.start()
+            }
         }
     }
 
-    suspend fun showIOData(dao: TimeTableDao) {
-        val deferred = GlobalScope.async(Dispatchers.IO) {
-            dao.insertTimeTable(TimeTableBean(0, "test"))
-            delay(2000)
+    private fun loadData() = GlobalScope.launch(Dispatchers.Main, start = CoroutineStart.LAZY) {
+        pb.visibility = View.VISIBLE
+//        fab.isEnabled = false
+
+        // 这是同时进行的(先读了再写？)
+//        val task1 = async(Dispatchers.IO) {
+//            Log.d("协程", "task1")
+//            delay(2000)
+//            for (i in 0..9) {
+//                dao.insertTimeTable(TimeTableBean(0, ""))
+//            }
+//        }.await()
+
+        val task2 = async(Dispatchers.IO) {
+            Log.d("协程", "task2")
+            delay(5000)
             dao.getMaxIdInThread()
-        }
-        withContext(Dispatchers.Main) {
-            val data = deferred.await()
-            tv_test.text = data.toString()
-            pb.visibility = View.GONE
-            fab.show()
-        }
+        }.await()
+
+        tv_test.text = "${task2}"
+        pb.visibility = View.GONE
+        Toasty.success(applicationContext, "${job.isCompleted}").show()
     }
 
 }

@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
@@ -124,8 +123,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         } else {
             thread(name = "insertNewCourseThread") {
                 try {
-                    Log.d("保存", baseBean.toString())
-                    Log.d("保存", saveList.toString())
                     baseDao.insertCourseBase(baseBean)
                     detailDao.insertList(saveList)
                     saveInfo.postValue("ok")

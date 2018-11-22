@@ -5,7 +5,7 @@ import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.HTTP
 
 interface MyRetrofitService {
     @GET("/school/count")
@@ -20,7 +20,7 @@ interface MyRetrofitService {
     @GET("/school/count_html")
     fun getHtmlCount(): Call<ResponseBody>
 
-    @POST("/school/apply_html")
+    @HTTP(method = "POST", path = "/school/apply_html", hasBody = true)
     @FormUrlEncoded
     fun postHtml(@Field("school") school: String,
                  @Field("type") type: String,

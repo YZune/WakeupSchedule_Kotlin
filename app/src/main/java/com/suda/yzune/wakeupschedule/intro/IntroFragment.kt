@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 
 class IntroFragment : Fragment() {
 
@@ -27,8 +28,11 @@ class IntroFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_intro, container, false)
+        val x = (ViewUtils.getRealSize(activity!!).x * 0.5).toInt()
+        val y = (ViewUtils.getRealSize(activity!!).y * 0.5).toInt()
         GlideApp.with(this)
                 .load(imageUrl)
+                .override(x, y)
                 .error(R.drawable.net_work_error)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(view.findViewById(R.id.iv_intro))

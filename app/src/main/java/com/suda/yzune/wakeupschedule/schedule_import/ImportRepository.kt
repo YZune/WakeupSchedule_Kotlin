@@ -144,15 +144,14 @@ class ImportRepository(url: String) {
         MyRetrofitUtils.instance.getService().postHtml(school, type, html, qq).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 postHtmlResponse.value = "error"
-                Log.d("上传", t.localizedMessage)
             }
 
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("课表", response.toString())
                 if (response.body()?.string() == "OK") {
                     postHtmlResponse.value = "OK"
                 } else {
                     postHtmlResponse.value = "error"
-                    Log.d("上传", response.body()?.string())
                 }
             }
         })

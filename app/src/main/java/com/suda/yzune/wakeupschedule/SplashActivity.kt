@@ -24,7 +24,7 @@ class SplashActivity : AppCompatActivity() {
                 .setTextSize(12)
                 .apply()
         startActivity<ScheduleActivity>()
-        //startActivity<SchoolListActivity>()
+//        startActivity<MainActivity>()
         finish()
     }
 }
