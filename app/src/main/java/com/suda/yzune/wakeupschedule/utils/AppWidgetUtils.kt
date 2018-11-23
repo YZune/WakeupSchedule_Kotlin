@@ -16,6 +16,12 @@ import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
 object AppWidgetUtils {
     private val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
+    fun updateWidget(context: Context) {
+        val intent = Intent()
+        intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+        context.sendBroadcast(intent)
+    }
+
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
         val week = CourseUtils.countWeek(tableBean.startDate)

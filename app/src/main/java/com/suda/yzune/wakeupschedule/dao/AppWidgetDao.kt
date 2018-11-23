@@ -29,6 +29,9 @@ interface AppWidgetDao {
     @Query("select * from appwidgetbean where baseType = :baseType")
     fun getWidgetsByBaseType(baseType: Int): LiveData<List<AppWidgetBean>>
 
+    @Query("select * from appwidgetbean where baseType = :baseType")
+    fun getWidgetsByBaseTypeInThread(baseType: Int): List<AppWidgetBean>
+
     @Query("select id from appwidgetbean where baseType = :baseType and detailType = :detailType")
     fun getWidgetIdsByTypesInThread(baseType: Int, detailType: Int): List<Int>
 

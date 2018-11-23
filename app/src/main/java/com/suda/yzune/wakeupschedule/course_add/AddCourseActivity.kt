@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -23,14 +22,18 @@ import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_course.*
+import kotlinx.coroutines.*
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.textColorResource
 
 
 class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+
+    private var job: Job? = null
 
     override val layoutId: Int
         get() = R.layout.activity_add_course
@@ -44,13 +47,16 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                 Toasty.error(this.applicationContext, "请填写课程名称").show()
             } else {
                 if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
-                    viewModel.checkSameName().observe(this, Observer { courseBaseBean ->
-                        if (courseBaseBean == null) {
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        val task = async(Dispatchers.IO) {
+                            viewModel.checkSameName()
+                        }
+                        if (task.await() == null) {
                             saveData()
-                        } else if (!isSaved) {
+                        } else {
                             AddCourseTipFragment.newInstance().apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
                         }
-                    })
+                    }
                 } else {
                     saveData()
                 }
@@ -86,20 +92,23 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
-            viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId).observe(this, Observer { list ->
-                if (!isSaved) {
-                    list!!.forEach {
-                        viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
-                    }
-                    viewModel.initBaseData(intent.extras!!.getInt("id")).observe(this, Observer {
-                        viewModel.baseBean.id = it!!.id
-                        viewModel.baseBean.color = it.color
-                        viewModel.baseBean.courseName = it.courseName
-                        viewModel.baseBean.tableId = it.tableId
-                        initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.baseBean)
-                    })
+            job = GlobalScope.launch(Dispatchers.Main) {
+                val task1 = async(Dispatchers.IO) {
+                    viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId)
                 }
-            })
+                val task2 = async(Dispatchers.IO) {
+                    viewModel.initBaseData(intent.extras!!.getInt("id"))
+                }
+                task1.await().forEach {
+                    viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
+                }
+                val courseBaseBean = task2.await()
+                viewModel.baseBean.id = courseBaseBean.id
+                viewModel.baseBean.color = courseBaseBean.color
+                viewModel.baseBean.courseName = courseBaseBean.courseName
+                viewModel.baseBean.tableId = courseBaseBean.tableId
+                initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.baseBean)
+            }
         }
 
         viewModel.getLastId().observe(this, Observer {
@@ -230,34 +239,30 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     private fun saveData() {
-        viewModel.preSaveData()
-        viewModel.saveInfo.observe(this, Observer { s ->
-            when (s) {
-                "ok" -> {
-                    val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                    Toasty.success(this.applicationContext, "保存成功").show()
-                    isSaved = true
-                    viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
-                        list?.forEach {
-                            when (it.detailType) {
-                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
-                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
-                            }
-                        }
-                        finish()
-                    })
-                }
-                "其他重复" -> {
-                    Toasty.error(this.applicationContext, "插入异常，请确保时间与已有课程时间没有冲突", Toast.LENGTH_LONG).show()
-                }
-                "自身重复" -> {
-                    Toasty.error(this.applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    Toasty.error(this.applicationContext, s!!, Toast.LENGTH_LONG).show()
+        job = GlobalScope.launch(Dispatchers.Main) {
+            val task = async(Dispatchers.IO) {
+                try {
+                    viewModel.preSaveData()
+                    "ok"
+                } catch (e: Exception) {
+                    e.message
                 }
             }
-        })
+            val msg = task.await()
+            when (msg) {
+                "ok" -> {
+                    Toasty.success(applicationContext, "保存成功").show()
+                    AppWidgetUtils.updateWidget(applicationContext)
+                    finish()
+                }
+                "自身重复" -> {
+                    Toasty.error(applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
+                }
+                else -> {
+                    Toasty.error(applicationContext, msg!!, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun exitBy2Click() {
@@ -277,5 +282,6 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     override fun onDestroy() {
         super.onDestroy()
         tExit.cancel()
+        job?.cancel()
     }
 }

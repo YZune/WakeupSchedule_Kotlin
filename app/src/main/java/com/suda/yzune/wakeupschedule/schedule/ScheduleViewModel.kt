@@ -38,25 +38,17 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val exportImportInfo = MutableLiveData<String>()
-    val addBlankTableInfo = MutableLiveData<String>()
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectList()
     }
 
-    fun addBlankTable(tableName: String) {
-        thread(name = "AddBlankTableThread") {
-            try {
-                tableDao.insertTable(TableBean(id = 0, tableName = tableName))
-                addBlankTableInfo.postValue("OK")
-            } catch (e: SQLiteConstraintException) {
-                addBlankTableInfo.postValue("error")
-            }
-        }
+    suspend fun addBlankTableAsync(tableName: String) {
+        tableDao.insertTable(TableBean(id = 0, tableName = tableName))
     }
 
-    fun changeDefaultTable(id: Int) {
+    suspend fun changeDefaultTable(id: Int) {
         if (tableData.value?.id == null) return
         tableDao.resetOldDefaultTable(tableData.value?.id!!)
         tableDao.setNewDefaultTable(id)

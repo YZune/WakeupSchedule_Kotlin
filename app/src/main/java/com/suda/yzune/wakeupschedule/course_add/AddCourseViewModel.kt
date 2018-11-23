@@ -4,14 +4,11 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.database.sqlite.SQLiteConstraintException
 import com.suda.yzune.wakeupschedule.AppDatabase
-import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import kotlin.concurrent.thread
 
 class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,7 +23,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
 
     var updateFlag = true
     val deleteList = arrayListOf<Int>()
-    val saveInfo = MutableLiveData<String>()
     var newId = -1
     var tableId = 0
     var maxWeek = 30
@@ -80,7 +76,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return flag
     }
 
-    fun preSaveData() {
+    suspend fun preSaveData() {
         saveList.clear()
         if (baseBean.id == -1) {
             updateFlag = false
@@ -104,42 +100,24 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         if (selfUnique) {
             saveData()
         } else {
-            saveInfo.value = "自身重复"
+            throw Exception("自身重复")
         }
     }
 
     private fun saveData() {
         if (updateFlag) {
-            thread(name = "updateCourseThread") {
-                try {
-                    baseDao.updateCourseBaseBean(baseBean)
-                    detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
-                    detailDao.insertList(saveList)
-                    saveInfo.postValue("ok")
-                } catch (e: SQLiteConstraintException) {
-                    saveInfo.postValue(e.toString())
-                }
-            }
+            baseDao.updateCourseBaseBean(baseBean)
+            detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
+            detailDao.insertList(saveList)
         } else {
-            thread(name = "insertNewCourseThread") {
-                try {
-                    baseDao.insertCourseBase(baseBean)
-                    detailDao.insertList(saveList)
-                    saveInfo.postValue("ok")
-                } catch (e: SQLiteConstraintException) {
-                    saveInfo.postValue(e.toString())
-                }
-            }
+            baseDao.insertCourseBase(baseBean)
+            detailDao.insertList(saveList)
         }
 
     }
 
-    fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
-        return widgetDao.getWidgetsByBaseType(0)
-    }
-
-    fun checkSameName(): LiveData<CourseBaseBean> {
-        return baseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
+    suspend fun checkSameName(): CourseBaseBean? {
+        return baseDao.checkSameNameInTableInThread(baseBean.courseName, baseBean.tableId)
     }
 
     fun initData(maxWeek: Int): MutableList<CourseEditBean> {
@@ -155,9 +133,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return editList
     }
 
-    fun initData(id: Int, tableId: Int): LiveData<List<CourseDetailBean>> {
+    suspend fun initData(id: Int, tableId: Int): List<CourseDetailBean> {
         editList = mutableListOf()
-        return detailDao.getDetailByIdOfTable(id, tableId)
+        return detailDao.getDetailByIdOfTableInThread(id, tableId)
     }
 
     fun getLastId(): LiveData<Int> {
@@ -169,8 +147,8 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return baseBean
     }
 
-    fun initBaseData(id: Int): LiveData<CourseBaseBean> {
+    suspend fun initBaseData(id: Int): CourseBaseBean {
         baseBean = CourseBaseBean(-1, "", "", tableId)
-        return baseDao.getCourseByIdOfTable(id, tableId)
+        return baseDao.getCourseByIdOfTableInThread(id, tableId)
     }
 }

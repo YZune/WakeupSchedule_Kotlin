@@ -4,7 +4,10 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(foreignKeys = [(
         ForeignKey(entity = TimeTableBean::class,
                 parentColumns = ["id"],
@@ -40,4 +43,4 @@ data class TableBean(
         var showOtherWeekCourse: Boolean = false,
         var showTime: Boolean = false,
         var type: Int = 0
-)
+) : Parcelable

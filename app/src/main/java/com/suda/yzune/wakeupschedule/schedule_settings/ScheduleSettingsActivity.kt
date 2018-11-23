@@ -19,6 +19,7 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
@@ -26,6 +27,7 @@ import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule_settings.*
+import kotlinx.coroutines.*
 import org.jetbrains.anko.startActivityForResult
 
 class ScheduleSettingsActivity : BaseTitleActivity() {
@@ -40,12 +42,13 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
-        viewModel.initTableData(intent.extras!!.getString("tableData")!!)
+        viewModel.table = intent.extras!!.getParcelable("tableData") as TableBean
 
         initView()
         initEvent()
@@ -390,7 +393,12 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
     }
 
     override fun onDestroy() {
-        viewModel.saveSettings()
         super.onDestroy()
+        job = GlobalScope.launch(Dispatchers.Main) {
+            async(Dispatchers.IO) {
+                viewModel.saveSettings()
+            }.await()
+            job?.cancel()
+        }
     }
 }

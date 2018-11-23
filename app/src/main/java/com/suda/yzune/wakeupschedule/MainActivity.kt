@@ -10,7 +10,7 @@ import kotlinx.coroutines.*
 
 class MainActivity : BaseActivity() {
 
-    private lateinit var job: Job
+    private var job: Job? = null
     private lateinit var database: AppDatabase
     private lateinit var dao: TimeTableDao
 
@@ -21,22 +21,18 @@ class MainActivity : BaseActivity() {
         database = AppDatabase.getDatabase(application)
         dao = database.timeTableDao()
 
-        job = loadData()
-
         fab.setOnClickListener {
-            if (!job.isActive) {
-                job.start()
-            } else {
-                job.cancel()
-            }
-            if (job.isCancelled) {
-                job.start()
+            Toasty.success(applicationContext, "active: ${job?.isActive}    cancelled: ${job?.isCancelled}").show()
+            if (job == null || !job!!.isActive) {
+                job = loadData()
+                job!!.start()
             }
         }
     }
 
     private fun loadData() = GlobalScope.launch(Dispatchers.Main, start = CoroutineStart.LAZY) {
         pb.visibility = View.VISIBLE
+        tv_test.text = ""
 //        fab.isEnabled = false
 
         // 这是同时进行的(先读了再写？)
@@ -49,14 +45,13 @@ class MainActivity : BaseActivity() {
 //        }.await()
 
         val task2 = async(Dispatchers.IO) {
-            Log.d("协程", "task2")
             delay(5000)
+            Log.d("协程", "task2")
             dao.getMaxIdInThread()
-        }.await()
-
-        tv_test.text = "${task2}"
+        }
+        tv_test.text = "${task2.await()}"
         pb.visibility = View.GONE
-        Toasty.success(applicationContext, "${job.isCompleted}").show()
+        job?.cancel()
     }
 
 }

@@ -15,17 +15,18 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.navigation.Navigation
-import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
 
 class ScheduleManageFragment : Fragment() {
 
     private lateinit var viewModel: ScheduleManageViewModel
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +53,6 @@ class ScheduleManageFragment : Fragment() {
     private fun initTableRecyclerView(fragmentView: View, rvTableList: RecyclerView, data: List<TableSelectBean>) {
         rvTableList.layoutManager = LinearLayoutManager(context)
         val adapter = TableListAdapter(R.layout.item_table_list, data)
-        val gson = Gson()
         adapter.setOnItemClickListener { _, _, position ->
             val bundle = Bundle()
             bundle.putInt("position", position)
@@ -63,8 +63,11 @@ class ScheduleManageFragment : Fragment() {
                 R.id.ib_share -> {
                 }
                 R.id.ib_edit -> {
-                    viewModel.getTableById(data[position].id).also {
-                        startActivity<ScheduleSettingsActivity>("tableData" to gson.toJson(it))
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        val task = async(Dispatchers.IO) {
+                            viewModel.getTableById(data[position].id)
+                        }
+                        startActivity<ScheduleSettingsActivity>("tableData" to task.await())
                     }
                 }
                 R.id.ib_delete -> {
@@ -75,7 +78,11 @@ class ScheduleManageFragment : Fragment() {
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {
-                    viewModel.deleteTable(data[position].id)
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        async(Dispatchers.IO) {
+                            viewModel.deleteTable(data[position].id)
+                        }.await()
+                    }
                     return@setOnItemChildLongClickListener true
                 }
                 else -> {
@@ -104,16 +111,24 @@ class ScheduleManageFragment : Fragment() {
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
-                        viewModel.addBlankTable(editText.text.toString())
-                        viewModel.addBlankTableInfo.observe(this@ScheduleManageFragment, Observer { info ->
-                            if (info == "OK") {
+                        job = GlobalScope.launch(Dispatchers.Main) {
+                            val task = async(Dispatchers.IO) {
+                                try {
+                                    viewModel.addBlankTable(editText.text.toString())
+                                    "ok"
+                                } catch (e: Exception) {
+                                    e.toString()
+                                }
+                            }
+                            val result = task.await()
+                            if (result == "ok") {
                                 Toasty.success(activity!!.applicationContext, "新建成功~").show()
                                 dialog.dismiss()
                             } else {
                                 Toasty.success(activity!!.applicationContext, "操作失败>_<").show()
                                 dialog.dismiss()
                             }
-                        })
+                        }
                     } else {
                         Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
                     }
@@ -123,4 +138,8 @@ class ScheduleManageFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job?.cancel()
+    }
 }

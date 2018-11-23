@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
 
-import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -15,13 +14,16 @@ import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
 
 class CourseManageFragment : Fragment() {
 
     private lateinit var viewModel: ScheduleManageViewModel
     private var tablePosition = 0
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,16 +69,12 @@ class CourseManageFragment : Fragment() {
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {
-                    viewModel.deleteCourse(data[position])
-                    val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                    viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
-                        list?.forEach {
-                            when (it.detailType) {
-                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
-                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
-                            }
-                        }
-                    })
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        async(Dispatchers.IO) {
+                            viewModel.deleteCourse(data[position])
+                        }.await()
+                        AppWidgetUtils.updateWidget(context!!)
+                    }
                     return@setOnItemChildLongClickListener true
                 }
                 else -> {

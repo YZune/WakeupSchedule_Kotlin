@@ -25,7 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(context.applicationContext,
                                 AppDatabase::class.java, "wakeup")
-                                .allowMainThreadQueries()
+//                                .allowMainThreadQueries()
                                 .addMigrations(migration7to8)
                                 .build()
                     }

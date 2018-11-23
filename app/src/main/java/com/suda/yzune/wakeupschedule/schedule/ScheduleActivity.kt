@@ -50,6 +50,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.*
 import okhttp3.ResponseBody
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
@@ -64,6 +65,7 @@ class ScheduleActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
     private var mAdapter: SchedulePagerAdapter? = null
+    private var job: Job? = null
 
     private lateinit var scheduleViewPager: ViewPager
     private lateinit var bgImageView: ImageView
@@ -164,8 +166,7 @@ class ScheduleActivity : BaseActivity() {
                 popupMenu.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
                         R.id.ib_settings -> {
-                            val gson = Gson()
-                            startActivity<ScheduleSettingsActivity>("tableData" to gson.toJson(table))
+                            startActivity<ScheduleSettingsActivity>("tableData" to table)
                         }
                         R.id.ib_share -> {
                             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -276,7 +277,11 @@ class ScheduleActivity : BaseActivity() {
             if (position < data.size) {
                 if (data[position].id != viewModel.tableData.value?.id) {
                     fadeOutAni.start()
-                    viewModel.changeDefaultTable(data[position].id)
+                    job = GlobalScope.launch(Dispatchers.Main) {
+                        async(Dispatchers.IO) {
+                            viewModel.changeDefaultTable(data[position].id)
+                        }.await()
+                    }
                 }
             }
         }
@@ -297,16 +302,24 @@ class ScheduleActivity : BaseActivity() {
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
-                        viewModel.addBlankTable(editText.text.toString())
-                        viewModel.addBlankTableInfo.observe(this@ScheduleActivity, Observer { info ->
-                            if (info == "OK") {
+                        job = GlobalScope.launch(Dispatchers.Main) {
+                            val task = async(Dispatchers.IO) {
+                                try {
+                                    viewModel.addBlankTableAsync(editText.text.toString())
+                                    "ok"
+                                } catch (e: Exception) {
+                                    e.toString()
+                                }
+                            }
+                            val result = task.await()
+                            if (result == "ok") {
                                 Toasty.success(applicationContext, "新建成功~").show()
                                 dialog.dismiss()
                             } else {
-                                Toasty.success(applicationContext, "操作失败>_<").show()
+                                Toasty.error(applicationContext, "操作失败>_<").show()
                                 dialog.dismiss()
                             }
-                        })
+                        }
                     } else {
                         Toasty.error(applicationContext, "名称不能为空哦>_<").show()
                     }
@@ -576,5 +589,10 @@ class ScheduleActivity : BaseActivity() {
 
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
     }
 }
