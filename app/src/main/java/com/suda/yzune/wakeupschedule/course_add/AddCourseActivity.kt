@@ -68,7 +68,6 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
     private var isExit: Boolean = false
-    private var isSaved = false
     private val tExit = object : CountDownTimer(2000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
         }
@@ -110,16 +109,6 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                 initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.baseBean)
             }
         }
-
-        viewModel.getLastId().observe(this, Observer {
-            if (viewModel.newId == -1) {
-                if (it != null) {
-                    viewModel.newId = it + 1
-                } else {
-                    viewModel.newId = 0
-                }
-            }
-        })
     }
 
     override fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String) {
@@ -240,6 +229,18 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
 
     private fun saveData() {
         job = GlobalScope.launch(Dispatchers.Main) {
+            val maxId = async(Dispatchers.IO) {
+                viewModel.getLastId()
+            }.await()
+
+            if (viewModel.newId == -1) {
+                if (maxId == null) {
+                    viewModel.newId = 0
+                } else {
+                    viewModel.newId = maxId + 1
+                }
+            }
+
             val task = async(Dispatchers.IO) {
                 try {
                     viewModel.preSaveData()

@@ -25,6 +25,7 @@ class ScheduleManageActivity : BaseTitleActivity() {
         super.onCreate(savedInstanceState)
 
         initView()
+        setResult(RESULT_OK)
     }
 
     private fun initView() {

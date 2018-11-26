@@ -61,7 +61,7 @@ class ImportChooseFragment : DialogFragment() {
         tv_suda.setOnClickListener {
             activity!!.startActivity<LoginWebActivity>(
                     "type" to "苏州大学",
-                    "tableId" to viewModel.tableData.value?.id
+                    "tableId" to viewModel.table.id
             )
             dismiss()
         }

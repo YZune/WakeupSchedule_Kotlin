@@ -152,83 +152,84 @@ class ScheduleFragment : Fragment() {
             }
         }.view
 
-        viewModel.tableData.observe(this, Observer { table ->
-            if (table == null) return@Observer
-            if (table.showSun) {
-                if (table.sundayFirst) {
-                    find<View>(R.id.anko_tv_title7).visibility = View.GONE
-                    find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
-                    find<View>(R.id.anko_tv_title0_1).visibility = View.VISIBLE
-                    find<View>(R.id.anko_ll_week_panel_0).visibility = View.VISIBLE
-                } else {
-                    find<View>(R.id.anko_tv_title7).visibility = View.VISIBLE
-                    find<View>(R.id.anko_ll_week_panel_7).visibility = View.VISIBLE
-                    find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
-                    find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
-                }
-            } else {
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (viewModel.table.showSun) {
+            if (viewModel.table.sundayFirst) {
                 find<View>(R.id.anko_tv_title7).visibility = View.GONE
                 find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+                find<View>(R.id.anko_tv_title0_1).visibility = View.VISIBLE
+                find<View>(R.id.anko_ll_week_panel_0).visibility = View.VISIBLE
+            } else {
+                find<View>(R.id.anko_tv_title7).visibility = View.VISIBLE
+                find<View>(R.id.anko_ll_week_panel_7).visibility = View.VISIBLE
                 find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
                 find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
             }
+        } else {
+            find<View>(R.id.anko_tv_title7).visibility = View.GONE
+            find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+            find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
+            find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
+        }
 
-            weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(table.startDate), week, table.sundayFirst)
-            find<TextView>(R.id.anko_tv_title0).setTextColor(table.textColor)
-            find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
-            var textView: TextView
-            if (table.sundayFirst) {
-                for (i in 0..6) {
-                    textView = find(R.id.anko_tv_title0_1 + i)
-                    textView.setTextColor(table.textColor)
-                    textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
-                }
+        weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate), week, viewModel.table.sundayFirst)
+        find<TextView>(R.id.anko_tv_title0).setTextColor(viewModel.table.textColor)
+        find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
+        var textView: TextView
+        if (viewModel.table.sundayFirst) {
+            for (i in 0..6) {
+                textView = find(R.id.anko_tv_title0_1 + i)
+                textView.setTextColor(viewModel.table.textColor)
+                textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
+            }
+        } else {
+            for (i in 0..6) {
+                textView = find(R.id.anko_tv_title1 + i)
+                textView.setTextColor(viewModel.table.textColor)
+                textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
+            }
+        }
+
+        if (viewModel.table.showSat) {
+            find<View>(R.id.anko_tv_title6).visibility = View.VISIBLE
+            find<View>(R.id.anko_ll_week_panel_6).visibility = View.VISIBLE
+        } else {
+            find<View>(R.id.anko_tv_title6).visibility = View.GONE
+            find<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
+        }
+
+        for (i in 0 until 20) {
+            textView = find(R.id.anko_tv_node1 + i)
+            val lp = textView.layoutParams
+            lp.height = viewModel.itemHeight
+            textView.layoutParams = lp
+            textView.setTextColor(viewModel.table.textColor)
+            if (i >= viewModel.table.nodes) {
+                textView.visibility = View.GONE
             } else {
-                for (i in 0..6) {
-                    textView = find(R.id.anko_tv_title1 + i)
-                    textView.setTextColor(table.textColor)
-                    textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
-                }
+                textView.visibility = View.VISIBLE
             }
+        }
 
-            if (table.showSat) {
-                find<View>(R.id.anko_tv_title6).visibility = View.VISIBLE
-                find<View>(R.id.anko_ll_week_panel_6).visibility = View.VISIBLE
-            } else {
-                find<View>(R.id.anko_tv_title6).visibility = View.GONE
-                find<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
-            }
+        val alphaInt = Math.round(255 * (viewModel.table.itemAlpha.toFloat() / 100))
+        viewModel.alphaStr = if (alphaInt != 0) {
+            Integer.toHexString(alphaInt)
+        } else {
+            "00"
+        }
+        if (viewModel.alphaStr.length < 2) {
+            viewModel.alphaStr = "0${viewModel.alphaStr}"
+        }
 
-            for (i in 0 until 20) {
-                textView = find(R.id.anko_tv_node1 + i)
-                val lp = textView.layoutParams
-                lp.height = viewModel.itemHeight
-                textView.layoutParams = lp
-                textView.setTextColor(table.textColor)
-                if (i >= table.nodes) {
-                    textView.visibility = View.GONE
-                } else {
-                    textView.visibility = View.VISIBLE
-                }
-            }
-
-            val alphaInt = Math.round(255 * (table.itemAlpha.toFloat() / 100))
-            viewModel.alphaStr = if (alphaInt != 0) {
-                Integer.toHexString(alphaInt)
-            } else {
-                "00"
-            }
-            if (viewModel.alphaStr.length < 2) {
-                viewModel.alphaStr = "0${viewModel.alphaStr}"
-            }
-
-            for (i in 1..7) {
-                viewModel.allCourseList[i - 1].observe(this, Observer {
-                    initWeekPanel(weekPanels, it, i, table)
-                })
-            }
-        })
-        return view
+        for (i in 1..7) {
+            viewModel.allCourseList[i - 1].observe(this, Observer {
+                initWeekPanel(weekPanels, it, i, viewModel.table)
+            })
+        }
     }
 
     companion object {
@@ -354,11 +355,8 @@ class ScheduleFragment : Fragment() {
             }
 
             if (table.showTime) {
-                viewModel.timeData.observe(this, Observer {
-                    if (it == null || it.isEmpty()) return@Observer
-                    strBuilder.insert(0, it[c.startNode - 1].startTime + "\n")
-                    textView.text = strBuilder
-                })
+                strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
+                textView.text = strBuilder
             } else {
                 textView.text = strBuilder
             }

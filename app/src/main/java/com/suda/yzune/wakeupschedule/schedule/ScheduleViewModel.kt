@@ -28,10 +28,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     private val timeDao = dataBase.timeDetailDao()
     private val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
 
-    lateinit var tableData: LiveData<TableBean>
-    lateinit var timeData: LiveData<List<TimeDetailBean>>
+    lateinit var table: TableBean
+    lateinit var timeList: List<TimeDetailBean>
     var selectedWeek = 1
-    val currentWeek = MutableLiveData<Int>()
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     var itemHeight = 0
     var alphaStr = ""
@@ -44,31 +43,28 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return tableDao.getTableSelectList()
     }
 
+    suspend fun getDefaultTable(): TableBean {
+        return tableDao.getDefaultTableInThread()
+    }
+
+    suspend fun getTimeList(timeTableId: Int): List<TimeDetailBean> {
+        return timeDao.getTimeListInThread(timeTableId)
+    }
+
     suspend fun addBlankTableAsync(tableName: String) {
         tableDao.insertTable(TableBean(id = 0, tableName = tableName))
     }
 
     suspend fun changeDefaultTable(id: Int) {
-        if (tableData.value?.id == null) return
-        tableDao.resetOldDefaultTable(tableData.value?.id!!)
+        tableDao.resetOldDefaultTable(table.id)
         tableDao.setNewDefaultTable(id)
-    }
-
-    fun initViewData(): LiveData<TableBean> {
-        tableData = tableDao.getDefaultTable()
-        return tableData
-    }
-
-    fun initTimeData(timeTableId: Int): LiveData<List<TimeDetailBean>> {
-        timeData = timeDao.getTimeList(timeTableId)
-        return timeData
     }
 
     fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
         return widgetDao.getWidgetsByBaseType(0)
     }
 
-    fun getRawCourseByDay(day: Int, tableId: Int = 0): LiveData<List<CourseBean>> {
+    fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
         return baseDao.getCourseByDayOfTable(day, tableId)
     }
 
@@ -158,12 +154,12 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             }
             val gson = Gson()
             val strBuilder = StringBuilder()
-            strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(tableData.value!!.timeTable)))
-            strBuilder.append("\n${gson.toJson(timeDao.getTimeListInThread(tableData.value!!.timeTable))}")
-            strBuilder.append("\n${gson.toJson(tableData.value!!)}")
-            strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(tableData.value!!.id))}")
-            strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(tableData.value!!.id))}")
-            val file = File(myDir, "${tableData.value!!.tableName}${Calendar.getInstance().timeInMillis}.wakeup_schedule")
+            strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
+            strBuilder.append("\n${gson.toJson(timeDao.getTimeListInThread(table.timeTable))}")
+            strBuilder.append("\n${gson.toJson(table)}")
+            strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(table.id))}")
+            strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(table.id))}")
+            val file = File(myDir, "${table.tableName}${Calendar.getInstance().timeInMillis}.wakeup_schedule")
             file.writeText(strBuilder.toString())
             exportImportInfo.postValue(file.path)
         }

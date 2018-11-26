@@ -100,10 +100,7 @@ class CourseDetailFragment : DialogFragment() {
             2 -> type = "双周"
         }
         weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
-        viewModel.timeData.observe(this, Observer {
-            if (it == null) return@Observer
-            time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${it[course.startNode - 1].startTime} - ${it[course.startNode + course.step - 2].endTime}"
-        })
+        time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
     }
 
     private fun initEvent() {
@@ -116,8 +113,8 @@ class CourseDetailFragment : DialogFragment() {
             activity!!.startActivity<AddCourseActivity>(
                     "id" to course.id,
                     "tableId" to course.tableId,
-                    "maxWeek" to viewModel.tableData.value!!.maxWeek,
-                    "nodes" to viewModel.tableData.value!!.nodes
+                    "maxWeek" to viewModel.table.maxWeek,
+                    "nodes" to viewModel.table.nodes
             )
         }
 

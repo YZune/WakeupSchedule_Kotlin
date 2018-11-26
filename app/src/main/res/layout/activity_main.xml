@@ -13,6 +13,15 @@
         android:textStyle="bold"
         android:layout_centerInParent="true" />
 
+    <TextView
+        android:id="@+id/tv_test1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_test"
+        android:layout_marginTop="24dp"
+        android:layout_toStartOf="@id/tv_test"
+        android:textStyle="bold" />
+
     <ProgressBar
         android:id="@+id/pb"
         android:layout_width="wrap_content"

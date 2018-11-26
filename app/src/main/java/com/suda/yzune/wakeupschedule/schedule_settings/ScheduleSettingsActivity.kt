@@ -21,6 +21,7 @@ import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
@@ -392,13 +393,19 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onBackPressed() {
         job = GlobalScope.launch(Dispatchers.Main) {
             async(Dispatchers.IO) {
                 viewModel.saveSettings()
             }.await()
-            job?.cancel()
+            AppWidgetUtils.updateWidget(applicationContext)
+            setResult(RESULT_OK)
+            finish()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
     }
 }

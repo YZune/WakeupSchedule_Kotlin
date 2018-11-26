@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -9,9 +10,16 @@ import android.view.Window
 import android.view.WindowManager
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 
+
 abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            val intent = Intent(this, SplashActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
+        }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         val window = window
         when {
