@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -13,6 +14,7 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
     private val baseDao = dataBase.courseBaseDao()
+    private val widgetDao = dataBase.appWidgetDao()
 
     val tableSelectList = arrayListOf<TableSelectBean>()
     val courseList = arrayListOf<CourseBaseBean>()
@@ -39,5 +41,9 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
 
     suspend fun deleteCourse(course: CourseBaseBean) {
         baseDao.deleteCourseBaseBeanOfTable(course.id, course.tableId)
+    }
+
+    suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
+        return widgetDao.getWidgetsByBaseTypeInThread(0)
     }
 }

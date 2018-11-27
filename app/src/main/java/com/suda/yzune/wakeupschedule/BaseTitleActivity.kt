@@ -67,5 +67,4 @@ abstract class BaseTitleActivity : BaseActivity() {
             }
         }.view
     }
-
 }

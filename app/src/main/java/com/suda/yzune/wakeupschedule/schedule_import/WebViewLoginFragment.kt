@@ -173,6 +173,7 @@ class WebViewLoginFragment : Fragment() {
                         "北京林业大学" -> viewModel.parseQZ(html, type)
                         "广东外语外贸大学" -> viewModel.parseQZ(html, type)
                         "长春大学" -> viewModel.parseQZ(html, type)
+                        "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
                         in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
                         in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
                         in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)

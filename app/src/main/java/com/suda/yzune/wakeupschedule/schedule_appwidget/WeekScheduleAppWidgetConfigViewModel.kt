@@ -7,7 +7,6 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
-import kotlin.concurrent.thread
 
 class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidViewModel(application) {
     private val dataBase = AppDatabase.getDatabase(application)
@@ -22,17 +21,11 @@ class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidVi
         return tableDao.getTableById(id)
     }
 
-    fun getDefaultTable(): LiveData<TableBean> {
-        return tableDao.getDefaultTable()
+    suspend fun getDefaultTable(): TableBean {
+        return tableDao.getDefaultTableInThread()
     }
 
-    fun insertWeekAppWidgetData(appWidget: AppWidgetBean) {
-        thread(name = "insertWeekAppWidgetDataThread") {
-            try {
-                widgetDao.insertAppWidget(appWidget)
-            } catch (e: Exception) {
-
-            }
-        }
+    suspend fun insertWeekAppWidgetData(appWidget: AppWidgetBean) {
+        widgetDao.insertAppWidget(appWidget)
     }
 }

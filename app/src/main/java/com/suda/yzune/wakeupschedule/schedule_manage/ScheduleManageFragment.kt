@@ -22,15 +22,20 @@ import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
+import kotlin.coroutines.CoroutineContext
 
-class ScheduleManageFragment : Fragment() {
+class ScheduleManageFragment : Fragment(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     private lateinit var viewModel: ScheduleManageViewModel
-    private var job: Job? = null
+    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleManageViewModel::class.java)
+        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -63,7 +68,7 @@ class ScheduleManageFragment : Fragment() {
                 R.id.ib_share -> {
                 }
                 R.id.ib_edit -> {
-                    job = GlobalScope.launch(Dispatchers.Main) {
+                    launch {
                         val task = async(Dispatchers.IO) {
                             viewModel.getTableById(data[position].id)
                         }
@@ -78,7 +83,7 @@ class ScheduleManageFragment : Fragment() {
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {
-                    job = GlobalScope.launch(Dispatchers.Main) {
+                    launch {
                         async(Dispatchers.IO) {
                             viewModel.deleteTable(data[position].id)
                         }.await()
@@ -111,7 +116,7 @@ class ScheduleManageFragment : Fragment() {
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
-                        job = GlobalScope.launch(Dispatchers.Main) {
+                        launch {
                             val task = async(Dispatchers.IO) {
                                 try {
                                     viewModel.addBlankTable(editText.text.toString())
@@ -140,6 +145,6 @@ class ScheduleManageFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        job?.cancel()
+        job.cancel()
     }
 }

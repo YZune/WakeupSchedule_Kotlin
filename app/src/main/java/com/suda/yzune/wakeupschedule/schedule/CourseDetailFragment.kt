@@ -2,11 +2,9 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.support.v4.app.DialogFragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -20,33 +18,26 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
+import kotlinx.coroutines.*
 import org.jetbrains.anko.startActivity
+import kotlin.coroutines.CoroutineContext
 
-class CourseDetailFragment : DialogFragment() {
+class CourseDetailFragment : DialogFragment(), CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
-    lateinit var course: CourseBean
-    lateinit var title: TextView
-    lateinit var weeks: TextView
-    lateinit var time: TextView
-    lateinit var teacher: TextView
-    lateinit var room: TextView
-    lateinit var close: ImageButton
+    private lateinit var course: CourseBean
+    private lateinit var title: TextView
+    private lateinit var weeks: TextView
+    private lateinit var time: TextView
+    private lateinit var teacher: TextView
+    private lateinit var room: TextView
+    private lateinit var close: ImageButton
     private lateinit var viewModel: ScheduleViewModel
 
-    var makeSure = 0
+    private lateinit var job: Job
 
-    private val timer = object : CountDownTimer(5000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-
-        }
-
-        override fun onFinish() {
-            if (tv_tips != null) {
-                tv_tips.visibility = View.GONE
-            }
-            makeSure = 0
-        }
-    }
+    private var makeSure = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +45,7 @@ class CourseDetailFragment : DialogFragment() {
             course = it.getParcelable("course") as CourseBean
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -118,38 +110,79 @@ class CourseDetailFragment : DialogFragment() {
             )
         }
 
-        ib_delete_course.setOnClickListener { _ ->
+        ib_delete_course.setOnClickListener {
             if (makeSure == 0) {
                 tv_tips.visibility = View.VISIBLE
                 makeSure++
-                timer.start()
+                launch {
+                    delay(5000)
+                    tv_tips.visibility = View.GONE
+                    makeSure = 0
+                }
             } else {
-                viewModel.deleteCourseBean(course)
-                Toasty.success(context!!.applicationContext, "删除成功").show()
-                dismiss()
+                launch {
+                    val msg = async(Dispatchers.IO) {
+                        try {
+                            viewModel.deleteCourseBean(course)
+                            "ok"
+                        } catch (e: Exception) {
+                            "出现异常>_<\n" + e.message
+                        }
+                    }.await()
+                    if (msg == "ok") {
+                        Toasty.success(context!!.applicationContext, "删除成功").show()
+                        val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
+                        val list = async(Dispatchers.IO) {
+                            viewModel.getScheduleWidgetIds()
+                        }.await()
+                        list.forEach {
+                            when (it.detailType) {
+                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                            }
+                        }
+                        dismiss()
+                    } else {
+                        Toasty.error(context!!.applicationContext, msg).show()
+                    }
+                }
             }
         }
 
-        ib_delete_course.setOnLongClickListener { _ ->
-            val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-            viewModel.deleteCourseBaseBean(course.id, course.tableId)
-            Toasty.success(context!!.applicationContext, "删除成功").show()
-            viewModel.getScheduleWidgetIds().observe(this, Observer { list ->
-                list?.forEach {
-                    when (it.detailType) {
-                        0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
-                        1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+        ib_delete_course.setOnLongClickListener {
+            launch {
+                val msg = async(Dispatchers.IO) {
+                    try {
+                        viewModel.deleteCourseBaseBean(course.id, course.tableId)
+                        "ok"
+                    } catch (e: Exception) {
+                        "出现异常>_<\n" + e.message
                     }
+                }.await()
+                if (msg == "ok") {
+                    Toasty.success(context!!.applicationContext, "删除成功").show()
+                    val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
+                    val list = async(Dispatchers.IO) {
+                        viewModel.getScheduleWidgetIds()
+                    }.await()
+                    list.forEach {
+                        when (it.detailType) {
+                            0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                            1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                        }
+                    }
+                    dismiss()
+                } else {
+                    Toasty.error(context!!.applicationContext, msg).show()
                 }
-                dismiss()
-            })
+            }
             return@setOnLongClickListener true
         }
     }
 
     override fun dismiss() {
         super.dismiss()
-        timer.cancel()
+        job.cancel()
     }
 
     companion object {

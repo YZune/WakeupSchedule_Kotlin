@@ -9,9 +9,17 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlin.coroutines.CoroutineContext
 
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
+
+    private lateinit var job: Job
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -45,6 +53,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
         }
+        job = Job()
         super.onCreate(savedInstanceState)
     }
 
@@ -61,5 +70,10 @@ abstract class BaseActivity : AppCompatActivity() {
             result = resources.getDimensionPixelSize(resourceId)
         }
         return result
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

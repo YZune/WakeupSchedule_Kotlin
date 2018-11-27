@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule_settings
 import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -21,14 +22,15 @@ import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_schedule_settings.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.startActivityForResult
 
 class ScheduleSettingsActivity : BaseTitleActivity() {
@@ -43,7 +45,6 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
-    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -394,18 +395,20 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
     }
 
     override fun onBackPressed() {
-        job = GlobalScope.launch(Dispatchers.Main) {
-            async(Dispatchers.IO) {
+        launch {
+            val list = async(Dispatchers.IO) {
                 viewModel.saveSettings()
+                viewModel.getScheduleWidgetIds()
             }.await()
-            AppWidgetUtils.updateWidget(applicationContext)
+            val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+            list.forEach {
+                when (it.detailType) {
+                    0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                    1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                }
+            }
             setResult(RESULT_OK)
             finish()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job?.cancel()
     }
 }

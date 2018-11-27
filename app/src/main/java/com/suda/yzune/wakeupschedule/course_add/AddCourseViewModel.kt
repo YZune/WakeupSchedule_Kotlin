@@ -4,6 +4,7 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
@@ -17,6 +18,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     private val dataBase = AppDatabase.getDatabase(application)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
+    private val widgetDao = dataBase.appWidgetDao()
     private val saveList = mutableListOf<CourseDetailBean>()
 
     var updateFlag = true
@@ -148,5 +150,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     suspend fun initBaseData(id: Int): CourseBaseBean {
         baseBean = CourseBaseBean(-1, "", "", tableId)
         return baseDao.getCourseByIdOfTableInThread(id, tableId)
+    }
+
+    suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
+        return widgetDao.getWidgetsByBaseTypeInThread(0)
     }
 }

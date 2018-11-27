@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule_appwidget
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -14,6 +13,9 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
 
 class WeekScheduleAppWidgetConfigActivity : BaseTitleActivity() {
@@ -45,25 +47,31 @@ class WeekScheduleAppWidgetConfigActivity : BaseTitleActivity() {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(iv_tip)
 
-        tv_got_it.setOnClickListener { _ ->
-            viewModel.getDefaultTable().observe(this, Observer {
-                if (it == null) return@Observer
+        tv_got_it.setOnClickListener {
+            launch {
+                val table = async(Dispatchers.IO) {
+                    viewModel.getDefaultTable()
+                }.await()
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                 when (appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName) {
                     ".schedule_appwidget.ScheduleAppWidget" -> {
-                        viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
-                        AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, it)
+                        async(Dispatchers.IO) {
+                            viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
+                        }.await()
+                        AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                     ".today_appwidget.TodayCourseAppWidget" -> {
-                        viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
-                        AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, it)
+                        async(Dispatchers.IO) {
+                            viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
+                        }.await()
+                        AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                 }
                 val resultValue = Intent()
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
                 setResult(Activity.RESULT_OK, resultValue)
                 finish()
-            })
+            }
         }
     }
 

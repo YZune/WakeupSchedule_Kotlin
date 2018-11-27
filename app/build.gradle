@@ -23,6 +23,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.suda.yzune.wakeupschedule"
+        multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 41
@@ -89,4 +90,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
+    implementation 'com.android.support:multidex:1.0.3'
 }

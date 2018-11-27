@@ -383,6 +383,109 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         write2DB()
     }
 
+    fun parseHNIU(html: String) {
+        baseList.clear()
+        detailList.clear()
+        val doc = org.jsoup.Jsoup.parse(html, "utf-8")
+
+        val tBody = doc.getElementsByAttributeValue("bordercolordark", "#FFFFFF")[0].getElementsByTag("tbody")[0]
+        val trs = tBody.getElementsByTag("tr")
+
+        for (tr in trs) {
+            val tds = tr.getElementsByTag("td")
+            var day = 0
+            for (td in tds) {
+                if (td.attr("align") == "center") {
+                    continue
+                }
+                if (td.attr("valign") == "top") {
+                    day++
+                    val courseSource = td.html().split("<br>")
+                    if (courseSource.isEmpty()) continue
+                    if (courseSource.size <= 4) {
+                        if (courseSource[0].isBlank()) continue
+                        convertHNIU(day, courseSource)
+                    } else {
+                        var startIndex = 0
+                        courseSource.forEachIndexed { index, s ->
+                            if (s.contains("总学时")) {
+                                if (index != 0) {
+                                    convertHNIU(day, courseSource.subList(startIndex, index))
+                                    startIndex = index
+                                }
+                            }
+                            if (index == courseSource.size - 1) {
+                                convertHNIU(day, courseSource.subList(startIndex, index))
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun convertHNIU(day: Int, courseSource: List<String>) {
+        var startNode = 0
+        var step = 0
+        var startWeek = 0
+        var endWeek = 0
+        var id = 0
+
+        val courseName = courseSource[0].split(' ')[0]
+        val teacher = courseSource[1].split(' ')[0]
+        val room = courseSource[2].trim()
+        val timeStr = courseSource[1].substringAfter('[').substringBeforeLast('节')
+        val weekList = timeStr.split("周][")[0].split(", ")
+        val nodeStr = timeStr.split("周][")[1]
+
+        val nodeList = nodeStr.split('-')
+        if (nodeList.size == 1) {
+            startNode = Integer.decode(nodeList[0])
+            step = 1
+        } else {
+            startNode = Integer.decode(nodeList[0])
+            step = Integer.decode(nodeList[1]) - startNode + 1
+        }
+
+        weekList.forEach {
+            if (it.contains('-')) {
+                val weeks = it.split('-')
+                if (weeks.isNotEmpty()) {
+                    startWeek = Integer.decode(weeks[0])
+                }
+                if (weeks.size > 1) {
+                    endWeek = Integer.decode(weeks[1])
+                }
+            } else {
+                startWeek = Integer.decode(it)
+                endWeek = Integer.decode(it)
+            }
+
+            val flag = isContainName(baseList, courseName)
+            if (flag == -1) {
+                id = baseList.size
+                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                detailList.add(CourseDetailBean(
+                        id = id, room = room,
+                        teacher = teacher, day = day,
+                        step = step,
+                        startWeek = startWeek, endWeek = endWeek,
+                        type = 0, startNode = startNode,
+                        tableId = importId
+                ))
+            } else {
+                detailList.add(CourseDetailBean(
+                        id = flag, room = room,
+                        teacher = teacher, day = day,
+                        step = step, startWeek = startWeek, endWeek = endWeek,
+                        type = 0, startNode = startNode,
+                        tableId = importId
+                ))
+            }
+        }
+        write2DB()
+    }
+
     fun parseQZ(html: String, type: String) {
         baseList.clear()
         detailList.clear()

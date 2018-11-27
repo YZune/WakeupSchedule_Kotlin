@@ -60,8 +60,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         tableDao.setNewDefaultTable(id)
     }
 
-    fun getScheduleWidgetIds(): LiveData<List<AppWidgetBean>> {
-        return widgetDao.getWidgetsByBaseType(0)
+    suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
+        return widgetDao.getWidgetsByBaseTypeInThread(0)
     }
 
     fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
@@ -72,22 +72,16 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return baseDao.getCourseOfTable(tableId)
     }
 
-    fun deleteCourseBean(courseBean: CourseBean) {
-        thread(name = "DeleteCourseBeanThread") {
-            detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
-        }
+    suspend fun deleteCourseBean(courseBean: CourseBean) {
+        detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
     }
 
-    fun deleteCourseBaseBean(id: Int, tableId: Int = 0) {
-        thread(name = "DeleteCourseBaseBeanThread") {
-            baseDao.deleteCourseBaseBeanOfTable(id, tableId)
-        }
+    suspend fun deleteCourseBaseBean(id: Int, tableId: Int) {
+        baseDao.deleteCourseBaseBeanOfTable(id, tableId)
     }
 
-    fun updateCourseBaseBean(course: CourseBean) {
-        thread(name = "UpdateCourseBaseBeanThread") {
-            baseDao.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(course))
-        }
+    suspend fun updateCourseBaseBean(course: CourseBean) {
+        baseDao.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(course))
     }
 
     fun updateFromOldVer() {

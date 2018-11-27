@@ -22,20 +22,28 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
+import kotlin.coroutines.CoroutineContext
 
 private const val weekParam = "week"
 
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(), CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + job
 
     private var week = 0
     private var weekPanels = arrayOfNulls<LinearLayout>(7)
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
+    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +51,7 @@ class ScheduleFragment : Fragment() {
             week = it.getInt(weekParam)
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -293,7 +302,9 @@ class ScheduleFragment : Fragment() {
 
             if (c.color == "") {
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
-                viewModel.updateCourseBaseBean(c)
+                launch(Dispatchers.IO) {
+                    viewModel.updateCourseBaseBean(c)
+                }
             }
 
             try {
@@ -389,4 +400,8 @@ class ScheduleFragment : Fragment() {
         return customizedColors[index]
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancel()
+    }
 }

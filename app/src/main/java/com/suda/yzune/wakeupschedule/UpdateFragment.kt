@@ -58,7 +58,6 @@ class UpdateFragment : DialogFragment() {
     }
 
     companion object {
-
         @JvmStatic
         fun newInstance(arg: UpdateInfoBean) =
                 UpdateFragment().apply {

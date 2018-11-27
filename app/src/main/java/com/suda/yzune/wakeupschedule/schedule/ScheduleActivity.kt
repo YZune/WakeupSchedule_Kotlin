@@ -50,7 +50,9 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import org.jetbrains.anko.*
 import retrofit2.Call
@@ -62,7 +64,7 @@ import java.text.ParseException
 class ScheduleActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
-    private var job: Job? = null
+    private var mAdapter: SchedulePagerAdapter? = null
 
     private lateinit var scheduleViewPager: ViewPager
     private lateinit var bgImageView: ImageView
@@ -212,7 +214,7 @@ class ScheduleActivity : BaseActivity() {
             if (position < data.size) {
                 if (data[position].id != viewModel.table.id) {
                     fadeOutAni.start()
-                    job = GlobalScope.launch(Dispatchers.Main) {
+                    launch {
                         async(Dispatchers.IO) {
                             viewModel.changeDefaultTable(data[position].id)
                         }.await()
@@ -238,7 +240,7 @@ class ScheduleActivity : BaseActivity() {
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
-                        job = GlobalScope.launch(Dispatchers.Main) {
+                        launch {
                             val task = async(Dispatchers.IO) {
                                 try {
                                     viewModel.addBlankTableAsync(editText.text.toString())
@@ -423,12 +425,13 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initViewPage(maxWeek: Int, table: TableBean) {
-        val mAdapter = SchedulePagerAdapter(supportFragmentManager)
-        scheduleViewPager.offscreenPageLimit = 1
-        for (i in 1..maxWeek) {
-            mAdapter.addFragment(ScheduleFragment.newInstance(i))
+        if (mAdapter == null) {
+            mAdapter = SchedulePagerAdapter(maxWeek, supportFragmentManager)
+            scheduleViewPager.adapter = mAdapter
+            scheduleViewPager.offscreenPageLimit = 1
         }
-        scheduleViewPager.adapter = mAdapter
+        mAdapter!!.maxWeek = maxWeek
+        mAdapter!!.notifyDataSetChanged()
         if (CourseUtils.countWeek(table.startDate) > 0) {
             scheduleViewPager.currentItem = CourseUtils.countWeek(table.startDate) - 1
         } else {
@@ -553,8 +556,7 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initView() {
-        job = GlobalScope.launch(Dispatchers.Main) {
-
+        launch {
             viewModel.table = async(Dispatchers.IO) {
                 viewModel.getDefaultTable()
             }.await()
@@ -600,8 +602,4 @@ class ScheduleActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        job?.cancel()
-    }
 }

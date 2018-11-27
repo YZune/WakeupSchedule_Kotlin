@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.course_add
 
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -22,18 +23,17 @@ import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_add_course.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.textColorResource
 
 
 class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
-
-    private var job: Job? = null
 
     override val layoutId: Int
         get() = R.layout.activity_add_course
@@ -47,7 +47,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                 Toasty.error(this.applicationContext, "请填写课程名称").show()
             } else {
                 if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
-                    job = GlobalScope.launch(Dispatchers.Main) {
+                    launch {
                         val task = async(Dispatchers.IO) {
                             viewModel.checkSameName()
                         }
@@ -91,7 +91,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
-            job = GlobalScope.launch(Dispatchers.Main) {
+            launch {
                 val task1 = async(Dispatchers.IO) {
                     viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId)
                 }
@@ -228,7 +228,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     }
 
     private fun saveData() {
-        job = GlobalScope.launch(Dispatchers.Main) {
+        launch {
             val maxId = async(Dispatchers.IO) {
                 viewModel.getLastId()
             }.await()
@@ -252,9 +252,20 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
             val msg = task.await()
             when (msg) {
                 "ok" -> {
-                    Toasty.success(applicationContext, "保存成功").show()
-                    AppWidgetUtils.updateWidget(applicationContext)
-                    finish()
+                    launch {
+                        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+                        val list = async(Dispatchers.IO) {
+                            viewModel.getScheduleWidgetIds()
+                        }.await()
+                        list.forEach {
+                            when (it.detailType) {
+                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                            }
+                        }
+                        Toasty.success(applicationContext, "保存成功").show()
+                        finish()
+                    }
                 }
                 "自身重复" -> {
                     Toasty.error(applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
@@ -283,6 +294,5 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     override fun onDestroy() {
         super.onDestroy()
         tExit.cancel()
-        job?.cancel()
     }
 }
