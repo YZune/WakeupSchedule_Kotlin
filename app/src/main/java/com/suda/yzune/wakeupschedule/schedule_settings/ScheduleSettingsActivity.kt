@@ -22,6 +22,7 @@ import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.zhihu.matisse.Matisse
@@ -403,8 +404,8 @@ class ScheduleSettingsActivity : BaseTitleActivity() {
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             list.forEach {
                 when (it.detailType) {
-                    0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
-                    1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
+                    0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                    1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
                 }
             }
             setResult(RESULT_OK)

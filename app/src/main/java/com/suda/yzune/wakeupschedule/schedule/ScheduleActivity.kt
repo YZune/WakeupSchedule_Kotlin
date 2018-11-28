@@ -88,7 +88,24 @@ class ScheduleActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         ScheduleActivityUI().setContentView(this)
 
-        viewModel.updateFromOldVer()
+        val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
+        if (json != "") {
+            launch {
+                val task = async(Dispatchers.IO) {
+                    try {
+                        viewModel.updateFromOldVer(json)
+                        "ok"
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }.await()
+                if (task == "ok") {
+                    Toasty.success(applicationContext, "升级成功~").show()
+                } else {
+                    Toasty.error(applicationContext, "出现异常>_<\n$task").show()
+                }
+            }
+        }
 
         scheduleViewPager = find(R.id.anko_vp_schedule)
         bgImageView = find(R.id.anko_iv_bg)
@@ -407,9 +424,7 @@ class ScheduleActivity : BaseActivity() {
         when (requestCode) {
             1 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ExportSettingsFragment().apply {
-                        this.isCancelable = false
-                    }.show(supportFragmentManager, "exportSettingsFragment")
+                    ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法导出", Toast.LENGTH_LONG).show()
                 }
@@ -461,9 +476,7 @@ class ScheduleActivity : BaseActivity() {
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
                         } else {
-                            ExportSettingsFragment().apply {
-                                this.isCancelable = false
-                            }.show(supportFragmentManager, "exportSettingsFragment")
+                            ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
                         }
                     }
                     R.id.ib_manage -> {

@@ -15,6 +15,7 @@
     <item name="anko_nv_end" type="id" />
     <item name="anko_rv_table_name" type="id" />
     <item name="anko_drawer_layout" type="id" />
+    <item name="anko_navigation_bar_blur_layout" type="id" />
 
     <item name="anko_cl_fragment_schedule" type="id" />
     <item name="anko_tv_title0" type="id" />

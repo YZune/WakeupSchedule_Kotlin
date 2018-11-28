@@ -13,6 +13,9 @@ import android.widget.ImageView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import no.danielzeller.blurbehindlib.BlurBehindLayout
+import no.danielzeller.blurbehindlib.UpdateMode
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
@@ -26,148 +29,173 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
     private inline fun ViewManager.navigationView(init: android.support.design.widget.NavigationView.() -> Unit) = ankoView({ NavigationView(it) }, theme = 0) { init() }
     private inline fun ViewManager.recyclerView(init: android.support.v7.widget.RecyclerView.() -> Unit) = ankoView({ RecyclerView(it) }, theme = 0) { init() }
+    private inline fun ViewManager.blurBehindLayout(init: no.danielzeller.blurbehindlib.BlurBehindLayout.() -> Unit) = ankoView({ BlurBehindLayout(it, false) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
-        drawerLayout {
-            id = R.id.anko_drawer_layout
 
-            val outValue = TypedValue()
-            context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
+        constraintLayout {
 
-            constraintLayout {
-                id = R.id.anko_cl_schedule
+            val fLayout = frameLayout {
+                drawerLayout {
+                    id = R.id.anko_drawer_layout
 
-                imageView {
-                    id = R.id.anko_iv_bg
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(matchParent, matchParent) {
-                    startToStart = PARENT_ID
-                    endToEnd = PARENT_ID
-                    topToTop = PARENT_ID
-                    bottomToBottom = PARENT_ID
-                }
+                    val outValue = TypedValue()
+                    context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-                textView {
-                    id = R.id.anko_tv_date
-                    textColor = Color.BLACK
-                    textSize = 24f
-                    typeface = Typeface.DEFAULT_BOLD
-                }.lparams {
-                    startToStart = PARENT_ID
-                    topToTop = PARENT_ID
-                    marginStart = dip(24)
-                    topMargin = dip(48)
-                }
+                    constraintLayout {
+                        id = R.id.anko_cl_schedule
 
-                textView {
-                    id = R.id.anko_tv_week
-                    textColor = Color.BLACK
-                }.lparams {
-                    startToStart = R.id.anko_tv_date
-                    topToBottom = R.id.anko_tv_date
-                    topMargin = dip(4)
-                }
-
-                textView {
-                    id = R.id.anko_tv_weekday
-                    textColor = Color.BLACK
-                }.lparams {
-                    startToEnd = R.id.anko_tv_week
-                    topToBottom = R.id.anko_tv_date
-                    topMargin = dip(4)
-                    marginStart = dip(8)
-                }
-
-                imageButton(R.drawable.main_nav) {
-                    id = R.id.anko_ib_nav
-                    backgroundResource = outValue.resourceId
-                    padding = dip(4)
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(dip(32), dip(32)) {
-                    topMargin = dip(48)
-                    endToStart = R.id.anko_tv_date
-                    topToTop = PARENT_ID
-                }
-
-                imageButton(R.drawable.schedule_add) {
-                    id = R.id.anko_ib_add
-                    backgroundResource = outValue.resourceId
-                    padding = dip(4)
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(dip(32), dip(32)) {
-                    topMargin = dip(48)
-                    endToStart = R.id.anko_ib_import
-                    topToTop = PARENT_ID
-                }
-
-                imageButton(R.drawable.schedule_import) {
-                    id = R.id.anko_ib_import
-                    backgroundResource = outValue.resourceId
-                    padding = dip(4)
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(dip(32), dip(32)) {
-                    topMargin = dip(48)
-                    endToStart = R.id.anko_ib_more
-                    topToTop = PARENT_ID
-                }
-
-                imageButton(R.drawable.more) {
-                    id = R.id.anko_ib_more
-                    backgroundResource = outValue.resourceId
-                    padding = dip(4)
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(dip(32), dip(32)) {
-                    topMargin = dip(48)
-                    marginEnd = dip(8)
-                    endToEnd = PARENT_ID
-                    topToTop = PARENT_ID
-                }
-
-                viewPager {
-                    id = R.id.anko_vp_schedule
-                }.lparams(matchParent, 0) {
-                    topToBottom = R.id.anko_tv_week
-                    bottomToBottom = PARENT_ID
-                    startToStart = PARENT_ID
-                    endToEnd = PARENT_ID
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    verticalSeekBarWrapper {
-                        verticalSeekBar {
-                            id = R.id.anko_sb_week
-                            progressDrawable = context.getDrawable(R.color.transparent)
-                            splitTrack = false
-                            thumb = context.getDrawable(R.color.transparent)
+                        imageView {
+                            id = R.id.anko_iv_bg
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(matchParent, matchParent) {
+                            startToStart = PARENT_ID
+                            endToEnd = PARENT_ID
+                            topToTop = PARENT_ID
+                            bottomToBottom = PARENT_ID
                         }
-                    }.lparams(wrapContent, 0) {
-                        topToBottom = R.id.anko_tv_week
-                        bottomToBottom = PARENT_ID
-                        endToEnd = PARENT_ID
-                        topMargin = dip(192)
-                        bottomMargin = dip(48)
+
+                        textView {
+                            id = R.id.anko_tv_date
+                            textColor = Color.BLACK
+                            textSize = 24f
+                            typeface = Typeface.DEFAULT_BOLD
+                        }.lparams {
+                            startToStart = PARENT_ID
+                            topToTop = PARENT_ID
+                            marginStart = dip(24)
+                            topMargin = dip(48)
+                        }
+
+                        textView {
+                            id = R.id.anko_tv_week
+                            textColor = Color.BLACK
+                        }.lparams {
+                            startToStart = R.id.anko_tv_date
+                            topToBottom = R.id.anko_tv_date
+                            topMargin = dip(4)
+                        }
+
+                        textView {
+                            id = R.id.anko_tv_weekday
+                            textColor = Color.BLACK
+                        }.lparams {
+                            startToEnd = R.id.anko_tv_week
+                            topToBottom = R.id.anko_tv_date
+                            topMargin = dip(4)
+                            marginStart = dip(8)
+                        }
+
+                        imageButton(R.drawable.main_nav) {
+                            id = R.id.anko_ib_nav
+                            backgroundResource = outValue.resourceId
+                            padding = dip(4)
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(dip(32), dip(32)) {
+                            topMargin = dip(48)
+                            endToStart = R.id.anko_tv_date
+                            topToTop = PARENT_ID
+                        }
+
+                        imageButton(R.drawable.schedule_add) {
+                            id = R.id.anko_ib_add
+                            backgroundResource = outValue.resourceId
+                            padding = dip(4)
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(dip(32), dip(32)) {
+                            topMargin = dip(48)
+                            endToStart = R.id.anko_ib_import
+                            topToTop = PARENT_ID
+                        }
+
+                        imageButton(R.drawable.schedule_import) {
+                            id = R.id.anko_ib_import
+                            backgroundResource = outValue.resourceId
+                            padding = dip(4)
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(dip(32), dip(32)) {
+                            topMargin = dip(48)
+                            endToStart = R.id.anko_ib_more
+                            topToTop = PARENT_ID
+                        }
+
+                        imageButton(R.drawable.more) {
+                            id = R.id.anko_ib_more
+                            backgroundResource = outValue.resourceId
+                            padding = dip(4)
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(dip(32), dip(32)) {
+                            topMargin = dip(48)
+                            marginEnd = dip(8)
+                            endToEnd = PARENT_ID
+                            topToTop = PARENT_ID
+                        }
+
+                        viewPager {
+                            id = R.id.anko_vp_schedule
+                        }.lparams(matchParent, 0) {
+                            topToBottom = R.id.anko_tv_week
+                            bottomToBottom = PARENT_ID
+                            startToStart = PARENT_ID
+                            endToEnd = PARENT_ID
+                        }
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            verticalSeekBarWrapper {
+                                verticalSeekBar {
+                                    id = R.id.anko_sb_week
+                                    progressDrawable = context.getDrawable(R.color.transparent)
+                                    splitTrack = false
+                                    thumb = context.getDrawable(R.color.transparent)
+                                }
+                            }.lparams(wrapContent, 0) {
+                                topToBottom = R.id.anko_tv_week
+                                bottomToBottom = PARENT_ID
+                                endToEnd = PARENT_ID
+                                topMargin = dip(192)
+                                bottomMargin = dip(48)
+                            }
+                        }
+                    }
+
+                    navigationView {
+                        id = R.id.anko_nv
+                        fitsSystemWindows = false
+                        inflateHeaderView(R.layout.nav_header)
+                        inflateMenu(R.menu.main_navigation_menu)
+                    }.lparams(matchParent, matchParent) {
+                        gravity = Gravity.START
+                    }
+
+                    navigationView {
+                        id = R.id.anko_nv_end
+                        fitsSystemWindows = false
+                        recyclerView {
+                            id = R.id.anko_rv_table_name
+                            isNestedScrollingEnabled = false
+                        }
+                    }.lparams(dip(96), matchParent) {
+                        gravity = Gravity.END
                     }
                 }
+            }.lparams(0, 0) {
+                topToTop = PARENT_ID
+                bottomToBottom = PARENT_ID
+                startToStart = PARENT_ID
+                endToEnd = PARENT_ID
             }
 
-            navigationView {
-                id = R.id.anko_nv
-                fitsSystemWindows = false
-                inflateHeaderView(R.layout.nav_header)
-                inflateMenu(R.menu.main_navigation_menu)
-            }.lparams(matchParent, matchParent) {
-                gravity = Gravity.START
-            }
-
-            navigationView {
-                id = R.id.anko_nv_end
-                fitsSystemWindows = false
-                recyclerView {
-                    id = R.id.anko_rv_table_name
-                    isNestedScrollingEnabled = false
+            if (ViewUtils.checkDeviceHasNavigationBar(context) && Build.VERSION.SDK_INT >= 23) {
+                blurBehindLayout {
+                    id = R.id.anko_navigation_bar_blur_layout
+                    blurRadius = 100f
+                    updateMode = UpdateMode.ON_SCROLL
+                    viewBehind = fLayout
+                }.lparams(0, ViewUtils.getVirtualBarHeigh(context)) {
+                    bottomToBottom = PARENT_ID
+                    startToStart = PARENT_ID
+                    endToEnd = PARENT_ID
                 }
-            }.lparams(dip(96), matchParent) {
-                gravity = Gravity.END
             }
         }
     }.view

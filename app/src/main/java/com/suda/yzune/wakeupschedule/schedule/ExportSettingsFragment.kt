@@ -1,11 +1,9 @@
 package android.support.v4.app
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,14 +15,20 @@ import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
 import gdut.bsx.share2.ShareContentType
 import kotlinx.android.synthetic.main.fragment_export_settings.*
+import kotlinx.coroutines.*
 import java.io.File
+import kotlin.coroutines.CoroutineContext
 
-class ExportSettingsFragment : DialogFragment() {
+class ExportSettingsFragment : DialogFragment(), CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     private lateinit var viewModel: ScheduleViewModel
+    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        job = Job()
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
@@ -32,6 +36,7 @@ class ExportSettingsFragment : DialogFragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        isCancelable = false
         return inflater.inflate(R.layout.fragment_export_settings, container, false)
     }
 
@@ -41,29 +46,46 @@ class ExportSettingsFragment : DialogFragment() {
         activity!!.windowManager.defaultDisplay.getMetrics(dm)
         dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        tv_export.setOnClickListener { _ ->
-            viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
-            viewModel.exportImportInfo.observe(this, Observer {
-                if (!it.isNullOrBlank()) {
+        tv_export.setOnClickListener {
+            launch {
+                val task = async(Dispatchers.IO) {
+                    try {
+                        viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
+                        "ok"
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }.await()
+                if (task == "ok") {
                     Toasty.success(activity!!.applicationContext, "导出成功").show()
                     dismiss()
+                } else {
+                    Toasty.error(activity!!.applicationContext, "出现异常>_<\n$task").show()
                 }
-            })
+            }
         }
 
-        tv_share.setOnClickListener { _ ->
-            viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
-            viewModel.exportImportInfo.observe(this, Observer {
-                if (it.isNullOrBlank()) return@Observer
-                Log.d("路径", it)
-                Share2.Builder(activity)
-                        .setContentType(ShareContentType.FILE)
-                        .setShareFileUri(FileUtil.getFileUri(activity, null, File(it)))
-                        .setTitle("导出并分享课程文件")
-                        .build()
-                        .shareBySystem()
-                dismiss()
-            })
+        tv_share.setOnClickListener {
+            launch {
+                val task = async(Dispatchers.IO) {
+                    try {
+                        viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }.await()
+                if (task != null) {
+                    Share2.Builder(activity)
+                            .setContentType(ShareContentType.FILE)
+                            .setShareFileUri(FileUtil.getFileUri(activity, null, File(task)))
+                            .setTitle("导出并分享课程文件")
+                            .build()
+                            .shareBySystem()
+                    dismiss()
+                } else {
+                    Toasty.error(activity!!.applicationContext, "出现异常>_<").show()
+                }
+            }
         }
 
         tv_cancel.setOnClickListener {
@@ -79,4 +101,8 @@ class ExportSettingsFragment : DialogFragment() {
         ft.commitAllowingStateLoss()
     }
 
+    override fun dismiss() {
+        super.dismiss()
+        job.cancel()
+    }
 }

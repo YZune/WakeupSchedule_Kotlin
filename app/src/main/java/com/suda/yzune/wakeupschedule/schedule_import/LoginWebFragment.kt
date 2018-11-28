@@ -199,7 +199,7 @@ class LoginWebFragment : Fragment() {
     }
 
     private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
-        if (year == viewModel.getSelectedYear() && term == viewModel.getSelectedTerm()) {
+        if (year == viewModel.selectedYear && term == viewModel.selectedTerm) {
             viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), viewModel.getSelectedSchedule())
         } else {
             viewModel.toSchedule(id, name, year, term).observe(this, Observer {

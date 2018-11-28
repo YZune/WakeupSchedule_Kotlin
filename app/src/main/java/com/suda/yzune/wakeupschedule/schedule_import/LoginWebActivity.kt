@@ -21,15 +21,15 @@ class LoginWebActivity : BaseActivity() {
 
         viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
 
-        viewModel.getLastId().observe(this, Observer {
-            if (viewModel.newId == -1) {
-                if (it != null) {
-                    viewModel.newId = it + 1
-                } else {
-                    viewModel.newId = 0
-                }
-            }
-        })
+//        viewModel.getLastId().observe(this, Observer {
+//            if (viewModel.newId == -1) {
+//                if (it != null) {
+//                    viewModel.newId = it + 1
+//                } else {
+//                    viewModel.newId = 0
+//                }
+//            }
+//        })
 
         viewModel.importInfo.observe(this, Observer {
             when (it) {

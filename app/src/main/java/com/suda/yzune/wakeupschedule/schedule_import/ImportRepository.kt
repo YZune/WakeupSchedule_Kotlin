@@ -61,25 +61,6 @@ class ImportRepository(url: String) {
         })
     }
 
-//    fun login(xh: String, pwd: String, code: String) {
-//        importService.login(
-//                xh = xh, pwd = pwd, code = code,
-//                b = "", view_state = VIEWSTATE_LOGIN_CODE,
-//                cookies = LOGIN_COOKIE[0], textbox1 = "",
-//                rbl = "学生", lang = "", h = "", hs = ""
-//        ).enqueue(object : Callback<ResponseBody> {
-//            override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-//                loginResponse.value = "Failure"
-//            }
-//
-//            override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-//                loginResponse.value = response?.body()?.string()
-//                Log.d("返回", response?.body()?.string())
-//                //VIEWSTATE_POST_CODE.value = parseViewStateCode(loginResponse.value!!)
-//            }
-//        })
-//    }
-
     fun getPrepare(xh: String) {
         importService.getPrepare(
                 xh = xh, referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=$xh",

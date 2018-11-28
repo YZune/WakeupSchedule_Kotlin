@@ -4,8 +4,6 @@ import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -15,7 +13,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import java.io.File
 import java.util.*
-import kotlin.concurrent.thread
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,7 +23,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     private val widgetDao = dataBase.appWidgetDao()
     private val timeTableDao = dataBase.timeTableDao()
     private val timeDao = dataBase.timeDetailDao()
-    private val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
 
     lateinit var table: TableBean
     lateinit var timeList: List<TimeDetailBean>
@@ -36,7 +32,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var alphaStr = ""
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
-    val exportImportInfo = MutableLiveData<String>()
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
@@ -68,10 +63,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return baseDao.getCourseByDayOfTable(day, tableId)
     }
 
-    fun getCourse(tableId: Int): LiveData<List<CourseBean>> {
-        return baseDao.getCourseOfTable(tableId)
-    }
-
     suspend fun deleteCourseBean(courseBean: CourseBean) {
         detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
     }
@@ -84,16 +75,20 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         baseDao.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(course))
     }
 
-    fun updateFromOldVer() {
-        if (json != "") {
-            val gson = Gson()
-            val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
-            }.type)
-            oldBean2CourseBean(list, 0)
+    suspend fun updateFromOldVer(json: String) {
+        val gson = Gson()
+        val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
+        }.type)
+        val lastId = tableDao.getLastIdInThread()
+        val tableId = if (lastId != null) {
+            lastId + 1
+        } else {
+            1
         }
+        oldBean2CourseBean(list, tableId)
     }
 
-    private fun oldBean2CourseBean(list: List<CourseOldBean>, tableId: Int) {
+    private suspend fun oldBean2CourseBean(list: List<CourseOldBean>, tableId: Int) {
         val baseList = arrayListOf<CourseBaseBean>()
         val detailList = arrayListOf<CourseDetailBean>()
         var id = 0
@@ -119,43 +114,35 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
                 ))
             }
         }
-
-        thread(name = "TransformOldDataThread") {
-            try {
-                detailList.forEach {
-                    println(it.toString())
-                }
-                baseDao.insertList(baseList)
-                detailDao.insertList(detailList)
-                Log.d("数据库", "插入")
-                PreferenceUtils.remove(getApplication(), "course")
-            } catch (e: SQLiteConstraintException) {
-                Log.d("数据库", "插入异常$e")
-            }
-        }
+        baseDao.insertList(baseList)
+        detailDao.insertList(detailList)
+        PreferenceUtils.remove(getApplication(), "course")
     }
 
-    fun exportData(currentDir: String) {
-        thread(name = "ExportDataThread") {
-            val myDir = if (currentDir.endsWith(File.separator)) {
-                "${currentDir}WakeUp课程表/"
-            } else {
-                "$currentDir/WakeUp课程表/"
-            }
-            val dir = File(myDir)
-            if (!dir.exists()) {
-                dir.mkdir()
-            }
-            val gson = Gson()
-            val strBuilder = StringBuilder()
-            strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
-            strBuilder.append("\n${gson.toJson(timeDao.getTimeListInThread(table.timeTable))}")
-            strBuilder.append("\n${gson.toJson(table)}")
-            strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(table.id))}")
-            strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(table.id))}")
-            val file = File(myDir, "${table.tableName}${Calendar.getInstance().timeInMillis}.wakeup_schedule")
-            file.writeText(strBuilder.toString())
-            exportImportInfo.postValue(file.path)
+    suspend fun exportData(currentDir: String): String {
+        val myDir = if (currentDir.endsWith(File.separator)) {
+            "${currentDir}WakeUp课程表/"
+        } else {
+            "$currentDir/WakeUp课程表/"
         }
+        val dir = File(myDir)
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+        val gson = Gson()
+        val strBuilder = StringBuilder()
+        strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
+        strBuilder.append("\n${gson.toJson(timeList)}")
+        strBuilder.append("\n${gson.toJson(table)}")
+        strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(table.id))}")
+        strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(table.id))}")
+        val tableName = if (table.tableName == "") {
+            "我的课表"
+        } else {
+            table.tableName
+        }
+        val file = File(myDir, "$tableName${Calendar.getInstance().timeInMillis}.wakeup_schedule")
+        file.writeText(strBuilder.toString())
+        return file.path
     }
 }

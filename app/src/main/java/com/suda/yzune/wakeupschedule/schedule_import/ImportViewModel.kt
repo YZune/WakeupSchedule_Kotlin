@@ -39,7 +39,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向")
-    //todo: 在线更新规则
     val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学")
@@ -47,27 +46,20 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院", "中南财经政法大学")
     val qzMoreNodeSchoolList = arrayListOf("华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院")
-    private var selectedYear = ""
-    private var selectedTerm = ""
+    var selectedYear = ""
+    var selectedTerm = ""
+    val importInfo = MutableLiveData<String>()
+    val fileImportInfo = MutableLiveData<String>()
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
-    val importInfo = MutableLiveData<String>()
-    val fileImportInfo = MutableLiveData<String>()
     private var hasTypeFlag = false
 
     private val repository = ImportRepository("http://xk.suda.edu.cn")
 
-    fun getLastId(): LiveData<Int> {
-        return tableDao.getLastId()
-    }
-
-    fun getSelectedYear(): String {
-        return selectedYear
-    }
-
-    fun getSelectedTerm(): String {
-        return selectedTerm
+    suspend fun getNewId(): Int {
+        val lastId = tableDao.getLastIdInThread()
+        return if (lastId != null) lastId + 1 else 1
     }
 
     fun getCheckCode(): LiveData<Bitmap> {
@@ -837,7 +829,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 timeDetails.forEach {
                     it.timeTable = timeTableId
                 }
-                val tableId = tableDao.getLastIdInThread() + 1
+                val lastId = tableDao.getLastIdInThread()
+                val tableId = if (lastId != null) {
+                    lastId + 1
+                } else {
+                    1
+                }
                 table.background = ""
                 table.id = tableId
                 table.timeTable = timeTableId
