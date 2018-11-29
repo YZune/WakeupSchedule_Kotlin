@@ -1,11 +1,9 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +12,18 @@ import android.webkit.*
 import android.widget.*
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 
 
-class WebViewLoginFragment : Fragment() {
+class WebViewLoginFragment : BaseFragment() {
 
     private val GET_FRAME_CONTENT_STR = "document.getElementById('iframeautoheight').contentWindow.document.body.innerHTML"
 
@@ -109,19 +111,6 @@ class WebViewLoginFragment : Fragment() {
     }
 
     private fun initEvent() {
-        viewModel.getPostHtmlResponse().observe(this, Observer {
-            when (it) {
-                "OK" -> {
-                    Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
-                    activity!!.startActivity<ApplyInfoActivity>()
-                    activity!!.finish()
-                }
-                "error" -> {
-                    Toasty.error(activity!!.applicationContext, "上传网页源码失败，请检查网络", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
         tvGotIt.setOnClickListener {
             tvGotIt.visibility = View.GONE
             tvTips.visibility = View.GONE
@@ -167,26 +156,62 @@ class WebViewLoginFragment : Fragment() {
         fun showSource(html: String) {
             if (type != "apply") {
                 if (html.contains("星期一") && html.contains("星期二")) {
-                    when (type) {
-                        "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                        "新正方教务" -> viewModel.parseNewZF(html)
-                        "北京林业大学" -> viewModel.parseQZ(html, type)
-                        "广东外语外贸大学" -> viewModel.parseQZ(html, type)
-                        "长春大学" -> viewModel.parseQZ(html, type)
-                        "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
-                        in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
-                        in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
-                        in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
+                    launch {
+                        val task = async(Dispatchers.IO) {
+                            try {
+                                when (type) {
+                                    "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                    "新正方教务" -> viewModel.parseNewZF(html)
+                                    "北京林业大学" -> viewModel.parseQZ(html, type)
+                                    "广东外语外贸大学" -> viewModel.parseQZ(html, type)
+                                    "长春大学" -> viewModel.parseQZ(html, type)
+                                    "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
+                                    in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
+                                    in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
+                                    in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
+                                    else -> "没有贵校的信息哦>_<"
+                                }
+                            } catch (e: Exception) {
+                                "导入失败>_<\n${e.message}"
+                            }
+                        }.await()
+
+                        when (task) {
+                            "ok" -> {
+                                Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+                                activity!!.finish()
+                            }
+                            else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
+                        }
                     }
                 } else {
                     Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
                 }
             } else {
-                viewModel.postHtml(
-                        school = viewModel.getSchoolInfo()[0],
-                        type = viewModel.getSchoolInfo()[1],
-                        qq = viewModel.getSchoolInfo()[2],
-                        html = html)
+                launch {
+                    val task = async(Dispatchers.IO) {
+                        try {
+                            viewModel.postHtml(
+                                    school = viewModel.schoolInfo[0],
+                                    type = viewModel.schoolInfo[1],
+                                    qq = viewModel.schoolInfo[2],
+                                    html = html)
+                        } catch (e: Exception) {
+                            e.message
+                        }
+                    }.await()
+
+                    when (task) {
+                        "ok" -> {
+                            Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
+                            activity!!.startActivity<ApplyInfoActivity>()
+                            activity!!.finish()
+                        }
+                        else -> {
+                            Toasty.error(activity!!.applicationContext, "上传网页源码失败，请检查网络", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
             }
         }
     }

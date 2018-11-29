@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule
 
 import android.os.Bundle
 import android.view.View
+import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.dao.TimeTableDao
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
@@ -54,7 +55,6 @@ class MainActivity : BaseActivity() {
         pb.visibility = View.GONE
         job?.cancel()
     }
-
 }
 
 

@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.TextView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
 import com.suda.yzune.wakeupschedule.AppDatabase
-import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import kotlinx.android.synthetic.main.activity_school_list.*
 import org.jetbrains.anko.startActivity

@@ -3,16 +3,19 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_import_setting.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class ImportSettingFragment : DialogFragment() {
+class ImportSettingFragment : BaseDialogFragment() {
 
     private lateinit var viewModel: ImportViewModel
 
@@ -36,12 +39,18 @@ class ImportSettingFragment : DialogFragment() {
 
         tv_cover.setOnClickListener {
             viewModel.importId = activity!!.intent.extras!!.getInt("tableId")
+            viewModel.newFlag = false
             dismiss()
         }
 
         tv_new.setOnClickListener {
-            viewModel.importId = viewModel.newId
-            dismiss()
+            launch {
+                viewModel.importId = async(Dispatchers.IO) {
+                    viewModel.getNewId()
+                }.await()
+                viewModel.newFlag = true
+                dismiss()
+            }
         }
 
         tv_cancel.setOnClickListener {

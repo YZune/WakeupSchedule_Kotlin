@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule
 
 import android.os.Bundle
 import android.widget.TextView
+import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.activity_about.*
 import org.jetbrains.anko.startActivity

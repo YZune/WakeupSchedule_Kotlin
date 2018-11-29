@@ -3,11 +3,9 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.animation.IntEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v4.app.Fragment
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,18 +16,20 @@ import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.view.animation.Transformation
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class LoginWebFragment : Fragment() {
+class LoginWebFragment : BaseFragment() {
 
     private lateinit var cvLoginLayoutParams: RelativeLayout.LayoutParams
-    private var isInitLoginObserver = false
-    private var isInitPrepareObserver = false
-    private var isInitScheduleObserver = false
     private var loginBtnOldWidth = 0
     private var loginBtnOldHeight = 0
     private var loginBtnOldRadius = 0f
@@ -61,29 +61,13 @@ class LoginWebFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login_web, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getCheckCode().observe(this, Observer {
-            if (it != null) {
-                rl_progress.visibility = View.GONE
-                iv_code.visibility = View.VISIBLE
-                iv_error.visibility = View.INVISIBLE
-                iv_code.setImageBitmap(it)
-            } else {
-                rl_progress.visibility = View.GONE
-                iv_code.visibility = View.INVISIBLE
-                iv_error.visibility = View.VISIBLE
-                cv_login.isClickable = false
-                btn_text.text = "请检查是否连接校园网"
-                timer.start()
-//                Handler().postDelayed({
-//                    btn_text.text = "登录"
-//                    cv_login.isClickable = true
-//                }, 3000)
-                //Toasty.error(this, resources.getString(R.string.check_code_get_error)).show()
-            }
-        })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        refreshCode()
+        initEvent()
+    }
 
+    private fun initEvent() {
         tv_vpn.setOnClickListener {
             CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
         }
@@ -91,14 +75,11 @@ class LoginWebFragment : Fragment() {
         cvLoginLayoutParams = cv_login.layoutParams as RelativeLayout.LayoutParams
 
         iv_code.setOnClickListener {
-            rl_progress.visibility = View.VISIBLE
-            iv_code.visibility = View.INVISIBLE
-            iv_error.visibility = View.INVISIBLE
-            viewModel.getCheckCode()
+            refreshCode()
         }
 
         iv_error.setOnClickListener {
-            refreshCode(viewModel)
+            refreshCode()
         }
 
         cb_check_pwd.setOnCheckedChangeListener { _, isChecked ->
@@ -119,107 +100,161 @@ class LoginWebFragment : Fragment() {
                 et_code.text.isEmpty() -> et_code.startAnimation(shake)
                 else -> {
                     cardRe2C()
-                    if (!isInitLoginObserver) {
-                        isInitLoginObserver = true
-                        initLoginObserver(viewModel, et_id.text.toString(),
-                                et_pwd.text.toString(), et_code.text.toString(), shake)
-                    } else {
-                        viewModel.login(et_id.text.toString(),
-                                et_pwd.text.toString(), et_code.text.toString())
+                    launch {
+                        val task = async(Dispatchers.IO) {
+                            try {
+                                viewModel.login(et_id.text.toString(),
+                                        et_pwd.text.toString(), et_code.text.toString())
+                            } catch (e: Exception) {
+                                e.message
+                            }
+                        }.await()
+                        when {
+                            task == null -> {
+                                cardC2Re("请检查是否连接校园网")
+                            }
+                            task == "error" -> {
+                                cardC2Re("请检查是否连接校园网")
+                            }
+                            task.contains("验证码不正确") -> {
+                                et_code.startAnimation(shake)
+                                et_code.setText("")
+                                cardC2Re("验证码不正确哦")
+                                refreshCode()
+                            }
+                            task.contains("密码错误") -> {
+                                et_code.setText("")
+                                et_pwd.startAnimation(shake)
+                                refreshCode()
+                                cardC2Re("密码错误哦")
+                            }
+                            task.contains("用户名不存在") -> {
+                                et_code.setText("")
+                                et_id.startAnimation(shake)
+                                refreshCode()
+                                cardC2Re("看看学号是不是输错啦")
+                            }
+                            task.contains("欢迎您：") -> {
+                                getPrepared(et_id.text.toString())
+                            }
+                            task.contains("同学，你好") -> {
+                                getPrepared(et_id.text.toString())
+                            }
+                            else -> {
+                                et_code.setText("")
+                                refreshCode()
+                                cardC2Re("再试一次看看哦")
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun initLoginObserver(viewModel: ImportViewModel, id: String, pwd: String, code: String, animation: Animation) {
-        viewModel.login(id, pwd, code).observe(this, Observer {
-            if (it != null) {
-                when {
-                    it == "Failure" -> {
-                        cardC2Re("请检查是否连接校园网")
-                    }
-                    it.contains("验证码不正确") -> {
-                        et_code.startAnimation(animation)
-                        et_code.setText("")
-                        cardC2Re("验证码不正确哦")
-                        refreshCode(viewModel)
-                    }
-                    it.contains("密码错误") -> {
-                        et_code.setText("")
-                        et_pwd.startAnimation(animation)
-                        refreshCode(viewModel)
-                        cardC2Re("密码错误哦")
-                    }
-                    it.contains("用户名不存在") -> {
-                        et_code.setText("")
-                        et_id.startAnimation(animation)
-                        refreshCode(viewModel)
-                        cardC2Re("看看学号是不是输错啦")
-                    }
-                    it.contains("欢迎您：") -> {
-                        //et_code.setText("")
-                        //btn_login.resetWH()
-                        //setLoginText("成功！")
-//                        val intent = Intent(this, ChooseTermActivity::class.java)
-//                        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this, btn_login, "btn_to_dialog").toBundle())
-                        if (!isInitPrepareObserver) {
-                            isInitPrepareObserver = true
-                            initPrepareObserver(viewModel, et_id.text.toString())
-                        } else {
-                            viewModel.getPrepare(et_id.text.toString())
-                        }
-//                        Handler().postDelayed({
-//                            viewModel.toSchedule(id, it, "2016-2017", "1")
-//                        }, 500)
-                    }
-                    else -> {
-                        et_code.setText("")
-                        refreshCode(viewModel)
-                        cardC2Re("再试一次看看哦")
-                    }
+    private fun getPrepared(id: String) {
+        launch {
+            val task = async(Dispatchers.IO) {
+                try {
+                    viewModel.getPrepare(id)
+                } catch (e: Exception) {
+                    e.message!!
                 }
-            }
-        })
-    }
+            }.await()
 
-    private fun initPrepareObserver(viewModel: ImportViewModel, id: String) {
-        viewModel.getPrepare(id).observe(this, Observer {
-            if (it != null) {
+            if (task != "error") {
                 years.clear()
-                years.addAll(viewModel.parseYears(it)!!)
-                name = viewModel.parseName(it)
+                years.addAll(viewModel.parseYears(task)!!)
+                name = viewModel.parseName(task)
             }
+
             if (years.isEmpty()) {
                 cardC2Re("获取学期数据失败:(")
             } else {
                 cardC2Dialog(viewModel, years)
             }
-        })
-    }
-
-    private fun initScheduleObserver(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
-        if (year == viewModel.selectedYear && term == viewModel.selectedTerm) {
-            viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.getSelectedSchedule()), viewModel.getSelectedSchedule())
-        } else {
-            viewModel.toSchedule(id, name, year, term).observe(this, Observer {
-                if (it == null || it == "Failure") {
-                    cardC2Re("网络错误")
-                } else if (it.contains("您本学期课所选学分小于 0分")) {
-                    cardC2Dialog(viewModel, years)
-                    Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
-                } else {
-                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(it), it)
-                }
-            })
         }
     }
 
-    private fun refreshCode(viewModel: ImportViewModel) {
-        rl_progress.visibility = View.VISIBLE
-        iv_code.visibility = View.INVISIBLE
-        iv_error.visibility = View.INVISIBLE
-        viewModel.getCheckCode()
+    private fun getSchedule(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
+        if (year == viewModel.selectedYear && term == viewModel.selectedTerm) {
+            launch {
+                val import = async(Dispatchers.IO) {
+                    try {
+                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.selectedSchedule), viewModel.selectedSchedule)
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }.await()
+                when (import) {
+                    "ok" -> {
+                        Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                        activity!!.finish()
+                    }
+                    else -> Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                }
+            }
+        } else {
+            launch {
+                val task = async(Dispatchers.IO) {
+                    try {
+                        viewModel.toSchedule(id, name, year, term)
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }.await()
+
+                if (task == null || task == "error") {
+                    cardC2Re("网络错误")
+                } else if (task.contains("您本学期课所选学分小于 0分")) {
+                    cardC2Dialog(viewModel, years)
+                    Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
+                } else {
+                    val import = async(Dispatchers.IO) {
+                        try {
+                            viewModel.importBean2CourseBean(viewModel.html2ImportBean(task), task)
+                        } catch (e: Exception) {
+                            e.message
+                        }
+                    }.await()
+                    when (import) {
+                        "ok" -> {
+                            Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                            activity!!.finish()
+                        }
+                        else -> Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun refreshCode() {
+        launch {
+            rl_progress.visibility = View.VISIBLE
+            iv_code.visibility = View.INVISIBLE
+            iv_error.visibility = View.INVISIBLE
+            val task = async(Dispatchers.IO) {
+                try {
+                    viewModel.getCheckCode()
+                } catch (e: Exception) {
+                    null
+                }
+            }.await()
+            if (task != null) {
+                rl_progress.visibility = View.GONE
+                iv_code.visibility = View.VISIBLE
+                iv_error.visibility = View.INVISIBLE
+                iv_code.setImageBitmap(task)
+            } else {
+                rl_progress.visibility = View.GONE
+                iv_code.visibility = View.INVISIBLE
+                iv_error.visibility = View.VISIBLE
+                cv_login.isClickable = false
+                btn_text.text = "请检查是否连接校园网"
+                timer.start()
+            }
+        }
     }
 
     private fun widthAnimation(target: View, start: Int, end: Int, duration: Int, delay: Long) {
@@ -335,12 +370,7 @@ class LoginWebFragment : Fragment() {
 
         cv_to_schedule.setOnClickListener {
             cardDialog2C()
-            if (!isInitScheduleObserver) {
-                isInitScheduleObserver = true
-                initScheduleObserver(viewModel, et_id.text.toString(), name, year, term)
-            } else {
-                viewModel.toSchedule(et_id.text.toString(), name, year, term)
-            }
+            getSchedule(viewModel, et_id.text.toString(), name, year, term)
         }
     }
 
@@ -377,9 +407,6 @@ class LoginWebFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                LoginWebFragment().apply {
-
-                }
+        fun newInstance() = LoginWebFragment()
     }
 }

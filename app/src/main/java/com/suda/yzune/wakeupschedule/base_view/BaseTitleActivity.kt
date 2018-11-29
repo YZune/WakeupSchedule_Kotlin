@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule
+package com.suda.yzune.wakeupschedule.base_view
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.suda.yzune.wakeupschedule.R
 import org.jetbrains.anko.*
 
 abstract class BaseTitleActivity : BaseActivity() {

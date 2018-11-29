@@ -3,8 +3,8 @@ package com.suda.yzune.wakeupschedule.settings
 import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
-import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.android.synthetic.main.activity_settings.*
 import org.jetbrains.anko.design.longSnackbar

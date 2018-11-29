@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.suda.yzune.wakeupschedule.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 
 class ScheduleManageActivity : BaseTitleActivity() {
 

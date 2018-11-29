@@ -2,10 +2,8 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Application
 import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.database.sqlite.SQLiteConstraintException
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -15,15 +13,17 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
+import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import org.jsoup.Jsoup
+import retrofit2.Retrofit
 import java.io.File
+import java.net.URLEncoder
 import java.util.regex.Pattern
-import kotlin.concurrent.thread
 
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
 
-    var newId = -1
     var importId = -1
+    var newFlag = false
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
@@ -48,54 +48,107 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院")
     var selectedYear = ""
     var selectedTerm = ""
-    val importInfo = MutableLiveData<String>()
-    val fileImportInfo = MutableLiveData<String>()
+    var selectedSchedule: String = ""
+    var schoolInfo = Array<String>(3) { "" }
+
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
     private var hasTypeFlag = false
 
-    private val repository = ImportRepository("http://xk.suda.edu.cn")
+    private val retrofit = Retrofit.Builder().baseUrl("http://xk.suda.edu.cn").build()
+    private val importService = retrofit.create(ImportService::class.java)
+    private var loginCookieStr = ""
+    private val viewStateLoginCode = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    private var viewStatePostCode = ""
 
     suspend fun getNewId(): Int {
         val lastId = tableDao.getLastIdInThread()
         return if (lastId != null) lastId + 1 else 1
     }
 
-    fun getCheckCode(): LiveData<Bitmap> {
-        repository.checkCode()
-        return repository.checkCode
+    suspend fun getCheckCode(): Bitmap {
+        val response = importService.getCheckCode().execute()
+        return if (response.isSuccessful) {
+            val verificationCode = response?.body()?.bytes()
+            loginCookieStr = response.headers().values("Set-Cookie").joinToString("; ")
+            BitmapFactory.decodeByteArray(verificationCode, 0, verificationCode!!.size)
+        } else {
+            throw Exception()
+        }
     }
 
-    fun login(id: String, pwd: String, code: String): LiveData<String> {
-        repository.login(xh = id, pwd = pwd, code = code)
-        return repository.loginResponse
+    suspend fun login(id: String, pwd: String, code: String): String {
+        val response = importService.login(
+                xh = id, pwd = pwd, code = code,
+                b = "", view_state = viewStateLoginCode,
+                cookies = loginCookieStr
+        ).execute()
+        if (response.isSuccessful) {
+            val result = response.body()?.string()
+            if (result != null) {
+                return result
+            } else {
+                throw Exception("error")
+            }
+        } else {
+            throw Exception("error")
+        }
     }
 
-    fun getPrepare(id: String): LiveData<String> {
-        repository.getPrepare(xh = id)
-        return repository.prepareResponse
+    suspend fun getPrepare(id: String): String {
+        val response = importService.getPrepare(
+                xh = id, referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=$id",
+                cookies = loginCookieStr
+        ).execute()
+        if (response.isSuccessful) {
+            val result = response?.body()?.string()
+            if (result != null) {
+                selectedSchedule = result
+                viewStatePostCode = parseViewStateCode(result)
+                return result
+            } else {
+                throw Exception("error")
+            }
+        } else {
+            throw Exception("error")
+        }
     }
 
-    fun getSelectedSchedule(): String {
-        return repository.prepareResponse.value!!
+    suspend fun toSchedule(id: String, name: String, year: String, term: String): String {
+        val response = importService.getSchedule(
+                xh = id, name = URLEncoder.encode(name, "gb2312"), gnmkdm = "N121603",
+                event_target = "xnd",
+                event_argument = "",
+                view_state = viewStatePostCode,
+                cookies = loginCookieStr,
+                referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=" + id + "&xm=" + URLEncoder.encode(name, "gb2312") + "&gnmkdm=N121603",
+                xnd = year,
+                xqd = term
+        ).execute()
+        if (response.isSuccessful) {
+            val result = response?.body()?.string()
+            if (result != null) {
+                return result
+            } else {
+                throw Exception("error")
+            }
+        } else {
+            throw Exception("error")
+        }
     }
 
-    fun toSchedule(id: String, name: String, year: String, term: String): LiveData<String> {
-        repository.toSchedule(xh = id, name = name, year = year, term = term)
-        return repository.scheduleResponse
-    }
-
-    fun getPostHtmlResponse(): LiveData<String> {
-        return repository.postHtmlResponse
-    }
-
-    fun postHtml(school: String, type: String, html: String, qq: String) {
-        repository.postHtml(school, type, html, qq)
-    }
-
-    fun getSchoolInfo(): Array<String> {
-        return repository.schoolInfo
+    suspend fun postHtml(school: String, type: String, html: String, qq: String): String {
+        val response = MyRetrofitUtils.instance.getService().postHtml(school, type, html, qq).execute()
+        if (response.isSuccessful) {
+            if (response.body()?.string() == "OK") {
+                return "ok"
+            } else {
+                throw Exception("error")
+            }
+        } else {
+            throw Exception("error")
+        }
     }
 
     fun parseYears(html: String): List<String>? {
@@ -218,7 +271,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return courses
     }
 
-    fun importBean2CourseBean(importList: ArrayList<ImportBean>, source: String) {
+    suspend fun importBean2CourseBean(importList: ArrayList<ImportBean>, source: String): String {
         baseList.clear()
         detailList.clear()
         retryList.clear()
@@ -255,13 +308,14 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         if (retryList.isNotEmpty()) {
-            importInfo.value = "retry"
+            //todo: post Html
+            throw Exception("解析异常")
         } else {
-            write2DB()
+            return write2DB()
         }
     }
 
-    fun parseNewZF(html: String) {
+    suspend fun parseNewZF(html: String): String {
         baseList.clear()
         detailList.clear()
         var id = 0
@@ -372,10 +426,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
 
-        write2DB()
+        return write2DB()
     }
 
-    fun parseHNIU(html: String) {
+    suspend fun parseHNIU(html: String): String {
         baseList.clear()
         detailList.clear()
         val doc = org.jsoup.Jsoup.parse(html, "utf-8")
@@ -414,6 +468,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         }
+
+        return write2DB()
     }
 
     private fun convertHNIU(day: Int, courseSource: List<String>) {
@@ -475,10 +531,9 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 ))
             }
         }
-        write2DB()
     }
 
-    fun parseQZ(html: String, type: String) {
+    suspend fun parseQZ(html: String, type: String): String {
         baseList.clear()
         detailList.clear()
         val doc = org.jsoup.Jsoup.parse(html, "utf-8")
@@ -530,7 +585,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         }
-        write2DB()
+        return write2DB()
     }
 
     private fun convertQZMore(day: Int, nodeCount: Int, infoStr: String) {
@@ -812,75 +867,49 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    fun importFromFile(path: String) {
-        thread(name = "importFromFileThread") {
-            try {
-                val gson = Gson()
-                val file = File(path)
-                val list = file.readLines()
-                val timeTable = gson.fromJson<TimeTableBean>(list[0], object : TypeToken<TimeTableBean>() {}.type)
-                val timeDetails = gson.fromJson<List<TimeDetailBean>>(list[1], object : TypeToken<List<TimeDetailBean>>() {}.type)
-                val table = gson.fromJson<TableBean>(list[2], object : TypeToken<TableBean>() {}.type)
-                val courseBaseList = gson.fromJson<List<CourseBaseBean>>(list[3], object : TypeToken<List<CourseBaseBean>>() {}.type)
-                val courseDetailList = gson.fromJson<List<CourseDetailBean>>(list[4], object : TypeToken<List<CourseDetailBean>>() {}.type)
-                val timeTableId = timeTableDao.getMaxIdInThread() + 1
-                timeTable.id = timeTableId
-                timeTable.name = "分享_" + timeTable.name
-                timeDetails.forEach {
-                    it.timeTable = timeTableId
-                }
-                val lastId = tableDao.getLastIdInThread()
-                val tableId = if (lastId != null) {
-                    lastId + 1
-                } else {
-                    1
-                }
-                table.background = ""
-                table.id = tableId
-                table.timeTable = timeTableId
-                table.type = 0
-                courseBaseList.forEach {
-                    it.tableId = tableId
-                }
-                courseDetailList.forEach {
-                    it.tableId = tableId
-                }
-                timeTableDao.insertTimeTable(timeTable)
-                timeDetailDao.insertTimeList(timeDetails)
-                tableDao.insertTable(table)
-                baseDao.insertList(courseBaseList)
-                detailDao.insertList(courseDetailList)
-                fileImportInfo.postValue("ok")
-            } catch (e: Exception) {
-                fileImportInfo.postValue("error")
-            }
+    suspend fun importFromFile(path: String) {
+        val gson = Gson()
+        val file = File(path)
+        val list = file.readLines()
+        val timeTable = gson.fromJson<TimeTableBean>(list[0], object : TypeToken<TimeTableBean>() {}.type)
+        val timeDetails = gson.fromJson<List<TimeDetailBean>>(list[1], object : TypeToken<List<TimeDetailBean>>() {}.type)
+        val table = gson.fromJson<TableBean>(list[2], object : TypeToken<TableBean>() {}.type)
+        val courseBaseList = gson.fromJson<List<CourseBaseBean>>(list[3], object : TypeToken<List<CourseBaseBean>>() {}.type)
+        val courseDetailList = gson.fromJson<List<CourseDetailBean>>(list[4], object : TypeToken<List<CourseDetailBean>>() {}.type)
+        val timeTableId = timeTableDao.getMaxIdInThread() + 1
+        timeTable.id = timeTableId
+        timeTable.name = "分享_" + timeTable.name
+        timeDetails.forEach {
+            it.timeTable = timeTableId
         }
+        val tableId = getNewId()
+        table.background = ""
+        table.id = tableId
+        table.timeTable = timeTableId
+        table.type = 0
+        courseBaseList.forEach {
+            it.tableId = tableId
+        }
+        courseDetailList.forEach {
+            it.tableId = tableId
+        }
+        timeTableDao.insertTimeTable(timeTable)
+        timeDetailDao.insertTimeList(timeDetails)
+        tableDao.insertTable(table)
+        baseDao.insertList(courseBaseList)
+        detailDao.insertList(courseDetailList)
     }
 
-    private fun write2DB() {
-        thread(name = "InitDataThread") {
-            //todo: 增量添加课程
-            if (newId != importId) {
-                baseDao.removeCourseBaseBeanOfTable(importId)
-            } else {
-                try {
-                    tableDao.insertTable(TableBean(id = newId, tableName = "未命名"))
-                } catch (e: SQLiteConstraintException) {
-                    importInfo.postValue("插入异常")
-                }
-            }
-            try {
-                baseDao.insertList(baseList)
-                detailDao.insertList(detailList)
-                importInfo.postValue("ok")
-                //insertResponse.value = "ok"
-                Log.d("数据库", "插入")
-            } catch (e: SQLiteConstraintException) {
-                Log.d("数据库", "插入异常$e")
-                importInfo.postValue("插入异常")
-                //insertResponse.value = "error"
-            }
+    private fun write2DB(): String {
+        //todo: 增量添加课程
+        if (!newFlag) {
+            baseDao.removeCourseBaseBeanOfTable(importId)
+        } else {
+            tableDao.insertTable(TableBean(id = importId, tableName = "未命名"))
         }
+        baseDao.insertList(baseList)
+        detailDao.insertList(detailList)
+        return "ok"
     }
 
     private fun parseTime(time: String, startNode: Int, source: String, courseName: String): Array<Int> {
@@ -973,5 +1002,15 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 return true
         }
         return false
+    }
+
+    private fun parseViewStateCode(html: String): String {
+        var code = ""
+        val doc = Jsoup.parse(html)
+        val inputs = doc.getElementsByAttributeValue("name", "__VIEWSTATE")
+        if (inputs.size > 0) {
+            code = inputs[0].attr("value")
+        }
+        return code
     }
 }

@@ -1,15 +1,18 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
-import com.suda.yzune.wakeupschedule.BaseActivity
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.SplashActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class LoginWebActivity : BaseActivity() {
 
@@ -20,40 +23,6 @@ class LoginWebActivity : BaseActivity() {
         setContentView(R.layout.activity_login_web)
 
         viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
-
-//        viewModel.getLastId().observe(this, Observer {
-//            if (viewModel.newId == -1) {
-//                if (it != null) {
-//                    viewModel.newId = it + 1
-//                } else {
-//                    viewModel.newId = 0
-//                }
-//            }
-//        })
-
-        viewModel.importInfo.observe(this, Observer {
-            when (it) {
-                "ok" -> {
-                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-                "retry" -> Toasty.info(applicationContext, "请到侧栏“反馈”中联系作者").show()
-                "插入异常" -> Toasty.error(applicationContext, "数据插入异常").show()
-                else -> Toasty.error(applicationContext, it!!).show()
-            }
-        })
-
-        viewModel.fileImportInfo.observe(this, Observer {
-            when (it) {
-                "ok" -> {
-                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                    finish()
-                }
-                "error" -> {
-                    Toasty.success(applicationContext, "导入失败/(ㄒoㄒ)/~~").show()
-                }
-            }
-        })
 
         when {
             intent.getStringExtra("type") == "苏州大学" -> {
@@ -80,7 +49,25 @@ class LoginWebActivity : BaseActivity() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
-                viewModel.importFromFile(intent.data!!.path!!)
+                launch {
+                    val import = async(Dispatchers.IO) {
+                        try {
+                            viewModel.importFromFile(intent.data!!.path!!)
+                        } catch (e: Exception) {
+                            e.message
+                        }
+                    }.await()
+                    when (import) {
+                        "ok" -> {
+                            Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                            val intent = Intent(this@LoginWebActivity, SplashActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            finish()
+                        }
+                        else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                    }
+                }
             }
             else -> {
                 val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"), intent.getStringExtra("url"))
@@ -102,7 +89,22 @@ class LoginWebActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val filePath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
-            viewModel.importFromFile(filePath)
+            launch {
+                val import = async(Dispatchers.IO) {
+                    try {
+                        viewModel.importFromFile(filePath)
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }.await()
+                when (import) {
+                    "ok" -> {
+                        Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

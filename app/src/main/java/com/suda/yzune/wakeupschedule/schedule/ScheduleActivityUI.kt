@@ -10,12 +10,11 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewManager
 import android.widget.ImageView
+import com.github.mmin18.widget.RealtimeBlurView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import no.danielzeller.blurbehindlib.BlurBehindLayout
-import no.danielzeller.blurbehindlib.UpdateMode
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
@@ -29,13 +28,13 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
     private inline fun ViewManager.navigationView(init: android.support.design.widget.NavigationView.() -> Unit) = ankoView({ NavigationView(it) }, theme = 0) { init() }
     private inline fun ViewManager.recyclerView(init: android.support.v7.widget.RecyclerView.() -> Unit) = ankoView({ RecyclerView(it) }, theme = 0) { init() }
-    private inline fun ViewManager.blurBehindLayout(init: no.danielzeller.blurbehindlib.BlurBehindLayout.() -> Unit) = ankoView({ BlurBehindLayout(it, false) }, theme = 0) { init() }
+    private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
         constraintLayout {
 
-            val fLayout = frameLayout {
+            frameLayout {
                 drawerLayout {
                     id = R.id.anko_drawer_layout
 
@@ -185,13 +184,11 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                 endToEnd = PARENT_ID
             }
 
-            if (ViewUtils.checkDeviceHasNavigationBar(context) && Build.VERSION.SDK_INT >= 23) {
-                blurBehindLayout {
+            if (ViewUtils.checkDeviceHasNavigationBar(context) && Build.VERSION.SDK_INT >= 21) {
+                blurLayout {
                     id = R.id.anko_navigation_bar_blur_layout
-                    blurRadius = 100f
-                    updateMode = UpdateMode.ON_SCROLL
-                    viewBehind = fLayout
-                }.lparams(0, ViewUtils.getVirtualBarHeigh(context)) {
+                    setBlurRadius(50f)
+                }.lparams(matchParent, ViewUtils.getVirtualBarHeigh(context)) {
                     bottomToBottom = PARENT_ID
                     startToStart = PARENT_ID
                     endToEnd = PARENT_ID

@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.Manifest
 import android.animation.ObjectAnimator
 import android.app.Dialog
+import android.appwidget.AppWidgetManager
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -21,11 +22,7 @@ import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
-import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.getkeepsafe.taptargetview.TapTarget
@@ -34,8 +31,12 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-import com.suda.yzune.wakeupschedule.*
+import com.suda.yzune.wakeupschedule.AboutActivity
+import com.suda.yzune.wakeupschedule.GlideApp
+import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
@@ -86,6 +87,9 @@ class ScheduleActivity : BaseActivity() {
 
         PreferenceUtils.init(applicationContext)
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+        }
         ScheduleActivityUI().setContentView(this)
 
         val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
@@ -219,6 +223,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initTableMenu(data: List<TableSelectBean>) {
         tableNameRecyclerView.layoutManager = LinearLayoutManager(this)
+        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         val fadeOutAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 1f, 0f)
         fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
@@ -227,7 +232,6 @@ class ScheduleActivity : BaseActivity() {
         })
         adapter.addFooterView(initFooterView())
         adapter.setOnItemClickListener { _, _, position ->
-            Log.d("位置", position.toString())
             if (position < data.size) {
                 if (data[position].id != viewModel.table.id) {
                     fadeOutAni.start()
@@ -236,6 +240,15 @@ class ScheduleActivity : BaseActivity() {
                             viewModel.changeDefaultTable(data[position].id)
                         }.await()
                         initView()
+                        val list = async(Dispatchers.IO) {
+                            viewModel.getScheduleWidgetIds()
+                        }.await()
+                        list.forEach {
+                            when (it.detailType) {
+                                0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                                1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                            }
+                        }
                     }
                 }
             }

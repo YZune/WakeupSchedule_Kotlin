@@ -34,9 +34,9 @@ class SchoolInfoFragment : Fragment() {
         tv_next.setOnClickListener {
             if (et_school.text.toString() != "") {
                 val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-                viewModel.getSchoolInfo()[0] = et_school.text.toString()
-                viewModel.getSchoolInfo()[1] = et_type.text.toString()
-                viewModel.getSchoolInfo()[2] = et_qq.text.toString()
+                viewModel.schoolInfo[0] = et_school.text.toString()
+                viewModel.schoolInfo[1] = et_type.text.toString()
+                viewModel.schoolInfo[2] = et_qq.text.toString()
                 val fragment = WebViewLoginFragment.newInstance("apply")
                 val transaction = activity!!.supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
@@ -49,9 +49,6 @@ class SchoolInfoFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                SchoolInfoFragment().apply {
-
-                }
+        fun newInstance() = SchoolInfoFragment()
     }
 }
