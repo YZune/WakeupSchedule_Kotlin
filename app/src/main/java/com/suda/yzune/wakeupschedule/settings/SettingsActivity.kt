@@ -31,6 +31,11 @@ class SettingsActivity : BaseTitleActivity() {
         } else {
             s_nav_bar_color.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_color", true)
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            s_nav_bar_blur.isEnabled = false
+        } else {
+            s_nav_bar_blur.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_blur", false)
+        }
     }
 
     private fun initEvent() {
@@ -39,6 +44,10 @@ class SettingsActivity : BaseTitleActivity() {
         }
         s_nav_bar_color.setOnCheckedChangeListener { view, isChecked ->
             PreferenceUtils.saveBooleanToSP(applicationContext, "s_nav_bar_color", isChecked)
+            view.longSnackbar("重启App后生效哦~")
+        }
+        s_nav_bar_blur.setOnCheckedChangeListener { view, isChecked ->
+            PreferenceUtils.saveBooleanToSP(applicationContext, "s_nav_bar_blur", isChecked)
             view.longSnackbar("重启App后生效哦~")
         }
     }

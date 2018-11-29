@@ -243,10 +243,13 @@ class ScheduleActivity : BaseActivity() {
                         val list = async(Dispatchers.IO) {
                             viewModel.getScheduleWidgetIds()
                         }.await()
+                        val table = async(Dispatchers.IO) {
+                            viewModel.getDefaultTable()
+                        }.await()
                         list.forEach {
                             when (it.detailType) {
-                                0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
-                                1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                                0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
+                                1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, table)
                             }
                         }
                     }
@@ -624,6 +627,9 @@ class ScheduleActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 16) {
             initView()
+        }
+        if (requestCode == 32 && resultCode == RESULT_OK) {
+            drawerLayout.openDrawer(GravityCompat.END)
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

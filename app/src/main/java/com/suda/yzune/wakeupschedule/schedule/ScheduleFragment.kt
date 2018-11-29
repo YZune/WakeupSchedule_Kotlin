@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.CHAIN_PACKED
 import android.support.constraint.ConstraintSet.PARENT_ID
@@ -20,7 +21,9 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.SizeUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -92,7 +95,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
                 scrollView {
                     id = R.id.anko_sv_schedule
-                    //isNestedScrollingEnabled = true
                     constraintLayout {
                         id = R.id.anko_cl_content_panel
                         for (i in 1..20) {
@@ -113,7 +115,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                         verticalChainStyle = CHAIN_PACKED
                                     }
                                     20 -> {
-                                        bottomToBottom = PARENT_ID
+                                        bottomToTop = R.id.anko_navigation_bar_view
                                         endToStart = R.id.anko_ll_week_panel_0
                                         horizontalWeight = 0.5f
                                         startToStart = PARENT_ID
@@ -128,6 +130,24 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                     }
                                 }
                             }
+                        }
+                        val barHeight = if (ViewUtils.getVirtualBarHeigh(context) != 0) {
+                            ViewUtils.getVirtualBarHeigh(context)
+                        } else {
+                            dip(48)
+                        }
+                        val navBar = view {
+                            id = R.id.anko_navigation_bar_view
+                        }.lparams(matchParent, barHeight) {
+                            topToBottom = R.id.anko_tv_node992
+                            bottomToBottom = PARENT_ID
+                            startToStart = PARENT_ID
+                            endToEnd = PARENT_ID
+                        }
+                        if ((PreferenceUtils.getBooleanFromSP(context, "s_nav_bar_blur", false) || ViewUtils.checkDeviceHasNavigationBar(context)) && Build.VERSION.SDK_INT >= 21) {
+                            navBar.visibility = View.VISIBLE
+                        } else {
+                            navBar.visibility = View.GONE
                         }
                         for (i in 0..7) {
                             verticalLayout {
@@ -152,8 +172,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                 }
                             }
                         }
-
-                    }.lparams(matchParent, wrapContent)
+                    }
                 }.lparams(matchParent, 0) {
                     bottomToBottom = PARENT_ID
                     topToBottom = R.id.anko_tv_title0

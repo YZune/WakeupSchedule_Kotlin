@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.animation.IntEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -220,6 +221,7 @@ class LoginWebFragment : BaseFragment() {
                     when (import) {
                         "ok" -> {
                             Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                            activity!!.setResult(RESULT_OK)
                             activity!!.finish()
                         }
                         else -> Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()

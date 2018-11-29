@@ -86,6 +86,33 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout style="@style/settings_item_ll">
+
+                <TextView
+                    style="@style/settings_item_tv_main"
+                    android:text="强制导航栏高斯模糊" />
+
+                <Switch
+                    android:id="@+id/s_nav_bar_blur"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:switchMinWidth="48dp"
+                    android:thumb="@drawable/switch_selector"
+                    android:track="@drawable/switch_track" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

@@ -14,6 +14,7 @@ import com.github.mmin18.widget.RealtimeBlurView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
@@ -184,11 +185,16 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                 endToEnd = PARENT_ID
             }
 
-            if (ViewUtils.checkDeviceHasNavigationBar(context) && Build.VERSION.SDK_INT >= 21) {
+            if ((PreferenceUtils.getBooleanFromSP(context, "s_nav_bar_blur", false) || ViewUtils.checkDeviceHasNavigationBar(context)) && Build.VERSION.SDK_INT >= 21) {
+                val barHeight = if (ViewUtils.getVirtualBarHeigh(context) != 0) {
+                    ViewUtils.getVirtualBarHeigh(context)
+                } else {
+                    dip(48)
+                }
                 blurLayout {
                     id = R.id.anko_navigation_bar_blur_layout
                     setBlurRadius(50f)
-                }.lparams(matchParent, ViewUtils.getVirtualBarHeigh(context)) {
+                }.lparams(matchParent, barHeight) {
                     bottomToBottom = PARENT_ID
                     startToStart = PARENT_ID
                     endToEnd = PARENT_ID

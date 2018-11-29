@@ -118,7 +118,8 @@ object UpdateUtils {
 
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false)) {
+        if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false) &&
+                !PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_adjust", false)) {
             val tableData = TableBean(type = 1, id = 1, tableName = "")
             val dataBase = AppDatabase.getDatabase(context)
             val tableDao = dataBase.tableDao()

@@ -100,6 +100,7 @@ class LoginWebActivity : BaseActivity() {
                 when (import) {
                     "ok" -> {
                         Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                        setResult(RESULT_OK)
                         finish()
                     }
                     else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()

@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 
+import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -179,6 +180,7 @@ class WebViewLoginFragment : BaseFragment() {
                         when (task) {
                             "ok" -> {
                                 Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+                                activity!!.setResult(RESULT_OK)
                                 activity!!.finish()
                             }
                             else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()

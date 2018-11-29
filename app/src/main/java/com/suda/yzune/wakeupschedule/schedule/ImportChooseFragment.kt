@@ -18,6 +18,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 
 class ImportChooseFragment : DialogFragment() {
 
@@ -53,13 +54,14 @@ class ImportChooseFragment : DialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
                 dismiss()
             } else {
-                activity!!.startActivity<LoginWebActivity>("type" to "file")
+                activity!!.startActivityForResult<LoginWebActivity>(32, "type" to "file")
                 dismiss()
             }
         }
 
         tv_suda.setOnClickListener {
-            activity!!.startActivity<LoginWebActivity>(
+            activity!!.startActivityForResult<LoginWebActivity>(
+                    32,
                     "type" to "苏州大学",
                     "tableId" to viewModel.table.id
             )
@@ -67,7 +69,7 @@ class ImportChooseFragment : DialogFragment() {
         }
 
         tv_more.setOnClickListener {
-            activity!!.startActivity<SchoolListActivity>()
+            activity!!.startActivityForResult<SchoolListActivity>(32)
             dismiss()
         }
 
