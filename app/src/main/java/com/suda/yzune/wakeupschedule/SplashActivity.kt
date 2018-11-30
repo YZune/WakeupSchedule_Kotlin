@@ -16,4 +16,8 @@ class SplashActivity : AppCompatActivity() {
 //       startActivity<MainActivity>()
         finish()
     }
+
+    override fun onBackPressed() {
+
+    }
 }
