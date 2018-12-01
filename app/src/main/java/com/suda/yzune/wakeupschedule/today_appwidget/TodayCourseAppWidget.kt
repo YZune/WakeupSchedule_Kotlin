@@ -10,14 +10,16 @@ import android.content.Context
 import android.content.Context.ALARM_SERVICE
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlinx.coroutines.*
+import java.util.*
 
 
 /**
@@ -26,27 +28,53 @@ import kotlinx.coroutines.*
 class TodayCourseAppWidget : AppWidgetProvider() {
 
     private var job: Job? = null
+    private var calendar = Calendar.getInstance()
 
     @SuppressLint("NewApi")
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "WAKEUP_REMIND_COURSE") {
-            val course = intent.getParcelableExtra<CourseBean>("course")
-            val date = intent.getStringExtra("date")
+            val courseName = intent.getStringExtra("courseName")
+            var room = intent.getStringExtra("room")
+            val time = intent.getStringExtra("time")
             val weekDay = intent.getStringExtra("weekDay")
             val index = intent.getIntExtra("index", 0)
-            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
+
+            if (room == "") {
+                room = "未知"
+            }
+
+            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+            val cancelIntent = Intent(context, TodayCourseAppWidget::class.java).apply {
+                action = "WAKEUP_CANCEL_REMINDER"
+                putExtra("index", index)
+            }
+            val cancelPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, index, cancelIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val openIntent = Intent(context, SplashActivity::class.java)
+            val openPendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, openIntent, 0)
+
             val notification = NotificationCompat.Builder(context, "schedule_reminder")
-                    .setContentTitle(date)
-                    .setContentText(weekDay)
+                    .setContentTitle("$time $courseName")
+                    .setSubText("上课提醒")
+                    .setContentText("$weekDay  地点：$room")
                     .setWhen(System.currentTimeMillis())
+                    .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher))
                     .setSmallIcon(R.drawable.wakeup)
                     .setAutoCancel(false)
+                    .setOngoing(true)
                     .setNumber(2)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
-                    .setVibrate(longArrayOf(0, 2000))
+                    .setVibrate(longArrayOf(0, 5000))
+                    .addAction(R.drawable.wakeup, "我知道啦", cancelPendingIntent)
+                    .setContentIntent(openPendingIntent)
                     .build()
-            manager!!.notify(index, notification)
+            manager.notify(index, notification)
+        }
+        if (intent.action == "WAKEUP_CANCEL_REMINDER") {
+            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.cancel(intent.getIntExtra("index", 0))
         }
         super.onReceive(context, intent)
     }
@@ -66,7 +94,6 @@ class TodayCourseAppWidget : AppWidgetProvider() {
             }.await()
 
             val week = CourseUtils.countWeek(table.startDate)
-            val date = CourseUtils.getTodayDate()
             val weekDay = CourseUtils.getWeekday()
 
             val courseList = async(Dispatchers.IO) {
@@ -82,26 +109,38 @@ class TodayCourseAppWidget : AppWidgetProvider() {
             }.await()
 
             val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-            val t = System.currentTimeMillis()
             courseList.forEachIndexed { index, courseBean ->
+
+                val time = timeList[courseBean.startNode - 1].startTime
+                val timeSplit = time.split(":")
+                calendar.timeInMillis = System.currentTimeMillis()
+                calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeSplit[0]))
+                calendar.set(Calendar.MINUTE, Integer.parseInt(timeSplit[1]))
+                calendar.add(Calendar.MINUTE, 0 - 10)
+
+                if (calendar.timeInMillis < System.currentTimeMillis()) {
+                    return@forEachIndexed
+                }
+
                 val i = Intent(context, TodayCourseAppWidget::class.java)
-                i.putExtra("course", courseBean)
-                i.putExtra("date", date)
+                i.putExtra("courseName", courseBean.courseName)
+                i.putExtra("room", courseBean.room)
                 i.putExtra("weekDay", weekDay)
                 i.putExtra("index", index)
+                i.putExtra("time", time)
                 i.action = "WAKEUP_REMIND_COURSE"
 
                 val pi = PendingIntent.getBroadcast(context, index, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
                 when {
                     Build.VERSION.SDK_INT < 19 -> {
-                        manager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi)
+                        manager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
                     }
                     Build.VERSION.SDK_INT in 19..22 -> {
-                        manager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), pi)
+                        manager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
                     }
                     Build.VERSION.SDK_INT >= 23 -> {
-                        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t + index * 2000, pi)
+                        manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
                     }
                 }
             }

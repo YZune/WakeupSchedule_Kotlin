@@ -1,55 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/ll_root"
     tools:context=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity">
 
-    <ScrollView
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:lineSpacingExtra="4dp"
+        android:padding="16dp"
+        android:text="由于技术原因\n目前小部件只能显示App中选中显示的课表\n\n如果遇到小部件不能正常刷新的情况\n请允许App后台和自启动\n华为手机用户可以参考下图\n\n修改小部件样式请点主界面右上角进去课程表设置\n现在App支持日视图和周视图两种小部件\n若想修改日视图的文字颜色\n就去设置修改小部件文字颜色就好啦"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv_got_it"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="我知道啦"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:lineSpacingExtra="4dp"
-                android:padding="16dp"
-                android:text="由于技术原因\n目前小部件只能显示App中选中显示的课表\n\n如果遇到小部件不能正常刷新的情况\n请允许App后台和自启动\n华为手机用户可以参考下图\n\n修改小部件样式请点主界面右上角进去课程表设置\n现在App支持日视图和周视图两种小部件\n若想修改日视图的文字颜色\n就去设置修改小部件文字颜色就好啦"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tv_got_it"
-                android:layout_width="160dp"
-                android:layout_height="32dp"
-                android:layout_gravity="end"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
-                android:text="我知道啦"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:layout_margin="16dp"
-                android:id="@+id/iv_tip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-    </ScrollView>
+    <ImageView
+        android:id="@+id/iv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp" />
 
 </LinearLayout>

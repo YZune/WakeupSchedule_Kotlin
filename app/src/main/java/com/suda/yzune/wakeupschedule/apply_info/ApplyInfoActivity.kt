@@ -3,23 +3,26 @@ package com.suda.yzune.wakeupschedule.apply_info
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_apply_info.*
+import org.jetbrains.anko.dip
+import org.jetbrains.anko.textColorResource
+import org.jetbrains.anko.topPadding
 
-class ApplyInfoActivity : BaseTitleActivity() {
-
-    override val layoutId: Int
-        get() = R.layout.activity_apply_info
+class ApplyInfoActivity : BaseListActivity() {
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
-        return null
+        tvButton.text = "刷新"
+        tvButton.textColorResource = R.color.colorAccent
+        tvButton.setOnClickListener {
+            viewModel.initData()
+        }
+        return tvButton
     }
 
     private lateinit var viewModel: ApplyInfoViewModel
@@ -28,32 +31,27 @@ class ApplyInfoActivity : BaseTitleActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProviders.of(this).get(ApplyInfoViewModel::class.java)
-        rv_info.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.countList).apply {
+        mRecyclerView.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.countList).apply {
             this.setHeaderView(initHeaderView())
         }
-        rv_info.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
         viewModel.initData()
-        srl_info.setColorSchemeColors(ContextCompat.getColor(applicationContext, R.color.colorAccent))
-        srl_info.isRefreshing = true
         viewModel.countInfo.observe(this, Observer {
             when (it) {
                 "OK" -> {
-                    rv_info.adapter?.notifyDataSetChanged()
-                    srl_info.isRefreshing = false
+                    mRecyclerView.adapter?.notifyDataSetChanged()
                 }
                 "error" -> {
                     Toasty.error(applicationContext, "网络错误").show()
-                    srl_info.isRefreshing = false
                 }
             }
         })
 
-        srl_info.setOnRefreshListener {
-            viewModel.initData()
-        }
     }
 
     private fun initHeaderView(): View {
-        return LayoutInflater.from(this).inflate(R.layout.item_apply_info_header, null)
+        val view = LayoutInflater.from(this).inflate(R.layout.item_apply_info_header, null)
+        view.topPadding = getStatusBarHeight() + dip(48)
+        return view
     }
 }

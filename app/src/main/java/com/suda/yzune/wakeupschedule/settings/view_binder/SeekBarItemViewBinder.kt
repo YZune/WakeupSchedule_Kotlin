@@ -28,11 +28,11 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
                     marginStart = dip(16)
                     weight = 1f
                 }
-                switch {
-                    id = R.id.anko_switch
-                    switchMinWidth = dip(48)
-                    setThumbResource(R.drawable.switch_selector)
-                    setTrackResource(R.drawable.switch_track)
+                seekBar {
+                    id = R.id.anko_seek_bar
+//                    switchMinWidth = dip(48)
+//                    setThumbResource(R.drawable.switch_selector)
+//                    setTrackResource(R.drawable.switch_track)
                 }.lparams(wrapContent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
                     marginEnd = dip(16)

@@ -89,12 +89,12 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
                 if (courseList[position].room != "") {
                     mRemoteViews.setTextViewText(R.id.widget_room, courseList[position].room)
                 } else {
-                    mRemoteViews.setTextViewText(R.id.widget_room, "无")
+                    mRemoteViews.setTextViewText(R.id.widget_room, "未知")
                 }
                 if (courseList[position].teacher != "") {
                     mRemoteViews.setTextViewText(R.id.widget_teacher, courseList[position].teacher)
                 } else {
-                    mRemoteViews.setTextViewText(R.id.widget_teacher, "无")
+                    mRemoteViews.setTextViewText(R.id.widget_teacher, "未知")
                 }
                 mRemoteViews.setTextViewText(R.id.tv_start, courseList[position].startNode.toString())
                 mRemoteViews.setTextViewText(R.id.tv_end, "${courseList[position].startNode + courseList[position].step - 1}")

@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rv_info"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/ll_root"
-    android:orientation="vertical"
-    tools:context=".apply_info.ApplyInfoActivity">
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_apply_info">
-
-        </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-</LinearLayout>
+    android:layout_height="wrap_content"
+    tools:context=".apply_info.ApplyInfoActivity" />

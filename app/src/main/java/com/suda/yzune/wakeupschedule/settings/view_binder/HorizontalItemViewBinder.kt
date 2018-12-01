@@ -2,6 +2,8 @@ package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +20,19 @@ class HorizontalItemViewBinder constructor(private val onHorizontalItemClickList
         val view = AnkoContext.create(parent.context).apply {
             linearLayout {
                 id = R.id.anko_layout
+
+                val outValue = TypedValue()
+                context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
+                backgroundResource = outValue.resourceId
+
+                gravity = Gravity.CENTER_VERTICAL
                 lparams(matchParent, dip(64))
+
                 textView {
                     id = R.id.anko_text_view
                     textColor = Color.BLACK
                     textSize = 16f
+                    gravity = Gravity.CENTER_VERTICAL
                     lines = 1
                 }.lparams(0, wrapContent) {
                     marginStart = dip(16)
@@ -31,6 +41,7 @@ class HorizontalItemViewBinder constructor(private val onHorizontalItemClickList
                 }
                 textView {
                     id = R.id.anko_tv_value
+                    gravity = Gravity.CENTER_VERTICAL
                     textSize = 12f
                 }.lparams(wrapContent, wrapContent) {
                     marginStart = dip(16)

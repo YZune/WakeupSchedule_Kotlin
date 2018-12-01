@@ -20,23 +20,25 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.android.synthetic.main.activity_add_course.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
+import org.jetbrains.anko.dip
+import org.jetbrains.anko.find
 import org.jetbrains.anko.textColorResource
+import org.jetbrains.anko.topPadding
 
 
-class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
 
-    override val layoutId: Int
-        get() = R.layout.activity_add_course
+//    override val layoutId: Int
+//        get() = R.layout.activity_add_course
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
@@ -126,7 +128,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
             when (view.id) {
                 R.id.ll_time -> {
                     viewModel.editList[position].time.observe(this, Observer {
-                        val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_time) as TextView
+                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_time) as TextView
                         textView.text = "${CourseUtils.getDayStr(it!!.day)}    第${it.startNode} - ${it.endNode}节"
                     })
                     val selectTimeDialog = SelectTimeFragment.newInstance(position)
@@ -138,7 +140,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
                         viewModel.deleteList.add(position)
-                        val viewHolder = rv_detail.findViewHolderForLayoutPosition(position + 1)
+                        val viewHolder = mRecyclerView.findViewHolderForLayoutPosition(position + 1)
                         if (viewHolder != null) {
                             val lp = viewHolder.itemView.layoutParams as RecyclerView.LayoutParams
                             lp.height = 0
@@ -150,7 +152,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                 R.id.ll_weeks -> {
                     viewModel.editList[position].weekList.observe(this, Observer {
                         it!!.sort()
-                        val textView = adapter.getViewByPosition(rv_detail, position + 1, R.id.et_weeks) as TextView
+                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_weeks) as TextView
                         val text = CourseUtils.intList2WeekBeanList(it).toString()
                         textView.text = text.substring(1, text.length - 1)
                     })
@@ -160,13 +162,15 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
                 }
             }
         }
-        rv_detail.adapter = adapter
-        rv_detail.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.adapter = adapter
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
-        etName = view.findViewById<EditText>(R.id.et_name)
+        etName = view.find<EditText>(R.id.et_name)
+        val rlRoot = view.find<RelativeLayout>(R.id.rl_root)
+        rlRoot.topPadding = getStatusBarHeight() + dip(48)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
         val tvColor = view.findViewById<TextView>(R.id.tv_color)
         val ivColor = view.findViewById<ImageView>(R.id.iv_color)
@@ -280,7 +284,7 @@ class AddCourseActivity : BaseTitleActivity(), AddCourseAdapter.OnItemEditTextCh
     private fun exitBy2Click() {
         if (!isExit) {
             isExit = true // 准备退出
-            ll_root.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。", "退出编辑") { finish() }
+            mRecyclerView.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。", "退出编辑") { finish() }
             tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
         } else {
             finish()

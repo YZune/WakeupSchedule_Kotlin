@@ -43,7 +43,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         get() = Dispatchers.Main + job
 
     private var week = 0
-    private var weekPanels = arrayOfNulls<LinearLayout>(7)
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var job: Job
@@ -255,7 +254,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
         for (i in 1..7) {
             viewModel.allCourseList[i - 1].observe(this, Observer {
-                initWeekPanel(weekPanels, it, i, viewModel.table)
+                initWeekPanel(it, i, viewModel.table)
             })
         }
     }
@@ -270,13 +269,13 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                 }
     }
 
-    private fun initWeekPanel(lls: Array<LinearLayout?>, data: List<CourseBean>?, day: Int, table: TableBean) {
-        val llIndex = day - 1
-        lls[llIndex] = find(R.id.anko_ll_week_panel_1 + llIndex)
-        lls[llIndex]?.removeAllViews()
-        find<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
+    private fun initWeekPanel(data: List<CourseBean>?, day: Int, table: TableBean) {
+        val ll = find<LinearLayout>(R.id.anko_ll_week_panel_1 + day - 1)
+        ll.removeAllViews()
+        if (day == 7) {
+            find<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
+        }
         if (data == null || data.isEmpty()) return
-        val ll = lls[data[0].day - 1] ?: return
         var pre = data[0]
         for (i in data.indices) {
             val strBuilder = StringBuilder()
@@ -298,10 +297,18 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
-            if (ll.childCount == 0) {
-                lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+            if (day == 7 && table.sundayFirst) {
+                if (find<LinearLayout>(R.id.anko_ll_week_panel_0).childCount == 0) {
+                    lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                } else {
+                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                }
             } else {
-                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                if (ll.childCount == 0) {
+                    lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                } else {
+                    lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                }
             }
 //            if (i > 0) {
 //                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)

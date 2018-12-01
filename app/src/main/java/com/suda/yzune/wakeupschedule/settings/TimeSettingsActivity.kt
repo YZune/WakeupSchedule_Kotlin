@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
@@ -16,6 +15,9 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.textColorResource
 
@@ -34,7 +36,23 @@ class TimeSettingsActivity : BaseTitleActivity() {
                     finish()
                 }
                 R.id.timeSettingsFragment -> {
-                    viewModel.saveDetailData(viewModel.entryPosition)
+                    launch {
+                        val task = async(Dispatchers.IO) {
+                            try {
+                                viewModel.saveDetailData(viewModel.entryPosition)
+                                "ok"
+                            } catch (e: Exception) {
+                                "出现错误>_<${e.message}"
+                            }
+                        }.await()
+                        if (task == "ok") {
+                            navController.navigateUp()
+                            Toasty.success(applicationContext, "保存成功").show()
+                        } else {
+                            Toasty.error(applicationContext, task, Toast.LENGTH_LONG).show()
+                        }
+                    }
+
                 }
             }
         }
@@ -59,19 +77,6 @@ class TimeSettingsActivity : BaseTitleActivity() {
         viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
 
         initView()
-
-        viewModel.saveInfo.observe(this, Observer { s ->
-            if (s == null) return@Observer
-            when (s) {
-                "detail_ok" -> {
-                    navController.navigateUp()
-                    Toasty.success(this.applicationContext, "保存成功").show()
-                }
-                "error" -> {
-                    Toasty.error(this.applicationContext, "出现错误>_<", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
     }
 
     private fun initView() {

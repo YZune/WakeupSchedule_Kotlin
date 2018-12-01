@@ -6,7 +6,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,10 +13,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-class TimeSettingsFragment : Fragment() {
+class TimeSettingsFragment : BaseFragment() {
 
     var position = 0
     private lateinit var viewModel: TimeSettingsViewModel
@@ -40,7 +43,11 @@ class TimeSettingsFragment : Fragment() {
         viewModel.getTimeData(viewModel.timeTableList[position].id).observe(this, Observer {
             if (it == null) return@Observer
             if (it.isEmpty()) {
-                viewModel.initTimeTableData(viewModel.timeTableList[position].id)
+                launch {
+                    async(Dispatchers.IO) {
+                        viewModel.initTimeTableData(viewModel.timeTableList[position].id)
+                    }.await()
+                }
             } else {
                 viewModel.timeList.clear()
                 viewModel.timeList.addAll(it)

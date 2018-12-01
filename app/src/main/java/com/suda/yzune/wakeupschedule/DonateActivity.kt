@@ -9,7 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.DonateBean
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
@@ -21,7 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DonateActivity : BaseTitleActivity() {
+class DonateActivity : BaseBlurTitleActivity() {
 
     override val layoutId: Int
         get() = R.layout.activity_donate

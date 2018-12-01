@@ -390,7 +390,7 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<SettingsActivity>()
+                        startActivityForResult<SettingsActivity>(31)
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -630,6 +630,9 @@ class ScheduleActivity : BaseActivity() {
         }
         if (requestCode == 32 && resultCode == RESULT_OK) {
             drawerLayout.openDrawer(GravityCompat.END)
+        }
+        if (requestCode == 31 && resultCode == RESULT_OK) {
+            initView()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

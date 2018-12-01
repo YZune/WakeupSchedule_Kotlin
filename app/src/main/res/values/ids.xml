@@ -60,9 +60,11 @@
     <item name="anko_ll_week_panel_7" type="id" />
 
     <item name="anko_layout" type="id" />
+    <item name="anko_view" type="id" />
     <item name="anko_text_view" type="id" />
     <item name="anko_tv_description" type="id" />
     <item name="anko_tv_value" type="id" />
     <item name="anko_switch" type="id" />
     <item name="anko_seek_bar" type="id" />
+    <item name="anko_quick_side_bar" type="id" />
 </resources>

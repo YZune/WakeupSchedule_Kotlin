@@ -2,17 +2,18 @@ package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SwitchCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Switch
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
 import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.switchCompat
 
 class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (SwitchItem, Boolean) -> Unit) : ItemViewBinder<SwitchItem, SwitchItemViewBinder.ViewHolder>() {
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): SwitchItemViewBinder.ViewHolder {
@@ -29,7 +30,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                     marginStart = dip(16)
                     weight = 1f
                 }
-                switch {
+                switchCompat {
                     id = R.id.anko_switch
                     switchMinWidth = dip(48)
                     setThumbResource(R.drawable.switch_selector)
@@ -51,7 +52,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.anko_text_view)
-        val switch: Switch = itemView.findViewById(R.id.anko_switch)
+        val switch: SwitchCompat = itemView.findViewById(R.id.anko_switch)
         val layout: LinearLayout = itemView.findViewById(R.id.anko_layout)
     }
 }

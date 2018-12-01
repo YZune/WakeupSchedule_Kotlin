@@ -5,7 +5,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -15,11 +14,15 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
 
-class TimeTableFragment : Fragment() {
+class TimeTableFragment : BaseFragment() {
 
     private lateinit var viewModel: TimeSettingsViewModel
 
@@ -61,12 +64,6 @@ class TimeTableFragment : Fragment() {
             adapter.selectedId = viewModel.timeTableList[position].id
             viewModel.selectedId = viewModel.timeTableList[position].id
             adapter.notifyDataSetChanged()
-            viewModel.getTimeDataSize(viewModel.selectedId).observe(this, Observer {
-                if (it == null) return@Observer
-                if (it == 0) {
-                    viewModel.initTimeTableData(viewModel.selectedId)
-                }
-            })
         }
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
@@ -87,7 +84,21 @@ class TimeTableFragment : Fragment() {
                     if (viewModel.timeTableList[position].id == viewModel.selectedId) {
                         view.longSnackbar("不能删除已选中的时间表哦>_<")
                     } else {
-                        viewModel.deleteTimeTable(viewModel.timeTableList[position])
+                        launch {
+                            val task = async(Dispatchers.IO) {
+                                try {
+                                    viewModel.deleteTimeTable(viewModel.timeTableList[position])
+                                    "ok"
+                                } catch (e: Exception) {
+                                    "删除错误>_<${e.message}"
+                                }
+                            }.await()
+                            if (task == "ok") {
+                                view.longSnackbar("删除成功~")
+                            } else {
+                                view.longSnackbar("该时间表仍被使用中>_<请确保它不被使用再删除哦")
+                            }
+                        }
                     }
                     return@setOnItemChildLongClickListener true
                 }
@@ -116,8 +127,22 @@ class TimeTableFragment : Fragment() {
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
-                        viewModel.addNewTimeTable(editText.text.toString())
-                        dialog.dismiss()
+                        launch {
+                            val task = async(Dispatchers.IO) {
+                                try {
+                                    viewModel.addNewTimeTable(editText.text.toString())
+                                    "ok"
+                                } catch (e: Exception) {
+                                    "发生异常>_<${e.message}"
+                                }
+                            }.await()
+                            if (task == "ok") {
+                                Toasty.success(activity!!.applicationContext, "新建成功~").show()
+                                dialog.dismiss()
+                            } else {
+                                Toasty.error(activity!!.applicationContext, task).show()
+                            }
+                        }
                     } else {
                         Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
                     }
