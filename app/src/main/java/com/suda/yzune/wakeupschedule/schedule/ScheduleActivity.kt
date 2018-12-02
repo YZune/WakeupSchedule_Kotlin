@@ -14,6 +14,7 @@ import android.os.Parcel
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.AfterImportTipFragment
 import android.support.v4.app.ExportSettingsFragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
@@ -87,7 +88,7 @@ class ScheduleActivity : BaseActivity() {
 
         PreferenceUtils.init(applicationContext)
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
         ScheduleActivityUI().setContentView(this)
@@ -630,11 +631,17 @@ class ScheduleActivity : BaseActivity() {
         }
         if (requestCode == 32 && resultCode == RESULT_OK) {
             drawerLayout.openDrawer(GravityCompat.END)
+            AfterImportTipFragment.newInstance().show(supportFragmentManager, "AfterImportTipFragment")
         }
         if (requestCode == 31 && resultCode == RESULT_OK) {
             initView()
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onDestroy() {
+        AppWidgetUtils.updateWidget(applicationContext)
+        super.onDestroy()
     }
 
 }

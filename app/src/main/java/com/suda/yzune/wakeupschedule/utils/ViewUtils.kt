@@ -6,7 +6,11 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
+import android.os.Build
 import android.os.Environment
+import android.support.v4.text.HtmlCompat
+import android.text.Html
+import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
@@ -16,6 +20,15 @@ import java.io.FileOutputStream
 
 
 object ViewUtils {
+
+    fun getHtmlSpannedString(str: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(str, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        } else {
+            Html.fromHtml(str)
+        }
+    }
+
     fun getStatusBarHeight(context: Context): Int {
         var result = 0
         val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")

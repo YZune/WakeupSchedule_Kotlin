@@ -10,10 +10,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 
-class VerticalItemViewBinder constructor(private val onVerticalItemClickListener: (VerticalItem) -> Unit) : ItemViewBinder<VerticalItem, VerticalItemViewBinder.ViewHolder>() {
+class VerticalItemViewBinder constructor(
+        private val onVerticalItemClickListener: (VerticalItem) -> Unit,
+        private val onVerticalItemLongClickListener: (VerticalItem) -> Boolean
+) : ItemViewBinder<VerticalItem, VerticalItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
         val view = AnkoContext.create(parent.context).apply {
@@ -38,7 +42,7 @@ class VerticalItemViewBinder constructor(private val onVerticalItemClickListener
                     id = R.id.anko_tv_description
                     textSize = 12f
                 }.lparams(wrapContent, wrapContent) {
-                    topMargin = dip(8)
+                    topMargin = dip(4)
                     bottomMargin = dip(16)
                     marginStart = dip(16)
                     marginEnd = dip(16)
@@ -50,8 +54,13 @@ class VerticalItemViewBinder constructor(private val onVerticalItemClickListener
 
     override fun onBindViewHolder(holder: ViewHolder, item: VerticalItem) {
         holder.tvTitle.text = item.title
-        holder.tvDescription.text = item.description
+        if (item.isSpanned) {
+            holder.tvDescription.text = ViewUtils.getHtmlSpannedString(item.description)
+        } else {
+            holder.tvDescription.text = item.description
+        }
         holder.llVerticalItem.setOnClickListener { onVerticalItemClickListener.invoke(item) }
+        holder.llVerticalItem.setOnLongClickListener { onVerticalItemLongClickListener.invoke(item) }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

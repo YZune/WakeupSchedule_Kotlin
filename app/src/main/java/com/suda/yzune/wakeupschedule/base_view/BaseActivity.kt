@@ -51,9 +51,8 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
         }
-        if (PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_color", true)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.navigationBarColor = ContextCompat.getColor(applicationContext, R.color.colorAccent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.navigationBarColor = PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent))
         }
         job = Job()
         super.onCreate(savedInstanceState)

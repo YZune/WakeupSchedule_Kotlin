@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.mmin18.widget.RealtimeBlurView
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
@@ -54,7 +55,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                if (Build.VERSION.SDK_INT >= 21) {
+                if (Build.VERSION.SDK_INT >= 21 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
                     blurLayout {
                         id = R.id.anko_layout
                         setBlurRadius(50f)
@@ -67,7 +68,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
 
                 linearLayout {
                     topPadding = getStatusBarHeight()
-                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 21) {
+                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 21 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
                         R.color.transparent
                     } else {
                         R.color.white

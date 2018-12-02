@@ -19,8 +19,8 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.CategoryItemViewBinder
 import com.suda.yzune.wakeupschedule.settings.view_binder.HorizontalItemViewBinder
 import com.suda.yzune.wakeupschedule.settings.view_binder.SwitchItemViewBinder
 import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import kotlinx.android.synthetic.main.activity_settings.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -64,23 +64,35 @@ class SettingsActivity : BaseListActivity() {
 
     private fun onItemsCreated(items: Items) {
         items.add(CategoryItem("常规", true))
+        items.add(SwitchItem("标题栏模糊效果", PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)))
         items.add(SwitchItem("自动检查更新", PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)))
         items.add(HorizontalItem("设置当前课表", ""))
+
         items.add(CategoryItem("高级", false))
         items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
+
+        items.add(CategoryItem("开发情况", false))
+        items.add(VerticalItem("截至2018.12.1", "160次代码提交\n净提交代码17602行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
     private fun onAdapterCreated(adapter: MultiTypeAdapter) {
         adapter.register(CategoryItem::class, CategoryItemViewBinder())
         adapter.register(HorizontalItem::class, HorizontalItemViewBinder { onHorizontalItemClick(it) })
-        adapter.register(VerticalItem::class, VerticalItemViewBinder { onVerticalItemClick(it) })
+        adapter.register(VerticalItem::class, VerticalItemViewBinder({ onVerticalItemClick(it) }, { false }))
         adapter.register(SwitchItem::class, SwitchItemViewBinder { item, isCheck -> onSwitchItemCheckChange(item, isCheck) })
     }
 
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
         when (item.title) {
+            "标题栏模糊效果" -> {
+                PreferenceUtils.saveBooleanToSP(applicationContext, "title_blur", isChecked)
+                if (Build.VERSION.SDK_INT < 21) {
+                    mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
+                }
+            }
             "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
         }
+        item.checked = isChecked
     }
 
     private fun onHorizontalItemClick(item: HorizontalItem) {
@@ -99,6 +111,10 @@ class SettingsActivity : BaseListActivity() {
     private fun onVerticalItemClick(item: VerticalItem) {
         when (item.title) {
             "解锁高级功能" -> {
+                startActivity<AdvancedSettingsActivity>()
+            }
+            "截至2018.12.1" -> {
+                CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }
     }
@@ -108,33 +124,5 @@ class SettingsActivity : BaseListActivity() {
             setResult(RESULT_OK)
         }
         super.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun initEvent() {
-        s_update.setOnCheckedChangeListener { _, isChecked ->
-            PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
-        }
-        s_nav_bar_color.setOnCheckedChangeListener { view, isChecked ->
-            PreferenceUtils.saveBooleanToSP(applicationContext, "s_nav_bar_color", isChecked)
-            view.longSnackbar("重启App后生效哦~")
-        }
-        s_nav_bar_blur.setOnCheckedChangeListener { view, isChecked ->
-            PreferenceUtils.saveBooleanToSP(applicationContext, "s_nav_bar_blur", isChecked)
-            view.longSnackbar("重启App后生效哦~")
-        }
-    }
-
-    private fun initView() {
-        s_update.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            s_nav_bar_color.isEnabled = false
-        } else {
-            s_nav_bar_color.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_color", true)
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            s_nav_bar_blur.isEnabled = false
-        } else {
-            s_nav_bar_blur.isChecked = PreferenceUtils.getBooleanFromSP(applicationContext, "s_nav_bar_blur", false)
-        }
     }
 }

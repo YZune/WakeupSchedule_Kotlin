@@ -45,14 +45,16 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
     }
 
     override fun onBindViewHolder(holder: SwitchItemViewBinder.ViewHolder, item: SwitchItem) {
+        holder.setIsRecyclable(false)
+
         holder.tvTitle.text = item.title
         holder.switch.isChecked = item.checked
         holder.switch.setOnCheckedChangeListener { _, isChecked -> onCheckItemCheckChange.invoke(item, isChecked) }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.findViewById(R.id.anko_text_view)
-        val switch: SwitchCompat = itemView.findViewById(R.id.anko_switch)
-        val layout: LinearLayout = itemView.findViewById(R.id.anko_layout)
+        val tvTitle: TextView = itemView.find(R.id.anko_text_view)
+        val switch: SwitchCompat = itemView.find(R.id.anko_switch)
+        val layout: LinearLayout = itemView.find(R.id.anko_layout)
     }
 }

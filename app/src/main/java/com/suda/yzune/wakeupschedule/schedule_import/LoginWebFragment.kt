@@ -141,6 +141,11 @@ class LoginWebFragment : BaseFragment() {
                             task.contains("同学，你好") -> {
                                 getPrepared(et_id.text.toString())
                             }
+                            task.contains("请耐心排队") -> {
+                                et_code.setText("")
+                                refreshCode()
+                                cardC2Re("选课排队中，稍后再试哦")
+                            }
                             else -> {
                                 et_code.setText("")
                                 refreshCode()

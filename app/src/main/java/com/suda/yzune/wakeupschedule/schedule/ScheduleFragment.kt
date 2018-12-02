@@ -130,7 +130,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                 }
                             }
                         }
-                        val barHeight = if (ViewUtils.getVirtualBarHeigh(context) != 0) {
+                        val barHeight = if (ViewUtils.getVirtualBarHeigh(context) in 1..48) {
                             ViewUtils.getVirtualBarHeigh(context)
                         } else {
                             dip(48)
@@ -143,7 +143,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                             startToStart = PARENT_ID
                             endToEnd = PARENT_ID
                         }
-                        if ((PreferenceUtils.getBooleanFromSP(context, "s_nav_bar_blur", false) || ViewUtils.checkDeviceHasNavigationBar(context)) && Build.VERSION.SDK_INT >= 21) {
+                        if (PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 19) {
                             navBar.visibility = View.VISIBLE
                         } else {
                             navBar.visibility = View.GONE

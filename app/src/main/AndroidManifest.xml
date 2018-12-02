@@ -121,6 +121,9 @@
         <activity
             android:name=".schedule_import.SchoolListActivity"
             android:label="选择学校" />
+        <activity
+            android:name=".settings.AdvancedSettingsActivity"
+            android:label="高级功能" />
     </application>
 
 </manifest>
