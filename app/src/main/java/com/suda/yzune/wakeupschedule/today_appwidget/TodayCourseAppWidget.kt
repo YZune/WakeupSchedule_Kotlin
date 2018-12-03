@@ -64,8 +64,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher))
                         .setSmallIcon(R.drawable.wakeup)
                         .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setNumber(2)
+                        .setOngoing(PreferenceUtils.getBooleanFromSP(context, "reminder_on_going", false))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                         .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
@@ -73,13 +72,12 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         .addAction(R.drawable.wakeup, "记得给手机静音哦", cancelPendingIntent)
                         .addAction(R.drawable.wakeup, "我知道啦", cancelPendingIntent)
                         .setContentIntent(openPendingIntent)
-                        .build()
-                manager.notify(index, notification)
+                manager.notify(index, notification.build())
             }
-            if (intent.action == "WAKEUP_CANCEL_REMINDER") {
-                val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                manager.cancel(intent.getIntExtra("index", 0))
-            }
+        }
+        if (intent.action == "WAKEUP_CANCEL_REMINDER") {
+            val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.cancel(intent.getIntExtra("index", 0))
         }
         super.onReceive(context, intent)
     }

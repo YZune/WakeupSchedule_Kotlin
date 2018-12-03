@@ -72,7 +72,7 @@ class SettingsActivity : BaseListActivity() {
         items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
 
         items.add(CategoryItem("开发情况", false))
-        items.add(VerticalItem("截至2018.12.1", "160次代码提交\n净提交代码17602行\n点击跳转至项目地址\n欢迎star和fork"))
+        items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
     private fun onAdapterCreated(adapter: MultiTypeAdapter) {

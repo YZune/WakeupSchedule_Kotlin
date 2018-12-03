@@ -30,7 +30,20 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         private val timeDao = dataBase.timeDetailDao()
 
         override fun onCreate() {
-
+            table = tableDao.getDefaultTableInThread()
+            try {
+                week = CourseUtils.countWeek(table.startDate)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            courseList.clear()
+            if (week % 2 == 0) {
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id))
+            } else {
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id))
+            }
+            timeList.clear()
+            timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
         }
 
         override fun onDataSetChanged() {

@@ -32,7 +32,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-import com.suda.yzune.wakeupschedule.AboutActivity
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
@@ -42,7 +41,9 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.intro.AboutActivity
 import com.suda.yzune.wakeupschedule.intro.IntroActivity
+import com.suda.yzune.wakeupschedule.intro.IntroYoungActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
@@ -417,7 +418,10 @@ class ScheduleActivity : BaseActivity() {
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_young -> {
-                    Toasty.info(this.applicationContext, "咩咩将为你记录倒计时等事件哦，敬请期待").show()
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity<IntroYoungActivity>()
+                    }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_feedback -> {

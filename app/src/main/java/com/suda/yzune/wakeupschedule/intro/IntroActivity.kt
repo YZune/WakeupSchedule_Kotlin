@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.TypedValue
-import android.view.View
-import android.view.WindowManager
 import com.github.paolorotolo.appintro.AppIntro
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -15,11 +13,6 @@ import org.jetbrains.anko.backgroundResource
 class IntroActivity : AppIntro() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        }
-
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             addSlide(IntroFragment.newInstance("https://ws2.sinaimg.cn/large/006tNbRwgy1fw81qicpytj30dc0nqjxa.jpg", "上下滑动右侧下半部分\n可以快速切换周数哦~"))

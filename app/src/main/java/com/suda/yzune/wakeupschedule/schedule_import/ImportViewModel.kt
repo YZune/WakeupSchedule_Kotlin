@@ -42,9 +42,9 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学")
-    val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "山东科技大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
+    val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
             "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院", "中南财经政法大学")
-    val qzMoreNodeSchoolList = arrayListOf("华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
+    val qzMoreNodeSchoolList = arrayListOf("山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院")
     var selectedYear = ""
     var selectedTerm = ""
@@ -483,7 +483,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val teacher = courseSource[1].split(' ')[0]
         val room = courseSource[2].trim()
         val timeStr = courseSource[1].substringAfter('[').substringBeforeLast('节')
-        val weekList = timeStr.split("周][")[0].split(", ")
+        val weekList = timeStr.split("周][")[0].split(", ", ",")
         val nodeStr = timeStr.split("周][")[1]
 
         val nodeList = nodeStr.split('-')

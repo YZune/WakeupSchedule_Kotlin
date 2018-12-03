@@ -1,7 +1,9 @@
-package com.suda.yzune.wakeupschedule
+package com.suda.yzune.wakeupschedule.intro
 
 import android.os.Bundle
 import android.widget.TextView
+import com.suda.yzune.wakeupschedule.DonateActivity
+import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.activity_about.*

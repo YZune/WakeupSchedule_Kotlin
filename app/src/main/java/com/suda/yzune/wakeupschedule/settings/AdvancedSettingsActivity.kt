@@ -71,7 +71,7 @@ class AdvancedSettingsActivity : BaseListActivity() {
 
     private fun onItemsCreated(items: Items) {
         items.add(CategoryItem("愿意为之付费吗？", true))
-        items.add(VerticalItem("如何解锁？", "类似无人售货的诚信经营模式，依靠用户的自觉性。<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b>", true))
+        items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b><br>", true))
         items.add(VerticalItem("解锁后", "解锁后，你可以在你自用的任何设备上安装使用，并且免费使用后续更新的高级功能。<br><b><font color='#fa6278'>放心，无论什么版本，App不会有任何形式的广告。</font></b>", true))
 
         items.add(CategoryItem("外观", false))
@@ -80,13 +80,14 @@ class AdvancedSettingsActivity : BaseListActivity() {
         items.add(SwitchItem("主界面虚拟键模糊", PreferenceUtils.getBooleanFromSP(applicationContext, "blur_main_nav_bar", false)))
 
         items.add(CategoryItem("上课提醒", false))
-        items.add(VerticalItem("功能说明", "本功能处于<b><font color='#fa6278'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#fa6278'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。", true))
+        items.add(VerticalItem("功能说明", "本功能处于<b><font color='#fa6278'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#fa6278'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。<br>理论上<b><font color='#fa6278'>每次设置之后</font></b>需要半天以上的时间才会正常工作，理论上不会很耗电。", true))
         items.add(SwitchItem("开启上课提醒", PreferenceUtils.getBooleanFromSP(applicationContext, "course_reminder", false)))
+        items.add(SwitchItem("提醒通知常驻", PreferenceUtils.getBooleanFromSP(applicationContext, "reminder_on_going", false)))
         items.add(SeekBarItem("提前几分钟提醒", PreferenceUtils.getIntFromSP(applicationContext, "reminder_min", 20), 0, 90, "分钟"))
         //items.add(SwitchItem("提醒同时将手机静音", PreferenceUtils.getBooleanFromSP(applicationContext, "silence_reminder", false)))
 
         items.add(CategoryItem("开发情况", false))
-        items.add(VerticalItem("截至2018.12.1", "160次代码提交\n净提交代码17602行\n点击跳转至项目地址\n欢迎star和fork"))
+        items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
     private fun onAdapterCreated(adapter: MultiTypeAdapter) {
@@ -108,13 +109,22 @@ class AdvancedSettingsActivity : BaseListActivity() {
                 item.checked = isChecked
             }
             "主界面虚拟键模糊" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
                 if (Build.VERSION.SDK_INT < 21) {
                     mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
+                    item.checked = isChecked
+                    PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
                 } else {
-                    mRecyclerView.longSnackbar("重启App后生效哦~")
+                    if (isChecked && !PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)) {
+                        mRecyclerView.longSnackbar("只有沉浸后才能模糊哦>_<")
+                        item.checked = false
+                        PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", false)
+                        mAdapter.notifyDataSetChanged()
+                    } else {
+                        mRecyclerView.longSnackbar("重启App后生效哦~")
+                        item.checked = isChecked
+                        PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
+                    }
                 }
-                item.checked = isChecked
             }
             "开启上课提醒" -> {
                 launch {
@@ -132,6 +142,11 @@ class AdvancedSettingsActivity : BaseListActivity() {
                         item.checked = isChecked
                     }
                 }
+            }
+            "提醒通知常驻" -> {
+                PreferenceUtils.saveBooleanToSP(applicationContext, "reminder_on_going", isChecked)
+                item.checked = isChecked
+                mRecyclerView.longSnackbar("对下一次提醒通知生效哦")
             }
             "提醒同时将手机静音" -> {
                 val notificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -196,5 +211,10 @@ class AdvancedSettingsActivity : BaseListActivity() {
             }
         }
         item.valueInt = value + item.min
+    }
+
+    override fun onDestroy() {
+        AppWidgetUtils.updateWidget(applicationContext)
+        super.onDestroy()
     }
 }

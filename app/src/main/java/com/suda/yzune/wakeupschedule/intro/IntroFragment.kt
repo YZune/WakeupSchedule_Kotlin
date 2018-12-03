@@ -28,8 +28,8 @@ class IntroFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_intro, container, false)
-        val x = (ViewUtils.getRealSize(activity!!).x * 0.5).toInt()
-        val y = (ViewUtils.getRealSize(activity!!).y * 0.5).toInt()
+        val x = (ViewUtils.getRealSize(activity!!).x * 0.3).toInt()
+        val y = (ViewUtils.getRealSize(activity!!).y * 0.3).toInt()
         GlideApp.with(this)
                 .load(imageUrl)
                 .override(x, y)

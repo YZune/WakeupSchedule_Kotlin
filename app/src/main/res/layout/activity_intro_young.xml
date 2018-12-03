@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    tools:context=".intro.IntroYoungActivity">
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="24dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autoLink="web"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="8dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:paddingBottom="16dp"
+        android:text="咩咩\n一个简单的待重构的纪念日、倒数日App\n有丰富的桌面小部件样式\n迟些时间将会集成到课程表\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/YoungCommemoration"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_download"
+        android:layout_width="160dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/select_textview_bg"
+        android:gravity="center"
+        android:text="前去下载"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

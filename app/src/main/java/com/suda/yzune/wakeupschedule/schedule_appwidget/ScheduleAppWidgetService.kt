@@ -37,7 +37,24 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val timeList = arrayListOf<TimeDetailBean>()
 
         override fun onCreate() {
-
+            table = tableDao.getDefaultTableInThread()
+            widgetItemHeight = SizeUtils.dp2px(applicationContext, table.widgetItemHeight.toFloat())
+            marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+            val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
+            alphaStr = if (alphaInt != 0) {
+                Integer.toHexString(alphaInt)
+            } else {
+                "00"
+            }
+            if (alphaStr.length < 2) {
+                alphaStr = "0$alphaStr"
+            }
+            if (table.showTime) {
+                timeList.clear()
+                timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
+            } else {
+                timeList.clear()
+            }
         }
 
         override fun onDataSetChanged() {
