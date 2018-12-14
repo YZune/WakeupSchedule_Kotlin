@@ -30,7 +30,7 @@ class ScheduleManageActivity : BaseTitleActivity() {
 
     private fun initView() {
         navController = Navigation.findNavController(this, R.id.nav_fragment)
-        navController.addOnNavigatedListener { _, destination ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             mainTitle.text = destination.label
         }
     }

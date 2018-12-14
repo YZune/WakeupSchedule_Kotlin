@@ -26,7 +26,7 @@ class IntroYoungActivity : BaseBlurTitleActivity() {
                 .into(iv_logo)
 
         tv_download.setOnClickListener {
-            CourseUtils.openUrl(applicationContext, "https://www.coolapk.com/apk/com.suda.yzune.youngcommemoration")
+            CourseUtils.openUrl(this, "https://www.coolapk.com/apk/com.suda.yzune.youngcommemoration")
         }
     }
 }

@@ -114,8 +114,8 @@ class ScheduleSettingsActivity : BaseListActivity() {
         items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp"))
         items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%"))
         items.add(SeekBarItem("显示文字大小", viewModel.table.widgetItemTextSize, 11, 16, "sp"))
-        items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
-        items.add(VerticalItem("小部件课程颜色", "指课程格子内的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
+        items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
+        items.add(VerticalItem("小部件课程颜色", "指课程格子内的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
         items.add(VerticalItem("小部件格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~"))
 
         items.add(CategoryItem("高级", false))
