@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -37,6 +38,9 @@ class DonateActivity : BaseBlurTitleActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (BuildConfig.CHANNEL == "google") {
+            tv_donate.visibility = View.GONE
+        }
         initData()
     }
 
@@ -96,16 +100,18 @@ class DonateActivity : BaseBlurTitleActivity() {
 
     private fun initEvent() {
         tv_donate.setOnClickListener {
-            if (DonateUtils.isAppInstalled(applicationContext, "com.eg.android.AlipayGphone")) {
-                val intent = Intent()
-                intent.action = "android.intent.action.VIEW"
-                val qrCodeUrl = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS://QR.ALIPAY.COM/FKX09148M0LN2VUUZENO9B?_s=web-other")
-                intent.data = qrCodeUrl
-                intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity")
-                startActivity(intent)
-                Toasty.success(applicationContext, "非常感谢(*^▽^*)").show()
-            } else {
-                Toasty.info(applicationContext, "没有检测到支付宝客户端o(╥﹏╥)o").show()
+            if (BuildConfig.CHANNEL != "google") {
+                if (DonateUtils.isAppInstalled(applicationContext, "com.eg.android.AlipayGphone")) {
+                    val intent = Intent()
+                    intent.action = "android.intent.action.VIEW"
+                    val qrCodeUrl = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS://QR.ALIPAY.COM/FKX09148M0LN2VUUZENO9B?_s=web-other")
+                    intent.data = qrCodeUrl
+                    intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity")
+                    startActivity(intent)
+                    Toasty.success(applicationContext, "非常感谢(*^▽^*)").show()
+                } else {
+                    Toasty.info(applicationContext, "没有检测到支付宝客户端o(╥﹏╥)o").show()
+                }
             }
         }
     }

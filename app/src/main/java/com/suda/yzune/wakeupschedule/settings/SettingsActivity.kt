@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
@@ -40,12 +41,16 @@ class SettingsActivity : BaseListActivity() {
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
-        tvButton.text = "捐赠"
-        tvButton.textColorResource = R.color.colorAccent
-        tvButton.setOnClickListener {
-            startActivity<DonateActivity>()
+        return if (BuildConfig.CHANNEL == "google") {
+            null
+        } else {
+            tvButton.text = "捐赠"
+            tvButton.textColorResource = R.color.colorAccent
+            tvButton.setOnClickListener {
+                startActivity<DonateActivity>()
+            }
+            tvButton
         }
-        return tvButton
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +74,11 @@ class SettingsActivity : BaseListActivity() {
         items.add(HorizontalItem("设置当前课表", ""))
 
         items.add(CategoryItem("高级", false))
-        items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
+        if (BuildConfig.CHANNEL != "google") {
+            items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
+        } else {
+            items.add(VerticalItem("看看都有哪些高级功能", "如果想支持一下社团和开发者\n请去支付宝18862196504\n高级功能会持续更新~\n采用诚信授权模式ヾ(=･ω･=)o"))
+        }
 
         items.add(CategoryItem("开发情况", false))
         items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
@@ -111,6 +120,9 @@ class SettingsActivity : BaseListActivity() {
     private fun onVerticalItemClick(item: VerticalItem) {
         when (item.title) {
             "解锁高级功能" -> {
+                startActivity<AdvancedSettingsActivity>()
+            }
+            "看看都有哪些高级功能" -> {
                 startActivity<AdvancedSettingsActivity>()
             }
             "截至2018.12.1" -> {

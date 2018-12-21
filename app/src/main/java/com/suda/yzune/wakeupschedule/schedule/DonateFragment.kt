@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
@@ -32,6 +33,9 @@ class DonateFragment : DialogFragment() {
     override fun onResume() {
         super.onResume()
         initEvent()
+        if (BuildConfig.CHANNEL == "google") {
+            tv_donate.visibility = View.GONE
+        }
     }
 
     private fun initEvent() {
@@ -51,16 +55,18 @@ class DonateFragment : DialogFragment() {
         }
 
         tv_donate.setOnClickListener {
-            if (DonateUtils.isAppInstalled(context!!.applicationContext, "com.eg.android.AlipayGphone")) {
-                val intent = Intent()
-                intent.action = "android.intent.action.VIEW"
-                val qrCodeUrl = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS://QR.ALIPAY.COM/FKX09148M0LN2VUUZENO9B?_s=web-other")
-                intent.data = qrCodeUrl
-                intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity")
-                startActivity(intent)
-                Toasty.success(context!!.applicationContext, "非常感谢(*^▽^*)").show()
-            } else {
-                Toasty.info(context!!.applicationContext, "没有检测到支付宝客户端o(╥﹏╥)o").show()
+            if (BuildConfig.CHANNEL != "google") {
+                if (DonateUtils.isAppInstalled(context!!.applicationContext, "com.eg.android.AlipayGphone")) {
+                    val intent = Intent()
+                    intent.action = "android.intent.action.VIEW"
+                    val qrCodeUrl = Uri.parse("alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=HTTPS://QR.ALIPAY.COM/FKX09148M0LN2VUUZENO9B?_s=web-other")
+                    intent.data = qrCodeUrl
+                    intent.setClassName("com.eg.android.AlipayGphone", "com.alipay.mobile.quinox.LauncherActivity")
+                    startActivity(intent)
+                    Toasty.success(context!!.applicationContext, "非常感谢(*^▽^*)").show()
+                } else {
+                    Toasty.info(context!!.applicationContext, "没有检测到支付宝客户端o(╥﹏╥)o").show()
+                }
             }
         }
 

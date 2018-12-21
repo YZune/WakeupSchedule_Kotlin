@@ -26,8 +26,9 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 45
-        versionName "3.365"
+        versionCode 47
+        versionName "3.375"
+        flavorDimensions "versionCode"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -40,6 +41,20 @@ android {
         }
     }
     buildToolsVersion '28.0.3'
+
+    productFlavors {
+        google {
+            //AndroidManifest.xml中定义的meta-data标签,
+            // 需要和meta-data中的android:value="${CHANNEL}对应
+            manifestPlaceholders = [CHANNEL: "google"]
+            //Build中生成一个字符用来区分不同渠道的不同策略
+            buildConfigField "String", "CHANNEL", "\"google\""
+        }
+        other {
+            manifestPlaceholders = [CHANNEL: "other"]
+            buildConfigField "String", "CHANNEL", "\"other\""
+        }
+    }
 }
 
 dependencies {

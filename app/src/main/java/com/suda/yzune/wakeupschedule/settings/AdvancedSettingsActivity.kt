@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.AppDatabase
+import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
@@ -47,12 +48,16 @@ class AdvancedSettingsActivity : BaseListActivity() {
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
-        tvButton.text = "捐赠"
-        tvButton.textColorResource = R.color.colorAccent
-        tvButton.setOnClickListener {
-            startActivity<DonateActivity>()
+        return if (BuildConfig.CHANNEL == "google") {
+            null
+        } else {
+            tvButton.text = "捐赠"
+            tvButton.textColorResource = R.color.colorAccent
+            tvButton.setOnClickListener {
+                startActivity<DonateActivity>()
+            }
+            tvButton
         }
-        return tvButton
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,11 +75,15 @@ class AdvancedSettingsActivity : BaseListActivity() {
     }
 
     private fun onItemsCreated(items: Items) {
-        items.add(CategoryItem("愿意为之付费吗？", true))
-        items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b><br>", true))
-        items.add(VerticalItem("解锁后", "解锁后，你可以在你自用的任何设备上安装使用，并且免费使用后续更新的高级功能。<br><b><font color='#fa6278'>放心，无论什么版本，App不会有任何形式的广告。</font></b>", true))
+        if (BuildConfig.CHANNEL != "google") {
+            items.add(CategoryItem("愿意为之付费吗？", true))
+            items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b><br>", true))
+            items.add(VerticalItem("解锁后", "解锁后，你可以在你自用的任何设备上安装使用，并且免费使用后续更新的高级功能。<br><b><font color='#fa6278'>放心，无论什么版本，App不会有任何形式的广告。</font></b>", true))
+            items.add(CategoryItem("外观", false))
+        } else {
+            items.add(CategoryItem("外观", true))
+        }
 
-        items.add(CategoryItem("外观", false))
         items.add(VerticalItem("虚拟键颜色", "调整虚拟键的颜色。\n以下关于虚拟键的设置，只对有虚拟键的手机有效哦，是为了有更好的沉浸效果~\n有实体按键或全面屏手势的手机本身就很棒啦~"))
         items.add(SwitchItem("主界面虚拟键沉浸", PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)))
         items.add(SwitchItem("主界面虚拟键模糊", PreferenceUtils.getBooleanFromSP(applicationContext, "blur_main_nav_bar", false)))
