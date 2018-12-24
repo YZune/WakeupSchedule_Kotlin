@@ -22,7 +22,18 @@
         android:paddingLeft="48dp"
         android:paddingTop="16dp"
         android:paddingRight="48dp"
-        android:text="版本号：1.03"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autoLink="web"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="8dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
+        android:text="@string/app_name"
         android:textSize="12sp" />
 
     <TextView
@@ -35,7 +46,7 @@
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
         android:paddingBottom="16dp"
-        android:text="WakeUp课程表\n由WakeUp俱乐部开发\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/WakeupSchedule_Kotlin"
+        android:text="由WakeUp俱乐部开发\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/WakeupSchedule_Kotlin"
         android:textSize="12sp" />
 
     <TextView

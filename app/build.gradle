@@ -22,12 +22,12 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.suda.yzune.wakeupschedule"
+        // applicationId "com.suda.yzune.wakeupschedule"
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 47
-        versionName "3.375"
+        versionCode 45
+        versionName "3.365"
         flavorDimensions "versionCode"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
@@ -44,15 +44,19 @@ android {
 
     productFlavors {
         google {
+            applicationId "com.suda.yzune.wakeupschedule.pro"
+            resValue "string", "app_name", "WakeUp课程表Pro"
             //AndroidManifest.xml中定义的meta-data标签,
             // 需要和meta-data中的android:value="${CHANNEL}对应
             manifestPlaceholders = [CHANNEL: "google"]
             //Build中生成一个字符用来区分不同渠道的不同策略
             buildConfigField "String", "CHANNEL", "\"google\""
         }
-        other {
-            manifestPlaceholders = [CHANNEL: "other"]
-            buildConfigField "String", "CHANNEL", "\"other\""
+        normal {
+            applicationId "com.suda.yzune.wakeupschedule"
+            resValue "string", "app_name", "WakeUp课程表"
+            manifestPlaceholders = [CHANNEL: "normal"]
+            buildConfigField "String", "CHANNEL", "\"normal\""
         }
     }
 }
@@ -89,8 +93,8 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.6.1'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha08"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha08"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha09"
+    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha09"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.paolorotolo:appintro:v4.2.3'

@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.TextView
 import android.widget.Toast
+import androidx.navigation.NavArgument
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.suda.yzune.wakeupschedule.R
@@ -83,9 +85,11 @@ class TimeSettingsActivity : BaseTitleActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_fragment) as NavHostFragment
         val navGraph = navHostFragment.navController.navInflater.inflate(R.navigation.nav_time_settings)
         val fragDestination = navGraph.findNode(R.id.timeTableFragment)!!
-        fragDestination.setDefaultArguments(Bundle().apply {
-            this.putInt("selectedId", intent.extras!!.getInt("selectedId"))
-        })
+        fragDestination.addArgument("selectedId", NavArgument.Builder()
+                .setType(NavType.IntType).setIsNullable(false).setDefaultValue(intent.extras!!.getInt("selectedId")).build())
+//        fragDestination.setDefaultArguments(Bundle().apply {
+//            this.putInt("selectedId", intent.extras!!.getInt("selectedId"))
+//        })
         navHostFragment.navController.graph = navGraph
         navController = Navigation.findNavController(this, R.id.nav_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
