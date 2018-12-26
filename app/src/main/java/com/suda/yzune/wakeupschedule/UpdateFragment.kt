@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.Window
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_update.*
 
 class UpdateFragment : DialogFragment() {
@@ -45,11 +46,22 @@ class UpdateFragment : DialogFragment() {
         tv_new_version.text = "最新版本：" + updateInfo.VersionName
         tv_info.text = updateInfo.VersionInfo
         tv_visit.setOnClickListener {
-            val intent = Intent()
-            intent.action = "android.intent.action.VIEW"
-            val contentUrl = Uri.parse("https://www.coolapk.com/apk/com.suda.yzune.wakeupschedule")
-            intent.data = contentUrl
-            context!!.startActivity(intent)
+            if (BuildConfig.CHANNEL == "google") {
+                try {
+                    val uri = Uri.parse("market://details?id=com.suda.yzune.wakeupschedule.pro")
+                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    activity!!.startActivity(intent)
+                } catch (e: Exception) {
+                    Toasty.info(context!!.applicationContext, "没有检测到应用商店o(╥﹏╥)o").show()
+                }
+            } else {
+                val intent = Intent()
+                intent.action = "android.intent.action.VIEW"
+                val contentUrl = Uri.parse("https://www.coolapk.com/apk/com.suda.yzune.wakeupschedule")
+                intent.data = contentUrl
+                context!!.startActivity(intent)
+            }
             dismiss()
         }
         ib_close.setOnClickListener {

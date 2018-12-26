@@ -150,9 +150,12 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                 }
             }
 
-            for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
-                AppWidgetUtils.refreshTodayWidget(context, appWidgetManager, appWidget.id, table)
-            }
+            async(Dispatchers.IO) {
+                for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
+                    AppWidgetUtils.refreshTodayWidget(context, appWidgetManager, appWidget.id, table)
+                }
+            }.await()
+
             job?.cancel()
         }
     }

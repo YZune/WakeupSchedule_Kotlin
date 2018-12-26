@@ -53,6 +53,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                     viewModel.getDefaultTable()
                 }.await()
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+                //Log.d("包名", appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName)
                 when (appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName) {
                     ".schedule_appwidget.ScheduleAppWidget" -> {
                         async(Dispatchers.IO) {
@@ -61,6 +62,18 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                         AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                     ".today_appwidget.TodayCourseAppWidget" -> {
+                        async(Dispatchers.IO) {
+                            viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
+                        }.await()
+                        AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
+                    }
+                    "com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidget" -> {
+                        async(Dispatchers.IO) {
+                            viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
+                        }.await()
+                        AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
+                    }
+                    "com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget" -> {
                         async(Dispatchers.IO) {
                             viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
                         }.await()
