@@ -1,9 +1,12 @@
-# WakeUp课程表 3.365
+# WakeUp课程表 3.375
 
 <img src="https://ws4.sinaimg.cn/large/0069RVTdgy1fuaoudaytwj30e80e8jtg.jpg" height="256">
 
-下载地址：[酷安市场源](https://www.coolapk.com/apk/159120)
-下载地址：[Google Play](https://play.google.com/store/apps/details?id=com.suda.yzune.wakeupschedule.pro)
+| 平台 | 下载地址 |
+| :----: | :----: |
+| Google Play | <a href='https://play.google.com/store/apps/details?id=com.suda.yzune.wakeupschedule.pro'><img alt='Get it on Google Play' src='https://i.loli.net/2018/06/27/5b32eac49f930.png' height="60"/> |
+| 酷安 | <a href='https://www.coolapk.com/apk/159120'><img alt='去酷安下载' src='https://ws4.sinaimg.cn/large/006tNc79ly1fsphx16ybdj30go06st8q.jpg' height="60"/>|
+
 
 ## 上架情况
 
@@ -68,3 +71,21 @@
 - 注册登录，小范围的社交，主要是为社团的活动服务
 - 完全迁移至AndroidX
 - 国际化
+
+## License
+
+```
+Copyright 2018 YZune. https://github.com/YZune
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+ limitations under the License.
+ ```
