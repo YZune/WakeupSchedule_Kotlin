@@ -8,8 +8,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/main_background" />
+        android:scaleType="centerCrop" />
 
     <io.alterac.blurkit.BlurLayout
         android:id="@+id/blurLayout"

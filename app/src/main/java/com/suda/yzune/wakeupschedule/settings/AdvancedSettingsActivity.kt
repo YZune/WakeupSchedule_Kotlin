@@ -206,7 +206,7 @@ class AdvancedSettingsActivity : BaseListActivity() {
                     mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
                 }
             }
-            "截至2018.12.1" -> {
+            "截至2018.12.02" -> {
                 CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }

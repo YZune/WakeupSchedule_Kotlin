@@ -40,7 +40,7 @@ object UpdateUtils {
                     nodes = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11),
                     itemAlpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_alpha", 60),
                     background = PreferenceUtils.getStringFromSP(context.applicationContext, "pic_uri", "")!!,
-                    startDate = PreferenceUtils.getStringFromSP(context.applicationContext, "termStart", "2018-09-03")!!,
+                    startDate = PreferenceUtils.getStringFromSP(context.applicationContext, "termStart", "2019-02-25")!!,
                     widgetItemAlpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60),
                     widgetItemHeight = PreferenceUtils.getIntFromSP(context.applicationContext, "widget_item_height", 56),
                     widgetItemTextSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12),

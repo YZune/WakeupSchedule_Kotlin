@@ -125,7 +125,7 @@ class SettingsActivity : BaseListActivity() {
             "看看都有哪些高级功能" -> {
                 startActivity<AdvancedSettingsActivity>()
             }
-            "截至2018.12.1" -> {
+            "截至2018.12.02" -> {
                 CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }

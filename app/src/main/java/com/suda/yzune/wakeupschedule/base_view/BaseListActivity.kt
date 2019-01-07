@@ -17,6 +17,7 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.recyclerview.v7.recyclerView
 
 abstract class BaseListActivity : BaseActivity() {
 
@@ -26,7 +27,6 @@ abstract class BaseListActivity : BaseActivity() {
     //    protected val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     protected lateinit var mRecyclerView: RecyclerView
 
-    private inline fun ViewManager.recyclerView(init: android.support.v7.widget.RecyclerView.() -> Unit) = ankoView({ RecyclerView(it) }, theme = 0) { init() }
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun onCreate(savedInstanceState: Bundle?) {

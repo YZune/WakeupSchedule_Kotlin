@@ -15,8 +15,7 @@
         android:paddingStart="32dp"
         android:paddingTop="16dp"
         android:paddingEnd="32dp"
-        android:paddingBottom="16dp"
-        android:src="@drawable/main_background" />
+        android:paddingBottom="16dp" />
 
     <TextView
         android:id="@+id/tv_description"

@@ -63,7 +63,7 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
     }
 
     override fun onBindViewHolder(holder: SeekBarItemViewBinder.ViewHolder, item: SeekBarItem) {
-        holder.setIsRecyclable(false)
+        //holder.setIsRecyclable(false)
 
         holder.tvTitle.text = item.title
         holder.seekBar.progress = item.valueInt - item.min
@@ -72,8 +72,10 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
         holder.tvUnit.text = item.unit
         holder.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                onSeekValueChange.invoke(item, progress)
-                holder.tvValue.text = "${progress + item.min}"
+                if (fromUser) {
+                    onSeekValueChange.invoke(item, progress)
+                    holder.tvValue.text = "${progress + item.min}"
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

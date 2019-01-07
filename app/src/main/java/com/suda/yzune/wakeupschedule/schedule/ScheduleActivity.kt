@@ -206,7 +206,7 @@ class ScheduleActivity : BaseActivity() {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             GlideApp.with(this.applicationContext)
-                    .load(R.drawable.main_background)
+                    .load(R.drawable.main_background_2019)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)

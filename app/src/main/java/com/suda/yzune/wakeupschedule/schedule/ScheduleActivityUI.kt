@@ -4,8 +4,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.support.constraint.ConstraintSet.PARENT_ID
-import android.support.design.widget.NavigationView
-import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewManager
@@ -19,6 +17,8 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.design.navigationView
+import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.drawerLayout
 import org.jetbrains.anko.support.v4.viewPager
 
@@ -27,8 +27,6 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
     private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
-    private inline fun ViewManager.navigationView(init: android.support.design.widget.NavigationView.() -> Unit) = ankoView({ NavigationView(it) }, theme = 0) { init() }
-    private inline fun ViewManager.recyclerView(init: android.support.v7.widget.RecyclerView.() -> Unit) = ankoView({ RecyclerView(it) }, theme = 0) { init() }
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {

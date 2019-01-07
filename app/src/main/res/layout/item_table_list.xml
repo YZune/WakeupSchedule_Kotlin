@@ -34,8 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="96dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/main_background"
-            android:transitionName="image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

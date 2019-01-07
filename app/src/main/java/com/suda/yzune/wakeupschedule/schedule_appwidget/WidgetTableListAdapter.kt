@@ -28,7 +28,7 @@ class WidgetTableListAdapter(layoutResId: Int, data: List<TableSelectBean>) :
                     .into(imageView)
         } else {
             GlideApp.with(mContext.applicationContext)
-                    .load(R.drawable.main_background)
+                    .load(R.drawable.main_background_2019)
                     .override(400, 600)
                     .into(imageView)
         }

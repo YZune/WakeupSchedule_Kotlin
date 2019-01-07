@@ -45,7 +45,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
     }
 
     override fun onBindViewHolder(holder: SwitchItemViewBinder.ViewHolder, item: SwitchItem) {
-        holder.setIsRecyclable(false)
+        //holder.setIsRecyclable(false)
 
         holder.tvTitle.text = item.title
         holder.switch.isChecked = item.checked

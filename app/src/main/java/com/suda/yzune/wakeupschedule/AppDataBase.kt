@@ -44,7 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
                         "    nodes INTEGER NOT NULL DEFAULT 11, \n" +
                         "    background TEXT NOT NULL DEFAULT '',\n" +
                         "    timeTable INTEGER NOT NULL DEFAULT 1,\n" +
-                        "    startDate TEXT NOT NULL DEFAULT '2018-09-03',\n" +
+                        "    startDate TEXT NOT NULL DEFAULT '2019-02-25',\n" +
                         "    maxWeek INTEGER NOT NULL DEFAULT 30,\n" +
                         "    itemHeight INTEGER NOT NULL DEFAULT 56,\n" +
                         "    itemAlpha INTEGER NOT NULL DEFAULT 60,\n" +
