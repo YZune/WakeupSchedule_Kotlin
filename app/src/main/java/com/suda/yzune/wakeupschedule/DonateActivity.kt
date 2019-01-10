@@ -14,10 +14,10 @@ import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.DonateBean
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_donate.*
 import okhttp3.ResponseBody
+import org.jetbrains.anko.dip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,7 +67,7 @@ class DonateActivity : BaseBlurTitleActivity() {
     private fun displayError() {
         val textView = TextView(this)
         val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        textParams.setMargins(0, 0, 0, SizeUtils.dp2px(applicationContext, 8f))
+        textParams.setMargins(0, 0, 0, dip(8))
         textView.layoutParams = textParams
         textView.text = "加载失败:(\n\n点击此处重试"
         textView.setOnClickListener {
@@ -86,7 +86,7 @@ class DonateActivity : BaseBlurTitleActivity() {
         for (item in list) {
             val textView = TextView(this)
             val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            textParams.setMargins(0, 0, 0, SizeUtils.dp2px(applicationContext, 8f))
+            textParams.setMargins(0, 0, 0, dip(8))
             textView.layoutParams = textParams
             textView.text = item.name
             textView.textSize = 12f

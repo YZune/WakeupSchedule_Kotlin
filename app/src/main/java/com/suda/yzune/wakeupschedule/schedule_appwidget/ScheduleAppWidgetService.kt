@@ -14,8 +14,8 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import org.jetbrains.anko.dip
 import java.text.ParseException
 
 class ScheduleAppWidgetService : RemoteViewsService() {
@@ -38,7 +38,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun onCreate() {
             table = tableDao.getDefaultTableInThread()
-            widgetItemHeight = SizeUtils.dp2px(applicationContext, table.widgetItemHeight.toFloat())
+            widgetItemHeight = dip(table.widgetItemHeight.toFloat())
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
             alphaStr = if (alphaInt != 0) {
@@ -59,7 +59,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun onDataSetChanged() {
             table = tableDao.getDefaultTableInThread()
-            widgetItemHeight = SizeUtils.dp2px(applicationContext, table.widgetItemHeight.toFloat())
+            widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
             alphaStr = if (alphaInt != 0) {
@@ -165,7 +165,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
-            ViewUtils.layoutView(scrollView, SizeUtils.dp2px(context, 375f), SizeUtils.dp2px(context, 375f))
+            ViewUtils.layoutView(scrollView, dip(375), dip(375))
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
         }
 
@@ -196,7 +196,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 tv.background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
-                myGrad.setStroke(SizeUtils.dp2px(context.applicationContext, 2f), table.widgetStrokeColor)
+                myGrad.setStroke(dip(2), table.widgetStrokeColor)
 
                 when {
                     c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))

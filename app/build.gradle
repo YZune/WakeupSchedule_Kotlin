@@ -22,7 +22,7 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        // applicationId "com.suda.yzune.wakeupschedule"
+        //applicationId "com.suda.yzune.wakeupschedule"
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
@@ -47,7 +47,7 @@ android {
             applicationId "com.suda.yzune.wakeupschedule.pro"
             resValue "string", "app_name", "WakeUp课程表Pro"
             //AndroidManifest.xml中定义的meta-data标签,
-            // 需要和meta-data中的android:value="${CHANNEL}对应
+            //需要和meta-data中的android:value="${CHANNEL}对应
             manifestPlaceholders = [CHANNEL: "google"]
             //Build中生成一个字符用来区分不同渠道的不同策略
             buildConfigField "String", "CHANNEL", "\"google\""

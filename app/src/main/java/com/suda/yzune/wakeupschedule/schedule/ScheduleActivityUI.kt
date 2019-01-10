@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.support.constraint.ConstraintSet.PARENT_ID
+import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewManager
@@ -32,6 +33,8 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
         constraintLayout {
+
+            val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
 
             frameLayout {
                 drawerLayout {
@@ -84,44 +87,55 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             marginStart = dip(8)
                         }
 
-                        imageButton(R.drawable.main_nav) {
+                        //导航按钮
+                        textView("\uE6A7") {
                             id = R.id.anko_ib_nav
                             backgroundResource = outValue.resourceId
-                            padding = dip(4)
-                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            textSize = 20f
+                            gravity = Gravity.CENTER
+                            includeFontPadding = false
+                            setTypeface(iconFont, Typeface.BOLD)
                         }.lparams(dip(32), dip(32)) {
                             topMargin = dip(48)
                             endToStart = R.id.anko_tv_date
                             topToTop = PARENT_ID
                         }
 
-                        imageButton(R.drawable.schedule_add) {
+                        //添加按钮
+                        textView("\uE6DC") {
                             id = R.id.anko_ib_add
                             backgroundResource = outValue.resourceId
-                            padding = dip(4)
-                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            textSize = 20f
+                            gravity = Gravity.CENTER
+                            includeFontPadding = false
+                            setTypeface(iconFont, Typeface.BOLD)
                         }.lparams(dip(32), dip(32)) {
                             topMargin = dip(48)
                             endToStart = R.id.anko_ib_import
                             topToTop = PARENT_ID
                         }
 
-                        imageButton(R.drawable.schedule_import) {
+                        //导入按钮
+                        textView("\uE6E2") {
                             id = R.id.anko_ib_import
                             backgroundResource = outValue.resourceId
-                            padding = dip(4)
-                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            textSize = 20f
+                            gravity = Gravity.CENTER
+                            includeFontPadding = false
+                            setTypeface(iconFont, Typeface.BOLD)
                         }.lparams(dip(32), dip(32)) {
                             topMargin = dip(48)
                             endToStart = R.id.anko_ib_more
                             topToTop = PARENT_ID
                         }
 
-                        imageButton(R.drawable.more) {
+                        textView("\uE6BF") {
                             id = R.id.anko_ib_more
                             backgroundResource = outValue.resourceId
-                            padding = dip(4)
-                            scaleType = ImageView.ScaleType.CENTER_CROP
+                            textSize = 20f
+                            gravity = Gravity.CENTER
+                            includeFontPadding = false
+                            setTypeface(iconFont, Typeface.BOLD)
                         }.lparams(dip(32), dip(32)) {
                             topMargin = dip(48)
                             marginEnd = dip(8)

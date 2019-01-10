@@ -21,12 +21,12 @@ import android.widget.Toast
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import org.jetbrains.anko.support.v4.dip
 
 class LoginWebFragment : BaseFragment() {
 
@@ -340,7 +340,7 @@ class LoginWebFragment : BaseFragment() {
 
         val raiseUp = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                cvLoginLayoutParams.topMargin = (0 - SizeUtils.dp2px(context!!.applicationContext, 120f) * interpolatedTime).toInt()
+                cvLoginLayoutParams.topMargin = (0 - dip(120) * interpolatedTime).toInt()
                 cv_login.layoutParams = cvLoginLayoutParams
             }
         }
@@ -389,7 +389,7 @@ class LoginWebFragment : BaseFragment() {
 
         val dropDown = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                cvLoginLayoutParams.topMargin = (SizeUtils.dp2px(context!!.applicationContext, 56f) * interpolatedTime).toInt()
+                cvLoginLayoutParams.topMargin = (dip(56) * interpolatedTime).toInt()
                 cv_login.layoutParams = cvLoginLayoutParams
             }
         }

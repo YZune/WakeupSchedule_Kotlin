@@ -92,9 +92,6 @@ class DonateFragment : DialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-                DonateFragment().apply {
-
-                }
+        fun newInstance() = DonateFragment()
     }
 }

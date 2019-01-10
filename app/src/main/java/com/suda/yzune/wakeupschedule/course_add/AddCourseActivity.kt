@@ -37,9 +37,6 @@ import org.jetbrains.anko.topPadding
 
 class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
 
-//    override val layoutId: Int
-//        get() = R.layout.activity_add_course
-
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
         tvButton.typeface = Typeface.DEFAULT_BOLD

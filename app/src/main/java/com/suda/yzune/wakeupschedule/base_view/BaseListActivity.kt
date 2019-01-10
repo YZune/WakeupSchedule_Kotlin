@@ -24,7 +24,7 @@ abstract class BaseListActivity : BaseActivity() {
     abstract fun onSetupSubButton(tvButton: TextView): TextView?
 
     lateinit var mainTitle: TextView
-    //    protected val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
+    //protected val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     protected lateinit var mRecyclerView: RecyclerView
 
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }

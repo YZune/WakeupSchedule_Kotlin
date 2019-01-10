@@ -56,6 +56,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import org.jetbrains.anko.*
 import retrofit2.Call
@@ -73,10 +74,10 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var bgImageView: ImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
     private var weekSeekBar: VerticalSeekBar? = null
-    private lateinit var navImageButton: ImageButton
-    private lateinit var addImageButton: ImageButton
-    private lateinit var importImageButton: ImageButton
-    private lateinit var moreImageButton: ImageButton
+    private lateinit var navImageButton: TextView
+    private lateinit var addImageButton: TextView
+    private lateinit var importImageButton: TextView
+    private lateinit var moreImageButton: TextView
     private lateinit var tableNameRecyclerView: RecyclerView
     private lateinit var dateTextView: TextView
     private lateinit var weekTextView: TextView
@@ -97,14 +98,14 @@ class ScheduleActivity : BaseActivity() {
         val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
         if (json != "") {
             launch {
-                val task = async(Dispatchers.IO) {
+                val task = withContext(Dispatchers.IO) {
                     try {
                         viewModel.updateFromOldVer(json)
                         "ok"
                     } catch (e: Exception) {
                         e.message
                     }
-                }.await()
+                }
                 if (task == "ok") {
                     Toasty.success(applicationContext, "升级成功~").show()
                 } else {
@@ -230,7 +231,7 @@ class ScheduleActivity : BaseActivity() {
         fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addHeaderView(FrameLayout(this).apply {
-            this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, SizeUtils.dp2px(this@ScheduleActivity.applicationContext, 24f))
+            this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip(24))
         })
         adapter.addFooterView(initFooterView())
         adapter.setOnItemClickListener { _, _, position ->
@@ -238,13 +239,13 @@ class ScheduleActivity : BaseActivity() {
                 if (data[position].id != viewModel.table.id) {
                     fadeOutAni.start()
                     launch {
-                        async(Dispatchers.IO) {
+                        withContext(Dispatchers.IO) {
                             viewModel.changeDefaultTable(data[position].id)
-                        }.await()
+                        }
                         initView()
-                        val list = async(Dispatchers.IO) {
+                        val list = withContext(Dispatchers.IO) {
                             viewModel.getScheduleWidgetIds()
-                        }.await()
+                        }
                         val table = async(Dispatchers.IO) {
                             viewModel.getDefaultTable()
                         }.await()

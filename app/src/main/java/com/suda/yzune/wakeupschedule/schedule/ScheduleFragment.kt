@@ -22,7 +22,6 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
@@ -324,7 +323,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
 
             textView.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
-            myGrad.setStroke(SizeUtils.dp2px(context!!.applicationContext, 2f), table.strokeColor)
+            myGrad.setStroke(dip(2), table.strokeColor)
 
             if (c.color == "") {
                 c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"

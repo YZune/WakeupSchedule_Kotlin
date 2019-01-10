@@ -10,9 +10,9 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.SizeUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
+import org.jetbrains.anko.support.v4.dip
 
 class SelectWeekFragment : DialogFragment() {
 
@@ -73,9 +73,9 @@ class SelectWeekFragment : DialogFragment() {
     private fun showWeeks() {
         ll_week.removeAllViews()
         val context = ll_week.context
-        val margin = SizeUtils.dp2px(context, 4f)
-        val textViewSize = SizeUtils.dp2px(context, 32f)
-        val llHeight = SizeUtils.dp2px(context, 40f)
+        val margin = dip(4)
+        val textViewSize = dip(32)
+        val llHeight = dip(40)
         for (i in 0 until Math.ceil(viewModel.maxWeek / 6.0).toInt()) {
             val linearLayout = LinearLayout(context)
             linearLayout.orientation = LinearLayout.HORIZONTAL

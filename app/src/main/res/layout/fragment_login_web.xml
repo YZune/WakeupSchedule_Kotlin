@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".schedule_import.LoginWebFragment">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:scaleType="fitEnd"
-        android:src="@drawable/login_bg" />
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -59,7 +52,7 @@
             android:layout_height="48dp"
             android:layout_gravity="bottom"
             android:layout_marginBottom="-2dp"
-            android:layout_marginRight="0dp"
+            android:layout_marginEnd="0dp"
             android:button="@drawable/check_pwd_layout"
             android:checked="false" />
     </LinearLayout>
