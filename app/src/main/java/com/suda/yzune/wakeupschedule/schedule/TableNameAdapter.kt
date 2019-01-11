@@ -12,9 +12,9 @@ class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
 
     override fun convert(helper: BaseViewHolder, item: TableSelectBean) {
         if (item.type == 1) {
-            helper.setVisible(R.id.iv_selected, true)
+            helper.setVisible(R.id.ll_action, true)
         } else {
-            helper.setVisible(R.id.iv_selected, false)
+            helper.setVisible(R.id.ll_action, false)
         }
 
         if (item.tableName != "") {
@@ -34,6 +34,9 @@ class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
                     .override(200, 300)
                     .into(imageView)
         }
+
+        helper.addOnClickListener(R.id.menu_export)
+        helper.addOnClickListener(R.id.menu_setting)
     }
 
 }

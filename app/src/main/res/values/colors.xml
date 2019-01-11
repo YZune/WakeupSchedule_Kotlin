@@ -5,6 +5,7 @@
     <color name="colorAccent">#fa6278</color>
 
     <color name="grey">#9aa3a3a3</color>
+    <color name="deep_grey">#9a505050</color>
     <color name="white">#ffffff</color>
     <color name="transparent">#00ffffff</color>
     <color name="nodeIndex" >#00000000</color>

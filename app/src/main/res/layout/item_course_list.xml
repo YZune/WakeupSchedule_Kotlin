@@ -6,22 +6,11 @@
     android:layout_height="64dp"
     android:foreground="?attr/selectableItemBackground">
 
-    <ImageView
-        android:id="@+id/iv_color"
-        android:layout_width="wrap_content"
-        android:layout_marginEnd="4dp"
-        android:src="@drawable/point"
-        android:tint="@color/red"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tv_course_name"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tv_course_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="center_vertical"
         android:lines="1"
@@ -34,41 +23,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ib_edit"
+        style="@style/ButtonBackground"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        style="@style/ButtonBackground"
-        android:padding="8dp"
-        android:src="@drawable/ic_edit"
-        android:tint="@color/blue"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text=""
+        android:textColor="@color/blue"
+        android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ib_delete"
         app:layout_constraintStart_toEndOf="@id/tv_course_name"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <TextView
         android:id="@+id/ib_delete"
+        style="@style/ButtonBackground"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        style="@style/ButtonBackground"
-        android:padding="8dp"
-        android:src="@drawable/ic_delete"
-        android:tint="@color/red"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text=""
+        android:textColor="@color/red"
+        android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ib_edit"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.5"
-        android:background="@color/grey"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

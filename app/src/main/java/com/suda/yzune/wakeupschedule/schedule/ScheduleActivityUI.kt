@@ -35,6 +35,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
         constraintLayout {
 
             val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
+            val statusBarMargin = owner.getStatusBarHeight() + dip(8)
 
             frameLayout {
                 drawerLayout {
@@ -65,7 +66,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             startToStart = PARENT_ID
                             topToTop = PARENT_ID
                             marginStart = dip(24)
-                            topMargin = dip(48)
+                            topMargin = statusBarMargin
                         }
 
                         textView {
@@ -94,9 +95,9 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             textSize = 20f
                             gravity = Gravity.CENTER
                             includeFontPadding = false
-                            setTypeface(iconFont, Typeface.BOLD)
+                            typeface = iconFont
                         }.lparams(dip(32), dip(32)) {
-                            topMargin = dip(48)
+                            topMargin = statusBarMargin
                             endToStart = R.id.anko_tv_date
                             topToTop = PARENT_ID
                         }
@@ -108,9 +109,9 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             textSize = 20f
                             gravity = Gravity.CENTER
                             includeFontPadding = false
-                            setTypeface(iconFont, Typeface.BOLD)
+                            typeface = iconFont
                         }.lparams(dip(32), dip(32)) {
-                            topMargin = dip(48)
+                            topMargin = statusBarMargin
                             endToStart = R.id.anko_ib_import
                             topToTop = PARENT_ID
                         }
@@ -122,9 +123,9 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             textSize = 20f
                             gravity = Gravity.CENTER
                             includeFontPadding = false
-                            setTypeface(iconFont, Typeface.BOLD)
+                            typeface = iconFont
                         }.lparams(dip(32), dip(32)) {
-                            topMargin = dip(48)
+                            topMargin = statusBarMargin
                             endToStart = R.id.anko_ib_more
                             topToTop = PARENT_ID
                         }
@@ -135,9 +136,9 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             textSize = 20f
                             gravity = Gravity.CENTER
                             includeFontPadding = false
-                            setTypeface(iconFont, Typeface.BOLD)
+                            typeface = iconFont
                         }.lparams(dip(32), dip(32)) {
-                            topMargin = dip(48)
+                            topMargin = statusBarMargin
                             marginEnd = dip(8)
                             endToEnd = PARENT_ID
                             topToTop = PARENT_ID

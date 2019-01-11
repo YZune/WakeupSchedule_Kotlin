@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
     <android.support.design.button.MaterialButton
         android:id="@+id/tv_add"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="64dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="64dp"
         android:layout_marginBottom="32dp"
         android:gravity="center"
+        android:paddingStart="64dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="64dp"
+        android:paddingBottom="8dp"
         android:text="添加时间段"
         android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:cornerRadius="32dp" />
 
 </LinearLayout>

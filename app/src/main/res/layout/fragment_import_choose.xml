@@ -7,15 +7,19 @@
     android:orientation="vertical"
     tools:context=".schedule.ImportChooseFragment">
 
-    <ImageButton
+    <TextView
+        style="@style/ButtonBackground"
         android:id="@+id/ib_close"
+        android:layout_gravity="end"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        style="@style/ButtonBackground"
+        android:fontFamily="@font/iconfont"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_gravity="end"
-        android:src="@drawable/ic_list_delete" />
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text=""
+        android:textSize="20sp" />
 
 
     <TextView

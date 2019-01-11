@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:id="@+id/rl_root"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <ImageView
+    <TextView
+        style="@style/icon_text_view"
         android:layout_width="56dp"
         android:layout_height="64dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_edit_course" />
+        android:text=""
+        android:textColor="#16AEA0" />
 
     <EditText
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="48dp"
+        android:layout_marginEnd="24dp"
         android:background="@null"
         android:gravity="center_vertical"
         android:hint="课程名称"
@@ -24,47 +25,34 @@
         android:singleLine="true"
         android:textSize="14sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/et_name"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="48dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
     <LinearLayout
         android:id="@+id/ll_color"
-        android:background="?android:attr/selectableItemBackground"
-        android:layout_below="@id/et_name"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/iv_color"
-            android:layout_width="56dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="1dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit_color"
-            android:tint="@color/grey"
-            android:tintMode="src_in" />
+        android:layout_height="64dp"
+        android:layout_below="@id/et_name"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
-            android:background="@null"
+            android:id="@+id/iv_color"
+            style="@style/icon_text_view"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:text="" />
+
+        <TextView
             android:id="@+id/tv_color"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginEnd="24dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="-8dp"
-            android:layout_marginTop="1dp"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
             android:enabled="false"
             android:gravity="center_vertical"
             android:hint="选取颜色"
             android:lines="1"
+            android:singleLine="true"
             android:textSize="14sp" />
     </LinearLayout>
-
 
     <View
         android:layout_width="match_parent"

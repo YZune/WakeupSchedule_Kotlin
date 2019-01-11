@@ -16,47 +16,38 @@
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/tv_item_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="24dp"
-        android:layout_toEndOf="@id/tv_item"
+        style="@style/ButtonBackground"
+        android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:lines="1"
-        android:text="11"
-        android:textSize="12sp"
-        android:visibility="invisible" />
-
-    <ImageButton
+        android:fontFamily="@font/iconfont"
+        android:includeFontPadding="false"
         android:id="@+id/ib_delete"
+        android:text=""
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
-        style="@style/ButtonBackground"
-        android:src="@drawable/ic_list_delete" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/ll_weeks"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_item_id"
+        android:layout_height="64dp"
+        android:layout_below="@id/tv_item"
         android:background="?android:attr/selectableItemBackground">
 
-        <ImageView
+        <TextView
+            style="@style/icon_text_view"
             android:layout_width="56dp"
-            android:layout_height="64dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit_week" />
+            android:layout_height="match_parent"
+            android:text=""
+            android:textColor="#16AD9F" />
 
         <TextView
             android:id="@+id/et_weeks"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="24dp"
-            android:layout_marginStart="-8dp"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="周数"
@@ -64,37 +55,25 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/ll_weeks"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="48dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
     <LinearLayout
         android:id="@+id/ll_time"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="64dp"
         android:layout_below="@id/ll_weeks"
-        android:layout_marginTop="1dp"
         android:background="?android:attr/selectableItemBackground">
 
-        <ImageView
+        <TextView
+            style="@style/icon_text_view"
             android:layout_width="56dp"
-            android:layout_height="64dp"
-            android:layout_marginTop="1dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit_time" />
+            android:layout_height="match_parent"
+            android:text=""
+            android:textColor="#FFA622" />
 
         <TextView
             android:id="@+id/et_time"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="24dp"
-            android:layout_marginStart="-8dp"
-            android:layout_marginTop="1dp"
             android:background="@null"
             android:gravity="center_vertical"
             android:hint="周一    第1 - 2节"
@@ -102,32 +81,21 @@
             android:textSize="14sp" />
     </LinearLayout>
 
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/ll_time"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="48dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
-    <ImageView
+    <TextView
+        style="@style/icon_text_view"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
-        android:layout_marginTop="1dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_person" />
+        android:text=""
+        android:textColor="#1571D5" />
 
     <EditText
         android:id="@+id/et_teacher"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
+        android:layout_marginStart="56dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="1dp"
         android:background="@null"
         android:gravity="center_vertical"
         android:hint="授课老师（可不填）"
@@ -135,31 +103,21 @@
         android:singleLine="true"
         android:textSize="14sp" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/et_teacher"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="48dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
-    <ImageView
+    <TextView
+        style="@style/icon_text_view"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:layout_below="@id/et_teacher"
-        android:layout_marginTop="1dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_edit_room" />
+        android:text=""
+        android:textColor="#F63D3E" />
 
     <EditText
         android:id="@+id/et_room"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/et_teacher"
+        android:layout_marginStart="56dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginStart="48dp"
-        android:layout_marginTop="1dp"
         android:background="@null"
         android:gravity="center_vertical"
         android:hint="上课地点（可不填）"

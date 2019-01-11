@@ -1,7 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-import android.graphics.Color
-import android.widget.ImageView
 import com.chad.library.adapter.base.BaseItemDraggableAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
@@ -12,11 +10,6 @@ class CourseListAdapter(layoutResId: Int, data: List<CourseBaseBean>) :
 
     override fun convert(helper: BaseViewHolder, item: CourseBaseBean) {
         helper.setText(R.id.tv_course_name, item.courseName)
-        try {
-            helper.getView<ImageView>(R.id.iv_color).setColorFilter(Color.parseColor(item.color))
-        } catch (e: Exception) {
-
-        }
         helper.addOnClickListener(R.id.ib_edit)
         helper.addOnClickListener(R.id.ib_delete)
         helper.addOnLongClickListener(R.id.ib_delete)

@@ -4,7 +4,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
+import android.support.design.button.MaterialButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,7 +37,7 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var llError: LinearLayout
     private lateinit var pbLoad: ProgressBar
     private lateinit var tvGotIt: TextView
-    private lateinit var fabImport: FloatingActionButton
+    private lateinit var fabImport: MaterialButton
     private lateinit var tvGo: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -75,10 +75,10 @@ class CourseManageFragment : Fragment(), CoroutineScope {
             when (view.id) {
                 R.id.ib_delete -> {
                     launch {
-                        val list = async(Dispatchers.IO) {
+                        val list = withContext(Dispatchers.IO) {
                             viewModel.deleteCourse(data[position])
                             viewModel.getScheduleWidgetIds()
-                        }.await()
+                        }
                         val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
                         list.forEach {
                             when (it.detailType) {

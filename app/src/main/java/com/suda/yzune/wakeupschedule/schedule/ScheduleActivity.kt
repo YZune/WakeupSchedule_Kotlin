@@ -21,7 +21,6 @@ import android.support.v4.view.GravityCompat
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PopupMenu
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.*
@@ -234,6 +233,20 @@ class ScheduleActivity : BaseActivity() {
             this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip(24))
         })
         adapter.addFooterView(initFooterView())
+        adapter.setOnItemChildClickListener { _, view, _ ->
+            when (view.id) {
+                R.id.menu_setting -> {
+                    startActivityForResult<ScheduleSettingsActivity>(16, "tableData" to viewModel.table)
+                }
+                R.id.menu_export -> {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+                    } else {
+                        ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
+                    }
+                }
+            }
+        }
         adapter.setOnItemClickListener { _, _, position ->
             if (position < data.size) {
                 if (data[position].id != viewModel.table.id) {
@@ -246,9 +259,9 @@ class ScheduleActivity : BaseActivity() {
                         val list = withContext(Dispatchers.IO) {
                             viewModel.getScheduleWidgetIds()
                         }
-                        val table = async(Dispatchers.IO) {
+                        val table = withContext(Dispatchers.IO) {
                             viewModel.getDefaultTable()
-                        }.await()
+                        }
                         list.forEach {
                             when (it.detailType) {
                                 0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
@@ -264,7 +277,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initFooterView(): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, tableNameRecyclerView, false)
-        val tableAdd = view.findViewById<ImageButton>(R.id.nav_table_add)
+        val tableAdd = view.findViewById<TextView>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
                 override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -300,7 +313,7 @@ class ScheduleActivity : BaseActivity() {
                 }
             }).show(supportFragmentManager, "addTableFragment")
         }
-        val tableManage = view.findViewById<ImageButton>(R.id.nav_table_manage)
+        val tableManage = view.findViewById<TextView>(R.id.nav_table_manage)
         tableManage.setOnClickListener {
             startActivityForResult<ScheduleManageActivity>(16)
         }
@@ -485,28 +498,8 @@ class ScheduleActivity : BaseActivity() {
                     "id" to -1)
         }
 
-        moreImageButton.setOnClickListener { view ->
-            val popupMenu = PopupMenu(this, view)
-            popupMenu.menuInflater.inflate(R.menu.menu_more, popupMenu.menu)
-            popupMenu.show()
-            popupMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.ib_settings -> {
-                        startActivityForResult<ScheduleSettingsActivity>(16, "tableData" to viewModel.table)
-                    }
-                    R.id.ib_share -> {
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-                        } else {
-                            ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
-                        }
-                    }
-                    R.id.ib_manage -> {
-                        startActivityForResult<ScheduleManageActivity>(16)
-                    }
-                }
-                return@setOnMenuItemClickListener true
-            }
+        moreImageButton.setOnClickListener {
+            drawerLayout.openDrawer(Gravity.END)
         }
 
         weekSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -592,9 +585,9 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initView() {
         launch {
-            viewModel.table = async(Dispatchers.IO) {
+            viewModel.table = withContext(Dispatchers.IO) {
                 viewModel.getDefaultTable()
-            }.await()
+            }
 
             val currentWeek = countWeek(viewModel.table.startDate)
 

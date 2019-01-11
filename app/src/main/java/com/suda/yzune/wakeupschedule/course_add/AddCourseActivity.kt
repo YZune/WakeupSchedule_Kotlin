@@ -28,11 +28,9 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.find
-import org.jetbrains.anko.textColorResource
-import org.jetbrains.anko.topPadding
 
 
 class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
@@ -170,7 +168,7 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
         rlRoot.topPadding = getStatusBarHeight() + dip(48)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
         val tvColor = view.findViewById<TextView>(R.id.tv_color)
-        val ivColor = view.findViewById<ImageView>(R.id.iv_color)
+        val ivColor = view.findViewById<TextView>(R.id.iv_color)
         etName.setText(baseBean.courseName)
         etName.setSelection(baseBean.courseName.length)
         etName.addTextChangedListener(object : TextWatcher {
@@ -186,7 +184,7 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
         tvColor.text = baseBean.color
         if (baseBean.color != "") {
             val colorInt = Color.parseColor(baseBean.color)
-            ivColor.setColorFilter(colorInt)
+            ivColor.textColor = colorInt
             tvColor.text = "点此更改颜色"
             tvColor.setTextColor(colorInt)
         }
@@ -199,7 +197,7 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
                     .initialColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
                     .lightnessSliderOnly()
                     .setPositiveButton("确定") { _, colorInt, _ ->
-                        ivColor.setColorFilter(colorInt)
+                        ivColor.textColor = colorInt
                         tvColor.text = "点此更改颜色"
                         tvColor.setTextColor(colorInt)
                         baseBean.color = "#${Integer.toHexString(colorInt)}"
@@ -230,9 +228,9 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
 
     private fun saveData() {
         launch {
-            val maxId = async(Dispatchers.IO) {
+            val maxId = withContext(Dispatchers.IO) {
                 viewModel.getLastId()
-            }.await()
+            }
 
             if (viewModel.newId == -1) {
                 if (maxId == null) {

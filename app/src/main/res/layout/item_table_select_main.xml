@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cl_table_select"
+    style="@style/ButtonBackground"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
@@ -9,7 +10,6 @@
     android:layout_marginEnd="8dp"
     android:clipChildren="true"
     android:gravity="center"
-    style="@style/ButtonBackground"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -18,16 +18,43 @@
         android:layout_width="64dp"
         android:layout_height="96dp"
         android:scaleType="centerCrop"
+        android:src="@drawable/main_background_2019"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/iv_selected"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:src="@drawable/selected"
-        android:visibility="gone" />
+    <LinearLayout
+        android:id="@+id/ll_action"
+        android:layout_width="64dp"
+        android:layout_height="96dp"
+        android:background="@color/deep_grey"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@id/iv_table_bg"
+        app:layout_constraintEnd_toEndOf="@id/iv_table_bg"
+        app:layout_constraintStart_toStartOf="@id/iv_table_bg"
+        app:layout_constraintTop_toTopOf="@id/iv_table_bg">
+
+        <TextView
+            android:id="@+id/menu_export"
+            style="@style/icon_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/menu_setting"
+            style="@style/icon_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_table_name"

@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.ImageButton
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -32,7 +31,7 @@ class CourseDetailFragment : DialogFragment(), CoroutineScope {
     private lateinit var time: TextView
     private lateinit var teacher: TextView
     private lateinit var room: TextView
-    private lateinit var close: ImageButton
+    private lateinit var close: TextView
     private lateinit var viewModel: ScheduleViewModel
 
     private lateinit var job: Job

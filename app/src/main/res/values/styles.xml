@@ -131,4 +131,11 @@
         <item name="android:background">@color/nodeIndex</item>
     </style>
 
+    <style name="icon_text_view">
+        <item name="android:textSize">24sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontFamily">@font/iconfont</item>
+    </style>
+
 </resources>

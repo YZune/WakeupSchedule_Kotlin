@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,12 +34,12 @@
 
         <TextView
             android:id="@+id/tv_go"
+            style="@style/ButtonBackground"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/ButtonBackground"
             android:gravity="center_vertical"
-            android:paddingEnd="24dp"
             android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             android:text="确定"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -75,10 +76,10 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:lineSpacingExtra="8dp"
-            android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp"
             android:text="1. 在上方输入教务网址，部分学校需要连接校园网，目前只支持方正教务\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入"
             android:textSize="12sp" />
 
@@ -89,18 +90,18 @@
             android:layout_below="@id/tv_tips"
             android:background="@color/white"
             android:gravity="right"
-            android:paddingBottom="16dp"
             android:paddingEnd="16dp"
+            android:paddingBottom="16dp"
             android:text="我知道啦"
             android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_below="@id/tv_got_it"
             android:id="@+id/v_tips"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_below="@id/tv_got_it"
             android:alpha="0.5"
             android:background="@color/grey" />
 
@@ -127,15 +128,19 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <android.support.design.button.MaterialButton
             android:id="@+id/fab_import"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="67dp"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="24dp"
-            android:src="@drawable/schedule_import"
-            android:tint="@color/white" />
+            android:layout_margin="16dp"
+            android:fontFamily="@font/iconfont"
+            android:includeFontPadding="false"
+            android:text=""
+            android:textSize="25sp"
+            app:cornerRadius="48dp" />
+
     </RelativeLayout>
 
 </LinearLayout>
