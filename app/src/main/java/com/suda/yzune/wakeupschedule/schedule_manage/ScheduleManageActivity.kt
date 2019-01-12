@@ -1,8 +1,8 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R

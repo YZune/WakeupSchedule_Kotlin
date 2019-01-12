@@ -2,16 +2,15 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
@@ -21,7 +20,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.startActivity
 import kotlin.coroutines.CoroutineContext
 
-class CourseDetailFragment : DialogFragment(), CoroutineScope {
+class CourseDetailFragment : androidx.fragment.app.DialogFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 

@@ -1,9 +1,9 @@
 package com.suda.yzune.wakeupschedule.bean
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.ForeignKey
-import android.arch.persistence.room.ForeignKey.CASCADE
-import android.arch.persistence.room.Index
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.Index
 
 @Entity(foreignKeys = [(
         ForeignKey(entity = CourseBaseBean::class,

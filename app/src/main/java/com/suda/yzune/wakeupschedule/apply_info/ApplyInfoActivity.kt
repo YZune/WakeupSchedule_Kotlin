@@ -1,12 +1,11 @@
 package com.suda.yzune.wakeupschedule.apply_info
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import es.dmoral.toasty.Toasty
@@ -34,7 +33,7 @@ class ApplyInfoActivity : BaseListActivity() {
         mRecyclerView.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.countList).apply {
             this.setHeaderView(initHeaderView())
         }
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         viewModel.initData()
         viewModel.countInfo.observe(this, Observer {
             when (it) {

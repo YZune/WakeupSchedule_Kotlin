@@ -2,9 +2,8 @@ package com.suda.yzune.wakeupschedule.intro
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.util.TypedValue
+import androidx.core.content.ContextCompat
 import com.github.paolorotolo.appintro.AppIntro
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -32,7 +31,7 @@ class IntroActivity : AppIntro() {
         showSkipButton(false)
     }
 
-    override fun onDonePressed(currentFragment: Fragment?) {
+    override fun onDonePressed(currentFragment: androidx.fragment.app.Fragment?) {
         super.onDonePressed(currentFragment)
         PreferenceUtils.saveBooleanToSP(applicationContext, "v3.20", true)
         finish()

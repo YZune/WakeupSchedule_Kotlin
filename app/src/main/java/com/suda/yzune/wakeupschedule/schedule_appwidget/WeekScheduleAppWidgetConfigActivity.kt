@@ -2,10 +2,10 @@ package com.suda.yzune.wakeupschedule.schedule_appwidget
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R

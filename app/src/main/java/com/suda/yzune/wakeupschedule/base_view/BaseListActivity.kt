@@ -3,14 +3,13 @@ package com.suda.yzune.wakeupschedule.base_view
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintSet
-import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.ViewManager
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet
 import com.github.mmin18.widget.RealtimeBlurView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -25,7 +24,7 @@ abstract class BaseListActivity : BaseActivity() {
 
     lateinit var mainTitle: TextView
     //protected val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
-    protected lateinit var mRecyclerView: RecyclerView
+    protected lateinit var mRecyclerView: androidx.recyclerview.widget.RecyclerView
 
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 

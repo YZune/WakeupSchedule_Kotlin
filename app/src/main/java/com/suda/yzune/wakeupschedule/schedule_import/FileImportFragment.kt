@@ -1,13 +1,12 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.MaterialFilePicker
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -16,7 +15,7 @@ import java.io.File
 import java.util.regex.Pattern
 
 
-class FileImportFragment : Fragment() {
+class FileImportFragment : androidx.fragment.app.Fragment() {
 
     private lateinit var viewModel: ImportViewModel
 

@@ -1,6 +1,5 @@
-package android.support.v4.app
+package androidx.fragment.app
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Environment
 import android.util.DisplayMetrics
@@ -8,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import es.dmoral.toasty.Toasty

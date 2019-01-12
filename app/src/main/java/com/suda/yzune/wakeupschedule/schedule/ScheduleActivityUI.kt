@@ -3,13 +3,14 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
-import android.support.constraint.ConstraintSet.PARENT_ID
-import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.ViewManager
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
+import androidx.core.content.res.ResourcesCompat
 import com.github.mmin18.widget.RealtimeBlurView
+import com.google.android.material.navigation.NavigationView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
@@ -29,6 +30,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
     private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
+    private inline fun ViewManager.materialNavigationView(init: NavigationView.() -> Unit) = ankoView({ NavigationView(it) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
@@ -171,7 +173,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                         }
                     }
 
-                    navigationView {
+                    materialNavigationView {
                         id = R.id.anko_nv
                         fitsSystemWindows = false
                         inflateHeaderView(R.layout.nav_header)
@@ -199,8 +201,8 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
             }
 
             if (PreferenceUtils.getBooleanFromSP(context, "blur_main_nav_bar", false) && PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 21) {
-                val barHeight = if (ViewUtils.getVirtualBarHeigh(context) != 0) {
-                    ViewUtils.getVirtualBarHeigh(context)
+                val barHeight = if (ViewUtils.getVirtualBarHeight(context) != 0) {
+                    ViewUtils.getVirtualBarHeight(context)
                 } else {
                     dip(48)
                 }

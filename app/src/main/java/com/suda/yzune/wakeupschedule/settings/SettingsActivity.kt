@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.settings
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
@@ -63,7 +62,7 @@ class SettingsActivity : BaseListActivity() {
         val items = Items()
         onItemsCreated(items)
         mAdapter.items = items
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
     }
 

@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.course_add
 
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_add_course_tip.*
 
-class AddCourseTipFragment : DialogFragment() {
+class AddCourseTipFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

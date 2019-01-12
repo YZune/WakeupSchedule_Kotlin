@@ -1,6 +1,6 @@
 package com.suda.yzune.wakeupschedule.bean
 
-import android.arch.persistence.room.Entity
+import androidx.room.Entity
 
 /**
  * 0. 课程表Widget

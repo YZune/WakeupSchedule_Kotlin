@@ -1,13 +1,12 @@
 package com.suda.yzune.wakeupschedule.base_view
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseDialogFragment : DialogFragment(), CoroutineScope {
+abstract class BaseDialogFragment : androidx.fragment.app.DialogFragment(), CoroutineScope {
 
     private lateinit var job: Job
 

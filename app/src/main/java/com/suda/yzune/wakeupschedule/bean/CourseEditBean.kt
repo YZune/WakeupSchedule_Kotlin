@@ -1,6 +1,6 @@
 package com.suda.yzune.wakeupschedule.bean
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 
 data class CourseEditBean(
         var id: Int = -1,

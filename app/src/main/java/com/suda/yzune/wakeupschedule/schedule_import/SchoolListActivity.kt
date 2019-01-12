@@ -1,10 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-import android.arch.lifecycle.Observer
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
@@ -112,7 +112,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(0, SchoolListBean("★", "新正方教务"))
         schools.add(0, SchoolListBean("★", "正方教务"))
 
-        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
 
         val adapter = SchoolImportListAdapter(R.layout.item_apply_info, schools)

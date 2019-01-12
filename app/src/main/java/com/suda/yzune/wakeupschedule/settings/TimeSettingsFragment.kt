@@ -2,16 +2,14 @@ package com.suda.yzune.wakeupschedule.settings
 
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
@@ -38,7 +36,7 @@ class TimeSettingsFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_time_settings, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_time_detail)
+        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_time_detail)
         initAdapter(recyclerView)
         viewModel.getTimeData(viewModel.timeTableList[position].id).observe(this, Observer {
             if (it == null) return@Observer
@@ -57,7 +55,7 @@ class TimeSettingsFragment : BaseFragment() {
         return view
     }
 
-    private fun initAdapter(recyclerView: RecyclerView) {
+    private fun initAdapter(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         val adapter = TimeSettingsAdapter(R.layout.item_time_detail, viewModel.timeList)
         adapter.setOnItemClickListener { _, _, position ->
             val selectTimeDialog = SelectTimeDetailFragment.newInstance(this.position, position, adapter)
@@ -66,7 +64,7 @@ class TimeSettingsFragment : BaseFragment() {
         }
         adapter.setHeaderView(initHeaderView(adapter))
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
     }
 
     private fun initHeaderView(adapter: TimeSettingsAdapter): View {

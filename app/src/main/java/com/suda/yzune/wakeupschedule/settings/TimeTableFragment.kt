@@ -1,17 +1,15 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
@@ -36,7 +34,7 @@ class TimeTableFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.time_table_fragment, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_time_table)
+        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_time_table)
         initRecyclerView(recyclerView, view)
 
         viewModel.getTimeTableList().observe(this, Observer {
@@ -56,7 +54,7 @@ class TimeTableFragment : BaseFragment() {
         return view
     }
 
-    private fun initRecyclerView(recyclerView: RecyclerView, fragmentView: View) {
+    private fun initRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView, fragmentView: View) {
         val adapter = TimeTableAdapter(R.layout.item_time_table, viewModel.timeTableList, viewModel.selectedId)
         adapter.bindToRecyclerView(recyclerView)
         adapter.addFooterView(initFooterView())
@@ -107,7 +105,7 @@ class TimeTableFragment : BaseFragment() {
                 }
             }
         }
-        recyclerView.layoutManager = LinearLayoutManager(activity)
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
         recyclerView.adapter = adapter
     }
 

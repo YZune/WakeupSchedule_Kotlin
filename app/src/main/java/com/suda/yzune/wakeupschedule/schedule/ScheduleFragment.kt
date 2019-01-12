@@ -1,22 +1,21 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.os.Bundle
-import android.support.constraint.ConstraintSet.CHAIN_PACKED
-import android.support.constraint.ConstraintSet.PARENT_ID
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintSet.CHAIN_PACKED
+import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
@@ -37,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
 
 private const val weekParam = "week"
 
-class ScheduleFragment : Fragment(), CoroutineScope {
+class ScheduleFragment : androidx.fragment.app.Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -129,8 +128,8 @@ class ScheduleFragment : Fragment(), CoroutineScope {
                                 }
                             }
                         }
-                        val barHeight = if (ViewUtils.getVirtualBarHeigh(context) in 1..48) {
-                            ViewUtils.getVirtualBarHeigh(context)
+                        val barHeight = if (ViewUtils.getVirtualBarHeight(context) in 1..48) {
+                            ViewUtils.getVirtualBarHeight(context)
                         } else {
                             dip(48)
                         }

@@ -4,7 +4,6 @@ import android.animation.IntEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity.RESULT_OK
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.InputType
@@ -18,6 +17,7 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.Transformation
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
@@ -26,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.support.v4.dip
 
 class LoginWebFragment : BaseFragment() {
@@ -85,9 +86,11 @@ class LoginWebFragment : BaseFragment() {
 
         cb_check_pwd.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
+                cb_check_pwd.text = "\uE6E8"
                 et_pwd.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                 et_pwd.setSelection(et_pwd.text.length)
             } else {
+                cb_check_pwd.text = "\uE6A9"
                 et_pwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 et_pwd.setSelection(et_pwd.text.length)
             }
@@ -160,13 +163,13 @@ class LoginWebFragment : BaseFragment() {
 
     private fun getPrepared(id: String) {
         launch {
-            val task = async(Dispatchers.IO) {
+            val task = withContext(Dispatchers.IO) {
                 try {
                     viewModel.getPrepare(id)
                 } catch (e: Exception) {
                     e.message!!
                 }
-            }.await()
+            }
 
             if (task != "error") {
                 years.clear()

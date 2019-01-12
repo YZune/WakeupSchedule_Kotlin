@@ -3,8 +3,6 @@ package com.suda.yzune.wakeupschedule.base_view
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintSet
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,6 +10,8 @@ import android.view.View
 import android.view.ViewManager
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintSet
 import com.github.mmin18.widget.RealtimeBlurView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils

@@ -4,7 +4,6 @@ package com.suda.yzune.wakeupschedule
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,7 @@ import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_update.*
 
-class UpdateFragment : DialogFragment() {
+class UpdateFragment : androidx.fragment.app.DialogFragment() {
 
     private lateinit var updateInfo: UpdateInfoBean
 

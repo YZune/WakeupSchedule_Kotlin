@@ -1,9 +1,9 @@
 package com.suda.yzune.wakeupschedule.utils
 
-import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.bean.*
 import java.text.ParseException
 import java.text.SimpleDateFormat

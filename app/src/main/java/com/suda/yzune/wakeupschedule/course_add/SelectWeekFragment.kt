@@ -1,20 +1,19 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
 import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 import org.jetbrains.anko.support.v4.dip
 
-class SelectWeekFragment : DialogFragment() {
+class SelectWeekFragment : androidx.fragment.app.DialogFragment() {
 
     var position = -1
     private lateinit var viewModel: AddCourseViewModel

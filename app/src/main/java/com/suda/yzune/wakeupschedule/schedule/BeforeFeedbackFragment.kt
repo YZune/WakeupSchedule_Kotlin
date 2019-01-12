@@ -4,7 +4,6 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_before_feedback.*
 import org.jetbrains.anko.startActivity
 import java.util.*
 
-class BeforeFeedbackFragment : DialogFragment() {
+class BeforeFeedbackFragment : androidx.fragment.app.DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

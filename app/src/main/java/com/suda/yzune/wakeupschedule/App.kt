@@ -7,7 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Build
-import android.support.multidex.MultiDex
+import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import es.dmoral.toasty.Toasty
 import io.fabric.sdk.android.Fabric

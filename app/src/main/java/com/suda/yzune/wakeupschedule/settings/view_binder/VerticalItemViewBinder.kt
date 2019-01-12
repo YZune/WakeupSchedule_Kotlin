@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -63,7 +62,7 @@ class VerticalItemViewBinder constructor(
         holder.llVerticalItem.setOnLongClickListener { onVerticalItemLongClickListener.invoke(item) }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.find(R.id.anko_text_view)
         val tvDescription: TextView = itemView.find(R.id.anko_tv_description)
         val llVerticalItem: LinearLayout = itemView.find(R.id.anko_layout)

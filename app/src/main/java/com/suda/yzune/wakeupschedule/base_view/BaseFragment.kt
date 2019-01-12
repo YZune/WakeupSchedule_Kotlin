@@ -1,13 +1,12 @@
 package com.suda.yzune.wakeupschedule.base_view
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlin.coroutines.CoroutineContext
 
-abstract class BaseFragment : Fragment(), CoroutineScope {
+abstract class BaseFragment : androidx.fragment.app.Fragment(), CoroutineScope {
 
     private lateinit var job: Job
 

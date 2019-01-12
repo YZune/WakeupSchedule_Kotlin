@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -67,7 +66,7 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
         fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String)
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         mListener = null
     }

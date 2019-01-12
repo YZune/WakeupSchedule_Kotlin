@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.graphics.drawable.GradientDrawable
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,18 +13,18 @@ import org.jetbrains.anko.find
 
 class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolListBean>) :
         BaseItemDraggableAdapter<SchoolListBean, BaseViewHolder>(layoutResId, data),
-        StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
+        StickyRecyclerHeadersAdapter<androidx.recyclerview.widget.RecyclerView.ViewHolder> {
 
     override fun getHeaderId(position: Int): Long {
         return getItem(position)!!.sortKey[0].toLong()
     }
 
-    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+    override fun onCreateHeaderViewHolder(parent: ViewGroup): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.adapter_school_name_head, parent, false)
-        return object : RecyclerView.ViewHolder(view) {}
+        return object : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {}
     }
 
-    override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindHeaderViewHolder(holder: androidx.recyclerview.widget.RecyclerView.ViewHolder, position: Int) {
         val mHead = holder.itemView.find<TextView>(R.id.mHead)
         mHead.text = getItem(position)!!.sortKey
         val myGrad = mHead.background as GradientDrawable

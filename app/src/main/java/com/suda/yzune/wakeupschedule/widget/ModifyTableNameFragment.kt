@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.widget
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.v4.app.DialogFragment
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import android.widget.EditText
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_modify_table_name.*
 
-class ModifyTableNameFragment : DialogFragment() {
+class ModifyTableNameFragment : androidx.fragment.app.DialogFragment() {
 
     private var listener: TableNameChangeListener? = null
     private var tableName = ""

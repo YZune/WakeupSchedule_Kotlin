@@ -1,14 +1,13 @@
 package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SwitchCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
 import me.drakeet.multitype.ItemViewBinder
@@ -52,7 +51,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
         holder.switch.setOnCheckedChangeListener { _, isChecked -> onCheckItemCheckChange.invoke(item, isChecked) }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.find(R.id.anko_text_view)
         val switch: SwitchCompat = itemView.find(R.id.anko_switch)
         val layout: LinearLayout = itemView.find(R.id.anko_layout)

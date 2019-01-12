@@ -4,18 +4,17 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.BuildConfig
@@ -73,7 +72,7 @@ class ScheduleSettingsActivity : BaseListActivity() {
         val items = Items()
         onItemsCreated(items)
         mAdapter.items = items
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
 
         viewModel.termStartList = viewModel.table.startDate.split("-")

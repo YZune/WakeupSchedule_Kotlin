@@ -2,16 +2,13 @@ package com.suda.yzune.wakeupschedule.schedule_manage
 
 
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
@@ -20,7 +17,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
 import kotlin.coroutines.CoroutineContext
 
-class CourseManageFragment : Fragment(), CoroutineScope {
+class CourseManageFragment : androidx.fragment.app.Fragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -38,7 +35,7 @@ class CourseManageFragment : Fragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_course_manage, container, false)
-        val rvCourseList = view.findViewById<RecyclerView>(R.id.rv_course_list)
+        val rvCourseList = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_course_list)
         tablePosition = arguments!!.getInt("position")
         viewModel.getCourseBaseBeanListByTable(viewModel.tableSelectList[tablePosition].id).observe(this, Observer {
             if (it == null) return@Observer
@@ -53,8 +50,8 @@ class CourseManageFragment : Fragment(), CoroutineScope {
         return view
     }
 
-    private fun initRecyclerView(rvCourseList: RecyclerView, data: List<CourseBaseBean>) {
-        rvCourseList.layoutManager = LinearLayoutManager(context)
+    private fun initRecyclerView(rvCourseList: androidx.recyclerview.widget.RecyclerView, data: List<CourseBaseBean>) {
+        rvCourseList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         val adapter = CourseListAdapter(R.layout.item_course_list, data)
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {

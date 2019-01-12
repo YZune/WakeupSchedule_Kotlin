@@ -1,4 +1,4 @@
-package android.support.v4.app
+package androidx.fragment.app
 
 
 import android.os.Bundle
@@ -38,7 +38,7 @@ class AfterImportTipFragment : DialogFragment() {
         }
     }
 
-    override fun show(manager: FragmentManager, tag: String) {
+    override fun show(manager: androidx.fragment.app.FragmentManager, tag: String) {
         mDismissed = false
         mShownByMe = true
         val ft = manager.beginTransaction()

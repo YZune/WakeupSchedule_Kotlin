@@ -128,7 +128,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <android.support.design.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/fab_import"
             android:layout_width="56dp"
             android:layout_height="67dp"

@@ -1,10 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity

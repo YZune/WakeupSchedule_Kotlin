@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="com.suda.yzune.wakeupschedule.course_add.AddCourseActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_detail"
         android:focusableInTouchMode="true"
         android:layout_width="match_parent"
@@ -16,6 +16,6 @@
         android:overScrollMode="never"
         tools:listitem="@layout/item_add_course_detail">
 
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>

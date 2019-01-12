@@ -1,18 +1,17 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlinx.android.synthetic.main.fragment_select_time_detail.*
 
 
-class SelectTimeDetailFragment : DialogFragment() {
+class SelectTimeDetailFragment : androidx.fragment.app.DialogFragment() {
 
     var position = -1
     var tablePosition = 0

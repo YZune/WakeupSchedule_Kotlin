@@ -1,10 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase

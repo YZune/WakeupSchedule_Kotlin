@@ -2,15 +2,15 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 
 import android.app.Activity.RESULT_OK
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.button.MaterialButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.*
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.button.MaterialButton
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment

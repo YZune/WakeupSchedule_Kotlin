@@ -2,17 +2,16 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.Manifest
-import android.arch.lifecycle.ViewModelProviders
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.DialogFragment
-import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
@@ -20,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 
-class ImportChooseFragment : DialogFragment() {
+class ImportChooseFragment : androidx.fragment.app.DialogFragment() {
 
     private lateinit var viewModel: ScheduleViewModel
 

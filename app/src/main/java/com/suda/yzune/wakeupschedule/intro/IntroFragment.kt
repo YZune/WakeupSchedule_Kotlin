@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.intro
 
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,7 @@ import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 
-class IntroFragment : Fragment() {
+class IntroFragment : androidx.fragment.app.Fragment() {
 
     private var imageUrl = ""
     private var description = ""

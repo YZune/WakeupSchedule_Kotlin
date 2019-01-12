@@ -4,29 +4,28 @@ import android.Manifest
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
-import android.support.constraint.ConstraintLayout
-import android.support.design.widget.NavigationView
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.AfterImportTipFragment
-import android.support.v4.app.ExportSettingsFragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.GravityCompat
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
+import androidx.fragment.app.AfterImportTipFragment
+import androidx.fragment.app.ExportSettingsFragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
+import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -69,7 +68,7 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var viewModel: ScheduleViewModel
     private var mAdapter: SchedulePagerAdapter? = null
 
-    private lateinit var scheduleViewPager: ViewPager
+    private lateinit var scheduleViewPager: androidx.viewpager.widget.ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
     private var weekSeekBar: VerticalSeekBar? = null
@@ -77,12 +76,12 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var addImageButton: TextView
     private lateinit var importImageButton: TextView
     private lateinit var moreImageButton: TextView
-    private lateinit var tableNameRecyclerView: RecyclerView
+    private lateinit var tableNameRecyclerView: androidx.recyclerview.widget.RecyclerView
     private lateinit var dateTextView: TextView
     private lateinit var weekTextView: TextView
     private lateinit var weekdayTextView: TextView
     private lateinit var navigationView: NavigationView
-    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
@@ -224,7 +223,7 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initTableMenu(data: List<TableSelectBean>) {
-        tableNameRecyclerView.layoutManager = LinearLayoutManager(this)
+        tableNameRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         val fadeOutAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 1f, 0f)
         fadeOutAni.duration = 500
@@ -499,7 +498,7 @@ class ScheduleActivity : BaseActivity() {
         }
 
         moreImageButton.setOnClickListener {
-            drawerLayout.openDrawer(Gravity.END)
+            drawerLayout.openDrawer(GravityCompat.END)
         }
 
         weekSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -532,7 +531,7 @@ class ScheduleActivity : BaseActivity() {
             }
         })
 
-        navImageButton.setOnClickListener { drawerLayout.openDrawer(Gravity.START) }
+        navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
 
         importImageButton.setOnClickListener {
             ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
@@ -548,7 +547,7 @@ class ScheduleActivity : BaseActivity() {
             }
         }
 
-        scheduleViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        scheduleViewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1

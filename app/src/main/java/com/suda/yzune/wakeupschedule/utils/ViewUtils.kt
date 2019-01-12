@@ -8,13 +8,13 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.os.Build
 import android.os.Environment
-import android.support.v4.text.HtmlCompat
 import android.text.Html
 import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
 import android.widget.ScrollView
+import androidx.core.text.HtmlCompat
 import java.io.File
 import java.io.FileOutputStream
 
@@ -77,7 +77,7 @@ object ViewUtils {
      * @param context
      * @return
      */
-    fun getVirtualBarHeigh(context: Context): Int {
+    fun getVirtualBarHeight(context: Context): Int {
         var vh = 0
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay

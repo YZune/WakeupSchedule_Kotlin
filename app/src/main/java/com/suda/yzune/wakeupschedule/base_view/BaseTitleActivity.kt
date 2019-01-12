@@ -2,12 +2,12 @@ package com.suda.yzune.wakeupschedule.base_view
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import com.suda.yzune.wakeupschedule.R
 import org.jetbrains.anko.*
 

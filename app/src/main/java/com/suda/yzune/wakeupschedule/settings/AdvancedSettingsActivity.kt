@@ -5,9 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -70,7 +69,7 @@ class AdvancedSettingsActivity : BaseListActivity() {
         val items = Items()
         onItemsCreated(items)
         mAdapter.items = items
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
     }
 

@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -53,7 +52,7 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         var tvCategory: TextView = itemView.find(R.id.anko_text_view)
         var vTop: View = itemView.find(R.id.anko_view)
     }

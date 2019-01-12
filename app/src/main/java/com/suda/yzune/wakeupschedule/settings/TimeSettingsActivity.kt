@@ -1,13 +1,13 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType

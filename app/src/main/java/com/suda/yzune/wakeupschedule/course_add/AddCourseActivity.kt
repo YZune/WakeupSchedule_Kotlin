@@ -1,21 +1,19 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.appwidget.AppWidgetManager
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
@@ -137,7 +135,7 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
                         viewModel.deleteList.add(position)
                         val viewHolder = mRecyclerView.findViewHolderForLayoutPosition(position + 1)
                         if (viewHolder != null) {
-                            val lp = viewHolder.itemView.layoutParams as RecyclerView.LayoutParams
+                            val lp = viewHolder.itemView.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
                             lp.height = 0
                             lp.bottomMargin = 0
                             viewHolder.itemView.layoutParams = lp
@@ -158,7 +156,7 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
             }
         }
         mRecyclerView.adapter = adapter
-        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
     }
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {

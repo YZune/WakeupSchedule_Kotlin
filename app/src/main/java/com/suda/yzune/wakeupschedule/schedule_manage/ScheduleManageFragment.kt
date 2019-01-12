@@ -2,18 +2,15 @@ package com.suda.yzune.wakeupschedule.schedule_manage
 
 
 import android.app.Dialog
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Parcel
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -24,7 +21,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
 import kotlin.coroutines.CoroutineContext
 
-class ScheduleManageFragment : Fragment(), CoroutineScope {
+class ScheduleManageFragment : androidx.fragment.app.Fragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -41,7 +38,7 @@ class ScheduleManageFragment : Fragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_schedule_manage, container, false)
-        val rvTableList = view.findViewById<RecyclerView>(R.id.rv_table_list)
+        val rvTableList = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_table_list)
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
             viewModel.tableSelectList.clear()
@@ -55,8 +52,8 @@ class ScheduleManageFragment : Fragment(), CoroutineScope {
         return view
     }
 
-    private fun initTableRecyclerView(fragmentView: View, rvTableList: RecyclerView, data: List<TableSelectBean>) {
-        rvTableList.layoutManager = LinearLayoutManager(context)
+    private fun initTableRecyclerView(fragmentView: View, rvTableList: androidx.recyclerview.widget.RecyclerView, data: List<TableSelectBean>) {
+        rvTableList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         val adapter = TableListAdapter(R.layout.item_table_list, data)
         adapter.setOnItemClickListener { _, _, position ->
             val bundle = Bundle()
