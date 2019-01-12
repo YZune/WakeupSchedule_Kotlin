@@ -109,8 +109,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         fun initView(view: View, weekPanel0: View) {
-            val weekPanel7 = view.findViewById<View>(R.id.weekPanel_7)
-            val weekPanel6 = view.findViewById<View>(R.id.weekPanel_6)
+            val weekPanel7 = view.findViewById<View>(R.id.anko_ll_week_panel_7)
+            val weekPanel6 = view.findViewById<View>(R.id.anko_ll_week_panel_6)
 
             if (table.showSun) {
                 if (table.sundayFirst) {
@@ -132,7 +132,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             }
 
             for (i in 0 until 20) {
-                val tv = view.findViewById<TextView>(R.id.tv_node1 + i)
+                val tv = view.findViewById<TextView>(R.id.anko_tv_node1 + i)
                 val lp = tv.layoutParams
                 lp.height = widgetItemHeight
                 tv.layoutParams = lp
@@ -156,22 +156,22 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
-            val view = View.inflate(applicationContext, R.layout.fragment_schedule, null)
-            val weekPanel0 = view.findViewById<LinearLayout>(R.id.weekPanel_0)
+            val view = ViewUtils.createScheduleView(context)
+            val weekPanel0 = view.findViewById<LinearLayout>(R.id.anko_ll_week_panel_0)
             initView(view, weekPanel0)
 
             for (i in 1..7) {
                 val list = baseDao.getCourseByDayOfTableInThread(i, table.id)
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
-            val scrollView = view.findViewById<ScrollView>(R.id.scrollPanel)
+            val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)
             ViewUtils.layoutView(scrollView, dip(375), dip(375))
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
         }
 
         private fun initWeekPanel(weekPanel0: LinearLayout, context: Context, view: View, data: List<CourseBean>?, day: Int) {
             val llIndex = day - 1
-            val ll = view.findViewById<LinearLayout>(R.id.weekPanel_1 + llIndex)
+            val ll = view.findViewById<LinearLayout>(R.id.anko_ll_week_panel_1 + llIndex)
             ll.removeAllViews()
             if (data == null || data.isEmpty()) return
             var pre = data[0]

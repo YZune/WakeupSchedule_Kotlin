@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -112,7 +113,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(0, SchoolListBean("★", "新正方教务"))
         schools.add(0, SchoolListBean("★", "正方教务"))
 
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
         val adapter = SchoolImportListAdapter(R.layout.item_apply_info, schools)

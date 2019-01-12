@@ -24,7 +24,6 @@ import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.drawerLayout
 import org.jetbrains.anko.support.v4.viewPager
 
-
 class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
     private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }

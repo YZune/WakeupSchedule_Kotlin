@@ -2,9 +2,12 @@ package com.suda.yzune.wakeupschedule
 
 import android.os.Bundle
 import android.view.View
+import com.irozon.alertview.AlertActionStyle
+import com.irozon.alertview.AlertStyle
+import com.irozon.alertview.AlertView
+import com.irozon.alertview.objects.AlertAction
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.dao.TimeTableDao
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 
@@ -22,13 +25,22 @@ class MainActivity : BaseActivity() {
         dao = database.timeTableDao()
 
         fab.setOnClickListener {
-            Toasty.success(applicationContext, "active: ${job?.isActive}    cancelled: ${job?.isCancelled}").show()
-            if (job == null || !job!!.isActive) {
-                job = loadData()
-                job!!.start()
-            } else {
-                job?.cancel()
-            }
+            val alert = AlertView("Title", "Message", AlertStyle.BOTTOM_SHEET)
+            alert.addAction(AlertAction("Action 1", AlertActionStyle.DEFAULT) { action ->
+                // Action 1 callback
+            })
+            alert.addAction(AlertAction("Action 2", AlertActionStyle.NEGATIVE) { action ->
+                // Action 2 callback
+            })
+
+            alert.show(this)
+//            Toasty.success(applicationContext, "active: ${job?.isActive}    cancelled: ${job?.isCancelled}").show()
+//            if (job == null || !job!!.isActive) {
+//                job = loadData()
+//                job!!.start()
+//            } else {
+//                job?.cancel()
+//            }
         }
     }
 

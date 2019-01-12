@@ -6,11 +6,13 @@
     android:gravity="center">
 
     <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_marginTop="16dp"
         android:id="@+id/tv_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"
+        app:strokeColor="@color/colorAccent"
         android:layout_marginBottom="32dp"
         android:gravity="center"
         android:paddingStart="64dp"
@@ -18,7 +20,6 @@
         android:paddingEnd="64dp"
         android:paddingBottom="8dp"
         android:text="添加时间段"
-        android:textColor="@android:color/white"
         android:textStyle="bold"
         app:cornerRadius="32dp" />
 

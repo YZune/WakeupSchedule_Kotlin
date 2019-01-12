@@ -2,7 +2,9 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.appwidget.AppWidgetManager
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -18,9 +21,10 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.support.v4.dip
 import kotlin.coroutines.CoroutineContext
 
-class CourseDetailFragment : androidx.fragment.app.DialogFragment(), CoroutineScope {
+class CourseDetailFragment : DialogFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -49,7 +53,13 @@ class CourseDetailFragment : androidx.fragment.app.DialogFragment(), CoroutineSc
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return inflater.inflate(R.layout.fragment_course_detail, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     override fun onResume() {

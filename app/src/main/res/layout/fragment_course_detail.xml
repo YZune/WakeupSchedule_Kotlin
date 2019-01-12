@@ -1,73 +1,81 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
     tools:context="com.suda.yzune.wakeupschedule.schedule.CourseDetailFragment">
-
-    <include
-        android:id="@+id/include_detail"
-        layout="@layout/item_add_course_detail" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="-16dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
-    <TextView
-        android:id="@+id/tv_tips"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:lineSpacingExtra="4sp"
-        android:text="再点一次确定删除\n长按可以同时删除这门课程的其他时间哦"
-        android:textColor="@color/colorAccent"
-        android:textSize="12sp"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/include_detail"
+            layout="@layout/item_add_course_detail" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="-16dp"
+            android:layout_marginEnd="8dp"
+            android:alpha="0.5"
+            android:background="@color/grey" />
 
         <TextView
-            android:id="@+id/ib_delete_course"
-            style="@style/ButtonBackground"
-            android:layout_width="0dp"
+            android:id="@+id/tv_tips"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/iconfont"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:text=""
-            android:textColor="@color/red"
-            android:textSize="23sp" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:lineSpacingExtra="4sp"
+            android:text="再点一次确定删除\n长按可以同时删除这门课程的其他时间哦"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/ib_edit"
-            style="@style/ButtonBackground"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/iconfont"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:text=""
-            android:textColor="@color/blue"
-            android:textSize="23sp" />
+            android:layout_marginTop="16dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/ib_delete_course"
+                style="@style/ButtonBackground"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/iconfont"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text=""
+                android:textColor="@color/red"
+                android:textSize="23sp" />
+
+            <TextView
+                android:id="@+id/ib_edit"
+                style="@style/ButtonBackground"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/iconfont"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:text=""
+                android:textColor="@color/blue"
+                android:textSize="23sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

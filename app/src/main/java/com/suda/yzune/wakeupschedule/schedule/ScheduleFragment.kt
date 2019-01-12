@@ -3,40 +3,33 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintSet.CHAIN_PACKED
-import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.*
-import org.jetbrains.anko.constraint.layout.constraintLayout
-import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
 import kotlin.coroutines.CoroutineContext
 
 private const val weekParam = "week"
 
-class ScheduleFragment : androidx.fragment.app.Fragment(), CoroutineScope {
+class ScheduleFragment : Fragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
@@ -55,129 +48,7 @@ class ScheduleFragment : androidx.fragment.app.Fragment(), CoroutineScope {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = UI {
-            constraintLayout {
-                for (i in 0..8) {
-                    textView {
-                        id = R.id.anko_tv_title0 + i
-                        setPadding(0, dip(8), 0, dip(8))
-                        textSize = 12f
-                        gravity = Gravity.CENTER
-                        setLineSpacing(dip(2).toFloat(), 1f)
-                        if (i == 0) {
-                            typeface = Typeface.DEFAULT_BOLD
-                        }
-                    }.lparams(0, wrapContent) {
-                        when (i) {
-                            0 -> {
-                                horizontalWeight = 0.5f
-                                startToStart = PARENT_ID
-                                topToTop = PARENT_ID
-                                endToStart = R.id.anko_tv_title0 + i + 1
-                            }
-                            8 -> {
-                                horizontalWeight = 1f
-                                startToEnd = R.id.anko_tv_title0 + i - 1
-                                endToEnd = PARENT_ID
-                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
-                            }
-                            else -> {
-                                horizontalWeight = 1f
-                                startToEnd = R.id.anko_tv_title0 + i - 1
-                                endToStart = R.id.anko_tv_title0 + i + 1
-                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
-                            }
-                        }
-                    }
-                }
-                scrollView {
-                    id = R.id.anko_sv_schedule
-                    constraintLayout {
-                        id = R.id.anko_cl_content_panel
-                        for (i in 1..20) {
-                            textView(i.toString()) {
-                                id = R.id.anko_tv_node1 + i - 1
-                                textSize = 12f
-                                gravity = Gravity.CENTER
-                            }.lparams(0, dip(56)) {
-                                topMargin = dip(2)
-                                when (i) {
-                                    1 -> {
-                                        bottomToTop = R.id.anko_tv_node1 + i
-                                        endToStart = R.id.anko_ll_week_panel_0
-                                        horizontalWeight = 0.5f
-                                        startToStart = PARENT_ID
-                                        topToTop = PARENT_ID
-                                        verticalBias = 0f
-                                        verticalChainStyle = CHAIN_PACKED
-                                    }
-                                    20 -> {
-                                        bottomToTop = R.id.anko_navigation_bar_view
-                                        endToStart = R.id.anko_ll_week_panel_0
-                                        horizontalWeight = 0.5f
-                                        startToStart = PARENT_ID
-                                        topToBottom = R.id.anko_tv_node1 + i - 2
-                                    }
-                                    else -> {
-                                        bottomToTop = R.id.anko_tv_node1 + i
-                                        endToStart = R.id.anko_ll_week_panel_0
-                                        horizontalWeight = 0.5f
-                                        startToStart = PARENT_ID
-                                        topToBottom = R.id.anko_tv_node1 + i - 2
-                                    }
-                                }
-                            }
-                        }
-                        val barHeight = if (ViewUtils.getVirtualBarHeight(context) in 1..48) {
-                            ViewUtils.getVirtualBarHeight(context)
-                        } else {
-                            dip(48)
-                        }
-                        val navBar = view {
-                            id = R.id.anko_navigation_bar_view
-                        }.lparams(matchParent, barHeight) {
-                            topToBottom = R.id.anko_tv_node992
-                            bottomToBottom = PARENT_ID
-                            startToStart = PARENT_ID
-                            endToEnd = PARENT_ID
-                        }
-                        if (PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 19) {
-                            navBar.visibility = View.VISIBLE
-                        } else {
-                            navBar.visibility = View.GONE
-                        }
-                        for (i in 0..7) {
-                            verticalLayout {
-                                id = R.id.anko_ll_week_panel_0 + i
-                            }.lparams(0, wrapContent) {
-                                marginStart = dip(1)
-                                marginEnd = dip(1)
-                                horizontalWeight = 1f
-                                when (i) {
-                                    0 -> {
-                                        startToEnd = R.id.anko_tv_node1
-                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
-                                    }
-                                    7 -> {
-                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
-                                        endToEnd = PARENT_ID
-                                    }
-                                    else -> {
-                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
-                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }.lparams(matchParent, 0) {
-                    bottomToBottom = PARENT_ID
-                    topToBottom = R.id.anko_tv_title0
-                }
-            }
-        }.view
-
-        return view
+        return ViewUtils.createScheduleView(context!!)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -308,13 +179,8 @@ class ScheduleFragment : androidx.fragment.app.Fragment(), CoroutineScope {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
                 }
             }
-//            if (i > 0) {
-//                lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
-//            } else {
-//                lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
-//            }
+
             textView.layoutParams = lp
-//            tv.gravity = Gravity.CENTER_HORIZONTAL
             textView.textSize = table.itemTextSize.toFloat()
             textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             textView.setPadding(dip(4), dip(4), dip(4), dip(4))

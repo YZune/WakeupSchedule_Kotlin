@@ -6,20 +6,152 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Point
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Environment
 import android.text.Html
 import android.text.Spanned
 import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.ScrollView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.text.HtmlCompat
+import com.suda.yzune.wakeupschedule.R
+import org.jetbrains.anko.*
+import org.jetbrains.anko.constraint.layout.constraintLayout
 import java.io.File
 import java.io.FileOutputStream
 
 
 object ViewUtils {
+
+    fun createScheduleView(context: Context): View {
+        return context.UI {
+            constraintLayout {
+                for (i in 0..8) {
+                    textView {
+                        id = R.id.anko_tv_title0 + i
+                        setPadding(0, dip(8), 0, dip(8))
+                        textSize = 12f
+                        gravity = Gravity.CENTER
+                        setLineSpacing(dip(2).toFloat(), 1f)
+                        if (i == 0) {
+                            typeface = Typeface.DEFAULT_BOLD
+                        }
+                    }.lparams(0, wrapContent) {
+                        when (i) {
+                            0 -> {
+                                horizontalWeight = 0.5f
+                                startToStart = ConstraintSet.PARENT_ID
+                                topToTop = ConstraintSet.PARENT_ID
+                                endToStart = R.id.anko_tv_title0 + i + 1
+                            }
+                            8 -> {
+                                horizontalWeight = 1f
+                                startToEnd = R.id.anko_tv_title0 + i - 1
+                                endToEnd = ConstraintSet.PARENT_ID
+                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
+                            }
+                            else -> {
+                                horizontalWeight = 1f
+                                startToEnd = R.id.anko_tv_title0 + i - 1
+                                endToStart = R.id.anko_tv_title0 + i + 1
+                                baselineToBaseline = R.id.anko_tv_title0 + i - 1
+                            }
+                        }
+                    }
+                }
+                scrollView {
+                    id = R.id.anko_sv_schedule
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    constraintLayout {
+                        id = R.id.anko_cl_content_panel
+                        for (i in 1..20) {
+                            textView(i.toString()) {
+                                id = R.id.anko_tv_node1 + i - 1
+                                textSize = 12f
+                                gravity = Gravity.CENTER
+                            }.lparams(0, dip(56)) {
+                                topMargin = dip(2)
+                                when (i) {
+                                    1 -> {
+                                        bottomToTop = R.id.anko_tv_node1 + i
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = ConstraintSet.PARENT_ID
+                                        topToTop = ConstraintSet.PARENT_ID
+                                        verticalBias = 0f
+                                        verticalChainStyle = ConstraintSet.CHAIN_PACKED
+                                    }
+                                    20 -> {
+                                        bottomToTop = R.id.anko_navigation_bar_view
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = ConstraintSet.PARENT_ID
+                                        topToBottom = R.id.anko_tv_node1 + i - 2
+                                    }
+                                    else -> {
+                                        bottomToTop = R.id.anko_tv_node1 + i
+                                        endToStart = R.id.anko_ll_week_panel_0
+                                        horizontalWeight = 0.5f
+                                        startToStart = ConstraintSet.PARENT_ID
+                                        topToBottom = R.id.anko_tv_node1 + i - 2
+                                    }
+                                }
+                            }
+                        }
+                        val barHeight = if (ViewUtils.getVirtualBarHeight(context) in 1..48) {
+                            ViewUtils.getVirtualBarHeight(context)
+                        } else {
+                            dip(48)
+                        }
+                        val navBar = view {
+                            id = R.id.anko_navigation_bar_view
+                        }.lparams(matchParent, barHeight) {
+                            topToBottom = R.id.anko_tv_node992
+                            bottomToBottom = ConstraintSet.PARENT_ID
+                            startToStart = ConstraintSet.PARENT_ID
+                            endToEnd = ConstraintSet.PARENT_ID
+                        }
+                        if (PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 19) {
+                            navBar.visibility = View.VISIBLE
+                        } else {
+                            navBar.visibility = View.GONE
+                        }
+                        for (i in 0..7) {
+                            verticalLayout {
+                                id = R.id.anko_ll_week_panel_0 + i
+                            }.lparams(0, wrapContent) {
+                                marginStart = dip(1)
+                                marginEnd = dip(1)
+                                horizontalWeight = 1f
+                                when (i) {
+                                    0 -> {
+                                        startToEnd = R.id.anko_tv_node1
+                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
+                                    }
+                                    7 -> {
+                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
+                                        endToEnd = ConstraintSet.PARENT_ID
+                                    }
+                                    else -> {
+                                        startToEnd = R.id.anko_ll_week_panel_0 + i - 1
+                                        endToStart = R.id.anko_ll_week_panel_0 + i + 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }.lparams(matchParent, 0) {
+                    bottomToBottom = ConstraintSet.PARENT_ID
+                    topToBottom = R.id.anko_tv_title0
+                }
+            }
+        }.view
+
+    }
 
     fun getHtmlSpannedString(str: String): Spanned {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
