@@ -6,6 +6,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.MaterialFilePicker
 import com.suda.yzune.wakeupschedule.R
@@ -15,7 +16,7 @@ import java.io.File
 import java.util.regex.Pattern
 
 
-class FileImportFragment : androidx.fragment.app.Fragment() {
+class FileImportFragment : Fragment() {
 
     private lateinit var viewModel: ImportViewModel
 

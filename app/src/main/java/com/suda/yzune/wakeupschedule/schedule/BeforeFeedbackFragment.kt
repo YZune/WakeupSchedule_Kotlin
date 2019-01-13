@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.intro.IntroActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_before_feedback.*
 import org.jetbrains.anko.startActivity
 import java.util.*
 
-class BeforeFeedbackFragment : androidx.fragment.app.DialogFragment() {
+class BeforeFeedbackFragment : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

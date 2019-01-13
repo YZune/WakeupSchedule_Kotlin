@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 
-class ImportChooseFragment : androidx.fragment.app.DialogFragment() {
+class ImportChooseFragment : DialogFragment() {
 
     private lateinit var viewModel: ScheduleViewModel
 

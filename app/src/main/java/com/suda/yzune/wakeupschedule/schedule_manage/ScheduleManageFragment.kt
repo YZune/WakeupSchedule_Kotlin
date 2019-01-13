@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
@@ -21,7 +22,7 @@ import kotlinx.coroutines.*
 import org.jetbrains.anko.support.v4.startActivity
 import kotlin.coroutines.CoroutineContext
 
-class ScheduleManageFragment : androidx.fragment.app.Fragment(), CoroutineScope {
+class ScheduleManageFragment : Fragment(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job

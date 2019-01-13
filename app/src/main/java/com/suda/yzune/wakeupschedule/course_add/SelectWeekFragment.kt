@@ -5,6 +5,7 @@ import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -13,7 +14,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 import org.jetbrains.anko.support.v4.dip
 
-class SelectWeekFragment : androidx.fragment.app.DialogFragment() {
+class SelectWeekFragment : DialogFragment() {
 
     var position = -1
     private lateinit var viewModel: AddCourseViewModel

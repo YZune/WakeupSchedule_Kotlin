@@ -9,12 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import androidx.fragment.app.DialogFragment
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_update.*
 
-class UpdateFragment : androidx.fragment.app.DialogFragment() {
+class UpdateFragment : DialogFragment() {
 
     private lateinit var updateInfo: UpdateInfoBean
 
