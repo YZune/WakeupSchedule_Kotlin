@@ -1,17 +1,12 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
@@ -20,7 +15,10 @@ import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 
-class ImportChooseFragment : DialogFragment() {
+class ImportChooseFragment : BaseDialogFragment() {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_import_choose
 
     private lateinit var viewModel: ScheduleViewModel
 
@@ -29,18 +27,8 @@ class ImportChooseFragment : DialogFragment() {
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_import_choose, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initEvent()
     }
 

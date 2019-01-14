@@ -2,17 +2,12 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.appwidget.AppWidgetManager
-import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -21,12 +16,11 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.support.v4.dip
-import kotlin.coroutines.CoroutineContext
 
-class CourseDetailFragment : DialogFragment(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_course_detail
 
     private lateinit var course: CourseBean
     private lateinit var title: TextView
@@ -50,20 +44,8 @@ class CourseDetailFragment : DialogFragment(), CoroutineScope {
         job = Job()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        return inflater.inflate(R.layout.fragment_course_detail, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initView()
         showData()
         initEvent()
@@ -129,20 +111,20 @@ class CourseDetailFragment : DialogFragment(), CoroutineScope {
                 }
             } else {
                 launch {
-                    val msg = async(Dispatchers.IO) {
+                    val msg = withContext(Dispatchers.IO) {
                         try {
                             viewModel.deleteCourseBean(course)
                             "ok"
                         } catch (e: Exception) {
                             "出现异常>_<\n" + e.message
                         }
-                    }.await()
+                    }
                     if (msg == "ok") {
                         Toasty.success(context!!.applicationContext, "删除成功").show()
                         val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                        val list = async(Dispatchers.IO) {
+                        val list = withContext(Dispatchers.IO) {
                             viewModel.getScheduleWidgetIds()
-                        }.await()
+                        }
                         list.forEach {
                             when (it.detailType) {
                                 0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
@@ -159,14 +141,14 @@ class CourseDetailFragment : DialogFragment(), CoroutineScope {
 
         ib_delete_course.setOnLongClickListener {
             launch {
-                val msg = async(Dispatchers.IO) {
+                val msg = withContext(Dispatchers.IO) {
                     try {
                         viewModel.deleteCourseBaseBean(course.id, course.tableId)
                         "ok"
                     } catch (e: Exception) {
                         "出现异常>_<\n" + e.message
                     }
-                }.await()
+                }
                 if (msg == "ok") {
                     Toasty.success(context!!.applicationContext, "删除成功").show()
                     val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
@@ -186,11 +168,6 @@ class CourseDetailFragment : DialogFragment(), CoroutineScope {
             }
             return@setOnLongClickListener true
         }
-    }
-
-    override fun dismiss() {
-        super.dismiss()
-        job.cancel()
     }
 
     companion object {

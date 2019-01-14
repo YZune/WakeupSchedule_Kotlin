@@ -1,71 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_gravity="center"
     android:orientation="vertical"
     tools:context=".schedule_import.ImportSettingFragment">
 
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导入课程"
         android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:lineSpacingExtra="8dp"
+        android:lineSpacingExtra="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="请问你想以何种方式导入呢？\n新建再导入后，请在右栏找到新导入的课表"
         android:textSize="12sp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cover"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="覆盖当前选中课表"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="覆盖当前课表"
+        android:textStyle="bold"
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_new"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="新建课表再导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cancel"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="取消导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        app:cornerRadius="8dp" />
 
 </LinearLayout>

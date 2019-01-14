@@ -265,7 +265,7 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             textView.setOnClickListener {
                 try {
                     val detailFragment = CourseDetailFragment.newInstance(c)
-                    detailFragment.show(fragmentManager, "courseDetail")
+                    detailFragment.show(fragmentManager!!, "courseDetail")
                 } catch (e: Exception) {
                     //TODO: 提示是否要删除异常的数据
                     Toasty.error(activity!!.applicationContext, "哎呀>_<差点崩溃了").show()

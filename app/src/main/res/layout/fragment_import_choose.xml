@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_gravity="center"
     android:orientation="vertical"
     tools:context=".schedule.ImportChooseFragment">
 
@@ -16,95 +17,65 @@
         android:fontFamily="@font/iconfont"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:visibility="gone"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text=""
         android:textSize="20sp" />
 
-
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导入课程"
         android:textColor="@android:color/black"
-        android:textSize="12sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:lineSpacingExtra="8dp"
-        android:text="目前已经支持包括苏大在内的采用正方教务系统的学校的课程自动导入哦。请之前成功导入的学校也去申请适配登记一下哦。"
-        android:textSize="12sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:lineSpacingExtra="8dp"
-        android:text="支持更多学校啦！点第二个按钮试试看。"
-        android:textSize="12sp"
         android:textStyle="bold" />
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)"
+        android:textSize="12sp" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_suda"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="苏大教务导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_more"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="更多学校及教务导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="更多学校导入"
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_file"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="从文件导入"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        app:cornerRadius="8dp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_feedback"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="申请适配"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        app:cornerRadius="8dp" />
 
 </LinearLayout>

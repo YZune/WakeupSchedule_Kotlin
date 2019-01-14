@@ -30,10 +30,6 @@ import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-import com.irozon.alertview.AlertActionStyle
-import com.irozon.alertview.AlertStyle
-import com.irozon.alertview.AlertView
-import com.irozon.alertview.objects.AlertAction
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
@@ -47,7 +43,6 @@ import com.suda.yzune.wakeupschedule.intro.AboutActivity
 import com.suda.yzune.wakeupschedule.intro.IntroActivity
 import com.suda.yzune.wakeupschedule.intro.IntroYoungActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
@@ -539,29 +534,29 @@ class ScheduleActivity : BaseActivity() {
         navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
 
         importImageButton.setOnClickListener {
-            val alert = AlertView("导入课程", "现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)", AlertStyle.DIALOG)
-            alert.addAction(AlertAction("苏大教务导入", AlertActionStyle.DEFAULT) {
-                startActivityForResult<LoginWebActivity>(
-                        32,
-                        "type" to "苏州大学",
-                        "tableId" to viewModel.table.id
-                )
-            })
-            alert.addAction(AlertAction("更多学校及教务导入", AlertActionStyle.DEFAULT) {
-                startActivityForResult<SchoolListActivity>(32)
-            })
-            alert.addAction(AlertAction("从导出文件导入", AlertActionStyle.DEFAULT) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
-                } else {
-                    startActivityForResult<LoginWebActivity>(32, "type" to "file")
-                }
-            })
-            alert.addAction(AlertAction("申请适配", AlertActionStyle.NEGATIVE) {
-                startActivity<LoginWebActivity>("type" to "apply")
-            })
-            alert.show(this)
-            //ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
+            //            val alert = AlertView("导入课程", "现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)", AlertStyle.DIALOG)
+//            alert.addAction(AlertAction("苏大教务导入", AlertActionStyle.DEFAULT) {
+//                startActivityForResult<LoginWebActivity>(
+//                        32,
+//                        "type" to "苏州大学",
+//                        "tableId" to viewModel.table.id
+//                )
+//            })
+//            alert.addAction(AlertAction("更多学校及教务导入", AlertActionStyle.DEFAULT) {
+//                startActivityForResult<SchoolListActivity>(32)
+//            })
+//            alert.addAction(AlertAction("从导出文件导入", AlertActionStyle.DEFAULT) {
+//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
+//                } else {
+//                    startActivityForResult<LoginWebActivity>(32, "type" to "file")
+//                }
+//            })
+//            alert.addAction(AlertAction("申请适配", AlertActionStyle.NEGATIVE) {
+//                startActivity<LoginWebActivity>("type" to "apply")
+//            })
+//            alert.show(this)
+            ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
         }
 
         weekdayTextView.setOnClickListener {

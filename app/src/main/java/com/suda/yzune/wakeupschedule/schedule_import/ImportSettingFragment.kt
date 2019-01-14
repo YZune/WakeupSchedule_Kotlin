@@ -1,21 +1,18 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.base_view.BaseDialogFragment
 import kotlinx.android.synthetic.main.fragment_import_setting.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class ImportSettingFragment : BaseDialogFragment() {
+    override val layoutId: Int
+        get() = R.layout.fragment_import_setting
 
     private lateinit var viewModel: ImportViewModel
 
@@ -24,19 +21,8 @@ class ImportSettingFragment : BaseDialogFragment() {
         viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_import_setting, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         tv_cover.setOnClickListener {
             viewModel.importId = activity!!.intent.extras!!.getInt("tableId")
             viewModel.newFlag = false
