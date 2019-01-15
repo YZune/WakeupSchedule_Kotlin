@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导出课程"
         android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -22,48 +22,25 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:lineSpacingExtra="8dp"
+        android:lineSpacingExtra="4dp"
         android:text="请问你想以何种方式导出呢？\n导出文件将存放在\nSD卡“WakeUp课程表”中"
         android:textSize="12sp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_export"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="仅导出"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:layout_marginTop="8dp"
+        android:text="仅导出" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_share"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="导出并分享"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:text="导出并分享" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cancel"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="取消导出"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:layout_marginBottom="8dp"
+        android:text="取消导出" />
 
 </LinearLayout>

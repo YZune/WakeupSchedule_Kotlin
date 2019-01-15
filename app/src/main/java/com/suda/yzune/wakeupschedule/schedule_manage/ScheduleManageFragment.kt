@@ -136,7 +136,7 @@ class ScheduleManageFragment : Fragment(), CoroutineScope {
                         Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
                     }
                 }
-            }).show(fragmentManager, "addTableFragment")
+            }).show(fragmentManager!!, "addTableFragment")
         }
         return view
     }

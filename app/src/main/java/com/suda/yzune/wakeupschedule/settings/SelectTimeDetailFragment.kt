@@ -1,18 +1,16 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlinx.android.synthetic.main.fragment_select_time_detail.*
 
-
-class SelectTimeDetailFragment : DialogFragment() {
+class SelectTimeDetailFragment : BaseDialogFragment() {
+    override val layoutId: Int
+        get() = R.layout.fragment_select_time_detail
 
     var position = -1
     var tablePosition = 0
@@ -29,15 +27,8 @@ class SelectTimeDetailFragment : DialogFragment() {
         viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_select_time_detail, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         wp_start.data = viewModel.timeSelectList
         wp_end.data = viewModel.timeSelectList
         if (viewModel.timeTableList[tablePosition].sameLen) {

@@ -1,50 +1,37 @@
-package androidx.fragment.app
+package com.suda.yzune.wakeupschedule.schedule
 
 import android.os.Bundle
 import android.os.Environment
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import es.dmoral.toasty.Toasty
 import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
 import gdut.bsx.share2.ShareContentType
 import kotlinx.android.synthetic.main.fragment_export_settings.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
-import kotlin.coroutines.CoroutineContext
 
-class ExportSettingsFragment : DialogFragment(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+class ExportSettingsFragment : BaseDialogFragment(), CoroutineScope {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_export_settings
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        job = Job()
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         isCancelable = false
-        return inflater.inflate(R.layout.fragment_export_settings, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
 
         tv_export.setOnClickListener {
             launch {
@@ -91,18 +78,5 @@ class ExportSettingsFragment : DialogFragment(), CoroutineScope {
         tv_cancel.setOnClickListener {
             dismiss()
         }
-    }
-
-    override fun show(manager: FragmentManager, tag: String) {
-        mDismissed = false
-        mShownByMe = true
-        val ft = manager.beginTransaction()
-        ft.add(this, tag)
-        ft.commitAllowingStateLoss()
-    }
-
-    override fun dismiss() {
-        super.dismiss()
-        job.cancel()
     }
 }

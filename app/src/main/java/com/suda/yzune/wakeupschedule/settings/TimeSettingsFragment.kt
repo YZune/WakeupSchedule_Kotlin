@@ -60,7 +60,7 @@ class TimeSettingsFragment : BaseFragment() {
         adapter.setOnItemClickListener { _, _, position ->
             val selectTimeDialog = SelectTimeDetailFragment.newInstance(this.position, position, adapter)
             selectTimeDialog.isCancelable = false
-            selectTimeDialog.show(fragmentManager, "selectTimeDetail")
+            selectTimeDialog.show(fragmentManager!!, "selectTimeDetail")
         }
         adapter.setHeaderView(initHeaderView(adapter))
         recyclerView.adapter = adapter
@@ -135,7 +135,7 @@ class TimeSettingsFragment : BaseFragment() {
 
             },
                     titleStr = "时间表名字",
-                    string = viewModel.timeTableList[position].name).show(fragmentManager, "timeTableNameDialog")
+                    string = viewModel.timeTableList[position].name).show(fragmentManager!!, "timeTableNameDialog")
         }
         return view
     }

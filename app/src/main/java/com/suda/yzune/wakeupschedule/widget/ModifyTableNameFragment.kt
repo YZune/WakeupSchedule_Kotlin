@@ -3,16 +3,15 @@ package com.suda.yzune.wakeupschedule.widget
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.EditText
+import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_modify_table_name.*
 
-class ModifyTableNameFragment : androidx.fragment.app.DialogFragment() {
+class ModifyTableNameFragment : BaseDialogFragment() {
+    override val layoutId: Int
+        get() = R.layout.fragment_modify_table_name
 
     private var listener: TableNameChangeListener? = null
     private var tableName = ""
@@ -27,17 +26,8 @@ class ModifyTableNameFragment : androidx.fragment.app.DialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_modify_table_name, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         tv_title.text = title
         et_table_name.setText(tableName)
         et_table_name.setSelection(tableName.length)

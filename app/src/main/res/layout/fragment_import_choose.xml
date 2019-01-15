@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
     tools:context=".schedule.ImportChooseFragment">
 
     <TextView
-        style="@style/ButtonBackground"
         android:id="@+id/ib_close"
-        android:layout_gravity="end"
+        style="@style/ButtonBackground"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:fontFamily="@font/iconfont"
+        android:layout_gravity="end"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:visibility="gone"
+        android:fontFamily="@font/iconfont"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text=""
@@ -27,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="-16dp"
         android:gravity="center"
         android:text="导入课程"
         android:textColor="@android:color/black"
@@ -46,36 +44,24 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_suda"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/DialogButtonStyle"
         android:layout_marginTop="8dp"
-        android:text="苏大教务导入"
-        app:cornerRadius="8dp" />
+        android:text="苏大教务导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_more"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="更多学校导入"
-        app:cornerRadius="8dp" />
+        style="@style/DialogButtonStyle"
+        android:text="更多学校导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_file"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="从文件导入"
-        app:cornerRadius="8dp" />
+        style="@style/DialogButtonStyle"
+        android:text="从文件导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_feedback"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/DialogButtonStyle"
         android:layout_marginBottom="8dp"
-        android:text="申请适配"
-        app:cornerRadius="8dp" />
+        android:text="申请适配" />
 
 </LinearLayout>

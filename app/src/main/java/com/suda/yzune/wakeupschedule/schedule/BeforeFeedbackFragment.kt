@@ -4,13 +4,9 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.intro.IntroActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
@@ -19,21 +15,12 @@ import kotlinx.android.synthetic.main.fragment_before_feedback.*
 import org.jetbrains.anko.startActivity
 import java.util.*
 
-class BeforeFeedbackFragment : DialogFragment() {
+class BeforeFeedbackFragment : BaseDialogFragment() {
+    override val layoutId: Int
+        get() = R.layout.fragment_before_feedback
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_before_feedback, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.75).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         ib_close.setOnClickListener {
             dismiss()
         }

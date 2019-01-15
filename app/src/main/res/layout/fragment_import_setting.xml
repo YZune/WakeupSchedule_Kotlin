@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:orientation="vertical"
@@ -31,29 +30,20 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cover"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/DialogButtonStyle"
         android:layout_marginTop="8dp"
         android:text="覆盖当前课表"
-        android:textStyle="bold"
-        app:cornerRadius="8dp" />
+        android:textStyle="bold" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_new"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="新建课表再导入"
-        app:cornerRadius="8dp" />
+        style="@style/DialogButtonStyle"
+        android:text="新建课表再导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cancel"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/DialogButtonStyle"
         android:layout_marginBottom="8dp"
-        android:text="取消导入"
-        app:cornerRadius="8dp" />
+        android:text="取消导入" />
 
 </LinearLayout>

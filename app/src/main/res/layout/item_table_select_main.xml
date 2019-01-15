@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/menu_export"
-            style="@style/icon_text_view"
+            style="@style/IconTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -46,7 +46,7 @@
 
         <TextView
             android:id="@+id/menu_setting"
-            style="@style/icon_text_view"
+            style="@style/IconTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"

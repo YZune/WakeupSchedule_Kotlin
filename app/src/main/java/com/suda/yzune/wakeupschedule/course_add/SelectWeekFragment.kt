@@ -1,11 +1,13 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,7 +16,10 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 import org.jetbrains.anko.support.v4.dip
 
-class SelectWeekFragment : DialogFragment() {
+class SelectWeekFragment : BaseDialogFragment() {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_select_week
 
     var position = -1
     private lateinit var viewModel: AddCourseViewModel
@@ -56,14 +61,8 @@ class SelectWeekFragment : DialogFragment() {
         })
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_select_week, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         liveData.value = viewModel.editList[position].weekList.value
         result.addAll(liveData.value!!)
         showWeeks()

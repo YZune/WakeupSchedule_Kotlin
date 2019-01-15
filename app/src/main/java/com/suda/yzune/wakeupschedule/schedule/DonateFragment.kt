@@ -1,15 +1,11 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -20,18 +16,13 @@ import kotlinx.android.synthetic.main.fragment_donate.*
 import org.jetbrains.anko.startActivity
 import java.util.*
 
+class DonateFragment : BaseDialogFragment() {
 
-class DonateFragment : DialogFragment() {
+    override val layoutId: Int
+        get() = R.layout.fragment_donate
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_donate, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initEvent()
         if (BuildConfig.CHANNEL == "google") {
             tv_donate.visibility = View.GONE

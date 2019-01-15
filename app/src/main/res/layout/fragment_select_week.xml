@@ -1,99 +1,85 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    app:cardCornerRadius="2dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
     tools:context="com.suda.yzune.wakeupschedule.course_add.SelectWeekFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="请选择周数"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/ll_week"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:background="@color/white"
+        android:orientation="vertical" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="16dp"
+            android:id="@+id/tv_all"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="请选择周数"
+            android:text="全周"
             android:textColor="@android:color/black" />
 
-        <LinearLayout
-            android:id="@+id/ll_week"
-            android:layout_width="240dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/white"
-            android:orientation="vertical" />
+        <TextView
+            android:id="@+id/tv_type1"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="单周"
+            android:textColor="@android:color/black" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/tv_all"
-                android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="全周"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/tv_type1"
-                android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="单周"
-                android:textColor="@android:color/black" />
-
-            <TextView
-                android:id="@+id/tv_type2"
-                android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="双周"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/btn_cancel"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                style="@style/ButtonBackground"
-                android:gravity="center"
-                android:text="取消" />
-
-            <TextView
-                android:id="@+id/btn_save"
-                android:textStyle="bold"
-                android:textColor="@color/colorAccent"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                style="@style/ButtonBackground"
-                android:gravity="center"
-                android:text="保存" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_type2"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="双周"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/DialogButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="取消" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            style="@style/DialogButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="保存"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

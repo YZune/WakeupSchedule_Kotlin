@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -19,15 +20,14 @@
         android:textSize="20sp" />
 
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="-16dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="温馨提示"
         android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:textStyle="bold" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -45,23 +45,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:lineSpacingExtra="8dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
                 android:textSize="12sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_know"
-                android:layout_width="160dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/select_textview_bg"
+                style="@style/DialogButtonStyle"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:gravity="center"
-                android:text="我知道啦"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:text="我知道啦" />
 
         </LinearLayout>
 

@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".schedule.DonateFragment">
 
     <TextView
-        style="@style/ButtonBackground"
         android:id="@+id/ib_close"
-        android:layout_gravity="end"
+        style="@style/ButtonBackground"
         android:layout_width="32dp"
         android:layout_height="32dp"
+        android:layout_gravity="end"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/iconfont"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/iconfont"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text=""
@@ -23,7 +24,7 @@
 
 
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="-16dp"
@@ -31,70 +32,38 @@
         android:gravity="center"
         android:text="ヾ(=･ω･=)o"
         android:textColor="@android:color/black"
-        android:textSize="16sp" />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:gravity="center_horizontal"
-        android:lineSpacingExtra="8dp"
+        android:lineSpacingExtra="4dp"
         android:text="相处一段日子\n很高兴遇见你\n请多多指教哦"
         android:textSize="12sp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_star"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="应用商店五星好评"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:layout_marginTop="8dp"
+        android:text="应用商店五星好评" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_donate"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="支付宝随意捐赠"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:text="支付宝随意捐赠" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_donate_list"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="查看捐赠名单"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:text="查看捐赠名单" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_feedback"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
-        android:text="找开发者唠嗑"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        style="@style/DialogButtonStyle"
+        android:layout_marginBottom="8dp"
+        android:text="找开发者唠嗑" />
 
 </LinearLayout>

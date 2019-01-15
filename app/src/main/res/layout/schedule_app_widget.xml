@@ -32,56 +32,56 @@
 
         <TextView
             android:id="@+id/tv_title0"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_title0_1"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title1"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title2"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title3"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title4"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title5"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title6"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tv_title7"
-            style="@style/schedule_header_tv"
+            style="@style/ScheduleHeaderStyle"
             android:layout_width="0dp"
             android:layout_weight="1" />
 

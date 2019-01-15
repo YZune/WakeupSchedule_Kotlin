@@ -20,6 +20,15 @@
         <item name="android:background">?android:attr/selectableItemBackground</item>
     </style>
 
+    <style name="DialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="cornerRadius">8dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+
+    </style>
+
     <style name="LoginEditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -121,7 +130,7 @@
         <item name="android:layout_weight">0.8</item>
     </style>
 
-    <style name="schedule_header_tv">
+    <style name="ScheduleHeaderStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
@@ -131,7 +140,7 @@
         <item name="android:background">@color/nodeIndex</item>
     </style>
 
-    <style name="icon_text_view">
+    <style name="IconTextViewStyle">
         <item name="android:textSize">24sp</item>
         <item name="android:gravity">center</item>
         <item name="android:includeFontPadding">false</item>

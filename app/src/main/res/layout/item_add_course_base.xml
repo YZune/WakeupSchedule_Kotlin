@@ -6,7 +6,7 @@
     android:background="@color/white">
 
     <TextView
-        style="@style/icon_text_view"
+        style="@style/IconTextViewStyle"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:text=""
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/iv_color"
-            style="@style/icon_text_view"
+            style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="" />

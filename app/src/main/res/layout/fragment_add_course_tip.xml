@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="280dp"
+    android:layout_gravity="center"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
@@ -21,17 +22,15 @@
         android:text=""
         android:textSize="20sp" />
 
-
     <TextView
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-16dp"
+        android:layout_marginTop="-8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="温馨提示"
-        android:textColor="@android:color/black"
-        android:textSize="12sp" />
+        android:textColor="@android:color/black" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -60,19 +59,12 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_know"
-                android:layout_width="160dp"
-                android:layout_height="32dp"
+                style="@style/DialogButtonStyle"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
-                android:text="我知道啦"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                android:layout_marginTop="8dp"
+                android:text="我知道啦" />
 
         </LinearLayout>
 

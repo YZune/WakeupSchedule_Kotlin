@@ -37,7 +37,7 @@
         android:background="?android:attr/selectableItemBackground">
 
         <TextView
-            style="@style/icon_text_view"
+            style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text=""
@@ -63,7 +63,7 @@
         android:background="?android:attr/selectableItemBackground">
 
         <TextView
-            style="@style/icon_text_view"
+            style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text=""
@@ -82,7 +82,7 @@
     </LinearLayout>
 
     <TextView
-        style="@style/icon_text_view"
+        style="@style/IconTextViewStyle"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
@@ -104,7 +104,7 @@
         android:textSize="14sp" />
 
     <TextView
-        style="@style/icon_text_view"
+        style="@style/IconTextViewStyle"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:layout_below="@id/et_teacher"

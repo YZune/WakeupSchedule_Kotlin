@@ -147,7 +147,7 @@ class TimeTableFragment : BaseFragment() {
                 }
 
             },
-                    titleStr = "时间表名字").show(fragmentManager, "timeTableNameDialog")
+                    titleStr = "时间表名字").show(fragmentManager!!, "timeTableNameDialog")
         }
         return view
     }

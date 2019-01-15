@@ -18,8 +18,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.AfterImportTipFragment
-import androidx.fragment.app.ExportSettingsFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -190,6 +188,8 @@ class ScheduleActivity : BaseActivity() {
                 tableNameRecyclerView.adapter?.notifyDataSetChanged()
             }
         })
+
+        //DonateFragment.newInstance().show(supportFragmentManager, "AfterImportTipFragment")
     }
 
     private fun initTheme() {

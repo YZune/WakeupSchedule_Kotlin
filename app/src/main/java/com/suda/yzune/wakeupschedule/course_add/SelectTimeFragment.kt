@@ -1,18 +1,18 @@
 package com.suda.yzune.wakeupschedule.course_add
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.bean.TimeBean
 import kotlinx.android.synthetic.main.fragment_select_time.*
 
-class SelectTimeFragment : DialogFragment() {
+class SelectTimeFragment : BaseDialogFragment() {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_select_time
 
     var position = -1
     private val dayList = listOf<String>("周一", "周二", "周三", "周四", "周五", "周六", "周日")
@@ -31,13 +31,8 @@ class SelectTimeFragment : DialogFragment() {
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_select_time, container, false)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initNodeList(viewModel.nodes)
         wp_day.data = dayList
         wp_start.data = nodeList
