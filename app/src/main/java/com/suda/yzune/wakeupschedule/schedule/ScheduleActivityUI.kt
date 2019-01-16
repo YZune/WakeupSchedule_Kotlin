@@ -5,12 +5,12 @@ import android.graphics.Typeface
 import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
 import android.view.ViewManager
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
 import com.github.mmin18.widget.RealtimeBlurView
-import com.google.android.material.navigation.NavigationView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
@@ -29,7 +29,6 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
     private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
-    private inline fun ViewManager.materialNavigationView(init: NavigationView.() -> Unit) = ankoView({ NavigationView(it) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
@@ -172,7 +171,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                         }
                     }
 
-                    materialNavigationView {
+                    navigationView {
                         id = R.id.anko_nv
                         fitsSystemWindows = false
                         inflateHeaderView(R.layout.nav_header)
@@ -186,7 +185,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                         fitsSystemWindows = false
                         recyclerView {
                             id = R.id.anko_rv_table_name
-                            isNestedScrollingEnabled = false
+                            overScrollMode = View.OVER_SCROLL_NEVER
                         }
                     }.lparams(dip(96), matchParent) {
                         gravity = Gravity.END

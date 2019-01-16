@@ -39,26 +39,26 @@
             style="@style/LoginEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="32dp"
+            android:layout_marginRight="8dp"
             android:layout_weight="1"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
             android:singleLine="true" />
 
         <CheckBox
-            android:button="@null"
-            android:fontFamily="@font/iconfont"
-            android:text=""
-            android:textColor="@color/colorAccent"
             android:id="@+id/cb_check_pwd"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="-2dp"
             android:layout_marginEnd="0dp"
-            android:textSize="20sp"
-            android:checked="false" />
+            android:layout_marginBottom="-2dp"
+            android:button="@null"
+            android:checked="false"
+            android:fontFamily="@font/iconfont"
+            android:text=""
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -82,25 +82,26 @@
             android:layout_width="120dp"
             android:layout_height="56dp"
             android:layout_gravity="bottom"
-            android:paddingRight="24dp">
+            android:paddingEnd="24dp">
 
-            <ImageView
+            <TextView
+                style="@style/IconTextViewStyle"
                 android:id="@+id/iv_error"
+                android:layout_marginStart="32dp"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentBottom="true"
+                android:text=""
                 android:layout_marginBottom="2dp"
-                android:layout_marginLeft="32dp"
-                android:src="@drawable/retry"
-                android:visibility="gone" />
+                android:textColor="@color/orange" />
 
             <RelativeLayout
                 android:id="@+id/rl_progress"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="2dp"
-                android:layout_marginLeft="32dp">
+                android:layout_marginLeft="32dp"
+                android:layout_marginBottom="2dp">
 
                 <fr.castorflex.android.circularprogressbar.CircularProgressBar
                     android:layout_width="match_parent"
@@ -159,14 +160,14 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_login"
+        style="@style/ButtonBackground"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_below="@id/ll_code"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="32dp"
-        android:layout_marginRight="32dp"
         android:layout_marginTop="96dp"
-        style="@style/ButtonBackground"
+        android:layout_marginRight="32dp"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp">
 
@@ -212,8 +213,8 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="请选择要导入的学期"
                     android:textColor="@color/white"
@@ -243,12 +244,12 @@
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cv_to_schedule"
+                    style="@style/ButtonBackground"
                     android:layout_width="120dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginTop="16dp"
-                    style="@style/ButtonBackground"
+                    android:layout_marginBottom="16dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="0dp">
 

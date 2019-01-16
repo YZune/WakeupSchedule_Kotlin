@@ -27,7 +27,7 @@
         android:id="@+id/ll_action"
         android:layout_width="64dp"
         android:layout_height="96dp"
-        android:background="@color/deep_grey"
+        android:background="@drawable/mask_with_radius"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/iv_table_bg"
         app:layout_constraintEnd_toEndOf="@id/iv_table_bg"

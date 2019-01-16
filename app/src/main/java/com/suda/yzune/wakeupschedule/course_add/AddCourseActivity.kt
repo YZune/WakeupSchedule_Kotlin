@@ -212,6 +212,8 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
         val tvBtn = view.findViewById<TextView>(R.id.tv_add)
         tvBtn.setOnClickListener {
             adapter.addData(CourseEditBean(
+                    teacher = viewModel.editList[0].teacher,
+                    room = viewModel.editList[0].room,
                     tableId = viewModel.tableId,
                     weekList = MutableLiveData<ArrayList<Int>>().apply {
                         this.value = ArrayList<Int>().apply {

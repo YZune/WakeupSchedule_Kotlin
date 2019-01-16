@@ -658,6 +658,14 @@ class ScheduleActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onBackPressed() {
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            drawerLayout.isDrawerOpen(GravityCompat.END) -> drawerLayout.closeDrawer(GravityCompat.END)
+            else -> super.onBackPressed()
+        }
+    }
+
     override fun onDestroy() {
         AppWidgetUtils.updateWidget(applicationContext)
         super.onDestroy()

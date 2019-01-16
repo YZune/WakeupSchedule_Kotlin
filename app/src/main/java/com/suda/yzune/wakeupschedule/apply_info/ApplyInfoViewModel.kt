@@ -14,6 +14,7 @@ import retrofit2.Response
 class ApplyInfoViewModel : ViewModel() {
 
     val gson = Gson()
+    val filterList = arrayListOf<HtmlCountBean>()
     val countList = arrayListOf<HtmlCountBean>()
     val countInfo = MutableLiveData<String>()
 
@@ -25,6 +26,8 @@ class ApplyInfoViewModel : ViewModel() {
                         countList.clear()
                         countList.addAll(gson.fromJson<List<HtmlCountBean>>(response.body()!!.string(), object : TypeToken<List<HtmlCountBean>>() {
                         }.type))
+                        filterList.clear()
+                        filterList.addAll(countList)
                         countInfo.value = "OK"
                     } catch (e: JsonSyntaxException) {
                         countInfo.value = "error"
@@ -36,5 +39,16 @@ class ApplyInfoViewModel : ViewModel() {
                 countInfo.value = "error"
             }
         })
+    }
+
+    fun search(str: String?) {
+        filterList.clear()
+        if (str.isNullOrBlank()) {
+            filterList.addAll(countList)
+        } else {
+            filterList.addAll(countList.filter {
+                it.school.contains(str)
+            })
+        }
     }
 }

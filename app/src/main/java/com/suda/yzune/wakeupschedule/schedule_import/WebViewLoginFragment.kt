@@ -106,7 +106,10 @@ class WebViewLoginFragment : BaseFragment() {
         // 缩放操作
         wvCourse.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
         wvCourse.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        wvCourse.settings.displayZoomControls = false //隐藏原生的缩放控件
+        wvCourse.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
+        wvCourse.settings.javaScriptCanOpenWindowsAutomatically = true
+        wvCourse.settings.domStorageEnabled = true
+        wvCourse.settings.userAgentString = wvCourse.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
         initEvent()
         return view
     }
