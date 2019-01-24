@@ -198,7 +198,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                 endToEnd = PARENT_ID
             }
 
-            if (PreferenceUtils.getBooleanFromSP(context, "blur_main_nav_bar", false) && PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 21) {
+            if (PreferenceUtils.getBooleanFromSP(context, "blur_main_nav_bar", false) && PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 23) {
                 val barHeight = if (ViewUtils.getVirtualBarHeight(context) != 0) {
                     ViewUtils.getVirtualBarHeight(context)
                 } else {

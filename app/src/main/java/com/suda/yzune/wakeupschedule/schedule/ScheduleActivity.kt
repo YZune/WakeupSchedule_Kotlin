@@ -84,7 +84,6 @@ class ScheduleActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
 
-        PreferenceUtils.init(applicationContext)
         super.onCreate(savedInstanceState)
         if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)

@@ -22,8 +22,8 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
 import me.drakeet.multitype.register
@@ -94,8 +94,8 @@ class SettingsActivity : BaseListActivity() {
         when (item.title) {
             "标题栏模糊效果" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "title_blur", isChecked)
-                if (Build.VERSION.SDK_INT < 21) {
-                    mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
+                if (Build.VERSION.SDK_INT < 23) {
+                    mRecyclerView.longSnackbar("该设置仅对 Android 6.0 及以上版本有效>_<")
                 }
             }
             "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
@@ -107,9 +107,9 @@ class SettingsActivity : BaseListActivity() {
         when (item.title) {
             "设置当前课表" -> {
                 launch {
-                    val table = async(Dispatchers.IO) {
+                    val table = withContext(Dispatchers.IO) {
                         tableDao.getDefaultTableInThread()
-                    }.await()
+                    }
                     startActivityForResult<ScheduleSettingsActivity>(180, "tableData" to table)
                 }
             }

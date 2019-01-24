@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.os.Build
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
 import io.fabric.sdk.android.Fabric
 
@@ -23,6 +24,7 @@ class App : Application() {
         if (!BuildConfig.DEBUG && !Fabric.isInitialized()) {
             Fabric.with(this, Crashlytics())
         }
+        PreferenceUtils.init(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             var channelId = "schedule_reminder"
             var channelName = "课程提醒"

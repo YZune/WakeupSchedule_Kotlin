@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.base_view
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
@@ -46,7 +47,7 @@ abstract class BaseListActivity : BaseActivity() {
     private fun createView(): View {
         return UI {
             constraintLayout {
-
+                backgroundColor = Color.WHITE
                 mRecyclerView = recyclerView {
                     overScrollMode = OVER_SCROLL_NEVER
                 }.lparams(matchParent, matchParent) {
@@ -56,9 +57,8 @@ abstract class BaseListActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                if (Build.VERSION.SDK_INT >= 21 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
+                if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
                     blurLayout {
-                        id = R.id.anko_layout
                         setBlurRadius(50f)
                     }.lparams(matchParent, getStatusBarHeight() + dip(48)) {
                         topToTop = ConstraintSet.PARENT_ID
@@ -68,8 +68,9 @@ abstract class BaseListActivity : BaseActivity() {
                 }
 
                 linearLayout {
+                    id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 21 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
+                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
                         R.color.transparent
                     } else {
                         R.color.white

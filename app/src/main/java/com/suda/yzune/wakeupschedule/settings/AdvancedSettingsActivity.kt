@@ -110,15 +110,15 @@ class AdvancedSettingsActivity : BaseListActivity() {
             "主界面虚拟键沉浸" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "hide_main_nav_bar", isChecked)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    mRecyclerView.longSnackbar("该设置仅对Android 4.4及以上版本有效>_<")
+                    mRecyclerView.longSnackbar("该设置仅对 Android 4.4 及以上版本有效>_<")
                 } else {
                     mRecyclerView.longSnackbar("重启App后生效哦~")
                 }
                 item.checked = isChecked
             }
             "主界面虚拟键模糊" -> {
-                if (Build.VERSION.SDK_INT < 21) {
-                    mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
+                if (Build.VERSION.SDK_INT < 23) {
+                    mRecyclerView.longSnackbar("该设置仅对 Android 6.0 及以上版本有效>_<")
                     item.checked = isChecked
                     PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
                 } else {

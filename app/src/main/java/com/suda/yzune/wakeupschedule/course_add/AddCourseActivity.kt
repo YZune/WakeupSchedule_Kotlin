@@ -253,9 +253,9 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
                 "ok" -> {
                     launch {
                         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                        val list = async(Dispatchers.IO) {
+                        val list = withContext(Dispatchers.IO) {
                             viewModel.getScheduleWidgetIds()
-                        }.await()
+                        }
                         list.forEach {
                             when (it.detailType) {
                                 0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)

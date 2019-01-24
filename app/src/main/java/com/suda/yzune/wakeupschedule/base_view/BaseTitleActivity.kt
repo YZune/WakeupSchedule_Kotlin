@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.base_view
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
@@ -29,9 +30,10 @@ abstract class BaseTitleActivity : BaseActivity() {
     private fun createTitleBar(): View {
         return UI {
             verticalLayout {
+                backgroundColor = Color.WHITE
                 linearLayout {
                     topPadding = getStatusBarHeight()
-                    backgroundColorResource = R.color.white
+                    backgroundColor = Color.WHITE
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
