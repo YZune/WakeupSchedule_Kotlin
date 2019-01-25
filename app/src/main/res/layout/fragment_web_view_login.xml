@@ -11,12 +11,12 @@
         android:id="@+id/v_status"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:background="@color/white" />
+        android:background="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/white">
+        android:background="@android:color/white">
 
         <EditText
             android:id="@+id/et_url"
@@ -74,7 +74,7 @@
             android:id="@+id/tv_tips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@android:color/white"
             android:lineSpacingExtra="8dp"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
@@ -88,7 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_tips"
-            android:background="@color/white"
+            android:background="@android:color/white"
             android:gravity="right"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"

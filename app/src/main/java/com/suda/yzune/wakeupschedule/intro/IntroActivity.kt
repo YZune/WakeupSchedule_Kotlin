@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.intro
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
@@ -27,7 +28,7 @@ class IntroActivity : AppIntro() {
         setColorDoneText(ContextCompat.getColor(this, R.color.colorAccent))
         setIndicatorColor(ContextCompat.getColor(this, R.color.colorAccent), ContextCompat.getColor(this, R.color.grey))
         setNextArrowColor(ContextCompat.getColor(this, R.color.colorAccent))
-        setSeparatorColor(ContextCompat.getColor(this, R.color.white))
+        setSeparatorColor(Color.WHITE)
         showSkipButton(false)
     }
 

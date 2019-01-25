@@ -5,4 +5,5 @@ data class SeekBarItem(
         var valueInt: Int,
         val min: Int,
         val max: Int,
-        val unit: String)
+        val unit: String,
+        val keys: List<String>? = null) : BaseItem(keys)

@@ -4,18 +4,17 @@ package com.suda.yzune.wakeupschedule
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_update.*
 
-class UpdateFragment : DialogFragment() {
+class UpdateFragment : BaseDialogFragment() {
+
+    override val layoutId: Int
+        get() = R.layout.fragment_update
 
     private lateinit var updateInfo: UpdateInfoBean
 
@@ -26,22 +25,8 @@ class UpdateFragment : DialogFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return inflater.inflate(R.layout.fragment_update, container, false)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val dm = DisplayMetrics()
-        activity!!.windowManager.defaultDisplay.getMetrics(dm)
-        dialog.window?.setLayout((dm.widthPixels * 0.8).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         tv_old_version.text = "当前版本：" + UpdateUtils.getVersionName(context!!.applicationContext)
         tv_new_version.text = "最新版本：" + updateInfo.VersionName
         tv_info.text = updateInfo.VersionInfo

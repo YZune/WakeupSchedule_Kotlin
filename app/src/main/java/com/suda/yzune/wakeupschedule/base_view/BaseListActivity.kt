@@ -12,6 +12,7 @@ import android.view.View.GONE
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.ViewManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
@@ -32,7 +33,6 @@ abstract class BaseListActivity : BaseActivity() {
     lateinit var searchView: EditText
     protected var showSearch = false
     protected var textWatcher: TextWatcher? = null
-    //protected val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     protected lateinit var mRecyclerView: RecyclerView
 
     private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
@@ -42,12 +42,10 @@ abstract class BaseListActivity : BaseActivity() {
         setContentView(createView())
     }
 
-    open fun onSetupSearchButton(visibility: Int, view: View) {}
-
     private fun createView(): View {
         return UI {
             constraintLayout {
-                backgroundColor = Color.WHITE
+                backgroundColorResource = R.color.backgroundColor
                 mRecyclerView = recyclerView {
                     overScrollMode = OVER_SCROLL_NEVER
                 }.lparams(matchParent, matchParent) {
@@ -70,10 +68,10 @@ abstract class BaseListActivity : BaseActivity() {
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                        R.color.transparent
+                    backgroundColor = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
+                        Color.TRANSPARENT
                     } else {
-                        R.color.white
+                        Color.WHITE
                     }
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
@@ -95,7 +93,7 @@ abstract class BaseListActivity : BaseActivity() {
                     }
 
                     searchView = editText {
-                        hint = "请输入学校……"
+                        hint = "请输入……"
                         textSize = 16f
                         backgroundDrawable = null
                         gravity = Gravity.CENTER_VERTICAL
@@ -117,7 +115,18 @@ abstract class BaseListActivity : BaseActivity() {
                             gravity = Gravity.CENTER_VERTICAL
                             backgroundResource = outValue.resourceId
                             setOnClickListener {
-                                onSetupSearchButton(searchView.visibility, it)
+                                when (searchView.visibility) {
+                                    View.GONE -> {
+                                        mainTitle.visibility = View.GONE
+                                        searchView.visibility = View.VISIBLE
+                                        textColorResource = R.color.colorAccent
+                                        searchView.isFocusable = true
+                                        searchView.isFocusableInTouchMode = true
+                                        searchView.requestFocus()
+                                        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                                        inputMethodManager.showSoftInput(searchView, 0)
+                                    }
+                                }
                             }
                         }.lparams(wrapContent, dip(48))
                     }

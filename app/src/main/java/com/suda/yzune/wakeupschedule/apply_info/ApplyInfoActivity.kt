@@ -17,7 +17,6 @@ import es.dmoral.toasty.Toasty
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.textColorResource
 import org.jetbrains.anko.topPadding
 
 class ApplyInfoActivity : BaseListActivity() {
@@ -31,19 +30,6 @@ class ApplyInfoActivity : BaseListActivity() {
             viewModel.initData()
         }
         return tvButton
-    }
-
-    override fun onSetupSearchButton(visibility: Int, view: View) {
-        when (visibility) {
-            View.GONE -> {
-                mainTitle.visibility = View.GONE
-                searchView.visibility = View.VISIBLE
-                (view as TextView).textColorResource = R.color.colorAccent
-                searchView.isFocusable = true
-                searchView.isFocusableInTouchMode = true
-                searchView.requestFocus()
-            }
-        }
     }
 
     private lateinit var viewModel: ApplyInfoViewModel

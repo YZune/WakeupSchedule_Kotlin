@@ -9,11 +9,14 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcel
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
 import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
@@ -38,9 +41,9 @@ import kotlinx.coroutines.launch
 import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
 import me.drakeet.multitype.register
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
-import org.jetbrains.anko.textColorResource
 
 class ScheduleSettingsActivity : BaseListActivity() {
 
@@ -48,8 +51,10 @@ class ScheduleSettingsActivity : BaseListActivity() {
         return if (BuildConfig.CHANNEL == "google") {
             null
         } else {
-            tvButton.text = "捐赠"
-            tvButton.textColorResource = R.color.colorAccent
+            val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
+            tvButton.typeface = iconFont
+            tvButton.textSize = 20f
+            tvButton.text = "\uE6C2"
             tvButton.setOnClickListener {
                 startActivity<DonateActivity>()
             }
@@ -61,17 +66,43 @@ class ScheduleSettingsActivity : BaseListActivity() {
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
+    private val allItems = Items()
+    private val showItems = Items()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        showSearch = true
+        textWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
 
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                showItems.clear()
+                if (s.isNullOrBlank() || s.isEmpty()) {
+                    showItems.addAll(allItems)
+                } else {
+                    showItems.add(CategoryItem("搜索结果", true))
+                    showItems.addAll(allItems.filter {
+                        val k = (it as BaseItem).keyWords
+                        k?.contains(s.toString()) ?: false
+                    })
+                }
+                mRecyclerView.adapter?.notifyDataSetChanged()
+                if (showItems.size == 1) {
+                    mRecyclerView.longSnackbar("找不到哦，换个关键词试试看，或者请仔细找找啦，一般都能找到的。")
+                }
+            }
+
+        }
+        super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
         viewModel.table = intent.extras!!.getParcelable("tableData") as TableBean
 
         onAdapterCreated(mAdapter)
-        val items = Items()
-        onItemsCreated(items)
-        mAdapter.items = items
+
+        onItemsCreated(allItems)
+        showItems.addAll(allItems)
+        mAdapter.items = showItems
         mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
 
@@ -94,39 +125,39 @@ class ScheduleSettingsActivity : BaseListActivity() {
 
     private fun onItemsCreated(items: Items) {
         items.add(CategoryItem("课程数据", true))
-        items.add(HorizontalItem("课表名称", viewModel.table.tableName))
-        items.add(HorizontalItem("学期开始日期", viewModel.table.startDate))
-        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 4, 20, "节"))
-        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 10, 30, "周"))
-        items.add(HorizontalItem("上课时间", ""))
-        items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst))
-        items.add(SwitchItem("显示周六", viewModel.table.showSat))
-        items.add(SwitchItem("显示周日", viewModel.table.showSun))
+        items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
+        items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))
+        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 4, 20, "节", listOf("节数", "数量", "数")))
+        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 10, 30, "周", listOf("学期", "周", "时间")))
+        items.add(HorizontalItem("上课时间", "", listOf("时间")))
+        items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst, listOf("周日", "第一天", "起始", "星期天", "天")))
+        items.add(SwitchItem("显示周六", viewModel.table.showSat, listOf("周六", "显示", "星期六", "六")))
+        items.add(SwitchItem("显示周日", viewModel.table.showSun, listOf("周日", "显示", "星期日", "日", "星期天", "周天")))
 
         items.add(CategoryItem("课表外观", false))
-        items.add(SwitchItem("在格子内显示上课时间", viewModel.table.showTime))
-        items.add(VerticalItem("课程表背景", "长按可以恢复默认哦~"))
-        items.add(VerticalItem("界面文字颜色", "指标题等字体的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
-        items.add(VerticalItem("课程文字颜色", "指课程格子内的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
-        items.add(VerticalItem("格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~"))
-        items.add(SeekBarItem("课程格子高度", viewModel.table.itemHeight, 32, 96, "dp"))
-        items.add(SeekBarItem("课程格子不透明度", viewModel.table.itemAlpha, 0, 100, "%"))
-        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 11, 16, "sp"))
-        items.add(SwitchItem("显示非本周课程", viewModel.table.showOtherWeekCourse))
+        items.add(SwitchItem("在格子内显示上课时间", viewModel.table.showTime, listOf("时间", "显示", "格子", "上课时间")))
+        items.add(VerticalItem("课程表背景", "长按可以恢复默认哦~", keys = listOf("背景", "显示", "图片")))
+        items.add(VerticalItem("界面文字颜色", "指标题等字体的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色")))
+        items.add(VerticalItem("课程文字颜色", "指课程格子内的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色")))
+        items.add(VerticalItem("格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边")))
+        items.add(SeekBarItem("课程格子高度", viewModel.table.itemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示")))
+        items.add(SeekBarItem("课程格子不透明度", viewModel.table.itemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示")))
+        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 11, 16, "sp", listOf("文字", "大小", "文字大小")))
+        items.add(SwitchItem("显示非本周课程", viewModel.table.showOtherWeekCourse, listOf("非本周")))
 
         items.add(CategoryItem("桌面小部件外观", false))
-        items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp"))
-        items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%"))
-        items.add(SeekBarItem("显示文字大小", viewModel.table.widgetItemTextSize, 11, 16, "sp"))
-        items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
-        items.add(VerticalItem("小部件课程颜色", "指课程格子内的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)"))
-        items.add(VerticalItem("小部件格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~"))
+        items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件显示文字大小", viewModel.table.widgetItemTextSize, 11, 16, "sp", listOf("文字", "大小", "文字大小", "小部件", "小", "插件", "桌面")))
+        items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
+        items.add(VerticalItem("小部件课程颜色", "指课程格子内的文字颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
+        items.add(VerticalItem("小部件格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边", "小部件", "小", "插件", "桌面")))
 
         items.add(CategoryItem("高级", false))
         if (BuildConfig.CHANNEL != "google") {
-            items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
+            items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式", keys = listOf("高级")))
         } else {
-            items.add(VerticalItem("看看都有哪些高级功能", "如果想支持一下社团和开发者\n请去支付宝18862196504\n高级功能会持续更新~\n采用诚信授权模式ヾ(=･ω･=)o"))
+            items.add(VerticalItem("看看都有哪些高级功能", "如果想支持一下社团和开发者\n请去支付宝18862196504\n高级功能会持续更新~\n采用诚信授权模式ヾ(=･ω･=)o", keys = listOf("高级")))
         }
     }
 
@@ -150,15 +181,12 @@ class ScheduleSettingsActivity : BaseListActivity() {
             "课程显示文字大小" -> viewModel.table.itemTextSize = value + item.min
             "小部件格子高度" -> viewModel.table.widgetItemHeight = value + item.min
             "小部件格子不透明度" -> viewModel.table.widgetItemAlpha = value + item.min
-            "显示文字大小" -> viewModel.table.widgetItemTextSize = value + item.min
+            "小部件显示文字大小" -> viewModel.table.widgetItemTextSize = value + item.min
         }
         item.valueInt = value + item.min
     }
 
     private fun onHorizontalItemClick(item: HorizontalItem) {
-        HorizontalItem("课表名称", viewModel.table.tableName)
-        HorizontalItem("学期开始日期", viewModel.table.startDate)
-        HorizontalItem("上课时间", "")
         when (item.title) {
             "课表名称" -> {
                 ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {

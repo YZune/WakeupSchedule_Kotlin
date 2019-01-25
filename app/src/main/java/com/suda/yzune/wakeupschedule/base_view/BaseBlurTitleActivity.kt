@@ -41,7 +41,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
     private fun createView(): View {
         return UI {
             constraintLayout {
-                backgroundColor = Color.WHITE
+                backgroundColorResource = R.color.backgroundColor
                 scrollView {
                     overScrollMode = View.OVER_SCROLL_NEVER
                     isVerticalScrollBarEnabled = false
@@ -69,10 +69,10 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColorResource = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                        R.color.transparent
+                    backgroundColor = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
+                        Color.TRANSPARENT
                     } else {
-                        R.color.white
+                        Color.WHITE
                     }
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)

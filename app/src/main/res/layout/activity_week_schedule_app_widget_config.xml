@@ -29,7 +29,7 @@
         android:background="@drawable/select_textview_bg"
         android:gravity="center"
         android:text="我知道啦"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 

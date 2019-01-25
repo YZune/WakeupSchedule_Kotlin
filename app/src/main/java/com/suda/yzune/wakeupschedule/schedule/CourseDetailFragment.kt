@@ -2,11 +2,11 @@ package com.suda.yzune.wakeupschedule.schedule
 
 
 import android.appwidget.AppWidgetManager
+import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
@@ -59,12 +59,12 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
         room = include_detail.findViewById(R.id.et_room)
         close = include_detail.findViewById(R.id.ib_delete)
 
-        title.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+        title.setTextColor(Color.BLACK)
         title.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-        weeks.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
-        time.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
-        teacher.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
-        room.setTextColor(ContextCompat.getColor(activity!!.applicationContext, R.color.black))
+        weeks.setTextColor(Color.BLACK)
+        time.setTextColor(Color.BLACK)
+        teacher.setTextColor(Color.BLACK)
+        room.setTextColor(Color.BLACK)
 
         teacher.isFocusable = false
         teacher.isFocusableInTouchMode = false

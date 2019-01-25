@@ -30,7 +30,7 @@ abstract class BaseTitleActivity : BaseActivity() {
     private fun createTitleBar(): View {
         return UI {
             verticalLayout {
-                backgroundColor = Color.WHITE
+                backgroundColorResource = R.color.backgroundColor
                 linearLayout {
                     topPadding = getStatusBarHeight()
                     backgroundColor = Color.WHITE

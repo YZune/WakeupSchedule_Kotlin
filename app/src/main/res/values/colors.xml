@@ -6,10 +6,8 @@
 
     <color name="grey">#9aa3a3a3</color>
     <color name="deep_grey">#9a505050</color>
-    <color name="white">#ffffff</color>
-    <color name="transparent">#00ffffff</color>
     <color name="nodeIndex" >#00000000</color>
-    <color name="black" >#000000</color>
+    <color name="backgroundColor">#fafafa</color>
 
     <color name="main_title_bg">#94ffffff</color>
 

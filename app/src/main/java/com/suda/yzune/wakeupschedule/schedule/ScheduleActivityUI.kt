@@ -173,6 +173,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
                     navigationView {
                         id = R.id.anko_nv
+                        backgroundColorResource = R.color.backgroundColor
                         fitsSystemWindows = false
                         inflateHeaderView(R.layout.nav_header)
                         inflateMenu(R.menu.main_navigation_menu)
@@ -182,6 +183,7 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
                     navigationView {
                         id = R.id.anko_nv_end
+                        backgroundColorResource = R.color.backgroundColor
                         fitsSystemWindows = false
                         recyclerView {
                             id = R.id.anko_rv_table_name

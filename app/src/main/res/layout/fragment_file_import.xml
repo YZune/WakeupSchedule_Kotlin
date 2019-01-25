@@ -10,12 +10,12 @@
         android:id="@+id/v_status"
         android:layout_width="match_parent"
         android:layout_height="24dp"
-        android:background="@color/white" />
+        android:background="@android:color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="@color/white">
+        android:background="@android:color/white">
 
         <ImageButton
             android:id="@+id/ib_back"
@@ -83,7 +83,7 @@
                 android:background="@drawable/select_textview_bg"
                 android:gravity="center"
                 android:text="我从QQ接收的分享文件"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -98,7 +98,7 @@
                 android:background="@drawable/select_textview_bg"
                 android:gravity="center"
                 android:text="我从Tim接收的分享文件"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -113,7 +113,7 @@
                 android:background="@drawable/select_textview_bg"
                 android:gravity="center"
                 android:text="我从微信接收的分享文件"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -129,7 +129,7 @@
                 android:background="@drawable/select_textview_bg"
                 android:gravity="center"
                 android:text="我要自己选择路径"
-                android:textColor="@color/white"
+                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 

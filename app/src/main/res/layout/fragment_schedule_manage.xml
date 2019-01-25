@@ -4,6 +4,7 @@
     android:id="@+id/rv_table_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     tools:context=".schedule_manage.ScheduleManageFragment"
     tools:listitem="@layout/item_table_list">
 
