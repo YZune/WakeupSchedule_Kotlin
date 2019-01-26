@@ -10,8 +10,14 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import net.fortuna.ical4j.data.CalendarOutputter
+import net.fortuna.ical4j.model.property.CalScale
+import net.fortuna.ical4j.model.property.ProdId
+import net.fortuna.ical4j.model.property.Version
 import java.io.File
+import java.io.FileOutputStream
 import java.util.*
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
@@ -143,6 +149,50 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         val file = File(myDir, "$tableName${Calendar.getInstance().timeInMillis}.wakeup_schedule")
         file.writeText(strBuilder.toString())
+        return file.path
+    }
+
+    suspend fun exportICS(currentDir: String): String {
+        val myDir = if (currentDir.endsWith(File.separator)) {
+            "${currentDir}WakeUp课程表/"
+        } else {
+            "$currentDir/WakeUp课程表/"
+        }
+        val dir = File(myDir)
+        if (!dir.exists()) {
+            dir.mkdir()
+        }
+        var fos: FileOutputStream? = null
+
+        val week = CourseUtils.countWeek(table.startDate)
+        val calendar = net.fortuna.ical4j.model.Calendar()
+        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
+        calendar.properties.add(Version.VERSION_2_0)
+        calendar.properties.add(CalScale.GREGORIAN)
+        val startTimeMap = ICalUtils.getClassTime(timeList, true)
+        val endTimeMap = ICalUtils.getClassTime(timeList, false)
+        allCourseList.forEach {
+            it.value?.forEach { course ->
+                try {
+                    val events = ICalUtils.getClassEvents(startTimeMap, endTimeMap, table.maxWeek, course, week)
+                    calendar.components.addAll(events)
+                } catch (ignored: Exception) {
+
+                }
+            }
+        }
+        calendar.validate()
+        val tableName = if (table.tableName == "") {
+            "我的课表"
+        } else {
+            table.tableName
+        }
+        val file = File(myDir, "日历-$tableName.ics")
+        fos = FileOutputStream(file)
+        val calOut = CalendarOutputter()
+        calOut.output(calendar, fos)
+        fos.close()
+
         return file.path
     }
 }

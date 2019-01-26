@@ -20,6 +20,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 
@@ -166,7 +167,7 @@ class WebViewLoginFragment : BaseFragment() {
             if (type != "apply") {
                 if (html.contains("星期一") && html.contains("星期二")) {
                     launch {
-                        val task = async(Dispatchers.IO) {
+                        val task = withContext(Dispatchers.IO) {
                             try {
                                 when (type) {
                                     "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
@@ -175,6 +176,7 @@ class WebViewLoginFragment : BaseFragment() {
                                     "广东外语外贸大学" -> viewModel.parseQZ(html, type)
                                     "长春大学" -> viewModel.parseQZ(html, type)
                                     "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
+                                    "成都理工大学工程技术学院" -> viewModel.importBean2CourseBean(viewModel.parseChengdu(html), html)
                                     in viewModel.ZFSchoolList -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                     in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
                                     in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
@@ -184,7 +186,7 @@ class WebViewLoginFragment : BaseFragment() {
                             } catch (e: Exception) {
                                 "导入失败>_<\n${e.message}"
                             }
-                        }.await()
+                        }
 
                         when (task) {
                             "ok" -> {

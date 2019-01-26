@@ -23,7 +23,7 @@
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:text="请问你想以何种方式导出呢？\n导出文件将存放在\nSD卡“WakeUp课程表”中"
+        android:text="请问你想以何种方式导出呢？\n导出文件将存放在\nSD卡“WakeUp课程表”中\n长按第三个按钮科普ics格式妙用"
         android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -36,6 +36,18 @@
         android:id="@+id/tv_share"
         style="@style/DialogButtonStyle"
         android:text="导出并分享" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_export_ics"
+        style="@style/DialogButtonStyle"
+        android:layout_marginTop="8dp"
+        android:text="仅导出ics格式" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_share_ics"
+        style="@style/DialogButtonStyle"
+        android:layout_marginTop="8dp"
+        android:text="导出ics格式并分享" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_cancel"

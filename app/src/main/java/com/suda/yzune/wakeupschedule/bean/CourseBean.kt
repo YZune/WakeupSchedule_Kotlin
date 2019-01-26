@@ -17,4 +17,24 @@ data class CourseBean(
         var type: Int,
         var color: String,
         var tableId: Int
-) : Parcelable
+) : Parcelable {
+
+    fun getNodeString(): String {
+        return "第$startNode - ${startNode + step - 1}节"
+    }
+
+    fun inWeek(week: Int): Boolean {
+        return when (type) {
+            0 -> {
+                (startWeek <= week) && (week <= endWeek)
+            }
+            1 -> {
+                (startWeek <= week) && (week <= endWeek) && (week % 2 == 1)
+            }
+            2 -> {
+                (startWeek <= week) && (week <= endWeek) && (week % 2 == 0)
+            }
+            else -> false
+        }
+    }
+}

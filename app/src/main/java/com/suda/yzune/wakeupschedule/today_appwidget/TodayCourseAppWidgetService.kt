@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.today_appwidget
 
 import android.content.Intent
 import android.util.TypedValue.COMPLEX_UNIT_SP
+import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -102,12 +103,17 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
                 if (courseList[position].room != "") {
                     mRemoteViews.setTextViewText(R.id.widget_room, courseList[position].room)
                 } else {
-                    mRemoteViews.setTextViewText(R.id.widget_room, "未知")
+                    mRemoteViews.setViewVisibility(R.id.widget_room, View.GONE)
+                    mRemoteViews.setViewVisibility(R.id.iv_room, View.GONE)
                 }
                 if (courseList[position].teacher != "") {
                     mRemoteViews.setTextViewText(R.id.widget_teacher, courseList[position].teacher)
                 } else {
-                    mRemoteViews.setTextViewText(R.id.widget_teacher, "未知")
+                    mRemoteViews.setViewVisibility(R.id.widget_teacher, View.GONE)
+                    mRemoteViews.setViewVisibility(R.id.iv_teacher, View.GONE)
+                }
+                if (courseList[position].teacher == "" && courseList[position].room == "") {
+                    mRemoteViews.setViewVisibility(R.id.ll_info, View.GONE)
                 }
                 mRemoteViews.setTextViewText(R.id.tv_start, courseList[position].startNode.toString())
                 mRemoteViews.setTextViewText(R.id.tv_end, "${courseList[position].startNode + courseList[position].step - 1}")

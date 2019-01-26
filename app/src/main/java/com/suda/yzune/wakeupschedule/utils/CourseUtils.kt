@@ -189,6 +189,20 @@ object CourseUtils {
         return flag
     }
 
+    fun getDateBefore(d: Date, day: Int): Date {
+        val now = Calendar.getInstance()
+        now.time = d
+        now.set(Calendar.DATE, now.get(Calendar.DATE) - day)
+        return now.time
+    }
+
+    fun getDateAfter(d: Date, day: Int): Date {
+        val now = Calendar.getInstance()
+        now.time = d
+        now.set(Calendar.DATE, now.get(Calendar.DATE) + day)
+        return now.time
+    }
+
     @Throws(ParseException::class)
     fun daysBetween(date: String): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
@@ -205,11 +219,11 @@ object CourseUtils {
     @Throws(ParseException::class)
     fun countWeek(date: String): Int {
         val during = daysBetween(date)
-        return if (during < 0) 0 else during / 7 + 1
+        return if (during < 0) during / 7 else during / 7 + 1
     }
 
     fun getWeekday(): String {
-        var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
+        var weekDay = Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {
             weekDay = 7
         } else {
@@ -219,7 +233,7 @@ object CourseUtils {
     }
 
     fun getWeekdayInt(): Int {
-        var weekDay = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
+        var weekDay = Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {
             weekDay = 7
         } else {

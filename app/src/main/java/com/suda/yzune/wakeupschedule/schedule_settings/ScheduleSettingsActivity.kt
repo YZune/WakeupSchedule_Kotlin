@@ -25,6 +25,7 @@ import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.schedule.DonateFragment
 import com.suda.yzune.wakeupschedule.settings.AdvancedSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.bean.*
@@ -48,18 +49,21 @@ import org.jetbrains.anko.startActivityForResult
 class ScheduleSettingsActivity : BaseListActivity() {
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
-        return if (BuildConfig.CHANNEL == "google") {
-            null
+        val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
+        tvButton.typeface = iconFont
+        tvButton.textSize = 20f
+        tvButton.text = "\uE6C2"
+        if (BuildConfig.CHANNEL == "google") {
+            tvButton.setOnClickListener {
+                val dialog = DonateFragment.newInstance()
+                dialog.show(supportFragmentManager, "donateDialog")
+            }
         } else {
-            val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
-            tvButton.typeface = iconFont
-            tvButton.textSize = 20f
-            tvButton.text = "\uE6C2"
             tvButton.setOnClickListener {
                 startActivity<DonateActivity>()
             }
-            tvButton
         }
+        return tvButton
     }
 
     private lateinit var viewModel: ScheduleSettingsViewModel

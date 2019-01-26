@@ -40,16 +40,16 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
     val ZFSchoolList = arrayListOf("云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
-            "绍兴文理学院", "广东环境保护工程职业学院", "西华大学")
+            "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学")
     val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
             "湖北经济学院", "华中师范大学", "华南理工大学")
     val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
-            "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院", "中南财经政法大学")
+            "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
     val qzMoreNodeSchoolList = arrayListOf("山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
-            "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院")
+            "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学")
     var selectedYear = ""
     var selectedTerm = ""
     var selectedSchedule: String = ""
@@ -431,6 +431,62 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         return write2DB()
+    }
+
+    fun parseChengdu(html: String): ArrayList<ImportBean> {
+
+        val doc = org.jsoup.Jsoup.parse(html)
+
+        val table1 = doc.getElementById("Table1")
+        val trs = table1.getElementsByTag("tr")
+
+        val courses = ArrayList<ImportBean>()
+
+        var node = 0
+        for (tr in trs) {
+            val tds = tr.getElementsByTag("td")
+            for (td in tds) {
+                val courseSource = td.text().trim()
+                if (courseSource.length <= 1) {
+                    //null data
+                    continue
+                }
+
+                if (Pattern.matches(pattern, courseSource)) {
+                    //node number
+                    val nodeStr = courseSource.substring(1, courseSource.length - 1)
+                    try {
+                        node = Integer.decode(nodeStr)
+                    } catch (e: Exception) {
+                        node = getNodeInt(nodeStr)
+                        e.printStackTrace()
+                    }
+
+                    continue
+                }
+
+                if (inArray(other, courseSource)) {
+                    //other data
+                    continue
+                }
+                courses.addAll(convertChengdu(td.html(), node))
+                //parseTextInfo(courseSource, node)
+            }
+        }
+        return courses
+    }
+
+    private fun convertChengdu(html: String, node: Int): ArrayList<ImportBean> {
+        val courses = ArrayList<ImportBean>()
+        val courseSplits = html.substringBeforeLast("</td>").split("<br><br>")
+        for (courseStr in courseSplits) {
+            val split = courseStr.split("<br>")
+            val temp = ImportBean(startNode = node, name = split[0],
+                    timeInfo = split[2],
+                    room = split[4], teacher = split[3])
+            courses.add(temp)
+        }
+        return courses
     }
 
     suspend fun parseHNIU(html: String): String {

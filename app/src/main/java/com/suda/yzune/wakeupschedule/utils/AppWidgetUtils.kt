@@ -24,7 +24,7 @@ object AppWidgetUtils {
 
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
-        val week = CourseUtils.countWeek(tableBean.startDate)
+        var week = CourseUtils.countWeek(tableBean.startDate)
         val date = CourseUtils.getTodayDate()
         val weekDay = CourseUtils.getWeekday()
         mRemoteViews.setTextViewText(R.id.tv_date, date)
@@ -32,6 +32,7 @@ object AppWidgetUtils {
             mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")
         } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
+            week = 1
         }
 
         if (tableBean.showSun) {

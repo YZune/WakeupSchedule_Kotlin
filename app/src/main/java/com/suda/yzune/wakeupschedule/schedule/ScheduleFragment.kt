@@ -10,33 +10,27 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
-import kotlin.coroutines.CoroutineContext
 
 private const val weekParam = "week"
 
-class ScheduleFragment : Fragment(), CoroutineScope {
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class ScheduleFragment : BaseFragment() {
 
     private var week = 0
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +38,6 @@ class ScheduleFragment : Fragment(), CoroutineScope {
             week = it.getInt(weekParam)
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -290,8 +283,4 @@ class ScheduleFragment : Fragment(), CoroutineScope {
         return customizedColors[index]
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
-    }
 }

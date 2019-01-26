@@ -92,69 +92,71 @@ class TodayCourseAppWidget : AppWidgetProvider() {
 
         job = GlobalScope.launch(Dispatchers.Main) {
 
-            val table = async(Dispatchers.IO) {
+            val table = withContext(Dispatchers.IO) {
                 tableDao.getDefaultTableInThread()
-            }.await()
+            }
 
             if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
                 val week = CourseUtils.countWeek(table.startDate)
-                val weekDay = CourseUtils.getWeekday()
-                val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
-                val courseList = async(Dispatchers.IO) {
-                    if (week % 2 == 0) {
-                        baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
-                    } else {
-                        baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
-                    }
-                }.await()
+                if (week > 0) {
+                    val weekDay = CourseUtils.getWeekday()
+                    val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
+                    val courseList = async(Dispatchers.IO) {
+                        if (week % 2 == 0) {
+                            baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
+                        } else {
+                            baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
+                        }
+                    }.await()
 
-                val timeList = async(Dispatchers.IO) {
-                    timeDao.getTimeListInThread(table.timeTable)
-                }.await()
-
-                val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
-                courseList.forEachIndexed { index, courseBean ->
-
-                    val time = timeList[courseBean.startNode - 1].startTime
-                    val timeSplit = time.split(":")
-                    calendar.timeInMillis = System.currentTimeMillis()
-                    calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeSplit[0]))
-                    calendar.set(Calendar.MINUTE, Integer.parseInt(timeSplit[1]))
-                    calendar.add(Calendar.MINUTE, 0 - before)
-
-                    if (calendar.timeInMillis < System.currentTimeMillis()) {
-                        return@forEachIndexed
+                    val timeList = withContext(Dispatchers.IO) {
+                        timeDao.getTimeListInThread(table.timeTable)
                     }
 
-                    val i = Intent(context, TodayCourseAppWidget::class.java)
-                    i.putExtra("courseName", courseBean.courseName)
-                    i.putExtra("room", courseBean.room)
-                    i.putExtra("weekDay", weekDay)
-                    i.putExtra("index", index)
-                    i.putExtra("time", time)
-                    i.action = "WAKEUP_REMIND_COURSE"
+                    val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
+                    courseList.forEachIndexed { index, courseBean ->
 
-                    val pi = PendingIntent.getBroadcast(context, index, i, PendingIntent.FLAG_UPDATE_CURRENT)
+                        val time = timeList[courseBean.startNode - 1].startTime
+                        val timeSplit = time.split(":")
+                        calendar.timeInMillis = System.currentTimeMillis()
+                        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(timeSplit[0]))
+                        calendar.set(Calendar.MINUTE, Integer.parseInt(timeSplit[1]))
+                        calendar.add(Calendar.MINUTE, 0 - before)
 
-                    when {
-                        Build.VERSION.SDK_INT < 19 -> {
-                            manager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+                        if (calendar.timeInMillis < System.currentTimeMillis()) {
+                            return@forEachIndexed
                         }
-                        Build.VERSION.SDK_INT in 19..22 -> {
-                            manager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
-                        }
-                        Build.VERSION.SDK_INT >= 23 -> {
-                            manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+
+                        val i = Intent(context, TodayCourseAppWidget::class.java)
+                        i.putExtra("courseName", courseBean.courseName)
+                        i.putExtra("room", courseBean.room)
+                        i.putExtra("weekDay", weekDay)
+                        i.putExtra("index", index)
+                        i.putExtra("time", time)
+                        i.action = "WAKEUP_REMIND_COURSE"
+
+                        val pi = PendingIntent.getBroadcast(context, index, i, PendingIntent.FLAG_UPDATE_CURRENT)
+
+                        when {
+                            Build.VERSION.SDK_INT < 19 -> {
+                                manager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+                            }
+                            Build.VERSION.SDK_INT in 19..22 -> {
+                                manager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+                            }
+                            Build.VERSION.SDK_INT >= 23 -> {
+                                manager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
+                            }
                         }
                     }
                 }
             }
 
-            async(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
                     AppWidgetUtils.refreshTodayWidget(context, appWidgetManager, appWidget.id, table)
                 }
-            }.await()
+            }
 
             job?.cancel()
         }

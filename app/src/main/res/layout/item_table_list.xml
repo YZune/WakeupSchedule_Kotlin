@@ -39,6 +39,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/ib_share"
             style="@style/ButtonBackground"
             android:layout_width="0dp"
