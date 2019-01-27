@@ -15,14 +15,21 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
     var position = -1
     var tablePosition = 0
     private lateinit var viewModel: TimeSettingsViewModel
-    private lateinit var adapter: TimeSettingsAdapter
+    private var mListener: DialogResultListener? = null
+
+    fun setListener(listener: DialogResultListener) {
+        mListener = listener
+    }
+
+    interface DialogResultListener {
+        fun refreshTimeResult()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             position = it.getInt("position")
             tablePosition = it.getInt("tablePosition")
-            adapter = it.getParcelable("adapter")!!
         }
         viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
     }
@@ -78,7 +85,7 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
             } else {
                 viewModel.timeList[position].endTime = viewModel.timeSelectList[endIndex]
             }
-            adapter.notifyDataSetChanged()
+            mListener?.refreshTimeResult()
             dismiss()
         }
 
@@ -89,12 +96,11 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg0: Int, arg1: Int, arg2: TimeSettingsAdapter) =
+        fun newInstance(arg0: Int, arg1: Int) =
                 SelectTimeDetailFragment().apply {
                     arguments = Bundle().apply {
                         putInt("position", arg1)
                         putInt("tablePosition", arg0)
-                        putParcelable("adapter", arg2)
                     }
                 }
     }

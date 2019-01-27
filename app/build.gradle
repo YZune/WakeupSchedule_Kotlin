@@ -26,8 +26,8 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 52
-        versionName "3.51"
+        versionCode 53
+        versionName "3.511"
         flavorDimensions "versionCode"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true

@@ -15,8 +15,8 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TimeSettingsFragment : BaseFragment() {
 
@@ -42,9 +42,9 @@ class TimeSettingsFragment : BaseFragment() {
             if (it == null) return@Observer
             if (it.isEmpty()) {
                 launch {
-                    async(Dispatchers.IO) {
+                    withContext(Dispatchers.IO) {
                         viewModel.initTimeTableData(viewModel.timeTableList[position].id)
-                    }.await()
+                    }
                 }
             } else {
                 viewModel.timeList.clear()
@@ -58,7 +58,12 @@ class TimeSettingsFragment : BaseFragment() {
     private fun initAdapter(recyclerView: androidx.recyclerview.widget.RecyclerView) {
         val adapter = TimeSettingsAdapter(R.layout.item_time_detail, viewModel.timeList)
         adapter.setOnItemClickListener { _, _, position ->
-            val selectTimeDialog = SelectTimeDetailFragment.newInstance(this.position, position, adapter)
+            val selectTimeDialog = SelectTimeDetailFragment.newInstance(this.position, position)
+            selectTimeDialog.setListener(object : SelectTimeDetailFragment.DialogResultListener {
+                override fun refreshTimeResult() {
+                    adapter.notifyDataSetChanged()
+                }
+            })
             selectTimeDialog.isCancelable = false
             selectTimeDialog.show(fragmentManager!!, "selectTimeDetail")
         }

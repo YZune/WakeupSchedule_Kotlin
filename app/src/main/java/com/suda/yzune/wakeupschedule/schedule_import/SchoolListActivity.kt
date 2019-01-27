@@ -110,6 +110,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("X", "西安理工大学", "http://202.200.112.200/"))
         schools.add(SchoolListBean("C", "成都理工大学工程技术学院", "http://110.189.108.15/"))
         schools.add(SchoolListBean("L", "临沂大学", "http://jwxt.lyu.edu.cn/jxd/"))
+        schools.add(SchoolListBean("X", "厦门理工学院", "http://jw.xmut.edu.cn/"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
