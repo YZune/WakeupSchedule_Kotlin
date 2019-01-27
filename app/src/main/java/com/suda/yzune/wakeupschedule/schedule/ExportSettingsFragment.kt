@@ -79,7 +79,7 @@ class ExportSettingsFragment : BaseDialogFragment(), CoroutineScope {
         }
 
         tv_export_ics.setOnLongClickListener {
-            CourseUtils.openUrl(activity!!, "")
+            CourseUtils.openUrl(activity!!, "https://www.jianshu.com/p/de3524cbe8aa")
             return@setOnLongClickListener true
         }
 
@@ -108,7 +108,7 @@ class ExportSettingsFragment : BaseDialogFragment(), CoroutineScope {
             launch {
                 val task = withContext(Dispatchers.IO) {
                     try {
-                        viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
+                        viewModel.exportICS(Environment.getExternalStorageDirectory().absolutePath)
                     } catch (e: Exception) {
                         null
                     }

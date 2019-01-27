@@ -39,7 +39,6 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.intro.AboutActivity
-import com.suda.yzune.wakeupschedule.intro.IntroActivity
 import com.suda.yzune.wakeupschedule.intro.IntroYoungActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
@@ -169,15 +168,6 @@ class ScheduleActivity : BaseActivity() {
             initIntro()
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "v3.20", false)) {
-            try {
-                startActivity<IntroActivity>()
-            } catch (e: Exception) {
-                Toasty.error(applicationContext, "使用教程载入失败>_<请查看侧栏的使用技巧").show()
-                PreferenceUtils.saveBooleanToSP(applicationContext, "v3.20", true)
-            }
-        }
-
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
             viewModel.tableSelectList.clear()
@@ -216,6 +206,16 @@ class ScheduleActivity : BaseActivity() {
             when (view) {
                 is TextView -> view.setTextColor(viewModel.table.textColor)
                 is ImageButton -> view.setColorFilter(viewModel.table.textColor)
+            }
+        }
+
+        if (ViewUtils.judgeColorIsLight(viewModel.table.textColor)) {
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
             }
         }
 

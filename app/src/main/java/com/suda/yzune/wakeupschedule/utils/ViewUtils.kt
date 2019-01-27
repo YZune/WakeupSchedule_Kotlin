@@ -24,8 +24,14 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import java.io.File
 import java.io.FileOutputStream
 
-
 object ViewUtils {
+
+    fun judgeColorIsLight(color: Int): Boolean {
+        val red = color and 0xff0000 shr 16
+        val green = color and 0x00ff00 shr 8
+        val blue = color and 0x0000ff
+        return (0.213 * red + 0.715 * green + 0.072 * blue > 255 / 2)
+    }
 
     fun createScheduleView(context: Context): View {
         return context.UI {

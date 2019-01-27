@@ -90,7 +90,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".intro.IntroActivity" />
         <activity
             android:name=".schedule_manage.ScheduleManageActivity"
             android:label="多课表管理" />

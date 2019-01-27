@@ -108,7 +108,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
 
                 view {
                     backgroundColorResource = R.color.grey
-                    alpha = 0.2f
+                    alpha = 0.5f
                 }.lparams(matchParent, dip(1)) {
                     topToBottom = R.id.anko_layout
                     startToStart = ConstraintSet.PARENT_ID

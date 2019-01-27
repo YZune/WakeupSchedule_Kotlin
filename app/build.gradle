@@ -26,8 +26,8 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 50
-        versionName "3.396"
+        versionCode 52
+        versionName "3.51"
         flavorDimensions "versionCode"
         renderscriptTargetApi 28
         renderscriptSupportModeEnabled true
@@ -97,11 +97,10 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha09"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha09"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha11"
+    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha11"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
-    implementation 'com.github.paolorotolo:appintro:v4.2.3'
     implementation 'me.drakeet.multitype:multitype:3.5.0'
     implementation 'me.drakeet.multitype:multitype-ktx:3.5.0'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {
@@ -112,10 +111,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
-    // Optional, if you use support library fragments:
-    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
     implementation 'com.github.mmin18:realtimeblurview:1.1.2'
     implementation 'androidx.multidex:multidex:2.0.1'
 }

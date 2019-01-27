@@ -8,11 +8,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.intro.IntroActivity
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_before_feedback.*
-import org.jetbrains.anko.startActivity
 import java.util.*
 
 class BeforeFeedbackFragment : BaseDialogFragment() {
@@ -23,10 +21,6 @@ class BeforeFeedbackFragment : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         ib_close.setOnClickListener {
             dismiss()
-        }
-
-        tv_guide.setOnClickListener {
-            activity!!.startActivity<IntroActivity>()
         }
 
         tv_feedback.setOnClickListener {

@@ -49,11 +49,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
             "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
     val qzMoreNodeSchoolList = arrayListOf("山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
-            "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学")
+            "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
     var selectedYear = ""
     var selectedTerm = ""
     var selectedSchedule: String = ""
-    var schoolInfo = Array<String>(3) { "" }
+    var schoolInfo = Array(3) { "" }
 
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()

@@ -36,7 +36,6 @@ object ICalUtils {
         return result
     }
 
-
     private fun getClassEvent(startTimeMap: ArrayList<Calendar>,
                               endTimeMap: ArrayList<Calendar>,
                               course: CourseBean,
@@ -45,6 +44,7 @@ object ICalUtils {
                               endWeek: Int
     ): VEvent? {
         val now = Calendar.getInstance(Locale.CHINA)
+        now.set(Calendar.YEAR, 2016)
         val dayBefore = (currentWeek - startWeek) * 7
         val dayAfter = (endWeek - currentWeek) * 7
 
@@ -114,6 +114,7 @@ object ICalUtils {
             } else {
                 it.endTime.split(':')
             }
+            calendar.set(Calendar.YEAR, 2016)
             calendar.set(Calendar.HOUR_OF_DAY, t[0].toInt())
             calendar.set(Calendar.MINUTE, t[1].toInt())
             calendar.set(Calendar.SECOND, 0)

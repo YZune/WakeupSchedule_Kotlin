@@ -222,6 +222,21 @@ object CourseUtils {
         return if (during < 0) during / 7 else during / 7 + 1
     }
 
+    @Throws(ParseException::class)
+    fun countWeekForExport(date: String): Int {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+        var todayTime = sdf.format(Date())// 获取当前的日期
+        todayTime = "2016" + todayTime.substring(4)
+        val cal = Calendar.getInstance()
+        cal.time = sdf.parse(date)
+        val time1 = cal.timeInMillis
+        cal.time = sdf.parse(todayTime)
+        val time2 = cal.timeInMillis
+        val betweenDays = (time2 - time1) / (1000 * 3600 * 24)
+        val during = Integer.parseInt(betweenDays.toString())
+        return if (during < 0) during / 7 else during / 7 + 1
+    }
+
     fun getWeekday(): String {
         var weekDay = Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {

@@ -1,9 +1,12 @@
 package com.suda.yzune.wakeupschedule.bean
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(foreignKeys = [(
         ForeignKey(entity = TimeTableBean::class,
                 parentColumns = ["id"],
@@ -17,4 +20,4 @@ data class TimeDetailBean(
         var startTime: String,
         var endTime: String,
         var timeTable: Int = 1
-)
+) : Parcelable
