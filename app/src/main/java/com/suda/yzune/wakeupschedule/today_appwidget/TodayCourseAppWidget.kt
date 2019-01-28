@@ -97,7 +97,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
             }
 
             if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
-                val week = CourseUtils.countWeek(table.startDate)
+                val week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
                 if (week > 0) {
                     val weekDay = CourseUtils.getWeekday()
                     val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)

@@ -481,8 +481,8 @@ class ScheduleActivity : BaseActivity() {
         }
         mAdapter!!.maxWeek = maxWeek
         mAdapter!!.notifyDataSetChanged()
-        if (CourseUtils.countWeek(table.startDate) > 0) {
-            scheduleViewPager.currentItem = CourseUtils.countWeek(table.startDate) - 1
+        if (CourseUtils.countWeek(table.startDate, table.sundayFirst) > 0) {
+            scheduleViewPager.currentItem = CourseUtils.countWeek(table.startDate, table.sundayFirst) - 1
         } else {
             scheduleViewPager.currentItem = 0
         }
@@ -504,7 +504,7 @@ class ScheduleActivity : BaseActivity() {
         weekSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 try {
-                    val currentWeek = countWeek(viewModel.table.startDate)
+                    val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
                     if (currentWeek > 0) {
                         if (progress + 1 == currentWeek) {
                             weekTextView.text = "第${progress + 1}周"
@@ -561,7 +561,7 @@ class ScheduleActivity : BaseActivity() {
 
         weekdayTextView.setOnClickListener {
             weekdayTextView.text = CourseUtils.getWeekday()
-            val currentWeek = countWeek(viewModel.table.startDate)
+            val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
             if (currentWeek > 0) {
                 scheduleViewPager.currentItem = currentWeek - 1
             } else {
@@ -574,7 +574,7 @@ class ScheduleActivity : BaseActivity() {
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
                 weekSeekBar?.progress = position
-                val currentWeek = countWeek(viewModel.table.startDate)
+                val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
                 try {
                     if (currentWeek > 0) {
                         if (viewModel.selectedWeek == currentWeek) {
@@ -610,7 +610,7 @@ class ScheduleActivity : BaseActivity() {
                 viewModel.getDefaultTable()
             }
 
-            val currentWeek = countWeek(viewModel.table.startDate)
+            val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
 
             if (currentWeek > 0) {
                 weekTextView.text = "第${currentWeek}周"

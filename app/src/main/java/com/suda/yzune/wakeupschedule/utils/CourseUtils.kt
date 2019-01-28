@@ -217,13 +217,18 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun countWeek(date: String): Int {
+    fun countWeek(date: String, sundayFirst: Boolean): Int {
         val during = daysBetween(date)
-        return if (during < 0) during / 7 else during / 7 + 1
+        val cal = Calendar.getInstance()
+        return if (!sundayFirst) {
+            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) during / 7 else during / 7 + 1
+        } else {
+            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) during / 7 else during / 7 + 1
+        }
     }
 
     @Throws(ParseException::class)
-    fun countWeekForExport(date: String): Int {
+    fun countWeekForExport(date: String, sundayFirst: Boolean): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         var todayTime = sdf.format(Date())// 获取当前的日期
         todayTime = "2016" + todayTime.substring(4)
@@ -234,7 +239,11 @@ object CourseUtils {
         val time2 = cal.timeInMillis
         val betweenDays = (time2 - time1) / (1000 * 3600 * 24)
         val during = Integer.parseInt(betweenDays.toString())
-        return if (during < 0) during / 7 else during / 7 + 1
+        return if (!sundayFirst) {
+            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) during / 7 else during / 7 + 1
+        } else {
+            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) during / 7 else during / 7 + 1
+        }
     }
 
     fun getWeekday(): String {

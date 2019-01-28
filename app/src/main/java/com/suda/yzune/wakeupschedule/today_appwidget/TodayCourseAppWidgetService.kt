@@ -33,7 +33,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         override fun onCreate() {
             table = tableDao.getDefaultTableInThread()
             try {
-                week = CourseUtils.countWeek(table.startDate)
+                week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
@@ -50,7 +50,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         override fun onDataSetChanged() {
             table = tableDao.getDefaultTableInThread()
             try {
-                week = CourseUtils.countWeek(table.startDate)
+                week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

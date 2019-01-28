@@ -164,7 +164,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         var fos: FileOutputStream? = null
 
-        val week = CourseUtils.countWeekForExport(table.startDate)
+        val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
         val calendar = net.fortuna.ical4j.model.Calendar()
         calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
         calendar.properties.add(Version.VERSION_2_0)

@@ -18,7 +18,6 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.find
@@ -202,7 +201,7 @@ class WebViewLoginFragment : BaseFragment() {
                 }
             } else {
                 launch {
-                    val task = async(Dispatchers.IO) {
+                    val task = withContext(Dispatchers.IO) {
                         try {
                             viewModel.postHtml(
                                     school = viewModel.schoolInfo[0],
@@ -212,7 +211,7 @@ class WebViewLoginFragment : BaseFragment() {
                         } catch (e: Exception) {
                             e.message
                         }
-                    }.await()
+                    }
 
                     when (task) {
                         "ok" -> {
@@ -232,6 +231,11 @@ class WebViewLoginFragment : BaseFragment() {
     override fun onDestroyView() {
         wvCourse.clearCache(true)
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        wvCourse.destroy()
+        super.onDestroy()
     }
 
     companion object {

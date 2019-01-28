@@ -147,7 +147,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initData(context: Context, views: RemoteViews) {
             try {
-                week = countWeek(table.startDate)
+                week = countWeek(table.startDate, table.sundayFirst)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

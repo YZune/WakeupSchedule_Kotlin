@@ -65,7 +65,7 @@ class ScheduleFragment : BaseFragment() {
             find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
         }
 
-        weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate), week, viewModel.table.sundayFirst)
+        weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
         find<TextView>(R.id.anko_tv_title0).setTextColor(viewModel.table.textColor)
         find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
         var textView: TextView

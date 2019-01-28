@@ -24,7 +24,7 @@ object AppWidgetUtils {
 
     fun refreshScheduleWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.schedule_app_widget)
-        var week = CourseUtils.countWeek(tableBean.startDate)
+        var week = CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst)
         val date = CourseUtils.getTodayDate()
         val weekDay = CourseUtils.getWeekday()
         mRemoteViews.setTextViewText(R.id.tv_date, date)
@@ -56,7 +56,7 @@ object AppWidgetUtils {
 
         mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
         mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
-        val weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(tableBean.startDate), week, tableBean.sundayFirst)
+        val weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst), week, tableBean.sundayFirst)
         mRemoteViews.setTextColor(R.id.tv_title0, tableBean.widgetTextColor)
         mRemoteViews.setTextViewText(R.id.tv_title0, weekDate[0] + "\n月")
         if (tableBean.sundayFirst) {
@@ -81,7 +81,7 @@ object AppWidgetUtils {
 
     fun refreshTodayWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.today_course_app_widget)
-        val week = CourseUtils.countWeek(tableBean.startDate)
+        val week = CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst)
         val date = CourseUtils.getTodayDate()
         val weekDay = CourseUtils.getWeekday()
         mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
