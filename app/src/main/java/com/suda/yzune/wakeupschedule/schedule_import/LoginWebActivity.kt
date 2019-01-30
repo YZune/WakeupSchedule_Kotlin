@@ -13,6 +13,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginWebActivity : BaseActivity() {
 
@@ -90,13 +91,13 @@ class LoginWebActivity : BaseActivity() {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val filePath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
             launch {
-                val import = async(Dispatchers.IO) {
+                val import = withContext(Dispatchers.IO) {
                     try {
                         viewModel.importFromFile(filePath)
                     } catch (e: Exception) {
                         e.message
                     }
-                }.await()
+                }
                 when (import) {
                     "ok" -> {
                         Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()

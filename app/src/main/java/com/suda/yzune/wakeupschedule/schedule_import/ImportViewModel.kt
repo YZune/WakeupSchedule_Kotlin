@@ -39,8 +39,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
-    val ZFSchoolList = arrayListOf("云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
-            "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "厦门理工学院")
+    val ZFSchoolList = arrayListOf("成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+            "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "厦门理工学院", "绍兴文理学院元培学院", "北京工业大学")
     val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
@@ -230,47 +230,35 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return courses
     }
 
-    private fun parseImportBean(source: String, node: Int): ArrayList<ImportBean> {
+    private fun parseImportBean(html: String, node: Int): ArrayList<ImportBean> {
         val courses = ArrayList<ImportBean>()
-        val split = source.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        var preIndex = -1
-        Log.d("空", split.size.toString())
-        for (i in 0 until split.size) {
-            if (split[i].contains('{') && split[i].contains('}')) {
-                if (preIndex != -1) {
-                    if (split[preIndex - 1] in courseProperty) {
-                        hasTypeFlag = true
-                    }
-                    val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
-                            timeInfo = split[preIndex],
-                            room = null, teacher = null)
-                    if ((i - preIndex - 2) == 1) {
-                        temp.teacher = split[preIndex + 1]
-                    } else {
-                        temp.teacher = split[preIndex + 1]
-                        temp.room = split[preIndex + 2]
-                    }
-                    courses.add(temp)
-                    preIndex = i
+        val courseSplits = html.substringBeforeLast("</td>").split("<br><br>")
+        for (courseStr in courseSplits) {
+            val split = courseStr.substringAfter("\">").substringBeforeLast("</a>").split("<br>")
+            println(split)
+            if (split.isEmpty() || split.size < 3) continue
+            val temp = if (split[1] in courseProperty) {
+                if (split.size == 4) {
+                    ImportBean(startNode = node, name = split[0],
+                            timeInfo = split[2],
+                            room = split[3], teacher = "")
                 } else {
-                    preIndex = i
+                    ImportBean(startNode = node, name = split[0],
+                            timeInfo = split[2],
+                            room = split[4], teacher = split[3])
+                }
+            } else {
+                if (split.size == 3) {
+                    ImportBean(startNode = node, name = split[0],
+                            timeInfo = split[1],
+                            room = split[2], teacher = "")
+                } else {
+                    ImportBean(startNode = node, name = split[0],
+                            timeInfo = split[1],
+                            room = split[3], teacher = split[2])
                 }
             }
-            if (i == split.size - 1) {
-                if (split[preIndex - 1] in courseProperty) {
-                    hasTypeFlag = true
-                }
-                val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
-                        timeInfo = split[preIndex],
-                        room = null, teacher = null)
-                if ((i - preIndex) == 1) {
-                    temp.teacher = split[preIndex + 1]
-                } else {
-                    temp.teacher = split[preIndex + 1]
-                    temp.room = split[preIndex + 2]
-                }
-                courses.add(temp)
-            }
+            courses.add(temp)
         }
         return courses
     }
@@ -431,49 +419,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         return write2DB()
-    }
-
-    fun parseChengdu(html: String): ArrayList<ImportBean> {
-
-        val doc = org.jsoup.Jsoup.parse(html)
-
-        val table1 = doc.getElementById("Table1")
-        val trs = table1.getElementsByTag("tr")
-
-        val courses = ArrayList<ImportBean>()
-
-        var node = 0
-        for (tr in trs) {
-            val tds = tr.getElementsByTag("td")
-            for (td in tds) {
-                val courseSource = td.text().trim()
-                if (courseSource.length <= 1) {
-                    //null data
-                    continue
-                }
-
-                if (Pattern.matches(pattern, courseSource)) {
-                    //node number
-                    val nodeStr = courseSource.substring(1, courseSource.length - 1)
-                    try {
-                        node = Integer.decode(nodeStr)
-                    } catch (e: Exception) {
-                        node = getNodeInt(nodeStr)
-                        e.printStackTrace()
-                    }
-
-                    continue
-                }
-
-                if (inArray(other, courseSource)) {
-                    //other data
-                    continue
-                }
-                courses.addAll(convertChengdu(td.html(), node))
-                //parseTextInfo(courseSource, node)
-            }
-        }
-        return courses
     }
 
     private fun convertChengdu(html: String, node: Int): ArrayList<ImportBean> {

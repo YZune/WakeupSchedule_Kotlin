@@ -85,9 +85,9 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.findViewById(R.id.anko_text_view)
+        val tvTitle: TextView = itemView.find(R.id.anko_text_view)
         val tvUnit: TextView = itemView.find(R.id.anko_tv_unit)
         val tvValue: TextView = itemView.find(R.id.anko_tv_value)
-        val seekBar: SeekBar = itemView.findViewById(R.id.anko_seek_bar)
+        val seekBar: SeekBar = itemView.find(R.id.anko_seek_bar)
     }
 }
