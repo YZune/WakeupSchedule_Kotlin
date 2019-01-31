@@ -284,7 +284,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
-                        teacher = importBean.teacher, day = time[0],
+                        teacher = importBean.teacher, day = importBean.cDay,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
@@ -297,7 +297,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
-                        teacher = importBean.teacher, day = time[0],
+                        teacher = importBean.teacher, day = importBean.cDay,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
