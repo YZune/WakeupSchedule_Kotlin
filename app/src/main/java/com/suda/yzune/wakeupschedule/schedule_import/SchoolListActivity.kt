@@ -116,6 +116,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
+        schools.add(0, SchoolListBean("★", "强智教务"))
         schools.add(0, SchoolListBean("★", "新正方教务"))
         schools.add(0, SchoolListBean("★", "正方教务"))
 

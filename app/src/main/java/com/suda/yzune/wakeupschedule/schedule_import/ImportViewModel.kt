@@ -430,19 +430,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return write2DB()
     }
 
-    private fun convertChengdu(html: String, node: Int): ArrayList<ImportBean> {
-        val courses = ArrayList<ImportBean>()
-        val courseSplits = html.substringBeforeLast("</td>").split("<br><br>")
-        for (courseStr in courseSplits) {
-            val split = courseStr.split("<br>")
-            val temp = ImportBean(startNode = node, name = split[0],
-                    timeInfo = split[2],
-                    room = split[4], teacher = split[3])
-            courses.add(temp)
-        }
-        return courses
-    }
-
     suspend fun parseHNIU(html: String): String {
         baseList.clear()
         detailList.clear()

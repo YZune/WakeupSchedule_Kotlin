@@ -9,6 +9,7 @@ import net.fortuna.ical4j.model.property.*
 import net.fortuna.ical4j.util.UidGenerator
 import java.util.*
 import java.util.Calendar
+import java.util.Date
 
 object ICalUtils {
 
@@ -16,7 +17,7 @@ object ICalUtils {
                        endTimeMap: ArrayList<Calendar>,
                        maxWeek: Int,
                        course: CourseBean,
-                       week: Int): List<VEvent> {
+                       termStart: Date): List<VEvent> {
         val result = arrayListOf<VEvent>()
         var i = 1
         while (i <= maxWeek) {
@@ -24,7 +25,7 @@ object ICalUtils {
                 var j = i
                 while (course.inWeek(++j));
                 j--
-                val event = getClassEvent(startTimeMap, endTimeMap, course, week, i, j)
+                val event = getClassEvent(startTimeMap, endTimeMap, course, 1, i, j, termStart)
                 if (event != null) {
                     event.validate()
                     result.add(event)
@@ -41,15 +42,14 @@ object ICalUtils {
                               course: CourseBean,
                               currentWeek: Int,
                               startWeek: Int,
-                              endWeek: Int
+                              endWeek: Int,
+                              termStart: Date
     ): VEvent? {
-        val now = Calendar.getInstance(Locale.CHINA)
-        now.set(Calendar.YEAR, 2016)
         val dayBefore = (currentWeek - startWeek) * 7
-        val dayAfter = (endWeek - currentWeek) * 7
+        val dayAfter = (endWeek - currentWeek) * 7 + course.day
 
         // repeat every week until endDate
-        val recur = Recur(Recur.WEEKLY, DateTime(CourseUtils.getDateAfter(now.time, dayAfter)))
+        val recur = Recur(Recur.WEEKLY, DateTime(CourseUtils.getDateAfter(termStart, dayAfter)))
         recur.interval = 1
         val rule = RRule(recur)
 
@@ -57,14 +57,14 @@ object ICalUtils {
         val endTime = endTimeMap[course.startNode + course.step - 2]
 
         val dailyStart = Calendar.getInstance()
-        dailyStart.time = CourseUtils.getDateBefore(now.time, dayBefore)
+        dailyStart.time = CourseUtils.getDateBefore(termStart, dayBefore)
         dailyStart.set(Calendar.HOUR_OF_DAY, startTime.get(Calendar.HOUR_OF_DAY))
         dailyStart.set(Calendar.MINUTE, startTime.get(Calendar.MINUTE))
         dailyStart.set(Calendar.DAY_OF_WEEK, weekDayConvert(course.day))
         val start = DateTime(dailyStart.time)
 
         val dailyEnd = Calendar.getInstance()
-        dailyEnd.time = CourseUtils.getDateBefore(now.time, dayBefore)
+        dailyEnd.time = CourseUtils.getDateBefore(termStart, dayBefore)
         dailyEnd.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY))
         dailyEnd.set(Calendar.MINUTE, endTime.get(Calendar.MINUTE))
         dailyEnd.set(Calendar.DAY_OF_WEEK, weekDayConvert(course.day))

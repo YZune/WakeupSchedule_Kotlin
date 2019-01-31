@@ -18,6 +18,7 @@ import net.fortuna.ical4j.model.property.ProdId
 import net.fortuna.ical4j.model.property.Version
 import java.io.File
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
@@ -164,17 +165,19 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         var fos: FileOutputStream? = null
 
-        val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
+        //val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
         val calendar = net.fortuna.ical4j.model.Calendar()
         calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
         calendar.properties.add(Version.VERSION_2_0)
         calendar.properties.add(CalScale.GREGORIAN)
         val startTimeMap = ICalUtils.getClassTime(timeList, true)
         val endTimeMap = ICalUtils.getClassTime(timeList, false)
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+        val date = sdf.parse(table.startDate)
         allCourseList.forEach {
             it.value?.forEach { course ->
                 try {
-                    val events = ICalUtils.getClassEvents(startTimeMap, endTimeMap, table.maxWeek, course, week)
+                    val events = ICalUtils.getClassEvents(startTimeMap, endTimeMap, table.maxWeek, course, date)
                     calendar.components.addAll(events)
                 } catch (ignored: Exception) {
 

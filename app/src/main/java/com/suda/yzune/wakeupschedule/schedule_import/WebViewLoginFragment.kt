@@ -8,15 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
-import android.widget.*
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.button.MaterialButton
+import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,14 +32,7 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var type: String
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
-    private lateinit var etUrl: EditText
-    private lateinit var tvTips: TextView
-    private lateinit var wvCourse: WebView
-    private lateinit var llError: LinearLayout
-    private lateinit var pbLoad: ProgressBar
-    private lateinit var tvGotIt: TextView
-    private lateinit var fabImport: MaterialButton
-    private lateinit var tvGo: TextView
+    private var qzType = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,94 +40,129 @@ class WebViewLoginFragment : BaseFragment() {
             type = it.getString("type")!!
             url = it.getString("url")!!
         }
+        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_web_view_login, container, false)
     }
 
     @JavascriptInterface
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_web_view_login, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
 
-        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-
-        etUrl = view.find(R.id.et_url)
-        tvTips = view.find(R.id.tv_tips)
-        wvCourse = view.find(R.id.wv_course)
-        llError = view.find(R.id.ll_error)
-        pbLoad = view.find(R.id.pb_load)
-        tvGotIt = view.find(R.id.tv_got_it)
-        fabImport = view.find(R.id.fab_import)
-        tvGo = view.find(R.id.tv_go)
-
         if (url != "") {
-            etUrl.setText(url)
+            et_url.setText(url)
             startVisit()
         } else {
             val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
             if (url != "") {
-                etUrl.setText(url)
+                et_url.setText(url)
                 startVisit()
             }
         }
 
         if (type == "apply") {
-            tvTips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
+            tv_tips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
         }
-        wvCourse.settings.javaScriptEnabled = true
-        wvCourse.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wvCourse.webViewClient = object : WebViewClient() {
+
+        if (type == "强智教务") {
+            cg_qz.visibility = View.VISIBLE
+            chip_qz1.isChecked = true
+        } else {
+            cg_qz.visibility = View.INVISIBLE
+        }
+
+        wv_course.settings.javaScriptEnabled = true
+        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
+        wv_course.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
                 super.onReceivedError(view, request, error)
-                llError.visibility = View.VISIBLE
-                wvCourse.visibility = View.GONE
+                ll_error.visibility = View.VISIBLE
+                wv_course.visibility = View.GONE
             }
         }
-        wvCourse.webChromeClient = object : WebChromeClient() {
+        wv_course.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
-                    pbLoad.progress = newProgress
-                    pbLoad.visibility = View.GONE
+                    pb_load.progress = newProgress
+                    pb_load.visibility = View.GONE
                 } else {
-                    pbLoad.progress = newProgress * 5
-                    pbLoad.visibility = View.VISIBLE
+                    pb_load.progress = newProgress * 5
+                    pb_load.visibility = View.VISIBLE
                 }
             }
         }
         //设置自适应屏幕，两者合用
-        wvCourse.settings.useWideViewPort = true //将图片调整到适合WebView的大小
-        wvCourse.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
+        wv_course.settings.useWideViewPort = true //将图片调整到适合WebView的大小
+        wv_course.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
         // 缩放操作
-        wvCourse.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-        wvCourse.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        wvCourse.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
-        wvCourse.settings.javaScriptCanOpenWindowsAutomatically = true
-        wvCourse.settings.domStorageEnabled = true
-        wvCourse.settings.userAgentString = wvCourse.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
+        wv_course.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        wv_course.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        wv_course.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
+        wv_course.settings.javaScriptCanOpenWindowsAutomatically = true
+        wv_course.settings.domStorageEnabled = true
+        wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
         initEvent()
-        return view
     }
 
     private fun initEvent() {
-        tvGotIt.setOnClickListener {
-            tvGotIt.visibility = View.GONE
-            tvTips.visibility = View.GONE
-            tvTips.visibility = View.GONE
+
+        var chipId = 0
+        cg_qz.setOnCheckedChangeListener { chipGroup, id ->
+            when (id) {
+                R.id.chip_qz1 -> {
+                    chipId = id
+                    qzType = 0
+                }
+                R.id.chip_qz2 -> {
+                    chipId = id
+                    qzType = 1
+                }
+                R.id.chip_qz3 -> {
+                    chipId = id
+                    qzType = 2
+                }
+                R.id.chip_qz4 -> {
+                    chipId = id
+                    qzType = 3
+                }
+                R.id.chip_qz5 -> {
+                    chipId = id
+                    qzType = 4
+                }
+                R.id.chip_qz6 -> {
+                    chipId = id
+                    qzType = 5
+                }
+                else -> {
+                    chipGroup.find<Chip>(chipId).isChecked = true
+                }
+            }
         }
 
-        tvGo.setOnClickListener {
+        tv_got_it.setOnClickListener {
+            tv_got_it.visibility = View.GONE
+            tv_tips.visibility = View.GONE
+            tv_tips.visibility = View.GONE
+        }
+
+        tv_go.setOnClickListener {
             startVisit()
         }
 
-        etUrl.setOnEditorActionListener { _, actionId, _ ->
+        et_url.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 startVisit()
             }
             return@setOnEditorActionListener false
         }
 
-        fabImport.setOnClickListener {
-            wvCourse.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
+        fab_import.setOnClickListener {
+            wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
                     "var iframeContent=\"\";" +
                     "for(var i=0;i<ifrs.length;i++){" +
                     "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
@@ -148,12 +177,12 @@ class WebViewLoginFragment : BaseFragment() {
     }
 
     private fun startVisit() {
-        wvCourse.visibility = View.VISIBLE
-        llError.visibility = View.GONE
-        val url = if (etUrl.text.toString().startsWith("http://") || etUrl.text.toString().startsWith("https://"))
-            etUrl.text.toString() else "http://" + etUrl.text.toString()
+        wv_course.visibility = View.VISIBLE
+        ll_error.visibility = View.GONE
+        val url = if (et_url.text.toString().startsWith("http://") || et_url.text.toString().startsWith("https://"))
+            et_url.text.toString() else "http://" + et_url.text.toString()
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
-            wvCourse.loadUrl(url)
+            wv_course.loadUrl(url)
             PreferenceUtils.saveStringToSP(activity!!.applicationContext, "school_url", url)
         } else {
             Toasty.error(context!!.applicationContext, "请输入正确的网址╭(╯^╰)╮").show()
@@ -171,6 +200,17 @@ class WebViewLoginFragment : BaseFragment() {
                                 when (type) {
                                     "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                     "新正方教务" -> viewModel.parseNewZF(html)
+                                    "强智教务" -> {
+                                        when (qzType) {
+                                            0 -> viewModel.parseQZ(html, "北京林业大学")
+                                            1 -> viewModel.parseQZ(html, "广东外语外贸大学")
+                                            2 -> viewModel.parseQZ(html, "长春大学")
+                                            3 -> viewModel.parseQZ(html, "青岛农业大学")
+                                            4 -> viewModel.parseQZ(html, "锦州医科大学")
+                                            5 -> viewModel.parseQZ(html, "山东科技大学")
+                                            else -> "没有贵校的信息哦>_<"
+                                        }
+                                    }
                                     "北京林业大学" -> viewModel.parseQZ(html, type)
                                     "广东外语外贸大学" -> viewModel.parseQZ(html, type)
                                     "长春大学" -> viewModel.parseQZ(html, type)
@@ -228,13 +268,10 @@ class WebViewLoginFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-        wvCourse.clearCache(true)
+        wv_course.webViewClient = null
+        wv_course.webChromeClient = null
+        wv_course.clearCache(true)
         super.onDestroyView()
-    }
-
-    override fun onDestroy() {
-        wvCourse.destroy()
-        super.onDestroy()
     }
 
     companion object {

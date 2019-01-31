@@ -81,7 +81,7 @@
             android:paddingTop="16dp"
             android:paddingEnd="16dp"
             android:paddingBottom="8dp"
-            android:text="1. 在上方输入教务网址，部分学校需要连接校园网，目前只支持方正教务\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入"
+            android:text="1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入"
             android:textSize="12sp" />
 
         <TextView
@@ -129,18 +129,95 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/fab_import"
-            android:layout_width="56dp"
-            android:layout_height="67dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="16dp"
-            android:fontFamily="@font/iconfont"
-            android:includeFontPadding="false"
-            android:text=""
-            android:textSize="25sp"
-            app:cornerRadius="48dp" />
+            android:layout_marginBottom="16dp"
+            android:gravity="center">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_qz"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                app:chipSpacingHorizontal="16dp"
+                app:chipSpacingVertical="16dp"
+                app:lineSpacing="20dp"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 1"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/red" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 2"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/pink" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 3"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/lightBlue" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 4"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/orange" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 5"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/blue" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_qz6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkable="true"
+                    android:text="强智 6"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/ruri" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/fab_import"
+                android:layout_width="56dp"
+                android:layout_height="67dp"
+                android:layout_marginEnd="16dp"
+                android:fontFamily="@font/iconfont"
+                android:includeFontPadding="false"
+                android:text=""
+                android:textSize="25sp"
+                app:cornerRadius="48dp" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

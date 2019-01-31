@@ -206,14 +206,21 @@ object CourseUtils {
     @Throws(ParseException::class)
     fun daysBetween(date: String): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
-        val todayTime = sdf.format(Date())// 获取当前的日期
         val cal = Calendar.getInstance()
-        cal.time = sdf.parse(date)
-        val time1 = cal.timeInMillis
-        cal.time = sdf.parse(todayTime)
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
         val time2 = cal.timeInMillis
-        val betweenDays = (time2 - time1) / (1000 * 3600 * 24)
-        return Integer.parseInt(betweenDays.toString())
+        cal.time = sdf.parse(date)
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        val time1 = cal.timeInMillis
+        var betweenDays: Int = ((time2 - time1) / (1000 * 3600 * 24)).toInt()
+        if (betweenDays < 0) {
+            betweenDays--
+        }
+        return betweenDays
     }
 
     @Throws(ParseException::class)
@@ -234,15 +241,23 @@ object CourseUtils {
         todayTime = "2016" + todayTime.substring(4)
         val cal = Calendar.getInstance()
         cal.time = sdf.parse(date)
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
         val time1 = cal.timeInMillis
         cal.time = sdf.parse(todayTime)
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
         val time2 = cal.timeInMillis
-        val betweenDays = (time2 - time1) / (1000 * 3600 * 24)
-        val during = Integer.parseInt(betweenDays.toString())
+        var betweenDays = ((time2 - time1) / (1000 * 3600 * 24)).toInt()
+        if (betweenDays < 0) {
+            betweenDays--
+        }
         return if (!sundayFirst) {
-            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) during / 7 else during / 7 + 1
+            if (betweenDays < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) betweenDays / 7 else betweenDays / 7 + 1
         } else {
-            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) during / 7 else during / 7 + 1
+            if (betweenDays < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) betweenDays / 7 else betweenDays / 7 + 1
         }
     }
 
