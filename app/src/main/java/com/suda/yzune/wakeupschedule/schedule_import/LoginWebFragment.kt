@@ -188,13 +188,13 @@ class LoginWebFragment : BaseFragment() {
     private fun getSchedule(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
         if (year == viewModel.selectedYear && term == viewModel.selectedTerm) {
             launch {
-                val import = async(Dispatchers.IO) {
+                val import = withContext(Dispatchers.IO) {
                     try {
                         viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.selectedSchedule), viewModel.selectedSchedule)
                     } catch (e: Exception) {
                         e.message
                     }
-                }.await()
+                }
                 when (import) {
                     "ok" -> {
                         Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
@@ -219,13 +219,13 @@ class LoginWebFragment : BaseFragment() {
                     cardC2Dialog(viewModel, years)
                     Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
                 } else {
-                    val import = async(Dispatchers.IO) {
+                    val import = withContext(Dispatchers.IO) {
                         try {
                             viewModel.importBean2CourseBean(viewModel.html2ImportBean(task), task)
                         } catch (e: Exception) {
                             e.message
                         }
-                    }.await()
+                    }
                     when (import) {
                         "ok" -> {
                             Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()

@@ -202,9 +202,14 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         var node = 0
         for (tr in trs) {
             val tds = tr.getElementsByTag("td")
+            var countFlag = false
+            var countDay = 0
             for (td in tds) {
                 val courseSource = td.text().trim()
                 if (courseSource.length <= 1) {
+                    if (countFlag) {
+                        countDay++
+                    }
                     continue
                 }
                 if (Pattern.matches(pattern, courseSource)) {
@@ -216,6 +221,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         node = getNodeInt(nodeStr)
                         e.printStackTrace()
                     }
+                    countFlag = true
                     continue
                 }
 
@@ -223,39 +229,42 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     //other list
                     continue
                 }
-                courses.addAll(parseImportBean(courseSource, node))
+
+                countDay++
+                courses.addAll(parseImportBean(countDay, td.html(), node))
                 //parseTextInfo(courseSource, node)
             }
         }
         return courses
     }
 
-    private fun parseImportBean(html: String, node: Int): ArrayList<ImportBean> {
+    private fun parseImportBean(cDay: Int, html: String, node: Int): ArrayList<ImportBean> {
         val courses = ArrayList<ImportBean>()
         val courseSplits = html.substringBeforeLast("</td>").split("<br><br>")
         for (courseStr in courseSplits) {
             val split = courseStr.substringAfter("\">").substringBeforeLast("</a>").split("<br>")
             println(split)
+            println(split.size)
             if (split.isEmpty() || split.size < 3) continue
             val temp = if (split[1] in courseProperty) {
                 if (split.size == 4) {
                     ImportBean(startNode = node, name = split[0],
                             timeInfo = split[2],
-                            room = split[3], teacher = "")
+                            room = split[3], teacher = "", cDay = cDay)
                 } else {
                     ImportBean(startNode = node, name = split[0],
                             timeInfo = split[2],
-                            room = split[4], teacher = split[3])
+                            room = split[4], teacher = split[3], cDay = cDay)
                 }
             } else {
                 if (split.size == 3) {
                     ImportBean(startNode = node, name = split[0],
                             timeInfo = split[1],
-                            room = split[2], teacher = "")
+                            room = split[2], teacher = "", cDay = cDay)
                 } else {
                     ImportBean(startNode = node, name = split[0],
                             timeInfo = split[1],
-                            room = split[3], teacher = split[2])
+                            room = split[3], teacher = split[2], cDay = cDay)
                 }
             }
             courses.add(temp)
