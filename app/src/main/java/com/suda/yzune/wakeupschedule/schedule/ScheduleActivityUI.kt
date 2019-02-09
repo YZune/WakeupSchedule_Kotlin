@@ -10,12 +10,9 @@ import android.view.ViewManager
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
-import com.github.mmin18.widget.RealtimeBlurView
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.custom.ankoView
@@ -28,7 +25,6 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
     private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }
     private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
-    private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
@@ -198,22 +194,6 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                 bottomToBottom = PARENT_ID
                 startToStart = PARENT_ID
                 endToEnd = PARENT_ID
-            }
-
-            if (PreferenceUtils.getBooleanFromSP(context, "blur_main_nav_bar", false) && PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 23) {
-                val barHeight = if (ViewUtils.getVirtualBarHeight(context) != 0) {
-                    ViewUtils.getVirtualBarHeight(context)
-                } else {
-                    dip(48)
-                }
-                blurLayout {
-                    id = R.id.anko_navigation_bar_blur_layout
-                    setBlurRadius(50f)
-                }.lparams(matchParent, barHeight) {
-                    bottomToBottom = PARENT_ID
-                    startToStart = PARENT_ID
-                    endToEnd = PARENT_ID
-                }
             }
         }
     }.view

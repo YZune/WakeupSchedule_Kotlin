@@ -2,23 +2,18 @@ package com.suda.yzune.wakeupschedule.base_view
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
-import com.github.mmin18.widget.RealtimeBlurView
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
-import org.jetbrains.anko.custom.ankoView
 
 abstract class BaseBlurTitleActivity : BaseActivity() {
 
@@ -29,8 +24,6 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
 
     lateinit var mainTitle: TextView
     lateinit var llContent: LinearLayout
-
-    private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,24 +49,10 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                    blurLayout {
-                        setBlurRadius(50f)
-                    }.lparams(matchParent, getStatusBarHeight() + dip(48)) {
-                        topToTop = ConstraintSet.PARENT_ID
-                        startToStart = ConstraintSet.PARENT_ID
-                        endToEnd = ConstraintSet.PARENT_ID
-                    }
-                }
-
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColor = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                        Color.TRANSPARENT
-                    } else {
-                        Color.WHITE
-                    }
+                    backgroundColor = Color.WHITE
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 

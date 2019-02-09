@@ -29,8 +29,6 @@ android {
         versionCode 54
         versionName "3.52"
         flavorDimensions "versionCode"
-        renderscriptTargetApi 28
-        renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -97,8 +95,8 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-alpha11"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-alpha11"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-beta01"
+    implementation "android.arch.navigation:navigation-ui:1.0.0-beta01"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'me.drakeet.multitype:multitype:3.5.0'
@@ -111,6 +109,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    implementation 'com.github.mmin18:realtimeblurview:1.1.2'
     implementation 'androidx.multidex:multidex:2.0.1'
 }

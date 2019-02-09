@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -27,7 +26,6 @@ import kotlinx.coroutines.withContext
 import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
 import me.drakeet.multitype.register
-import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.textColorResource
@@ -68,7 +66,6 @@ class SettingsActivity : BaseListActivity() {
 
     private fun onItemsCreated(items: Items) {
         items.add(CategoryItem("常规", true))
-        items.add(SwitchItem("标题栏模糊效果", PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)))
         items.add(SwitchItem("自动检查更新", PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)))
         items.add(HorizontalItem("设置当前课表", ""))
 
@@ -92,12 +89,6 @@ class SettingsActivity : BaseListActivity() {
 
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
         when (item.title) {
-            "标题栏模糊效果" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "title_blur", isChecked)
-                if (Build.VERSION.SDK_INT < 23) {
-                    mRecyclerView.longSnackbar("该设置仅对 Android 6.0 及以上版本有效>_<")
-                }
-            }
             "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
         }
         item.checked = isChecked

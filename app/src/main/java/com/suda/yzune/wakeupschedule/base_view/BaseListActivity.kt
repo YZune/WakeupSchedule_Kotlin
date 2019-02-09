@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.base_view
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -10,7 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.View.GONE
 import android.view.View.OVER_SCROLL_NEVER
-import android.view.ViewManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -18,12 +16,9 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mmin18.widget.RealtimeBlurView
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
-import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 
 abstract class BaseListActivity : BaseActivity() {
@@ -34,8 +29,6 @@ abstract class BaseListActivity : BaseActivity() {
     protected var showSearch = false
     protected var textWatcher: TextWatcher? = null
     protected lateinit var mRecyclerView: RecyclerView
-
-    private inline fun ViewManager.blurLayout(init: com.github.mmin18.widget.RealtimeBlurView.() -> Unit) = ankoView({ RealtimeBlurView(it, null) }, theme = 0) { init() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,24 +48,10 @@ abstract class BaseListActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                    blurLayout {
-                        setBlurRadius(50f)
-                    }.lparams(matchParent, getStatusBarHeight() + dip(48)) {
-                        topToTop = ConstraintSet.PARENT_ID
-                        startToStart = ConstraintSet.PARENT_ID
-                        endToEnd = ConstraintSet.PARENT_ID
-                    }
-                }
-
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColor = if (Build.VERSION.SDK_INT >= 23 && PreferenceUtils.getBooleanFromSP(applicationContext, "title_blur", true)) {
-                        Color.TRANSPARENT
-                    } else {
-                        Color.WHITE
-                    }
+                    backgroundColor = Color.WHITE
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 

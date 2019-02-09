@@ -85,7 +85,6 @@ class AdvancedSettingsActivity : BaseListActivity() {
 
         items.add(VerticalItem("虚拟键颜色", "调整虚拟键的颜色。\n以下关于虚拟键的设置，只对有虚拟键的手机有效哦，是为了有更好的沉浸效果~\n有实体按键或全面屏手势的手机本身就很棒啦~"))
         items.add(SwitchItem("主界面虚拟键沉浸", PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)))
-        items.add(SwitchItem("主界面虚拟键模糊", PreferenceUtils.getBooleanFromSP(applicationContext, "blur_main_nav_bar", false)))
 
         items.add(CategoryItem("上课提醒", false))
         items.add(VerticalItem("功能说明", "本功能处于<b><font color='#fa6278'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#fa6278'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。<br>理论上<b><font color='#fa6278'>每次设置之后</font></b>需要半天以上的时间才会正常工作，理论上不会很耗电。", true))
@@ -115,24 +114,6 @@ class AdvancedSettingsActivity : BaseListActivity() {
                     mRecyclerView.longSnackbar("重启App后生效哦~")
                 }
                 item.checked = isChecked
-            }
-            "主界面虚拟键模糊" -> {
-                if (Build.VERSION.SDK_INT < 23) {
-                    mRecyclerView.longSnackbar("该设置仅对 Android 6.0 及以上版本有效>_<")
-                    item.checked = isChecked
-                    PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
-                } else {
-                    if (isChecked && !PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)) {
-                        mRecyclerView.longSnackbar("只有沉浸后才能模糊哦>_<")
-                        item.checked = false
-                        PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", false)
-                        mAdapter.notifyDataSetChanged()
-                    } else {
-                        mRecyclerView.longSnackbar("重启App后生效哦~")
-                        item.checked = isChecked
-                        PreferenceUtils.saveBooleanToSP(applicationContext, "blur_main_nav_bar", isChecked)
-                    }
-                }
             }
             "开启上课提醒" -> {
                 launch {
