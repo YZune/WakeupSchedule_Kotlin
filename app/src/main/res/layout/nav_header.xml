@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="200dp">
 
-    <com.scwang.wave.MultiWaveHeader
-        android:id="@+id/waveHeader"
+    <ImageView
+        android:id="@+id/iv_header"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        diagonal:mwhStartColor="@color/colorAccent" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
-</LinearLayout>
+</FrameLayout>

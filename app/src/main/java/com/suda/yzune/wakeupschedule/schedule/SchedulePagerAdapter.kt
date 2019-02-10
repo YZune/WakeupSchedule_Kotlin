@@ -1,6 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-class SchedulePagerAdapter(var maxWeek: Int, manager: androidx.fragment.app.FragmentManager) : androidx.fragment.app.FragmentStatePagerAdapter(manager) {
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.viewpager.widget.PagerAdapter
+
+class SchedulePagerAdapter(var maxWeek: Int, manager: FragmentManager) : FragmentStatePagerAdapter(manager) {
 
     override fun getItem(position: Int): ScheduleFragment {
         return ScheduleFragment.newInstance(position + 1)
@@ -11,6 +15,6 @@ class SchedulePagerAdapter(var maxWeek: Int, manager: androidx.fragment.app.Frag
     }
 
     override fun getItemPosition(`object`: Any): Int {
-        return androidx.viewpager.widget.PagerAdapter.POSITION_NONE
+        return PagerAdapter.POSITION_NONE
     }
 }

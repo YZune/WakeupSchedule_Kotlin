@@ -14,6 +14,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jsoup.Jsoup
 import retrofit2.Retrofit
 import java.io.File
@@ -52,7 +53,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
     var selectedYear = ""
     var selectedTerm = ""
-    var selectedSchedule: String = ""
+    var selectedSchedule = ""
     var schoolInfo = Array(3) { "" }
 
     private val baseList = arrayListOf<CourseBaseBean>()
@@ -280,7 +281,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         for (importBean in importList) {
             val flag = isContainName(baseList, importBean.name)
             if (flag == -1) {
-                baseList.add(CourseBaseBean(id, importBean.name, "", importId))
+                baseList.add(CourseBaseBean(id, importBean.name, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}"
+                        , importId))
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
@@ -404,7 +406,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
                         val flag = isContainName(baseList, courseName)
                         if (flag == -1) {
-                            baseList.add(CourseBaseBean(id, courseName, "", importId))
+                            baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                             detailList.add(CourseDetailBean(
                                     id = id, room = room,
                                     teacher = teacher, day = day,
@@ -513,7 +515,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
@@ -623,7 +625,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
@@ -677,7 +679,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
@@ -737,7 +739,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
@@ -792,7 +794,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
@@ -847,7 +849,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val flag = isContainName(baseList, courseName)
             if (flag == -1) {
                 id = baseList.size
-                baseList.add(CourseBaseBean(id, courseName, "", importId))
+                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,

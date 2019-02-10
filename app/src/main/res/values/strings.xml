@@ -45,4 +45,9 @@
     <string name="type_NewZhengFang">新正方教务</string>
     <string name="type_QiangZhi">强智教务</string>
 
+    <plurals name="error_over_count">
+        <item quantity="one">只可以选择一个文件哦</item>
+        <item quantity="many">You can only select up to %1$d media files</item>
+    </plurals>
+
 </resources>

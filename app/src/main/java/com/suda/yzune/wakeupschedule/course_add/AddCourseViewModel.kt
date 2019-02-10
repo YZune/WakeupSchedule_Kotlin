@@ -9,6 +9,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 
 class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -88,6 +89,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
             editList.forEach {
                 it.id = baseBean.id
             }
+        }
+        if (baseBean.color == "") {
+            baseBean.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseBean.id % 9))}"
         }
         for (i in editList.indices) {
             if (i !in deleteList) {

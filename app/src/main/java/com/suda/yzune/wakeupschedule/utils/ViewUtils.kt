@@ -72,6 +72,7 @@ object ViewUtils {
                 scrollView {
                     id = R.id.anko_sv_schedule
                     overScrollMode = View.OVER_SCROLL_NEVER
+                    isVerticalScrollBarEnabled = false
                     constraintLayout {
                         id = R.id.anko_cl_content_panel
                         for (i in 1..20) {
@@ -304,5 +305,8 @@ object ViewUtils {
         v.layout(0, 0, v.measuredWidth, v.measuredHeight)
     }
 
-
+    fun getCustomizedColor(context: Context, index: Int): Int {
+        val customizedColors = context.resources.getIntArray(R.array.customizedColors)
+        return customizedColors[index]
+    }
 }

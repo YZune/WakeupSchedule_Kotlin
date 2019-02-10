@@ -4,18 +4,26 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.appwidget.AppWidgetManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
+import android.view.Window
 import androidx.fragment.app.BaseDialogFragment
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.card.MaterialCardView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
+import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.support.v4.dip
 
 class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
 
@@ -23,15 +31,8 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
         get() = R.layout.fragment_course_detail
 
     private lateinit var course: CourseBean
-    private lateinit var title: TextView
-    private lateinit var weeks: TextView
-    private lateinit var time: TextView
-    private lateinit var teacher: TextView
-    private lateinit var room: TextView
-    private lateinit var close: TextView
+    private var nested: Boolean = false
     private lateinit var viewModel: ScheduleViewModel
-
-    private lateinit var job: Job
 
     private var makeSure = 0
 
@@ -39,9 +40,22 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
         super.onCreate(savedInstanceState)
         arguments?.let {
             course = it.getParcelable("course") as CourseBean
+            nested = it.getBoolean("nested")
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-        job = Job()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        if (!nested) {
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+        val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
+        val cardView = root.find<MaterialCardView>(R.id.base_card_view)
+        LayoutInflater.from(context).inflate(layoutId, cardView, true)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,41 +66,42 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
     }
 
     private fun initView() {
-        title = include_detail.findViewById(R.id.tv_item)
-        weeks = include_detail.findViewById(R.id.et_weeks)
-        time = include_detail.findViewById(R.id.et_time)
-        teacher = include_detail.findViewById(R.id.et_teacher)
-        room = include_detail.findViewById(R.id.et_room)
-        close = include_detail.findViewById(R.id.ib_delete)
+        tv_item.setTextColor(Color.BLACK)
+        tv_item.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+        et_weeks.setTextColor(Color.BLACK)
+        et_time.setTextColor(Color.BLACK)
+        et_teacher.setTextColor(Color.BLACK)
+        et_room.setTextColor(Color.BLACK)
 
-        title.setTextColor(Color.BLACK)
-        title.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-        weeks.setTextColor(Color.BLACK)
-        time.setTextColor(Color.BLACK)
-        teacher.setTextColor(Color.BLACK)
-        room.setTextColor(Color.BLACK)
-
-        teacher.isFocusable = false
-        teacher.isFocusableInTouchMode = false
-        room.isFocusable = false
-        room.isFocusableInTouchMode = false
+        et_teacher.isFocusable = false
+        et_teacher.isFocusableInTouchMode = false
+        et_room.isFocusable = false
+        et_room.isFocusableInTouchMode = false
     }
 
     private fun showData() {
-        title.text = course.courseName
-        teacher.text = course.teacher
-        room.text = course.room
-        var type = ""
-        when (course.type) {
-            1 -> type = "单周"
-            2 -> type = "双周"
+        tv_item.text = course.courseName
+        et_teacher.setText(course.teacher)
+        et_room.setText(course.room)
+        val type = when (course.type) {
+            1 -> "单周"
+            2 -> "双周"
+            else -> ""
         }
-        weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
-        time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
+        et_weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
+        et_time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
+    }
+
+    override fun dismiss() {
+        if (nested) {
+            (parentFragment as DialogFragment).dismiss()
+        } else {
+            super.dismiss()
+        }
     }
 
     private fun initEvent() {
-        close.setOnClickListener {
+        ib_delete.setOnClickListener {
             dismiss()
         }
 
@@ -172,10 +187,11 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg: CourseBean) =
+        fun newInstance(arg: CourseBean, arg1: Boolean = false) =
                 CourseDetailFragment().apply {
                     arguments = Bundle().apply {
                         putParcelable("course", arg)
+                        putBoolean("nested", arg1)
                     }
                 }
     }

@@ -45,6 +45,12 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return tableDao.getTableSelectList()
     }
 
+    fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {
+        return allCourseList[day - 1].value!!.filter {
+            it.inWeek(week) && it.startNode == startNode
+        }
+    }
+
     suspend fun getDefaultTable(): TableBean {
         return tableDao.getDefaultTableInThread()
     }
@@ -76,10 +82,6 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
 
     suspend fun deleteCourseBaseBean(id: Int, tableId: Int) {
         baseDao.deleteCourseBaseBeanOfTable(id, tableId)
-    }
-
-    suspend fun updateCourseBaseBean(course: CourseBean) {
-        baseDao.updateCourseBaseBean(CourseUtils.courseBean2BaseBean(course))
     }
 
     suspend fun updateFromOldVer(json: String) {

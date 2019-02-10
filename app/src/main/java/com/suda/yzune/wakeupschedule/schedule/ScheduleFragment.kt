@@ -18,9 +18,8 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
 
@@ -138,6 +137,7 @@ class ScheduleFragment : BaseFragment() {
             find<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
         }
         if (data == null || data.isEmpty()) return
+        var isCovered = false
         var pre = data[0]
         for (i in data.indices) {
             val strBuilder = StringBuilder()
@@ -155,7 +155,7 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
-            val textView = TextView(context)
+            val textView = TipTextView(context!!)
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
@@ -164,12 +164,14 @@ class ScheduleFragment : BaseFragment() {
                     lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
                 } else {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                    isCovered = (pre.startNode == c.startNode)
                 }
             } else {
                 if (ll.childCount == 0) {
                     lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
                 } else {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
+                    isCovered = (pre.startNode == c.startNode)
                 }
             }
 
@@ -184,10 +186,7 @@ class ScheduleFragment : BaseFragment() {
             myGrad.setStroke(dip(2), table.strokeColor)
 
             if (c.color == "") {
-                c.color = "#${Integer.toHexString(getCustomizedColor(c.id % 9))}"
-                launch(Dispatchers.IO) {
-                    viewModel.updateCourseBaseBean(c)
-                }
+                c.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(activity!!, c.id % 9))}"
             }
 
             try {
@@ -240,7 +239,9 @@ class ScheduleFragment : BaseFragment() {
             if (c.startWeek > week || c.endWeek < week) {
                 if (table.showOtherWeekCourse) {
                     textView.alpha = 0.6f
-                    strBuilder.append("[非本周]")
+                    if (!strBuilder.endsWith("[非本周]")) {
+                        strBuilder.append("[非本周]")
+                    }
                     textView.visibility = View.VISIBLE
                     myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
                 } else {
@@ -248,12 +249,33 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
+            if (!strBuilder.endsWith("[非本周]") && ll.findViewWithTag<TextView?>("第${c.startNode}节") == null) {
+                textView.tag = "第${c.startNode}节"
+            }
+
+            if (isCovered && ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
+                ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
+//                textView.tipVisibility = TipTextView.TIP_VISIBLE
+//                textView.setOnClickListener {
+//                    MultiCourseFragment.newInstance(week, c.day, c.startNode).show(fragmentManager!!, "multi")
+//                }
+            }
+
+            if (ll.findViewWithTag<TextView?>("第${c.startNode}节") != null) {
+                textView.visibility = View.INVISIBLE
+                val tv = ll.findViewWithTag<TipTextView>("第${c.startNode}节")
+                if (tv.tipVisibility == TipTextView.TIP_INVISIBLE) {
+                    tv.tipVisibility = TipTextView.TIP_VISIBLE
+                    tv.setOnClickListener {
+                        MultiCourseFragment.newInstance(week, c.day, c.startNode).show(fragmentManager!!, "multi")
+                    }
+                }
+            }
+
             if (table.showTime) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
-                textView.text = strBuilder
-            } else {
-                textView.text = strBuilder
             }
+            textView.text = strBuilder
 
             textView.setOnClickListener {
                 try {
@@ -276,11 +298,6 @@ class ScheduleFragment : BaseFragment() {
             }
             pre = c
         }
-    }
-
-    private fun getCustomizedColor(index: Int): Int {
-        val customizedColors = resources.getIntArray(R.array.customizedColors)
-        return customizedColors[index]
     }
 
 }

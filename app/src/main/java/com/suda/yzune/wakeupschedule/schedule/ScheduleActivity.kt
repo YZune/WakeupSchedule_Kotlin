@@ -60,7 +60,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.ParseException
 
-
 class ScheduleActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
@@ -191,6 +190,11 @@ class ScheduleActivity : BaseActivity() {
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
+            GlideApp.with(this.applicationContext)
+                    .load(viewModel.table.background)
+                    .override((x * 0.8).toInt(), (y * 0.8).toInt())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(navigationView.find(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -199,6 +203,11 @@ class ScheduleActivity : BaseActivity() {
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
+            GlideApp.with(this.applicationContext)
+                    .load(R.drawable.main_background_2019)
+                    .override((x * 0.8).toInt(), (y * 0.8).toInt())
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(navigationView.find(R.id.iv_header))
         }
 
         for (i in 0 until scheduleConstraintLayout.childCount) {
