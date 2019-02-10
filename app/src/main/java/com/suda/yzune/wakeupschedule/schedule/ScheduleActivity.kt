@@ -70,6 +70,7 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var scheduleConstraintLayout: ConstraintLayout
     private var weekSeekBar: VerticalSeekBar? = null
     private lateinit var navImageButton: TextView
+    private lateinit var shareImageButton: TextView
     private lateinit var addImageButton: TextView
     private lateinit var importImageButton: TextView
     private lateinit var moreImageButton: TextView
@@ -115,6 +116,7 @@ class ScheduleActivity : BaseActivity() {
             weekSeekBar = find(R.id.anko_sb_week)
         }
         navImageButton = find(R.id.anko_ib_nav)
+        shareImageButton = find(R.id.anko_ib_share)
         addImageButton = find(R.id.anko_ib_add)
         importImageButton = find(R.id.anko_ib_import)
         moreImageButton = find(R.id.anko_ib_more)
@@ -194,7 +196,7 @@ class ScheduleActivity : BaseActivity() {
                     .load(viewModel.table.background)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(navigationView.find(R.id.iv_header))
+                    .into(navigationView.getHeaderView(0).find(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -207,7 +209,7 @@ class ScheduleActivity : BaseActivity() {
                     .load(R.drawable.main_background_2019)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(navigationView.find(R.id.iv_header))
+                    .into(navigationView.getHeaderView(0).find(R.id.iv_header))
         }
 
         for (i in 0 until scheduleConstraintLayout.childCount) {
@@ -328,7 +330,7 @@ class ScheduleActivity : BaseActivity() {
         return view
     }
 
-    private fun initIntro() {
+    fun initIntro() {
         TapTargetSequence(this)
                 .targets(
                         TapTarget.forView(addImageButton, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
@@ -347,6 +349,20 @@ class ScheduleActivity : BaseActivity() {
                                 .targetRadius(60),
                         TapTarget.forView(importImageButton, "这是导入课程的按钮", "现在已经支持采用正方教务系统的学校的课程自动导入了！\n还有别人分享给你的文件也要从这里导入哦~\n点击白色区域告诉我你get到了")
                                 .outerCircleColor(R.color.lightBlue)
+                                .outerCircleAlpha(0.96f)
+                                .targetCircleColorInt(Color.WHITE)
+                                .titleTextSize(16)
+                                .titleTextColorInt(Color.WHITE)
+                                .descriptionTextSize(12)
+                                .textColorInt(Color.WHITE)
+                                .dimColorInt(Color.BLACK)
+                                .drawShadow(true)
+                                .cancelable(false)
+                                .tintTarget(true)
+                                .transparentTarget(false)
+                                .targetRadius(60),
+                        TapTarget.forView(shareImageButton, "点击此处可分享或导出", "可以导出成多种格式呢\n点击白色区域告诉我你get到了")
+                                .outerCircleColor(R.color.deepOrange)
                                 .outerCircleAlpha(0.96f)
                                 .targetCircleColorInt(Color.WHITE)
                                 .titleTextSize(16)
@@ -541,6 +557,10 @@ class ScheduleActivity : BaseActivity() {
         })
 
         navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
+
+        shareImageButton.setOnClickListener {
+            ExportSettingsFragment().show(supportFragmentManager, "share")
+        }
 
         importImageButton.setOnClickListener {
             //            val alert = AlertView("导入课程", "现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)", AlertStyle.DIALOG)

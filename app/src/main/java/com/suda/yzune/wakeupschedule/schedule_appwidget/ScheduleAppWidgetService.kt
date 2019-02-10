@@ -15,6 +15,7 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.widget.TipTextView
 import org.jetbrains.anko.dip
 import java.text.ParseException
 
@@ -174,11 +175,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             val ll = view.findViewById<LinearLayout>(R.id.anko_ll_week_panel_1 + llIndex)
             ll.removeAllViews()
             if (data == null || data.isEmpty()) return
+            var isCovered = false
             var pre = data[0]
             for (i in data.indices) {
                 val strBuilder = StringBuilder()
                 val c = data[i]
-                val tv = TextView(context)
+                val tv = TipTextView(context)
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         widgetItemHeight * c.step + marTop * (c.step - 1))
@@ -186,6 +188,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (widgetItemHeight + marTop) + marTop, 0, 0)
                 } else {
                     lp.setMargins(0, (c.startNode - 1) * (widgetItemHeight + marTop) + marTop, 0, 0)
+                    isCovered = (pre.startNode == c.startNode)
                 }
                 tv.layoutParams = lp
                 //tv.gravity = Gravity.CENTER_VERTICAL
@@ -244,11 +247,33 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 if (c.startWeek > week || c.endWeek < week) {
                     if (table.showOtherWeekCourse) {
                         tv.alpha = 0.6f
-                        strBuilder.append("[非本周]")
+                        if (!strBuilder.endsWith("[非本周]")) {
+                            strBuilder.append("[非本周]")
+                        }
                         tv.visibility = View.VISIBLE
                         myGrad.setColor(ContextCompat.getColor(context.applicationContext, R.color.grey))
                     } else {
                         tv.visibility = View.INVISIBLE
+                    }
+                }
+
+                if (!strBuilder.endsWith("[非本周]") && ll.findViewWithTag<TextView?>("第${c.startNode}节") == null) {
+                    tv.tag = "第${c.startNode}节"
+                }
+
+                if (isCovered) {
+                    if (ll.getChildAt(ll.childCount - 1) != null) {
+                        if (ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
+                            ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
+                        }
+                    }
+                }
+
+                if (ll.findViewWithTag<TextView?>("第${c.startNode}节") != null) {
+                    tv.visibility = View.INVISIBLE
+                    val textView = ll.findViewWithTag<TipTextView>("第${c.startNode}节")
+                    if (textView.tipVisibility == TipTextView.TIP_INVISIBLE) {
+                        textView.tipVisibility = TipTextView.TIP_VISIBLE
                     }
                 }
 

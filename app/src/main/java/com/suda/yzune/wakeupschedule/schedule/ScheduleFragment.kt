@@ -253,12 +253,12 @@ class ScheduleFragment : BaseFragment() {
                 textView.tag = "第${c.startNode}节"
             }
 
-            if (isCovered && ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
-                ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
-//                textView.tipVisibility = TipTextView.TIP_VISIBLE
-//                textView.setOnClickListener {
-//                    MultiCourseFragment.newInstance(week, c.day, c.startNode).show(fragmentManager!!, "multi")
-//                }
+            if (isCovered) {
+                if (ll.getChildAt(ll.childCount - 1) != null) {
+                    if (ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
+                        ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
+                    }
+                }
             }
 
             if (ll.findViewWithTag<TextView?>("第${c.startNode}节") != null) {

@@ -51,6 +51,8 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
+        } else {
+            container!!.layoutParams.width = dip(280)
         }
         val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
         val cardView = root.find<MaterialCardView>(R.id.base_card_view)
@@ -73,8 +75,10 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
         et_teacher.setTextColor(Color.BLACK)
         et_room.setTextColor(Color.BLACK)
 
+        et_teacher.isEnabled = false
         et_teacher.isFocusable = false
         et_teacher.isFocusableInTouchMode = false
+        et_room.isEnabled = false
         et_room.isFocusable = false
         et_room.isFocusableInTouchMode = false
     }

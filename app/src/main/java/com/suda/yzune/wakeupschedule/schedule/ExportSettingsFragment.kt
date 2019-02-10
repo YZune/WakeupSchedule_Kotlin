@@ -12,13 +12,12 @@ import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
 import gdut.bsx.share2.ShareContentType
 import kotlinx.android.synthetic.main.fragment_export_settings.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class ExportSettingsFragment : BaseDialogFragment(), CoroutineScope {
+class ExportSettingsFragment : BaseDialogFragment() {
 
     override val layoutId: Int
         get() = R.layout.fragment_export_settings

@@ -91,7 +91,7 @@ abstract class BaseListActivity : BaseActivity() {
                             textSize = 20f
                             typeface = iconFont
                             text = "\uE6D4"
-                            gravity = Gravity.CENTER_VERTICAL
+                            gravity = Gravity.CENTER
                             backgroundResource = outValue.resourceId
                             setOnClickListener {
                                 when (searchView.visibility) {
@@ -107,15 +107,18 @@ abstract class BaseListActivity : BaseActivity() {
                                     }
                                 }
                             }
-                        }.lparams(wrapContent, dip(48))
+                        }.lparams(wrapContent, dip(48)) {
+                            marginEnd = dip(24)
+                        }
                     }
 
                     onSetupSubButton(
                             textView {
-                                gravity = Gravity.CENTER_VERTICAL
+                                gravity = Gravity.CENTER
                                 backgroundResource = outValue.resourceId
-                                horizontalPadding = dip(24)
-                            }.lparams(wrapContent, dip(48))
+                            }.lparams(wrapContent, dip(48)) {
+                                marginEnd = dip(24)
+                            }
                     )
                 }.lparams(matchParent, wrapContent) {
                     topToTop = ConstraintSet.PARENT_ID

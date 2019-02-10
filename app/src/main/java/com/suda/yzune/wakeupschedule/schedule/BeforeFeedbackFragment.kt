@@ -23,6 +23,11 @@ class BeforeFeedbackFragment : BaseDialogFragment() {
             dismiss()
         }
 
+        tv_guide.setOnClickListener {
+            dismiss()
+            (activity as ScheduleActivity).initIntro()
+        }
+
         tv_feedback.setOnClickListener {
             val c = Calendar.getInstance()
             val hour = c.get(Calendar.HOUR_OF_DAY)

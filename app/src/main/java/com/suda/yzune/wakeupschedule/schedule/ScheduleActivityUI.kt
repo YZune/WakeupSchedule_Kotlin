@@ -122,6 +122,20 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             typeface = iconFont
                         }.lparams(dip(32), dip(32)) {
                             topMargin = statusBarMargin
+                            endToStart = R.id.anko_ib_share
+                            topToTop = PARENT_ID
+                        }
+
+                        //分享按钮
+                        textView("\uE6BA") {
+                            id = R.id.anko_ib_share
+                            backgroundResource = outValue.resourceId
+                            textSize = 20f
+                            gravity = Gravity.CENTER
+                            includeFontPadding = false
+                            typeface = iconFont
+                        }.lparams(dip(32), dip(32)) {
+                            topMargin = statusBarMargin
                             endToStart = R.id.anko_ib_more
                             topToTop = PARENT_ID
                         }
