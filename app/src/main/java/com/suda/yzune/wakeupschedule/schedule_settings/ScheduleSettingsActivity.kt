@@ -39,9 +39,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
-import me.drakeet.multitype.register
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -70,8 +68,8 @@ class ScheduleSettingsActivity : BaseListActivity() {
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
-    private val allItems = Items()
-    private val showItems = Items()
+    private val allItems = mutableListOf<Any>()
+    private val showItems = mutableListOf<Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSearch = true
@@ -127,7 +125,7 @@ class ScheduleSettingsActivity : BaseListActivity() {
         adapter.register(SwitchItem::class, SwitchItemViewBinder { item, isCheck -> onSwitchItemCheckChange(item, isCheck) })
     }
 
-    private fun onItemsCreated(items: Items) {
+    private fun onItemsCreated(items: MutableList<Any>) {
         items.add(CategoryItem("课程数据", true))
         items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
         items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))

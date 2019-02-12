@@ -23,9 +23,7 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
-import me.drakeet.multitype.register
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 import org.jetbrains.anko.textColorResource
@@ -57,14 +55,14 @@ class SettingsActivity : BaseListActivity() {
         tableDao = dataBase.tableDao()
 
         onAdapterCreated(mAdapter)
-        val items = Items()
+        val items = mutableListOf<Any>()
         onItemsCreated(items)
         mAdapter.items = items
         mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
     }
 
-    private fun onItemsCreated(items: Items) {
+    private fun onItemsCreated(items: MutableList<Any>) {
         items.add(CategoryItem("常规", true))
         items.add(SwitchItem("自动检查更新", PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)))
         items.add(HorizontalItem("设置当前课表", ""))

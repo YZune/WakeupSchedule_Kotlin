@@ -101,8 +101,7 @@ dependencies {
     implementation "android.arch.navigation:navigation-ui:1.0.0-beta01"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
-    implementation 'me.drakeet.multitype:multitype:3.5.0'
-    implementation 'me.drakeet.multitype:multitype-ktx:3.5.0'
+    implementation 'me.drakeet.multitype:multitype:4.0.0-alpha2'
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.8@aar') {
         transitive = true
     }

@@ -31,9 +31,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import me.drakeet.multitype.Items
 import me.drakeet.multitype.MultiTypeAdapter
-import me.drakeet.multitype.register
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColorResource
@@ -66,14 +64,14 @@ class AdvancedSettingsActivity : BaseListActivity() {
         widgetDao = dataBase.appWidgetDao()
 
         onAdapterCreated(mAdapter)
-        val items = Items()
+        val items = mutableListOf<Any>()
         onItemsCreated(items)
         mAdapter.items = items
         mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
     }
 
-    private fun onItemsCreated(items: Items) {
+    private fun onItemsCreated(items: MutableList<Any>) {
         if (BuildConfig.CHANNEL != "google") {
             items.add(CategoryItem("愿意为之付费吗？", true))
             items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b><br>", true))

@@ -2,6 +2,8 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 
 import android.app.Activity.RESULT_OK
+import android.net.http.SslError
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
-
 
 class WebViewLoginFragment : BaseFragment() {
 
@@ -76,6 +77,14 @@ class WebViewLoginFragment : BaseFragment() {
         }
 
         wv_course.settings.javaScriptEnabled = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            wv_course.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+        wv_course.webViewClient = object : WebViewClient() {
+            override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+                handler.proceed() //接受所有网站的证书
+            }
+        }
         wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
         wv_course.webViewClient = object : WebViewClient() {
             override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
@@ -271,6 +280,9 @@ class WebViewLoginFragment : BaseFragment() {
         wv_course.webViewClient = null
         wv_course.webChromeClient = null
         wv_course.clearCache(true)
+        wv_course.clearHistory()
+        wv_course.removeAllViews()
+        wv_course.destroy()
         super.onDestroyView()
     }
 
