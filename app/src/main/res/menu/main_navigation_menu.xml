@@ -1,33 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="none">
-        <item
-            android:id="@+id/nav_wakeup"
-            android:icon="@drawable/wakeup"
-            android:title="WakeUp" />
-        <item
-            android:id="@+id/nav_young"
-            android:icon="@drawable/young"
-            android:title="咩咩" />
-        <item
-            android:id="@+id/nav_explore"
-            android:icon="@drawable/explore"
-            android:title="申请情况" />
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/about"
-            android:title="关于" />
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/help"
-            android:title="问答 + 技巧" />
-        <item
-            android:id="@+id/nav_feedback"
-            android:icon="@drawable/feedback"
-            android:title="反馈" />
-        <item
-            android:id="@+id/nav_setting"
-            android:icon="@drawable/setting"
-            android:title="设置" />
+        <item android:title="通用">
+            <menu>
+                <item
+                    android:id="@+id/nav_wakeup"
+                    android:icon="@drawable/wakeup"
+                    android:title="WakeUp" />
+                <item
+                    android:id="@+id/nav_young"
+                    android:icon="@drawable/young"
+                    android:title="咩咩" />
+                <item
+                    android:id="@+id/nav_explore"
+                    android:icon="@drawable/explore"
+                    android:title="申请情况" />
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/about"
+                    android:title="关于" />
+                <item
+                    android:id="@+id/nav_help"
+                    android:icon="@drawable/help"
+                    android:title="问答 + 技巧" />
+                <item
+                    android:id="@+id/nav_feedback"
+                    android:icon="@drawable/feedback"
+                    android:title="反馈" />
+                <item
+                    android:id="@+id/nav_setting"
+                    android:icon="@drawable/setting"
+                    android:title="设置" />
+            </menu>
+        </item>
+
+        <item android:title="苏大生活">
+            <menu>
+                <item android:title="空闲教室查询" />
+                <item android:title="澡堂使用情况" />
+            </menu>
+        </item>
+
     </group>
 </menu>

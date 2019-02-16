@@ -221,7 +221,6 @@
 -keepattributes *Annotation*
 -keep class sun.misc.Unsafe { *; }
 
-#-keep class com.google.gson.stream.** { *; }
 -keep class com.google.gson.examples.android.model.** { *; }
 -keep class * implements com.google.gson.TypeAdapterFactory
 -keep class * implements com.google.gson.JsonSerializer
