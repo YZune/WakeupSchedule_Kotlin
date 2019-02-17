@@ -12,6 +12,7 @@ import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countStr
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -40,16 +41,17 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
-    val ZFSchoolList = arrayListOf("成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+    val ZFSchoolList = arrayOf("潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "厦门理工学院", "绍兴文理学院元培学院", "北京工业大学")
-    val newZFSchoolList = arrayListOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+    val newZFSchoolList = arrayOf("浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
             "湖北经济学院", "华中师范大学", "华南理工大学")
-    val qzLessNodeSchoolList = arrayListOf("锦州医科大学", "中国药科大学", "广西师范学院", "天津中医药大学", "山东大学威海校区",
+    val qzGuangwaiList = arrayOf("江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学")
+    val qzLessNodeSchoolList = arrayOf("中南林业科技大学", "大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",
             "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
-    val qzMoreNodeSchoolList = arrayListOf("山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
+    val qzMoreNodeSchoolList = arrayOf("湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
     var selectedYear = ""
     var selectedTerm = ""
@@ -241,11 +243,15 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun parseImportBean(cDay: Int, html: String, node: Int): ArrayList<ImportBean> {
         val courses = ArrayList<ImportBean>()
-        val courseSplits = html.substringBeforeLast("</td>").split("<br><br>")
+        var isAbnormal = false
+        val courseSplits = if (html.substringBeforeLast("</td>").contains("<br><br><br>")) {
+            isAbnormal = true
+            html.substringBeforeLast("</td>").split("<br><br><br>")
+        } else {
+            html.substringBeforeLast("</td>").split("<br><br>")
+        }
         for (courseStr in courseSplits) {
             val split = courseStr.substringAfter("\">").substringBeforeLast("</a>").split("<br>")
-            println(split)
-            println(split.size)
             if (split.isEmpty() || split.size < 3) continue
             val temp = if (split[1] in courseProperty) {
                 if (split.size == 4) {
@@ -259,9 +265,15 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
             } else {
                 if (split.size == 3) {
-                    ImportBean(startNode = node, name = split[0],
-                            timeInfo = split[1],
-                            room = split[2], teacher = "", cDay = cDay)
+                    if (!isAbnormal) {
+                        ImportBean(startNode = node, name = split[0],
+                                timeInfo = split[1],
+                                room = split[2], teacher = "", cDay = cDay)
+                    } else {
+                        ImportBean(startNode = node, name = split[0],
+                                timeInfo = split[1],
+                                room = "", teacher = split[2], cDay = cDay)
+                    }
                 } else {
                     ImportBean(startNode = node, name = split[0],
                             timeInfo = split[1],
@@ -271,6 +283,50 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             courses.add(temp)
         }
         return courses
+    }
+
+    suspend fun parseGuangGong(html: String): String {
+        baseList.clear()
+        detailList.clear()
+        val json = html.substringAfter("var kbxx = ").substringBefore(';')
+        val gson = Gson()
+        var id = 0
+        val weekList = arrayListOf<Int>()
+        gson.fromJson<List<GuangBean>>(json, object : TypeToken<List<GuangBean>>() {}.type).forEach {
+            weekList.clear()
+            it.zcs.split(',').forEach { str ->
+                weekList.add(str.toInt())
+            }
+            weekList.sort()
+            val day = it.xq.toInt()
+            val startNode = it.jcdm2.split(',')[0].toInt()
+            val endNode = if (it.jcdm2.contains(',')) it.jcdm2.split(',').last().toInt() else it.jcdm2.split(',')[0].toInt()
+            val step = endNode - startNode + 1
+            intList2WeekBeanList(weekList).forEach { weekBean ->
+                val flag = isContainName(baseList, it.kcmc)
+                if (flag == -1) {
+                    id = baseList.size
+                    baseList.add(CourseBaseBean(id, it.kcmc, "", importId))
+                    detailList.add(CourseDetailBean(
+                            id = id, room = it.jxcdmcs,
+                            teacher = it.teaxms, day = day,
+                            step = step,
+                            startWeek = weekBean.start, endWeek = weekBean.end,
+                            type = weekBean.type, startNode = startNode,
+                            tableId = importId
+                    ))
+                } else {
+                    detailList.add(CourseDetailBean(
+                            id = flag, room = it.jxcdmcs,
+                            teacher = it.teaxms, day = day,
+                            step = step, startWeek = weekBean.start, endWeek = weekBean.end,
+                            type = weekBean.type, startNode = startNode,
+                            tableId = importId
+                    ))
+                }
+            }
+        }
+        return write2DB()
     }
 
     suspend fun importBean2CourseBean(importList: ArrayList<ImportBean>, source: String): String {
@@ -567,22 +623,22 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     var splitIndex = courseHtml.indexOf("-----")
                     while (splitIndex != -1) {
                         when (type) {
+                            in qzGuangwaiList -> convertGuangWai(day, courseHtml.substring(startIndex, splitIndex))
                             in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                             in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                             "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                             "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
-                            "广东外语外贸大学" -> convertGuangWai(day, courseHtml.substring(startIndex, splitIndex))
                             "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                         }
                         startIndex = courseHtml.indexOf("<br>", splitIndex) + 4
                         splitIndex = courseHtml.indexOf("-----", startIndex)
                     }
                     when (type) {
+                        in qzGuangwaiList -> convertGuangWai(day, courseHtml.substring(startIndex, courseHtml.length))
                         in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                         in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                         "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
-                        "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
-                        "广东外语外贸大学" -> convertGuangWai(day, courseHtml.substring(startIndex, courseHtml.length))
+                        "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                         "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                     }
                 }
@@ -596,7 +652,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val courseHtml = Jsoup.parse(infoStr)
         val courseName = Jsoup.parse(infoStr.substringBefore("<font").trim()).text()
         val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
-        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim() + courseHtml.getElementsByAttributeValue("title", "分组").text().trim()
         val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
         val weekList = weekStr.split(',')
         var startWeek = 0
@@ -650,7 +706,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val courseHtml = Jsoup.parse(infoStr)
         val courseName = Jsoup.parse(infoStr.substringBefore("<font").trim()).text()
         val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
-        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim() + courseHtml.getElementsByAttributeValue("title", "分组").text().trim()
         val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
         val weekList = weekStr.split(',')
         var startWeek = 0
@@ -710,7 +766,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val courseHtml = Jsoup.parse(infoStr)
         val courseName = infoStr.substringBefore("<br>").trim()
         val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
-        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim() + courseHtml.getElementsByAttributeValue("title", "分组").text().trim()
         val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().substringBefore("(周)")
         val weekList = weekStr.split(',')
         var startWeek = 0
@@ -765,7 +821,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val courseHtml = Jsoup.parse(infoStr)
         val courseName = infoStr.substringBefore("<br>").trim()
         val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
-        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim() + courseHtml.getElementsByAttributeValue("title", "分组").text().trim()
         val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
         val weekList = weekStr.split(',')
         var startWeek = 0
@@ -819,9 +875,18 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val courseHtml = Jsoup.parse(infoStr)
         val courseName = infoStr.substringBefore("<br>").trim()
         val teacher = courseHtml.getElementsByAttributeValue("title", "老师").text().trim()
-        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim()
-        val weekStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[0]
-        val nodeList = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[1].removeSurrounding("[", "]").split('-')
+        val room = courseHtml.getElementsByAttributeValue("title", "教室").text().trim() + courseHtml.getElementsByAttributeValue("title", "分组").text().trim()
+        val tempStr = courseHtml.getElementsByAttributeValue("title", "周次(节次)").text()
+        val weekStr = if (tempStr.contains(' ')) {
+            courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[0]
+        } else {
+            courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().substringBefore(')')
+        }
+        val nodeList = if (tempStr.contains(' ')) {
+            courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().split(' ')[1].removeSurrounding("[", "]").split('-')
+        } else {
+            courseHtml.getElementsByAttributeValue("title", "周次(节次)").text().substringAfter(')').removeSurrounding("[", "]").split('-')
+        }
         val weekList = weekStr.split(',')
         var startWeek = 0
         var endWeek = 0
@@ -853,17 +918,17 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 detailList.add(CourseDetailBean(
                         id = id, room = room,
                         teacher = teacher, day = day,
-                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().toInt() + 1,
+                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().substringBefore('节').toInt() + 1,
                         startWeek = startWeek, endWeek = endWeek,
-                        type = type, startNode = nodeList.first().toInt(),
+                        type = type, startNode = nodeList.first().substringBefore('节').toInt(),
                         tableId = importId
                 ))
             } else {
                 detailList.add(CourseDetailBean(
                         id = flag, room = room,
                         teacher = teacher, day = day,
-                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().toInt() + 1, startWeek = startWeek, endWeek = endWeek,
-                        type = type, startNode = nodeList.first().toInt(),
+                        step = nodeList.last().substringBefore('节').toInt() - nodeList.first().substringBefore('节').toInt() + 1, startWeek = startWeek, endWeek = endWeek,
+                        type = type, startNode = nodeList.first().substringBefore('节').toInt(),
                         tableId = importId
                 ))
             }

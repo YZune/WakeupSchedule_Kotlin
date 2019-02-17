@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 
@@ -34,6 +35,7 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
     private var qzType = 0
+    private var isRefer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,17 +173,23 @@ class WebViewLoginFragment : BaseFragment() {
         }
 
         fab_import.setOnClickListener {
-            wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
-                    "var iframeContent=\"\";" +
-                    "for(var i=0;i<ifrs.length;i++){" +
-                    "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
-                    "}\n" +
-                    "var frs=document.getElementsByTagName(\"frame\");" +
-                    "var frameContent=\"\";" +
-                    "for(var i=0;i<frs.length;i++){" +
-                    "frameContent=frameContent+frs[i].contentDocument.body.parentElement.outerHTML;" +
-                    "}" +
-                    "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
+            if (type == "广东工业大学" && !isRefer) {
+                wv_course.loadUrl("http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action")
+                it.longSnackbar("请重新选择一下学期再点按钮导入")
+                isRefer = true
+            } else {
+                wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
+                        "var iframeContent=\"\";" +
+                        "for(var i=0;i<ifrs.length;i++){" +
+                        "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
+                        "}\n" +
+                        "var frs=document.getElementsByTagName(\"frame\");" +
+                        "var frameContent=\"\";" +
+                        "for(var i=0;i<frs.length;i++){" +
+                        "frameContent=frameContent+frs[i].contentDocument.body.parentElement.outerHTML;" +
+                        "}" +
+                        "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
+            }
         }
     }
 
@@ -202,50 +210,48 @@ class WebViewLoginFragment : BaseFragment() {
         @JavascriptInterface
         fun showSource(html: String) {
             if (type != "apply") {
-                if (html.contains("星期一") && html.contains("星期二")) {
-                    launch {
-                        val task = withContext(Dispatchers.IO) {
-                            try {
-                                when (type) {
-                                    "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                                    "新正方教务" -> viewModel.parseNewZF(html)
-                                    "强智教务" -> {
-                                        when (qzType) {
-                                            0 -> viewModel.parseQZ(html, "北京林业大学")
-                                            1 -> viewModel.parseQZ(html, "广东外语外贸大学")
-                                            2 -> viewModel.parseQZ(html, "长春大学")
-                                            3 -> viewModel.parseQZ(html, "青岛农业大学")
-                                            4 -> viewModel.parseQZ(html, "锦州医科大学")
-                                            5 -> viewModel.parseQZ(html, "山东科技大学")
-                                            else -> "没有贵校的信息哦>_<"
-                                        }
+                launch {
+                    val task = withContext(Dispatchers.IO) {
+                        try {
+                            when (type) {
+                                "广东工业大学" -> viewModel.parseGuangGong(html)
+                                "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                "新正方教务" -> viewModel.parseNewZF(html)
+                                "强智教务" -> {
+                                    when (qzType) {
+                                        0 -> viewModel.parseQZ(html, "北京林业大学")
+                                        1 -> viewModel.parseQZ(html, "广东外语外贸大学")
+                                        2 -> viewModel.parseQZ(html, "长春大学")
+                                        3 -> viewModel.parseQZ(html, "青岛农业大学")
+                                        4 -> viewModel.parseQZ(html, "锦州医科大学")
+                                        5 -> viewModel.parseQZ(html, "山东科技大学")
+                                        else -> "没有贵校的信息哦>_<"
                                     }
-                                    "北京林业大学" -> viewModel.parseQZ(html, type)
-                                    "广东外语外贸大学" -> viewModel.parseQZ(html, type)
-                                    "长春大学" -> viewModel.parseQZ(html, type)
-                                    "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
-                                    in viewModel.ZFSchoolList -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                                    in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
-                                    in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
-                                    in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
-                                    else -> "没有贵校的信息哦>_<"
                                 }
-                            } catch (e: Exception) {
-                                "导入失败>_<\n${e.message}"
+                                "北京林业大学" -> viewModel.parseQZ(html, type)
+                                "青岛农业大学" -> viewModel.parseQZ(html, type)
+                                "长春大学" -> viewModel.parseQZ(html, type)
+                                "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
+                                in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, type)
+                                in viewModel.ZFSchoolList -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
+                                in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
+                                in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
+                                else -> "没有贵校的信息哦>_<"
                             }
-                        }
-
-                        when (task) {
-                            "ok" -> {
-                                Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
-                                activity!!.setResult(RESULT_OK)
-                                activity!!.finish()
-                            }
-                            else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
+                        } catch (e: Exception) {
+                            "导入失败>_<\n${e.message}"
                         }
                     }
-                } else {
-                    Toasty.info(context!!.applicationContext, "你貌似还没有点到个人课表哦", Toast.LENGTH_LONG).show()
+
+                    when (task) {
+                        "ok" -> {
+                            Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+                            activity!!.setResult(RESULT_OK)
+                            activity!!.finish()
+                        }
+                        else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
+                    }
                 }
             } else {
                 launch {

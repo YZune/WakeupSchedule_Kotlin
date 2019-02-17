@@ -34,7 +34,9 @@
             </menu>
         </item>
 
-        <item android:title="苏大生活">
+        <item
+            android:title="苏大生活"
+            android:visible="false">
             <menu>
                 <item android:title="空闲教室查询" />
                 <item android:title="澡堂使用情况" />
