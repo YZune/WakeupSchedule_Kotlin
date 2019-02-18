@@ -24,8 +24,11 @@ class DonateFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initEvent()
-        if (BuildConfig.CHANNEL == "google") {
+        if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             tv_donate.visibility = View.GONE
+        }
+        if (BuildConfig.CHANNEL == "huawei") {
+            tv_donate_list.visibility = View.GONE
         }
     }
 

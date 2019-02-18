@@ -48,7 +48,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
             "湖北经济学院", "华中师范大学", "华南理工大学")
-    val gzChengFangList = arrayOf("南方医科大学", "广东工业大学", "五邑大学", "湖南医药学院")
+    val gzChengFangList = arrayOf("南方医科大学", "广东工业大学", "五邑大学", "湖北医药学院")
     val qzAbnormalNodeList = arrayOf("北京林业大学", "青岛农业大学", "广东金融学院")
     val qzGuangwaiList = arrayOf("江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学", "长沙医学院")
     val qzLessNodeSchoolList = arrayOf("中南林业科技大学", "大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",

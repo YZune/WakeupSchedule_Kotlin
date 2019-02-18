@@ -38,7 +38,7 @@ class DonateActivity : BaseBlurTitleActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (BuildConfig.CHANNEL == "google") {
+        if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             tv_donate.visibility = View.GONE
         }
         initData()

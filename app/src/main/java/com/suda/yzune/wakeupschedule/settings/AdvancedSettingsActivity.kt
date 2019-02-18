@@ -45,7 +45,7 @@ class AdvancedSettingsActivity : BaseListActivity() {
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
-        return if (BuildConfig.CHANNEL == "google") {
+        return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             null
         } else {
             tvButton.text = "捐赠"

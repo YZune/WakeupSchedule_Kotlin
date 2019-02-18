@@ -51,7 +51,7 @@ class ScheduleSettingsActivity : BaseListActivity() {
         tvButton.typeface = iconFont
         tvButton.textSize = 20f
         tvButton.text = "\uE6C2"
-        if (BuildConfig.CHANNEL == "google") {
+        if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             tvButton.setOnClickListener {
                 val dialog = DonateFragment.newInstance()
                 dialog.show(supportFragmentManager, "donateDialog")
