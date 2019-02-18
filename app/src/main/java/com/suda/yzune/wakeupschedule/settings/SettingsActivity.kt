@@ -68,10 +68,10 @@ class SettingsActivity : BaseListActivity() {
         items.add(HorizontalItem("设置当前课表", ""))
 
         items.add(CategoryItem("高级", false))
-        if (BuildConfig.CHANNEL != "google") {
-            items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
-        } else {
-            items.add(VerticalItem("看看都有哪些高级功能", "如果想支持一下社团和开发者\n请去支付宝18862196504\n高级功能会持续更新~\n采用诚信授权模式ヾ(=･ω･=)o"))
+        when (BuildConfig.CHANNEL) {
+            "google" -> items.add(VerticalItem("看看都有哪些高级功能", "如果想支持一下社团和开发者\n请去支付宝18862196504\n高级功能会持续更新~\n采用诚信授权模式ヾ(=･ω･=)o"))
+            "huawei" -> items.add(VerticalItem("看看都有哪些高级功能", "高级功能会持续更新~"))
+            else -> items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式"))
         }
 
         items.add(CategoryItem("开发情况", false))

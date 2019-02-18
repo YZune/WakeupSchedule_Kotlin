@@ -173,9 +173,16 @@ class WebViewLoginFragment : BaseFragment() {
         }
 
         fab_import.setOnClickListener {
-            if (type == "广东工业大学" && !isRefer) {
-                wv_course.loadUrl("http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action")
-                it.longSnackbar("请重新选择一下学期再点按钮导入")
+            if (type in viewModel.gzChengFangList && !isRefer) {
+                val referUrl = when (type) {
+                    "广东工业大学" -> "http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                    "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                    "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                    "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                    else -> if (wv_course.url.endsWith("/")) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
+                }
+                wv_course.loadUrl(referUrl)
+                it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
                 isRefer = true
             } else {
                 wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
@@ -214,7 +221,7 @@ class WebViewLoginFragment : BaseFragment() {
                     val task = withContext(Dispatchers.IO) {
                         try {
                             when (type) {
-                                "广东工业大学" -> viewModel.parseGuangGong(html)
+                                in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
                                 "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                 "新正方教务" -> viewModel.parseNewZF(html)
                                 "强智教务" -> {
@@ -228,10 +235,9 @@ class WebViewLoginFragment : BaseFragment() {
                                         else -> "没有贵校的信息哦>_<"
                                     }
                                 }
-                                "北京林业大学" -> viewModel.parseQZ(html, type)
-                                "青岛农业大学" -> viewModel.parseQZ(html, type)
                                 "长春大学" -> viewModel.parseQZ(html, type)
                                 "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
+                                in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, type)
                                 in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, type)
                                 in viewModel.ZFSchoolList -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                 in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)

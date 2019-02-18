@@ -559,32 +559,14 @@ class ScheduleActivity : BaseActivity() {
         navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
 
         shareImageButton.setOnClickListener {
-            ExportSettingsFragment().show(supportFragmentManager, "share")
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            } else {
+                ExportSettingsFragment().show(supportFragmentManager, "share")
+            }
         }
 
         importImageButton.setOnClickListener {
-            //            val alert = AlertView("导入课程", "现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)", AlertStyle.DIALOG)
-//            alert.addAction(AlertAction("苏大教务导入", AlertActionStyle.DEFAULT) {
-//                startActivityForResult<LoginWebActivity>(
-//                        32,
-//                        "type" to "苏州大学",
-//                        "tableId" to viewModel.table.id
-//                )
-//            })
-//            alert.addAction(AlertAction("更多学校及教务导入", AlertActionStyle.DEFAULT) {
-//                startActivityForResult<SchoolListActivity>(32)
-//            })
-//            alert.addAction(AlertAction("从导出文件导入", AlertActionStyle.DEFAULT) {
-//                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
-//                } else {
-//                    startActivityForResult<LoginWebActivity>(32, "type" to "file")
-//                }
-//            })
-//            alert.addAction(AlertAction("申请适配", AlertActionStyle.NEGATIVE) {
-//                startActivity<LoginWebActivity>("type" to "apply")
-//            })
-//            alert.show(this)
             ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
         }
 
@@ -659,9 +641,9 @@ class ScheduleActivity : BaseActivity() {
 
             initEvent()
 
-            viewModel.timeList = async(Dispatchers.IO) {
+            viewModel.timeList = withContext(Dispatchers.IO) {
                 viewModel.getTimeList(viewModel.table.timeTable)
-            }.await()
+            }
 
             for (i in 1..7) {
                 viewModel.getRawCourseByDay(i, viewModel.table.id).observe(this@ScheduleActivity, Observer { list ->

@@ -48,10 +48,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
             "湖北经济学院", "华中师范大学", "华南理工大学")
-    val qzGuangwaiList = arrayOf("江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学")
+    val gzChengFangList = arrayOf("南方医科大学", "广东工业大学", "五邑大学", "湖南医药学院")
+    val qzAbnormalNodeList = arrayOf("北京林业大学", "青岛农业大学", "广东金融学院")
+    val qzGuangwaiList = arrayOf("江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学", "长沙医学院")
     val qzLessNodeSchoolList = arrayOf("中南林业科技大学", "大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",
-            "江苏师范大学", "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
-    val qzMoreNodeSchoolList = arrayOf("湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
+            "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
+    val qzMoreNodeSchoolList = arrayOf("南方科技大学", "山东财经大学", "湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
     var selectedYear = ""
     var selectedTerm = ""
@@ -61,7 +63,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val baseList = arrayListOf<CourseBaseBean>()
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
-    private var hasTypeFlag = false
 
     private val retrofit = Retrofit.Builder().baseUrl("http://xk.suda.edu.cn").build()
     private val importService = retrofit.create(ImportService::class.java)
@@ -306,7 +307,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val flag = isContainName(baseList, it.kcmc)
                 if (flag == -1) {
                     id = baseList.size
-                    baseList.add(CourseBaseBean(id, it.kcmc, "", importId))
+                    baseList.add(CourseBaseBean(id, it.kcmc, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
                     detailList.add(CourseDetailBean(
                             id = id, room = it.jxcdmcs,
                             teacher = it.teaxms, day = day,
@@ -626,8 +627,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                             in qzGuangwaiList -> convertGuangWai(day, courseHtml.substring(startIndex, splitIndex))
                             in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                             in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
-                            "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
-                            "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
+                            in qzAbnormalNodeList -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                             "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, splitIndex))
                         }
                         startIndex = courseHtml.indexOf("<br>", splitIndex) + 4
@@ -637,8 +637,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         in qzGuangwaiList -> convertGuangWai(day, courseHtml.substring(startIndex, courseHtml.length))
                         in qzMoreNodeSchoolList -> convertQZMore(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                         in qzLessNodeSchoolList -> convertQZLess(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
-                        "北京林业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
-                        "青岛农业大学" -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
+                        in qzAbnormalNodeList -> convertBeijingLinYeDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                         "长春大学" -> convertChangChunDaXue(day, nodeCount, courseHtml.substring(startIndex, courseHtml.length))
                     }
                 }

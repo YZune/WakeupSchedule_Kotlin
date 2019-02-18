@@ -26,8 +26,8 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 55
-        versionName "3.521"
+        versionCode 56
+        versionName "3.522"
         flavorDimensions "versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,6 +52,15 @@ android {
             manifestPlaceholders = [CHANNEL: "google"]
             //Build中生成一个字符用来区分不同渠道的不同策略
             buildConfigField "String", "CHANNEL", "\"google\""
+        }
+        huawei {
+            applicationId "com.suda.yzune.wakeupschedule"
+            resValue "string", "app_name", "WakeUp课程表"
+            //AndroidManifest.xml中定义的meta-data标签,
+            //需要和meta-data中的android:value="${CHANNEL}对应
+            manifestPlaceholders = [CHANNEL: "huawei"]
+            //Build中生成一个字符用来区分不同渠道的不同策略
+            buildConfigField "String", "CHANNEL", "\"huawei\""
         }
         normal {
             applicationId "com.suda.yzune.wakeupschedule"
