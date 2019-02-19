@@ -267,6 +267,7 @@ class ScheduleFragment : BaseFragment() {
                 if (tv.tipVisibility == TipTextView.TIP_INVISIBLE) {
                     tv.tipVisibility = TipTextView.TIP_VISIBLE
                     tv.setOnClickListener {
+                        //startActivity<MultiCourseActivity>()
                         MultiCourseFragment.newInstance(week, c.day, c.startNode).show(fragmentManager!!, "multi")
                     }
                 }

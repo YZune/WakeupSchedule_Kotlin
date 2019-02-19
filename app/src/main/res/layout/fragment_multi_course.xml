@@ -5,15 +5,13 @@
     android:clipChildren="false"
     tools:context="com.suda.yzune.wakeupschedule.schedule.MultiCourseFragment">
 
-    <com.suda.yzune.wakeupschedule.widget.WrapContentHeightViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="64dp"
-        android:clipChildren="false">
-
-    </com.suda.yzune.wakeupschedule.widget.WrapContentHeightViewPager>
+        android:clipChildren="false" />
 
 </FrameLayout>

@@ -21,6 +21,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.dip
@@ -51,13 +52,19 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
+            val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
+            val cardView = root.find<MaterialCardView>(R.id.base_card_view)
+            LayoutInflater.from(context).inflate(layoutId, cardView, true)
+            return root
         } else {
             container!!.layoutParams.width = dip(280)
+            val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
+            val cardView = root.find<MaterialCardView>(R.id.base_card_view)
+            cardView.backgroundColor = Color.TRANSPARENT
+            LayoutInflater.from(context).inflate(layoutId, cardView, true)
+            cardView.find<View>(R.id.include_detail).backgroundColor = Color.TRANSPARENT
+            return root
         }
-        val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
-        val cardView = root.find<MaterialCardView>(R.id.base_card_view)
-        LayoutInflater.from(context).inflate(layoutId, cardView, true)
-        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
