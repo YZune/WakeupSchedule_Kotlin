@@ -17,7 +17,9 @@ abstract class BaseTitleActivity : BaseActivity() {
     @get:LayoutRes
     protected abstract val layoutId: Int
 
-    abstract fun onSetupSubButton(tvButton: TextView): TextView?
+    open fun onSetupSubButton(tvButton: TextView): TextView? {
+        return null
+    }
 
     lateinit var mainTitle: TextView
 
@@ -27,7 +29,7 @@ abstract class BaseTitleActivity : BaseActivity() {
         find<LinearLayout>(R.id.ll_root).addView(createTitleBar(), 0)
     }
 
-    private fun createTitleBar(): View {
+    open fun createTitleBar(): View {
         return UI {
             verticalLayout {
                 backgroundColorResource = R.color.backgroundColor

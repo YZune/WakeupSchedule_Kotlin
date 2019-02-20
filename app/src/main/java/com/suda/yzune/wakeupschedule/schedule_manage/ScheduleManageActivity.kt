@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -12,10 +11,6 @@ class ScheduleManageActivity : BaseTitleActivity() {
 
     override val layoutId: Int
         get() = R.layout.activity_schedule_manage
-
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
-        return null
-    }
 
     private lateinit var viewModel: ScheduleManageViewModel
     private lateinit var navController: NavController

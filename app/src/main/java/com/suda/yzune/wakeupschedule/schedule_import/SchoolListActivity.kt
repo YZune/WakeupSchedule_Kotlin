@@ -1,8 +1,18 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,13 +22,16 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import kotlinx.android.synthetic.main.activity_school_list.*
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
+import org.jetbrains.anko.design.longSnackbar
 
 
 class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
     private val letters = HashMap<String, Int>()
+    private val showList = arrayListOf<SchoolListBean>()
     private val schools = arrayListOf<SchoolListBean>()
+    private lateinit var searchView: EditText
 
     override val layoutId: Int
         get() = R.layout.activity_school_list
@@ -30,6 +43,100 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             finish()
         }
         return tvButton
+    }
+
+    override fun createTitleBar(): View {
+        return UI {
+            verticalLayout {
+                backgroundColorResource = R.color.backgroundColor
+                linearLayout {
+                    topPadding = getStatusBarHeight()
+                    backgroundColor = Color.WHITE
+                    val outValue = TypedValue()
+                    context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
+
+                    imageButton(R.drawable.ic_back) {
+                        backgroundResource = outValue.resourceId
+                        padding = dip(8)
+                        setOnClickListener {
+                            onBackPressed()
+                        }
+                    }.lparams(wrapContent, dip(48))
+
+                    mainTitle = textView(this@SchoolListActivity.title) {
+                        gravity = Gravity.CENTER_VERTICAL
+                        textSize = 16f
+                        typeface = Typeface.DEFAULT_BOLD
+                    }.lparams(wrapContent, dip(48)) {
+                        weight = 1f
+                    }
+
+                    searchView = editText {
+                        hint = "请输入……"
+                        textSize = 16f
+                        backgroundDrawable = null
+                        gravity = Gravity.CENTER_VERTICAL
+                        visibility = View.GONE
+                        lines = 1
+                        singleLine = true
+                        imeOptions = EditorInfo.IME_ACTION_SEARCH
+                        addTextChangedListener(object : TextWatcher {
+                            override fun afterTextChanged(s: Editable?) {}
+
+                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                showList.clear()
+                                if (s.isNullOrBlank() || s.isEmpty()) {
+                                    showList.addAll(schools)
+                                } else {
+                                    showList.addAll(schools.filter {
+                                        it.name.contains(s.toString())
+                                    })
+                                }
+                                recyclerView.adapter?.notifyDataSetChanged()
+                                if (showList.isEmpty()) {
+                                    longSnackbar("没有找到你的学校哦", "申请适配") { startActivity<LoginWebActivity>("type" to "apply") }
+                                }
+                            }
+
+                        })
+                    }.lparams(wrapContent, dip(48)) {
+                        weight = 1f
+                    }
+
+                    val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
+                    textView {
+                        textSize = 20f
+                        typeface = iconFont
+                        text = "\uE6D4"
+                        gravity = Gravity.CENTER
+                        backgroundResource = outValue.resourceId
+                        setOnClickListener {
+                            when (searchView.visibility) {
+                                View.GONE -> {
+                                    mainTitle.visibility = View.GONE
+                                    searchView.visibility = View.VISIBLE
+                                    textColorResource = R.color.colorAccent
+                                    searchView.isFocusable = true
+                                    searchView.isFocusableInTouchMode = true
+                                    searchView.requestFocus()
+                                    val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                                    inputMethodManager.showSoftInput(searchView, 0)
+                                }
+                            }
+                        }
+                    }.lparams(wrapContent, dip(48)) {
+                        marginEnd = dip(24)
+                    }
+                }
+
+                view {
+                    backgroundColorResource = R.color.grey
+                    alpha = 0.5f
+                }.lparams(wrapContent, dip(1))
+            }
+        }.view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,7 +254,8 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         val layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
 
-        val adapter = SchoolImportListAdapter(R.layout.item_apply_info, schools)
+        showList.addAll(schools)
+        val adapter = SchoolImportListAdapter(R.layout.item_apply_info, showList)
         adapter.setOnItemClickListener { _, _, position ->
             tableDao.getDefaultTableId().observe(this, Observer {
                 startActivity<LoginWebActivity>(
