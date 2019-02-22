@@ -51,6 +51,16 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
             add(TimeDetailBean(18, "00:00", "00:00", id))
             add(TimeDetailBean(19, "00:00", "00:00", id))
             add(TimeDetailBean(20, "00:00", "00:00", id))
+            add(TimeDetailBean(21, "00:00", "00:00", id))
+            add(TimeDetailBean(22, "00:00", "00:00", id))
+            add(TimeDetailBean(23, "00:00", "00:00", id))
+            add(TimeDetailBean(24, "00:00", "00:00", id))
+            add(TimeDetailBean(25, "00:00", "00:00", id))
+            add(TimeDetailBean(26, "00:00", "00:00", id))
+            add(TimeDetailBean(27, "00:00", "00:00", id))
+            add(TimeDetailBean(28, "00:00", "00:00", id))
+            add(TimeDetailBean(29, "00:00", "00:00", id))
+            add(TimeDetailBean(30, "00:00", "00:00", id))
         }
         timeDao.insertTimeList(timeList)
     }

@@ -89,6 +89,16 @@ object UpdateUtils {
                         add(TimeDetailBean(18, "00:00", "00:00", 1))
                         add(TimeDetailBean(19, "00:00", "00:00", 1))
                         add(TimeDetailBean(20, "00:00", "00:00", 1))
+                        add(TimeDetailBean(21, "00:00", "00:00", 1))
+                        add(TimeDetailBean(22, "00:00", "00:00", 1))
+                        add(TimeDetailBean(23, "00:00", "00:00", 1))
+                        add(TimeDetailBean(24, "00:00", "00:00", 1))
+                        add(TimeDetailBean(25, "00:00", "00:00", 1))
+                        add(TimeDetailBean(26, "00:00", "00:00", 1))
+                        add(TimeDetailBean(27, "00:00", "00:00", 1))
+                        add(TimeDetailBean(28, "00:00", "00:00", 1))
+                        add(TimeDetailBean(29, "00:00", "00:00", 1))
+                        add(TimeDetailBean(30, "00:00", "00:00", 1))
                     }
                     timeDao.insertTimeList(timeList)
                 }
@@ -149,6 +159,16 @@ object UpdateUtils {
                 add(TimeDetailBean(18, "00:00", "00:00", 1))
                 add(TimeDetailBean(19, "00:00", "00:00", 1))
                 add(TimeDetailBean(20, "00:00", "00:00", 1))
+                add(TimeDetailBean(21, "00:00", "00:00", 1))
+                add(TimeDetailBean(22, "00:00", "00:00", 1))
+                add(TimeDetailBean(23, "00:00", "00:00", 1))
+                add(TimeDetailBean(24, "00:00", "00:00", 1))
+                add(TimeDetailBean(25, "00:00", "00:00", 1))
+                add(TimeDetailBean(26, "00:00", "00:00", 1))
+                add(TimeDetailBean(27, "00:00", "00:00", 1))
+                add(TimeDetailBean(28, "00:00", "00:00", 1))
+                add(TimeDetailBean(29, "00:00", "00:00", 1))
+                add(TimeDetailBean(30, "00:00", "00:00", 1))
             }
             try {
                 timeDao.insertTimeList(timeList)

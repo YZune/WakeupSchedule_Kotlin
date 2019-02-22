@@ -132,7 +132,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 weekPanel6.visibility = View.GONE
             }
 
-            for (i in 0 until 20) {
+            for (i in 0 until 30) {
                 val tv = view.findViewById<TextView>(R.id.anko_tv_node1 + i)
                 val lp = tv.layoutParams
                 lp.height = widgetItemHeight
@@ -186,9 +186,9 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                         widgetItemHeight * c.step + marTop * (c.step - 1))
                 if (i > 0) {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (widgetItemHeight + marTop) + marTop, 0, 0)
+                    isCovered = (pre.startNode == c.startNode)
                 } else {
                     lp.setMargins(0, (c.startNode - 1) * (widgetItemHeight + marTop) + marTop, 0, 0)
-                    isCovered = (pre.startNode == c.startNode)
                 }
                 tv.layoutParams = lp
                 //tv.gravity = Gravity.CENTER_VERTICAL
@@ -217,7 +217,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 when (c.type) {
                     1 -> {
-                        strBuilder.append("\n单周")
                         if (week % 2 == 0) {
                             if (table.showOtherWeekCourse) {
                                 strBuilder.append("\n单周[非本周]")
@@ -227,10 +226,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                             } else {
                                 tv.visibility = View.INVISIBLE
                             }
+                        } else {
+                            strBuilder.append("\n单周")
                         }
                     }
                     2 -> {
-                        strBuilder.append("\n双周")
                         if (week % 2 != 0) {
                             if (table.showOtherWeekCourse) {
                                 tv.alpha = 0.6f
@@ -240,6 +240,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                             } else {
                                 tv.visibility = View.INVISIBLE
                             }
+                        } else {
+                            strBuilder.append("\n双周")
                         }
                     }
                 }

@@ -129,7 +129,7 @@ class ScheduleSettingsActivity : BaseListActivity() {
         items.add(CategoryItem("课程数据", true))
         items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
         items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))
-        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 4, 20, "节", listOf("节数", "数量", "数")))
+        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 4, 30, "节", listOf("节数", "数量", "数")))
         items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 10, 30, "周", listOf("学期", "周", "时间")))
         items.add(HorizontalItem("上课时间", "", listOf("时间")))
         items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst, listOf("周日", "第一天", "起始", "星期天", "天")))

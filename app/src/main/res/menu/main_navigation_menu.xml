@@ -4,6 +4,7 @@
         <item android:title="通用">
             <menu>
                 <item
+                    android:visible="false"
                     android:id="@+id/nav_wakeup"
                     android:icon="@drawable/wakeup"
                     android:title="WakeUp" />

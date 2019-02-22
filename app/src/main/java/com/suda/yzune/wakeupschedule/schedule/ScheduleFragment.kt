@@ -90,7 +90,7 @@ class ScheduleFragment : BaseFragment() {
             find<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
         }
 
-        for (i in 0 until 20) {
+        for (i in 0 until 30) {
             textView = find(R.id.anko_tv_node1 + i)
             val lp = textView.layoutParams
             lp.height = viewModel.itemHeight
@@ -267,7 +267,6 @@ class ScheduleFragment : BaseFragment() {
                 if (tv.tipVisibility == TipTextView.TIP_INVISIBLE) {
                     tv.tipVisibility = TipTextView.TIP_VISIBLE
                     tv.setOnClickListener {
-                        //startActivity<MultiCourseActivity>()
                         MultiCourseFragment.newInstance(week, c.day, c.startNode).show(fragmentManager!!, "multi")
                     }
                 }

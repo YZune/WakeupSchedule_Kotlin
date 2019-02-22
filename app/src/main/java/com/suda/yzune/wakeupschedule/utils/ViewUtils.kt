@@ -75,7 +75,7 @@ object ViewUtils {
                     isVerticalScrollBarEnabled = false
                     constraintLayout {
                         id = R.id.anko_cl_content_panel
-                        for (i in 1..20) {
+                        for (i in 1..30) {
                             textView(i.toString()) {
                                 id = R.id.anko_tv_node1 + i - 1
                                 textSize = 12f
@@ -92,7 +92,7 @@ object ViewUtils {
                                         verticalBias = 0f
                                         verticalChainStyle = ConstraintSet.CHAIN_PACKED
                                     }
-                                    20 -> {
+                                    30 -> {
                                         bottomToTop = R.id.anko_navigation_bar_view
                                         endToStart = R.id.anko_ll_week_panel_0
                                         horizontalWeight = 0.5f
@@ -117,7 +117,7 @@ object ViewUtils {
                         val navBar = view {
                             id = R.id.anko_navigation_bar_view
                         }.lparams(matchParent, barHeight) {
-                            topToBottom = R.id.anko_tv_node992
+                            topToBottom = R.id.anko_tv_node9993
                             bottomToBottom = ConstraintSet.PARENT_ID
                             startToStart = ConstraintSet.PARENT_ID
                             endToEnd = ConstraintSet.PARENT_ID
