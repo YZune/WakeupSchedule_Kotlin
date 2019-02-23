@@ -179,10 +179,15 @@ class WebViewLoginFragment : BaseFragment() {
                     "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
                     "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
                     "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                    else -> if (wv_course.url.endsWith("/")) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
+                    else -> if (wv_course.url.endsWith('/')) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
                 }
                 wv_course.loadUrl(referUrl)
                 it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
+                isRefer = true
+            } else if (viewModel.isUrp && !isRefer) {
+                val referUrl = if (wv_course.url.endsWith('/')) wv_course.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
+                wv_course.loadUrl(referUrl)
+                it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
                 isRefer = true
             } else {
                 wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
@@ -194,7 +199,7 @@ class WebViewLoginFragment : BaseFragment() {
                         "var frameContent=\"\";" +
                         "for(var i=0;i<frs.length;i++){" +
                         "frameContent=frameContent+frs[i].contentDocument.body.parentElement.outerHTML;" +
-                        "}" +
+                        "}\n" +
                         "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
             }
         }
@@ -265,11 +270,11 @@ class WebViewLoginFragment : BaseFragment() {
                         try {
                             viewModel.postHtml(
                                     school = viewModel.schoolInfo[0],
-                                    type = viewModel.schoolInfo[1],
+                                    type = if (viewModel.isUrp) "URP" else viewModel.schoolInfo[1],
                                     qq = viewModel.schoolInfo[2],
                                     html = html)
                         } catch (e: Exception) {
-                            e.message
+                            "上传失败>_<\n" + e.message
                         }
                     }
 
@@ -280,7 +285,7 @@ class WebViewLoginFragment : BaseFragment() {
                             activity!!.finish()
                         }
                         else -> {
-                            Toasty.error(activity!!.applicationContext, "上传网页源码失败，请检查网络", Toast.LENGTH_LONG).show()
+                            Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
                         }
                     }
                 }

@@ -45,6 +45,13 @@ class LoginWebActivity : BaseActivity() {
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
             }
+            intent.getStringExtra("type") == "excel" -> {
+                val fragment = ExcelImportFragment()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "excelImport")
+                transaction.commit()
+                showImportSettingDialog()
+            }
             intent.action == Intent.ACTION_VIEW -> {
                 val fragment = FileImportFragment()
                 val transaction = supportFragmentManager.beginTransaction()
@@ -94,6 +101,26 @@ class LoginWebActivity : BaseActivity() {
                 val import = withContext(Dispatchers.IO) {
                     try {
                         viewModel.importFromFile(filePath)
+                    } catch (e: Exception) {
+                        e.message
+                    }
+                }
+                when (import) {
+                    "ok" -> {
+                        Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    }
+                    else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+            val filePath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
+            launch {
+                val import = withContext(Dispatchers.IO) {
+                    try {
+                        viewModel.importFromExcel(filePath)
                     } catch (e: Exception) {
                         e.message
                     }

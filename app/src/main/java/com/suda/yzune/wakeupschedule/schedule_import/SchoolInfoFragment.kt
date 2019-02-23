@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_school_info.*
 
-class SchoolInfoFragment : Fragment() {
+class SchoolInfoFragment : BaseFragment() {
+
+    private lateinit var viewModel: ImportViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -20,8 +22,9 @@ class SchoolInfoFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_school_info, container, false)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
         ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
         initEvent()
     }
@@ -31,9 +34,12 @@ class SchoolInfoFragment : Fragment() {
             activity!!.finish()
         }
 
+        chip_urp.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isUrp = isChecked
+        }
+
         tv_next.setOnClickListener {
             if (et_school.text.toString() != "") {
-                val viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
                 viewModel.schoolInfo[0] = et_school.text.toString()
                 viewModel.schoolInfo[1] = et_type.text.toString()
                 viewModel.schoolInfo[2] = et_qq.text.toString()

@@ -54,9 +54,14 @@
         android:text="更多学校导入" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_excel"
+        style="@style/DialogButtonStyle"
+        android:text="从 Excel 导入" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_file"
         style="@style/DialogButtonStyle"
-        android:text="从文件导入" />
+        android:text="从分享/导出文件导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_feedback"

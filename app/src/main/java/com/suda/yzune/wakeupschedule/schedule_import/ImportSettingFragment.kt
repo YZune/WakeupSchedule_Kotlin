@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_import_setting.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ImportSettingFragment : BaseDialogFragment() {
     override val layoutId: Int
@@ -31,9 +31,9 @@ class ImportSettingFragment : BaseDialogFragment() {
 
         tv_new.setOnClickListener {
             launch {
-                viewModel.importId = async(Dispatchers.IO) {
+                viewModel.importId = withContext(Dispatchers.IO) {
                     viewModel.getNewId()
-                }.await()
+                }
                 viewModel.newFlag = true
                 dismiss()
             }

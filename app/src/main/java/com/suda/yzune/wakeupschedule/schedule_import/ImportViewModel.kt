@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.util.Xml
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,15 +18,20 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jsoup.Jsoup
+import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
-import java.io.File
+import java.io.*
 import java.net.URLEncoder
 import java.util.regex.Pattern
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
 
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
 
     var importId = -1
     var newFlag = false
+    var isUrp = false
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
@@ -38,10 +44,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
-    private val courseProperty = arrayOf("实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
+    private val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
-    val ZFSchoolList = arrayOf("福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+    val ZFSchoolList = arrayOf("郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
     val newZFSchoolList = arrayOf("厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
@@ -51,7 +57,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     val gzChengFangList = arrayOf("南方医科大学", "广东工业大学", "五邑大学", "湖北医药学院")
     val qzAbnormalNodeList = arrayOf("北京林业大学", "青岛农业大学", "广东金融学院")
     val qzGuangwaiList = arrayOf("江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学", "长沙医学院")
-    val qzLessNodeSchoolList = arrayOf("中南林业科技大学", "大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",
+    val qzLessNodeSchoolList = arrayOf("大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",
             "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
     val qzMoreNodeSchoolList = arrayOf("湖南工业大学", "南方科技大学", "山东财经大学", "湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
@@ -152,10 +158,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (response.body()?.string() == "OK") {
                 return "ok"
             } else {
-                throw Exception("error")
+                throw Exception(response.message())
             }
         } else {
-            throw Exception("error")
+            throw Exception(response.message())
         }
     }
 
@@ -1080,5 +1086,188 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             code = inputs[0].attr("value")
         }
         return code
+    }
+
+    suspend fun importFromExcel(path: String): String {
+        baseList.clear()
+        detailList.clear()
+        analyzeXlsx(path).values.forEach {
+            for (i in 1 until it.size) {
+                if (it[i][0].isBlank() || it[i][1].isBlank() || it[i][2].isBlank() || it[i][3].isBlank() || it[i][6].isBlank()) {
+                    continue
+                }
+                var startWeek = 0
+                var endWeek = 0
+                var type = 0
+                val weekList = it[i][6].split('、')
+                weekList.forEach { weekStr ->
+                    if (weekStr.contains('-')) {
+                        val weeks = weekStr.split('-')
+                        startWeek = Integer.decode(weeks[0])
+                        when {
+                            weekStr.contains('单') -> {
+                                type = 1
+                                endWeek = Integer.decode(weeks[1].substringBefore('单'))
+                            }
+                            weekStr.contains('双') -> {
+                                type = 2
+                                endWeek = Integer.decode(weeks[1].substringBefore('双'))
+                            }
+                            else -> {
+                                type = 0
+                                endWeek = Integer.decode(weeks[1])
+                            }
+                        }
+                    } else {
+                        startWeek = Integer.decode(weekStr)
+                        endWeek = Integer.decode(weekStr)
+                        type = 0
+                    }
+
+                    val startNode = it[i][2].toInt()
+                    val endNode = it[i][3].toInt()
+                    val flag = isContainName(baseList, it[i][0])
+                    if (flag == -1) {
+                        val id = baseList.size
+                        baseList.add(CourseBaseBean(id, it[i][0], "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", importId))
+                        detailList.add(CourseDetailBean(
+                                id = id, room = it[i][5],
+                                teacher = it[i][4], day = it[i][1].toInt(),
+                                step = endNode - startNode + 1,
+                                startWeek = startWeek, endWeek = endWeek,
+                                type = type, startNode = startNode,
+                                tableId = importId
+                        ))
+                    } else {
+                        detailList.add(CourseDetailBean(
+                                id = flag, room = it[i][5],
+                                teacher = it[i][4], day = it[i][1].toInt(),
+                                step = endNode - startNode + 1, startWeek = startWeek, endWeek = endWeek,
+                                type = type, startNode = startNode,
+                                tableId = importId
+                        ))
+                    }
+                }
+            }
+        }
+        return write2DB()
+    }
+
+    private val SHAREDSTRINGS = "xl/sharedStrings.xml"
+    private val DIRSHEET = "xl/worksheets/"
+    private val ENDXML = ".xml"
+    private val listCells = ArrayList<String>()
+
+    private fun analyzeXlsx(fileName: String): Map<String, List<List<String>>> {
+        val map = HashMap<String, List<List<String>>>()
+        var isShareStrings: InputStream? = null
+        var isXlsx: InputStream? = null
+        var zipInputStream: ZipInputStream? = null
+        listCells.clear()
+        try {
+            val zipFile = ZipFile(File(fileName))
+            val sharedStringXML = zipFile.getEntry(SHAREDSTRINGS)//准备xl/sharedStrings.xml文件
+            isShareStrings = zipFile.getInputStream(sharedStringXML)
+            val xmlPullParser = Xml.newPullParser()//开始解析xl/sharedStrings.xml文件
+            xmlPullParser.setInput(isShareStrings, "utf-8")
+            var eventType = xmlPullParser.eventType
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                when (eventType) {
+                    XmlPullParser.START_TAG -> {
+                        val tag = xmlPullParser.name
+                        if ("t" == tag) { //如果为 " t " 标签的话将标签中得到元素添加到list集合中
+                            listCells.add(xmlPullParser.nextText())
+                        }
+                    }
+                    else -> {
+                    }
+                }
+                eventType = xmlPullParser.next()
+            }
+            //
+            isXlsx = BufferedInputStream(FileInputStream(fileName))   //准备遍历xl/worksheets目录下的sheet.xml文件
+            zipInputStream = ZipInputStream(isXlsx)
+            var zipDir: ZipEntry? = zipInputStream.nextEntry
+            while (zipDir != null) {
+                val dirName = zipDir.name
+                if (!zipDir.isDirectory && dirName.endsWith(ENDXML)) { // 不是文件夹，且以 ".xml"结尾
+                    if (dirName.contains(DIRSHEET)) { //文件名包含 "xl/worksheets/",则为sheet1.xml与sheet2.xml等
+                        parseSheet(zipFile, dirName, map)  //开始解析sheet.xml
+                    }
+                }
+                zipDir = zipInputStream.nextEntry
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                zipInputStream!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            try {
+                isXlsx!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+            try {
+                isShareStrings!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+
+        }
+        return map
+    }
+
+    private fun parseSheet(zipFile: ZipFile, entryName: String, map: MutableMap<String, List<List<String>>>) {
+        val lastIndexOf = entryName.lastIndexOf(File.separator)
+        val sheetName = entryName.substring(lastIndexOf + 1, entryName.length - 4)//得出map的key值，如: sheet1，sheet2等
+        //
+        var v: String? = null  //用于存放" v " 标签的值
+        var columns: MutableList<String>? = null //用于存放每行的列信息
+        val rows = ArrayList<List<String>>() //用于存放每个sheet的行信息
+        var inputStreamSheet: InputStream? = null
+        try {
+            val sheet = zipFile.getEntry(entryName)
+            inputStreamSheet = zipFile.getInputStream(sheet)
+            val xmlPullParserSheet = Xml.newPullParser()//开始解析
+            xmlPullParserSheet.setInput(inputStreamSheet, "utf-8")
+            var evenTypeSheet = xmlPullParserSheet.eventType
+            while (XmlPullParser.END_DOCUMENT != evenTypeSheet) {
+                when (evenTypeSheet) {
+                    XmlPullParser.START_TAG -> {
+                        val tag = xmlPullParserSheet.name
+                        if ("row".equals(tag, ignoreCase = true)) {  //如果是每行的开始标签，则初始化列list
+                            columns = ArrayList()
+                        } else if ("v".equals(tag, ignoreCase = true)) { //如果是" v "标签则利用得到的索引，得到对应行对应列的元素
+                            v = xmlPullParserSheet.nextText()
+                            if (v != null) {
+                                columns!!.add(listCells[Integer.parseInt(v)])
+                            } else {
+                                columns!!.add(v)
+                            }
+                        }
+                    }
+                    XmlPullParser.END_TAG -> if ("row".equals(xmlPullParserSheet.name, ignoreCase = true) && v != null) {//一行结束将结构保存在rows中
+                        rows.add(columns!!)
+                    }
+                }
+                evenTypeSheet = xmlPullParserSheet.next()
+            }
+            if (rows.size > 0) { //sheet中内容不为空则保存到map中
+                map[sheetName] = rows
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                inputStreamSheet!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 }
