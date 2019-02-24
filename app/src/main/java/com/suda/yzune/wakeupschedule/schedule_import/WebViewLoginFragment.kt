@@ -162,7 +162,7 @@ class WebViewLoginFragment : BaseFragment() {
         }
 
         var zfChipId = 0
-        cg_qz.setOnCheckedChangeListener { chipGroup, id ->
+        cg_zf.setOnCheckedChangeListener { chipGroup, id ->
             when (id) {
                 R.id.chip_zf1 -> {
                     zfChipId = id
