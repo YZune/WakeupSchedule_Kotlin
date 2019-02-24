@@ -1,5 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -32,6 +34,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     private val showList = arrayListOf<SchoolListBean>()
     private val schools = arrayListOf<SchoolListBean>()
     private lateinit var searchView: EditText
+    private var fromLocal = false
 
     override val layoutId: Int
         get() = R.layout.activity_school_list
@@ -141,6 +144,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fromLocal = intent.getBooleanExtra("fromLocal", false)
         quickSideBarView.setOnQuickSideBarTouchListener(this)
         initSchoolList()
     }
@@ -249,6 +253,19 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("Z", "郑州航空工业管理学院", "http://202.196.166.138/"))
         schools.add(SchoolListBean("H", "河北经贸大学", "http://222.30.218.44/default2.aspx"))
 
+        schools.add(SchoolListBean("G", "广东海洋大学", "http://210.38.137.126:8016/default2.aspx"))
+        schools.add(SchoolListBean("A", "安徽大学", "http://xk2.ahu.cn/default2.aspx"))
+        schools.add(SchoolListBean("S", "山东师范大学", "http://www.bkjw.sdnu.edu.cn"))
+        schools.add(SchoolListBean("Z", "中国地质大学（武汉）", ""))
+        schools.add(SchoolListBean("Z", "浙江农林大学", "http://115.236.84.158/xtgl"))
+        schools.add(SchoolListBean("H", "华北电力大学科技学校", "http://202.204.74.178/"))
+        schools.add(SchoolListBean("C", "重庆交通职业学院", ""))
+        schools.add(SchoolListBean("H", "海南师范大学", "http://210.37.0.16/"))
+        schools.add(SchoolListBean("X", "徐州幼儿师范高等专科学校", "http://222.187.124.16/"))
+        schools.add(SchoolListBean("Z", "浙江万里学院", "http://jwxt.zwu.edu.cn/"))
+        schools.add(SchoolListBean("H", "河北科技师范学院", "http://121.22.25.47/"))
+        schools.add(SchoolListBean("H", "杭州医学院", "http://edu.hmc.edu.cn/"))
+        schools.add(SchoolListBean("W", "温州医科大学", "http://jwxt.wmu.edu.cn"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
@@ -262,14 +279,19 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         showList.addAll(schools)
         val adapter = SchoolImportListAdapter(R.layout.item_apply_info, showList)
         adapter.setOnItemClickListener { _, _, position ->
-            tableDao.getDefaultTableId().observe(this, Observer {
-                startActivity<LoginWebActivity>(
-                        "type" to schools[position].name,
-                        "tableId" to it,
-                        "url" to schools[position].url
-                )
+            if (fromLocal) {
+                setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", schools[position].name) })
                 finish()
-            })
+            } else {
+                tableDao.getDefaultTableId().observe(this, Observer {
+                    startActivity<LoginWebActivity>(
+                            "type" to schools[position].name,
+                            "tableId" to it,
+                            "url" to schools[position].url
+                    )
+                    finish()
+                })
+            }
         }
 
         val customLetters = arrayListOf<String>()
@@ -297,7 +319,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     override fun onLetterChanged(letter: String, position: Int, y: Float) {
         quickSideBarTipsView.setText(letter, position, y)
         if (letters.containsKey(letter)) {
-            recyclerView.scrollToPosition(letters[letter]!!)
+            (recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(letters[letter]!!, 0)
         }
     }
 }

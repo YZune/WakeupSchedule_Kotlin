@@ -273,10 +273,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 if (ll.findViewWithTag<TextView?>("第${c.startNode}节") != null) {
                     tv.visibility = View.INVISIBLE
-                    val textView = ll.findViewWithTag<TipTextView>("第${c.startNode}节")
-                    if (textView.tipVisibility == TipTextView.TIP_INVISIBLE) {
-                        textView.tipVisibility = TipTextView.TIP_VISIBLE
-                    }
                 }
 
                 if (timeList.isNotEmpty()) {

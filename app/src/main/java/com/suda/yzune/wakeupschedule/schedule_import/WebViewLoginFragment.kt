@@ -34,7 +34,6 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var type: String
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
-    private var qzType = 0
     private var isRefer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +74,14 @@ class WebViewLoginFragment : BaseFragment() {
             cg_qz.visibility = View.VISIBLE
             chip_qz1.isChecked = true
         } else {
-            cg_qz.visibility = View.INVISIBLE
+            cg_qz.visibility = View.GONE
+        }
+
+        if (type == "正方教务") {
+            cg_zf.visibility = View.VISIBLE
+            chip_zf1.isChecked = true
+        } else {
+            cg_zf.visibility = View.GONE
         }
 
         wv_course.settings.javaScriptEnabled = true
@@ -122,35 +128,52 @@ class WebViewLoginFragment : BaseFragment() {
 
     private fun initEvent() {
 
-        var chipId = 0
+        var qzChipId = 0
         cg_qz.setOnCheckedChangeListener { chipGroup, id ->
             when (id) {
                 R.id.chip_qz1 -> {
-                    chipId = id
-                    qzType = 0
+                    qzChipId = id
+                    viewModel.qzType = 0
                 }
                 R.id.chip_qz2 -> {
-                    chipId = id
-                    qzType = 1
+                    qzChipId = id
+                    viewModel.qzType = 1
                 }
                 R.id.chip_qz3 -> {
-                    chipId = id
-                    qzType = 2
+                    qzChipId = id
+                    viewModel.qzType = 2
                 }
                 R.id.chip_qz4 -> {
-                    chipId = id
-                    qzType = 3
+                    qzChipId = id
+                    viewModel.qzType = 3
                 }
                 R.id.chip_qz5 -> {
-                    chipId = id
-                    qzType = 4
+                    qzChipId = id
+                    viewModel.qzType = 4
                 }
                 R.id.chip_qz6 -> {
-                    chipId = id
-                    qzType = 5
+                    qzChipId = id
+                    viewModel.qzType = 5
                 }
                 else -> {
-                    chipGroup.find<Chip>(chipId).isChecked = true
+                    chipGroup.find<Chip>(qzChipId).isChecked = true
+                }
+            }
+        }
+
+        var zfChipId = 0
+        cg_qz.setOnCheckedChangeListener { chipGroup, id ->
+            when (id) {
+                R.id.chip_zf1 -> {
+                    zfChipId = id
+                    viewModel.zfType = 0
+                }
+                R.id.chip_zf2 -> {
+                    zfChipId = id
+                    viewModel.zfType = 1
+                }
+                else -> {
+                    chipGroup.find<Chip>(zfChipId).isChecked = true
                 }
             }
         }
@@ -172,35 +195,47 @@ class WebViewLoginFragment : BaseFragment() {
             return@setOnEditorActionListener false
         }
 
+        val js = "javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
+                "var iframeContent=\"\";" +
+                "for(var i=0;i<ifrs.length;i++){" +
+                "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
+                "}\n" +
+                "var frs=document.getElementsByTagName(\"frame\");" +
+                "var frameContent=\"\";" +
+                "for(var i=0;i<frs.length;i++){" +
+                "frameContent=frameContent+frs[i].contentDocument.body.parentElement.outerHTML;" +
+                "}\n" +
+                "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);"
+
         fab_import.setOnClickListener {
-            if (type in viewModel.gzChengFangList && !isRefer) {
-                val referUrl = when (type) {
-                    "广东工业大学" -> "http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                    "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                    "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                    "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                    else -> if (wv_course.url.endsWith('/')) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
+            if (type !in viewModel.gzChengFangList || !viewModel.isUrp) {
+                wv_course.loadUrl(js)
+            }
+            if (type in viewModel.gzChengFangList) {
+                if (!isRefer) {
+                    val referUrl = when (type) {
+                        "广东工业大学" -> "http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                        "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                        "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                        "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
+                        else -> if (wv_course.url.endsWith('/')) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
+                    }
+                    wv_course.loadUrl(referUrl)
+                    it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
+                    isRefer = true
+                } else {
+                    wv_course.loadUrl(js)
                 }
-                wv_course.loadUrl(referUrl)
-                it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
-                isRefer = true
-            } else if (viewModel.isUrp && !isRefer) {
-                val referUrl = if (wv_course.url.endsWith('/')) wv_course.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
-                wv_course.loadUrl(referUrl)
-                it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
-                isRefer = true
-            } else {
-                wv_course.loadUrl("javascript:var ifrs=document.getElementsByTagName(\"iframe\");" +
-                        "var iframeContent=\"\";" +
-                        "for(var i=0;i<ifrs.length;i++){" +
-                        "iframeContent=iframeContent+ifrs[i].contentDocument.body.parentElement.outerHTML;" +
-                        "}\n" +
-                        "var frs=document.getElementsByTagName(\"frame\");" +
-                        "var frameContent=\"\";" +
-                        "for(var i=0;i<frs.length;i++){" +
-                        "frameContent=frameContent+frs[i].contentDocument.body.parentElement.outerHTML;" +
-                        "}\n" +
-                        "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);")
+            }
+            if (viewModel.isUrp) {
+                if (!isRefer) {
+                    val referUrl = if (wv_course.url.endsWith('/')) wv_course.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
+                    wv_course.loadUrl(referUrl)
+                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    isRefer = true
+                } else {
+                    wv_course.loadUrl(js)
+                }
             }
         }
     }
@@ -230,7 +265,7 @@ class WebViewLoginFragment : BaseFragment() {
                                 "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                 "新正方教务" -> viewModel.parseNewZF(html)
                                 "强智教务" -> {
-                                    when (qzType) {
+                                    when (viewModel.qzType) {
                                         0 -> viewModel.parseQZ(html, "北京林业大学")
                                         1 -> viewModel.parseQZ(html, "广东外语外贸大学")
                                         2 -> viewModel.parseQZ(html, "长春大学")
@@ -244,7 +279,14 @@ class WebViewLoginFragment : BaseFragment() {
                                 "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
                                 in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, type)
                                 in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, type)
-                                in viewModel.ZFSchoolList -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                in viewModel.ZFSchoolList -> {
+                                    viewModel.zfType = 0
+                                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                }
+                                in viewModel.ZFSchoolList1 -> {
+                                    viewModel.zfType = 1
+                                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                                }
                                 in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
                                 in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
                                 in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)

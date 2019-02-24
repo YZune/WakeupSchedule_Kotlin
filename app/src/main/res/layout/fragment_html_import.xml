@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".schedule_import.HtmlImportFragment">
+
+    <View
+        android:id="@+id/v_status"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:background="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@android:color/white">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            style="@style/ButtonBackground"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="8dp"
+            android:src="@drawable/ic_back" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="从 Html 文件导入"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@color/grey" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:text="此功能的使用前提（满足其一即可）："
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:gravity="center"
+                android:lineSpacingExtra="8dp"
+                android:text="1. 学校已在适配列表中\n2. 是受支持的教务类型\n为了确保成功，请仔细阅读教程进行操作\n滑到底部点击最下方的圆形按钮确认导入"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_way"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="点击此处阅读教程"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <TextView
+                android:id="@+id/tv_type"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="选择学校/教务类型"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <TextView
+                android:id="@+id/tv_qq"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="从 QQ 接收位置选取"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_tim"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="从 Tim 接收位置选取"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_wechat"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="从 微信 接收位置选取"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_self"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="48dp"
+                android:background="@drawable/select_textview_bg"
+                android:gravity="center"
+                android:text="我要自己选择路径"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:alpha="0.5"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginBottom="56dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_utf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:text="UTF-8"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/pink" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_gbk"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:checkable="true"
+                    android:text="GBK"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    app:chipBackgroundColor="@color/pink" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cg_qz"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:visibility="gone"
+                        app:chipSpacingHorizontal="16dp"
+                        app:chipSpacingVertical="16dp"
+                        app:lineSpacing="20dp"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 1"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/red" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 2"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/pink" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 3"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/lightBlue" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 4"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/orange" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 5"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/blue" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_qz6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="强智 6"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/ruri" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/cg_zf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:visibility="gone"
+                        app:chipSpacingHorizontal="16dp"
+                        app:chipSpacingVertical="16dp"
+                        app:lineSpacing="20dp"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_zf1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="正方 1"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/red" />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip_zf2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checkable="true"
+                            android:text="正方 2"
+                            android:textColor="@android:color/white"
+                            app:chipBackgroundColor="@color/pink" />
+
+                    </com.google.android.material.chip.ChipGroup>
+
+                </RelativeLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/fab_import"
+                    android:layout_width="56dp"
+                    android:layout_height="67dp"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/iconfont"
+                    android:includeFontPadding="false"
+                    android:text=""
+                    android:textSize="25sp"
+                    app:cornerRadius="48dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

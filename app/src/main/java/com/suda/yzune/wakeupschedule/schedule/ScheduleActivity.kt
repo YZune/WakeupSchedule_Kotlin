@@ -502,6 +502,13 @@ class ScheduleActivity : BaseActivity() {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
+            4 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startActivity<LoginWebActivity>("type" to "html", "tableId" to viewModel.table.id)
+                } else {
+                    Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

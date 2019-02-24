@@ -11,7 +11,6 @@ import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -52,19 +51,26 @@ class LoginWebActivity : BaseActivity() {
                 transaction.commit()
                 showImportSettingDialog()
             }
+            intent.getStringExtra("type") == "html" -> {
+                val fragment = HtmlImportFragment()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "htmlImport")
+                transaction.commit()
+                showImportSettingDialog()
+            }
             intent.action == Intent.ACTION_VIEW -> {
                 val fragment = FileImportFragment()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
                 launch {
-                    val import = async(Dispatchers.IO) {
+                    val import = withContext(Dispatchers.IO) {
                         try {
                             viewModel.importFromFile(intent.data!!.path!!)
                         } catch (e: Exception) {
                             e.message
                         }
-                    }.await()
+                    }
                     when (import) {
                         "ok" -> {
                             Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()

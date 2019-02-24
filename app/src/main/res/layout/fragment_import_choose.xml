@@ -39,7 +39,7 @@
         android:lineSpacingExtra="4dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="现在已支持从60+所学校的教务直接导入课程\n也可以去申请适配试试看:)"
+        android:text="现在已支持从近百所学校的教务直接导入课程\n也可以去申请适配试试看:)"
         android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton
@@ -57,6 +57,11 @@
         android:id="@+id/tv_excel"
         style="@style/DialogButtonStyle"
         android:text="从 Excel 导入" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_html"
+        style="@style/DialogButtonStyle"
+        android:text="从 Html 文件导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_file"

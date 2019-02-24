@@ -47,6 +47,16 @@ class ImportChooseFragment : BaseDialogFragment() {
             }
         }
 
+        tv_html.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4)
+                dismiss()
+            } else {
+                activity!!.startActivityForResult<LoginWebActivity>(32, "type" to "html", "tableId" to viewModel.table.id)
+                dismiss()
+            }
+        }
+
         tv_excel.setOnClickListener {
             if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 3)

@@ -32,6 +32,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     var importId = -1
     var newFlag = false
     var isUrp = false
+    var zfType = 0
+    var qzType = 0
+    var htmlName = ""
+    var htmlPath = ""
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
@@ -39,6 +43,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val detailDao = dataBase.courseDetailDao()
     private val timeTableDao = dataBase.timeTableDao()
     private val timeDetailDao = dataBase.timeDetailDao()
+    private var hasTypeFlag = false
 
     private val pattern = "第.*节"
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
@@ -47,9 +52,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
-    val ZFSchoolList = arrayOf("郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+    val ZFSchoolList = arrayOf("杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
-    val newZFSchoolList = arrayOf("厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+    val ZFSchoolList1 = arrayOf("浙江万里学院", "重庆交通职业学院")
+    val newZFSchoolList = arrayOf("温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
@@ -226,7 +232,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     //node number
                     val nodeStr = courseSource.substring(1, courseSource.length - 1)
                     try {
-                        node = Integer.decode(nodeStr)
+                        node = nodeStr.toInt()
                     } catch (e: Exception) {
                         node = getNodeInt(nodeStr)
                         e.printStackTrace()
@@ -241,7 +247,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
 
                 countDay++
-                courses.addAll(parseImportBean(countDay, td.html(), node))
+                when (zfType) {
+                    0 -> courses.addAll(parseImportBean(countDay, td.html(), node))
+                    1 -> courses.addAll(parseImportBean1(countDay, courseSource, node))
+                }
                 //parseTextInfo(courseSource, node)
             }
         }
@@ -288,6 +297,50 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
             courses.add(temp)
+        }
+        return courses
+    }
+
+    private fun parseImportBean1(cDay: Int, source: String, node: Int): ArrayList<ImportBean> {
+        val courses = ArrayList<ImportBean>()
+        val split = source.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        var preIndex = -1
+        for (i in 0 until split.size) {
+            if (split[i].contains('{') && split[i].contains('}')) {
+                if (preIndex != -1) {
+                    if (split[preIndex - 1] in courseProperty) {
+                        hasTypeFlag = true
+                    }
+                    val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
+                            timeInfo = split[preIndex],
+                            room = "", teacher = "", cDay = cDay)
+                    if ((i - preIndex - 2) == 1) {
+                        temp.teacher = split[preIndex + 1]
+                    } else {
+                        temp.teacher = split[preIndex + 1]
+                        temp.room = split[preIndex + 2]
+                    }
+                    courses.add(temp)
+                    preIndex = i
+                } else {
+                    preIndex = i
+                }
+            }
+            if (i == split.size - 1) {
+                if (split[preIndex - 1] in courseProperty) {
+                    hasTypeFlag = true
+                }
+                val temp = ImportBean(startNode = node, name = if (hasTypeFlag && preIndex >= 2) split[preIndex - 2] else split[preIndex - 1],
+                        timeInfo = split[preIndex],
+                        room = "", teacher = "", cDay = cDay)
+                if ((i - preIndex) == 1) {
+                    temp.teacher = split[preIndex + 1]
+                } else {
+                    temp.teacher = split[preIndex + 1]
+                    temp.room = split[preIndex + 2]
+                }
+                courses.add(temp)
+            }
         }
         return courses
     }
@@ -422,7 +475,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         continue
                     }
 
-                    day = Integer.parseInt(td.attr("id")[0].toString())
+                    day = td.attr("id")[0].toString().toInt()
 
                     val pList = div.getElementsByTag("p")
                     val weekList = arrayListOf<String>()
@@ -438,7 +491,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                                     rightIndex = timeStr.indexOf('节', leftIndex)
                                 }
                                 if (leftIndex != -1 && rightIndex != -1) {
-                                    val endNode = Integer.parseInt(timeStr.substring(leftIndex + "$node-".length, rightIndex))
+                                    val endNode = timeStr.substring(leftIndex + "$node-".length, rightIndex).toInt()
                                     step = endNode - node + 1
                                 }
                                 weekList.clear()
@@ -451,10 +504,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         if (it.contains('-')) {
                             val weeks = it.substring(0, it.indexOf('周')).split('-')
                             if (weeks.isNotEmpty()) {
-                                startWeek = Integer.decode(weeks[0])
+                                startWeek = weeks[0].toInt()
                             }
                             if (weeks.size > 1) {
-                                endWeek = Integer.decode(weeks[1])
+                                endWeek = weeks[1].toInt()
                             }
 
                             type = when {
@@ -463,8 +516,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                                 else -> 0
                             }
                         } else {
-                            startWeek = Integer.decode(it.substring(0, it.indexOf('周')))
-                            endWeek = Integer.decode(it.substring(0, it.indexOf('周')))
+                            startWeek = it.substring(0, it.indexOf('周')).toInt()
+                            endWeek = it.substring(0, it.indexOf('周')).toInt()
                         }
 
                         val flag = isContainName(baseList, courseName)
@@ -554,25 +607,25 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
         val nodeList = nodeStr.split('-')
         if (nodeList.size == 1) {
-            startNode = Integer.decode(nodeList[0])
+            startNode = nodeList[0].toInt()
             step = 1
         } else {
-            startNode = Integer.decode(nodeList[0])
-            step = Integer.decode(nodeList[1]) - startNode + 1
+            startNode = nodeList[0].toInt()
+            step = nodeList[1].toInt() - startNode + 1
         }
 
         weekList.forEach {
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
-                    endWeek = Integer.decode(weeks[1])
+                    endWeek = weeks[1].toInt()
                 }
             } else {
-                startWeek = Integer.decode(it)
-                endWeek = Integer.decode(it)
+                startWeek = it.toInt()
+                endWeek = it.toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -668,7 +721,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
                     type = when {
@@ -676,11 +729,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         weeks[1].contains('双') -> 2
                         else -> 0
                     }
-                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                    endWeek = weeks[1].substringBefore('(').toInt()
                 }
             } else {
-                startWeek = Integer.decode(it.substringBefore('('))
-                endWeek = Integer.decode(it.substringBefore('('))
+                startWeek = it.substringBefore('(').toInt()
+                endWeek = it.substringBefore('(').toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -722,7 +775,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
                     type = when {
@@ -730,11 +783,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         weeks[1].contains('双') -> 2
                         else -> 0
                     }
-                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                    endWeek = weeks[1].substringBefore('(').toInt()
                 }
             } else {
-                startWeek = Integer.decode(it.substringBefore('('))
-                endWeek = Integer.decode(it.substringBefore('('))
+                startWeek = it.substringBefore('(').toInt()
+                endWeek = it.substringBefore('(').toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -782,7 +835,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
                     type = when {
@@ -790,11 +843,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         weeks[1].contains('双') -> 2
                         else -> 0
                     }
-                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                    endWeek = weeks[1].substringBefore('(').toInt()
                 }
             } else {
-                startWeek = Integer.decode(it.substringBefore('('))
-                endWeek = Integer.decode(it.substringBefore('('))
+                startWeek = it.substringBefore('(').toInt()
+                endWeek = it.substringBefore('(').toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -837,7 +890,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
                     type = when {
@@ -845,11 +898,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         weeks[1].contains('双') -> 2
                         else -> 0
                     }
-                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                    endWeek = weeks[1].substringBefore('(').toInt()
                 }
             } else {
-                startWeek = Integer.decode(it.substringBefore('('))
-                endWeek = Integer.decode(it.substringBefore('('))
+                startWeek = it.substringBefore('(').toInt()
+                endWeek = it.substringBefore('(').toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -901,7 +954,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (it.contains('-')) {
                 val weeks = it.split('-')
                 if (weeks.isNotEmpty()) {
-                    startWeek = Integer.decode(weeks[0])
+                    startWeek = weeks[0].toInt()
                 }
                 if (weeks.size > 1) {
                     type = when {
@@ -909,11 +962,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         weeks[1].contains('双') -> 2
                         else -> 0
                     }
-                    endWeek = Integer.decode(weeks[1].substringBefore('('))
+                    endWeek = weeks[1].substringBefore('(').toInt()
                 }
             } else {
-                startWeek = Integer.decode(it.substringBefore('('))
-                endWeek = Integer.decode(it.substringBefore('('))
+                startWeek = it.substringBefore('(').toInt()
+                endWeek = it.substringBefore('(').toInt()
             }
 
             val flag = isContainName(baseList, courseName)
@@ -975,6 +1028,9 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     private fun write2DB(): String {
+        if (baseList.isEmpty()) {
+            throw Exception("解析错误>_<请确保选择了正确的教务类型，并在显示了课程的页面")
+        }
         //todo: 增量添加课程
         if (!newFlag) {
             baseDao.removeCourseBaseBeanOfTable(importId)
@@ -1015,7 +1071,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         when {
             time.contains("节/") -> {
                 val numLocate = time.indexOf("节/")
-                step = Integer.parseInt(time.substring(numLocate - 1, numLocate))
+                step = time.substring(numLocate - 1, numLocate).toInt()
             }
             time.contains(",") -> {
                 var locate = 0
@@ -1042,11 +1098,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             val weeks = weekInfo.substring(2, weekInfo.length - 1).split("-".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
 
             if (weeks.isNotEmpty()) {
-                startWeek = Integer.decode(weeks[0])
+                startWeek = weeks[0].toInt()
                 result[2] = startWeek
             }
             if (weeks.size > 1) {
-                endWeek = Integer.decode(weeks[1])
+                endWeek = weeks[1].toInt()
                 result[3] = endWeek
             }
         }
@@ -1103,24 +1159,24 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 weekList.forEach { weekStr ->
                     if (weekStr.contains('-')) {
                         val weeks = weekStr.split('-')
-                        startWeek = Integer.decode(weeks[0])
+                        startWeek = weeks[0].toInt()
                         when {
                             weekStr.contains('单') -> {
                                 type = 1
-                                endWeek = Integer.decode(weeks[1].substringBefore('单'))
+                                endWeek = weeks[1].substringBefore('单').toInt()
                             }
                             weekStr.contains('双') -> {
                                 type = 2
-                                endWeek = Integer.decode(weeks[1].substringBefore('双'))
+                                endWeek = weeks[1].substringBefore('双').toInt()
                             }
                             else -> {
                                 type = 0
-                                endWeek = Integer.decode(weeks[1])
+                                endWeek = weeks[1].toInt()
                             }
                         }
                     } else {
-                        startWeek = Integer.decode(weekStr)
-                        endWeek = Integer.decode(weekStr)
+                        startWeek = weekStr.toInt()
+                        endWeek = weekStr.toInt()
                         type = 0
                     }
 
@@ -1245,7 +1301,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         } else if ("v".equals(tag, ignoreCase = true)) { //如果是" v "标签则利用得到的索引，得到对应行对应列的元素
                             v = xmlPullParserSheet.nextText()
                             if (v != null) {
-                                columns!!.add(listCells[Integer.parseInt(v)])
+                                columns!!.add(listCells[v.toInt()])
                             } else {
                                 columns!!.add(v)
                             }

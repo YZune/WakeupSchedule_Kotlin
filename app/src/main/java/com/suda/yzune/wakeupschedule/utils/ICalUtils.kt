@@ -118,6 +118,7 @@ object ICalUtils {
             calendar.set(Calendar.HOUR_OF_DAY, t[0].toInt())
             calendar.set(Calendar.MINUTE, t[1].toInt())
             calendar.set(Calendar.SECOND, 0)
+            calendar.set(Calendar.MILLISECOND, 0)
             result.add(calendar)
         }
         return result

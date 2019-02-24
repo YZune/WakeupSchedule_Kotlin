@@ -137,74 +137,112 @@
             android:layout_marginBottom="16dp"
             android:gravity="center">
 
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/cg_qz"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="1"
-                android:visibility="invisible"
-                app:chipSpacingHorizontal="16dp"
-                app:chipSpacingVertical="16dp"
-                app:lineSpacing="20dp"
-                app:singleSelection="true">
+                android:layout_weight="1">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz1"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cg_qz"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 1"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/red" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    app:chipSpacingHorizontal="16dp"
+                    app:chipSpacingVertical="16dp"
+                    app:lineSpacing="20dp"
+                    app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz2"
-                    android:layout_width="wrap_content"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 1"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/red" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 2"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/pink" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 3"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/lightBlue" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 4"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/orange" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 5"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/blue" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_qz6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="强智 6"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/ruri" />
+
+                </com.google.android.material.chip.ChipGroup>
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cg_zf"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 2"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/pink" />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="visible"
+                    app:chipSpacingHorizontal="16dp"
+                    app:chipSpacingVertical="16dp"
+                    app:lineSpacing="20dp"
+                    app:singleSelection="true">
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 3"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/lightBlue" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_zf1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="正方 1"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/red" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 4"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/orange" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_zf2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="正方 2"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/pink" />
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 5"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/blue" />
+                </com.google.android.material.chip.ChipGroup>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip_qz6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checkable="true"
-                    android:text="强智 6"
-                    android:textColor="@android:color/white"
-                    app:chipBackgroundColor="@color/ruri" />
-
-            </com.google.android.material.chip.ChipGroup>
+            </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fab_import"

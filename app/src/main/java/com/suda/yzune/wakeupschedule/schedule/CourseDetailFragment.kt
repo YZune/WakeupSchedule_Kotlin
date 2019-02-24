@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.*
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.dip
@@ -100,7 +101,11 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
             else -> ""
         }
         et_weeks.text = "第${course.startWeek} - ${course.endWeek}周    $type"
-        et_time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
+        try {
+            et_time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
+        } catch (e: Exception) {
+            et_time.longSnackbar("该课程似乎有点问题哦>_<请修改一下")
+        }
     }
 
     override fun dismiss() {

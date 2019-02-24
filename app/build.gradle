@@ -26,8 +26,8 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 58
-        versionName "3.525"
+        versionCode 59
+        versionName "3.526"
         flavorDimensions "versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
