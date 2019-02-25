@@ -155,6 +155,10 @@ class WebViewLoginFragment : BaseFragment() {
                     qzChipId = id
                     viewModel.qzType = 5
                 }
+                R.id.chip_qz7 -> {
+                    qzChipId = id
+                    viewModel.qzType = 6
+                }
                 else -> {
                     chipGroup.find<Chip>(qzChipId).isChecked = true
                 }
@@ -264,6 +268,8 @@ class WebViewLoginFragment : BaseFragment() {
                                 in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
                                 "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                 "新正方教务" -> viewModel.parseNewZF(html)
+                                "长春大学" -> viewModel.parseQZ(html, type)
+                                "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
                                 "强智教务" -> {
                                     when (viewModel.qzType) {
                                         0 -> viewModel.parseQZ(html, "北京林业大学")
@@ -272,12 +278,15 @@ class WebViewLoginFragment : BaseFragment() {
                                         3 -> viewModel.parseQZ(html, "青岛农业大学")
                                         4 -> viewModel.parseQZ(html, "锦州医科大学")
                                         5 -> viewModel.parseQZ(html, "山东科技大学")
+                                        6 -> viewModel.parseQZ(html, "佛山科学技术学院")
                                         else -> "没有贵校的信息哦>_<"
                                     }
                                 }
-                                "长春大学" -> viewModel.parseQZ(html, type)
-                                "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
                                 in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, type)
+                                in viewModel.qzCrazyList -> {
+                                    viewModel.qzType = 6
+                                    viewModel.parseQZ(html, type)
+                                }
                                 in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, type)
                                 in viewModel.ZFSchoolList -> {
                                     viewModel.zfType = 0
