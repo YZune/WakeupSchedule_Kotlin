@@ -281,6 +281,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         //schools.add(SchoolListBean("H", "华南农业大学珠江学院", "http://jwxt.wmu.edu.cn"))
         schools.add(SchoolListBean("C", "重庆大学城市科技学院", ""))
         schools.add(SchoolListBean("H", "湖南工学院", "http://jwgl.hnit.edu.cn/"))
+        schools.add(SchoolListBean("X", "徐州医科大学", "http://222.193.95.102/"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
@@ -301,9 +302,9 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             } else {
                 tableDao.getDefaultTableId().observe(this, Observer {
                     startActivity<LoginWebActivity>(
-                            "type" to schools[position].name,
+                            "type" to showList[position].name,
                             "tableId" to it,
-                            "url" to schools[position].url
+                            "url" to showList[position].url
                     )
                     finish()
                 })

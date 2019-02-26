@@ -98,16 +98,16 @@ class TodayCourseAppWidget : AppWidgetProvider() {
 
             if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
                 val week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
-                if (week > 0) {
+                if (week >= 0) {
                     val weekDay = CourseUtils.getWeekday()
                     val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
-                    val courseList = async(Dispatchers.IO) {
+                    val courseList = withContext(Dispatchers.IO) {
                         if (week % 2 == 0) {
                             baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
                         } else {
                             baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
                         }
-                    }.await()
+                    }
 
                     val timeList = withContext(Dispatchers.IO) {
                         timeDao.getTimeListInThread(table.timeTable)

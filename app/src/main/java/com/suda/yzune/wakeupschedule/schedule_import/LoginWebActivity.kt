@@ -137,7 +137,12 @@ class LoginWebActivity : BaseActivity() {
                         setResult(RESULT_OK)
                         finish()
                     }
-                    else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                    "something" -> {
+                        Toasty.info(applicationContext, "导入后请在右侧栏切换后查看。有部分数据导入失败，可能是某些格子空白导致的，请仔细检查。", Toast.LENGTH_LONG).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    }
+                    else -> Toasty.error(applicationContext, "发生异常>_<请确保所有应填的格子不为空\n且没有更改模板的属性\n$import", Toast.LENGTH_LONG).show()
                 }
             }
         }

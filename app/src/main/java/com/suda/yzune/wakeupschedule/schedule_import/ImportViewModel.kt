@@ -46,6 +46,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private var hasTypeFlag = false
 
     private val pattern = "第.*节"
+    private val nodePattern = Pattern.compile("\\(\\d{1,2}[-]*\\d*节")
     private val other = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     private val pattern1 = Pattern.compile("\\{第\\d{1,2}[-]*\\d*周")
     private val WEEK = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
@@ -56,7 +57,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     val ZFSchoolList = arrayOf("杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
     val ZFSchoolList1 = arrayOf("浙江万里学院", "重庆交通职业学院")
-    val newZFSchoolList = arrayOf("温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+    val newZFSchoolList = arrayOf("徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
@@ -487,14 +488,18 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                             "上课地点" -> room = it.getElementsByTag("font").last().text().trim()
                             "节/周" -> {
                                 timeStr = it.getElementsByTag("font").last().text().trim()
-                                val leftIndex = timeStr.indexOf("$node-")
-                                var rightIndex = -1
-                                if (leftIndex != -1) {
-                                    rightIndex = timeStr.indexOf('节', leftIndex)
-                                }
-                                if (leftIndex != -1 && rightIndex != -1) {
-                                    val endNode = timeStr.substring(leftIndex + "$node-".length, rightIndex).toInt()
-                                    step = endNode - node + 1
+                                val matcher = nodePattern.matcher(timeStr)
+                                if (matcher.find()) {
+                                    val nodeInfo = matcher.group(0)
+                                    val nodes = nodeInfo.substring(1, nodeInfo.length - 1).split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+
+                                    if (nodes.isNotEmpty()) {
+                                        node = nodes[0].toInt()
+                                    }
+                                    if (nodes.size > 1) {
+                                        val endNode = nodes[1].toInt()
+                                        step = endNode - node + 1
+                                    }
                                 }
                                 weekList.clear()
                                 weekList.addAll(timeStr.substring(timeStr.indexOf(')') + 1).split(','))
@@ -565,7 +570,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 continue
             }
 
-            var day = 0
+            var day = -1
 
             for (td in tds) {
                 day++
@@ -1227,8 +1232,13 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun importFromExcel(path: String): String {
         baseList.clear()
         detailList.clear()
+        var errorFlag = false
         analyzeXlsx(path).values.forEach {
             for (i in 1 until it.size) {
+                if (it[i].size != 7) {
+                    errorFlag = true
+                    continue
+                }
                 if (it[i][0].isBlank() || it[i][1].isBlank() || it[i][2].isBlank() || it[i][3].isBlank() || it[i][6].isBlank()) {
                     continue
                 }
@@ -1286,7 +1296,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
             }
         }
-        return write2DB()
+        write2DB()
+        return if (errorFlag) {
+            "something"
+        } else {
+            "ok"
+        }
     }
 
     private val SHAREDSTRINGS = "xl/sharedStrings.xml"

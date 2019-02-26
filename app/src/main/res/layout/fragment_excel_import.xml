@@ -73,6 +73,17 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                android:lineSpacingExtra="4dp"
+                android:text="请直接在模板的基础上修改，不要自己新建。应填的内容一定不能为空，如果没有该字段的内容，则填「无」。"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp" />
+
+            <TextView
                 android:id="@+id/tv_template"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
