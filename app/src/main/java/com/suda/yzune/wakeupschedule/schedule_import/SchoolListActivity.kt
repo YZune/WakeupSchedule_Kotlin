@@ -280,9 +280,11 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("F", "佛山科学技术学院", "http://100.fosu.edu.cn/"))
         //schools.add(SchoolListBean("H", "华南农业大学珠江学院", "http://jwxt.wmu.edu.cn"))
         schools.add(SchoolListBean("C", "重庆大学城市科技学院", ""))
+        schools.add(SchoolListBean("H", "湖南工学院", "http://jwgl.hnit.edu.cn/"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
+        schools.add(0, SchoolListBean("★", "旧强智（需要 IE 的那种）"))
         schools.add(0, SchoolListBean("★", "强智教务"))
         schools.add(0, SchoolListBean("★", "新正方教务"))
         schools.add(0, SchoolListBean("★", "正方教务"))

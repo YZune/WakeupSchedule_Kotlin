@@ -52,6 +52,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
+    val oldQZList = arrayOf("旧强智（需要 IE 的那种）", "湖南工学院")
     val ZFSchoolList = arrayOf("杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
     val ZFSchoolList1 = arrayOf("浙江万里学院", "重庆交通职业学院")
@@ -80,7 +81,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val retrofit = Retrofit.Builder().baseUrl("http://xk.suda.edu.cn").build()
     private val importService = retrofit.create(ImportService::class.java)
     private var loginCookieStr = ""
-    private val viewStateLoginCode = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    private val viewStateLoginCode = "dDwtMTU5NzgwNzI1O3Q8O2w8aTwxPjs+O2w8dDw7bDxpPDQ+O2k8Nz47aTwxMD47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz4WALD6HDQjlsElm9Ef23s29CgGOQ=="
     private var viewStatePostCode = ""
 
     suspend fun getNewId(): Int {
@@ -403,7 +404,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
-                        teacher = importBean.teacher, day = importBean.cDay,
+                        teacher = importBean.teacher, day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
@@ -416,7 +417,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
-                        teacher = importBean.teacher, day = importBean.cDay,
+                        teacher = importBean.teacher, day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
@@ -546,6 +547,82 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
 
+        return write2DB()
+    }
+
+    suspend fun parseOldQZ(html: String): String {
+        baseList.clear()
+        detailList.clear()
+        val doc = org.jsoup.Jsoup.parse(html)
+        var id = 0
+
+        val kbtable = doc.getElementById("kbtable")
+        val trs = kbtable.getElementsByTag("tr")
+
+        for (tr in trs) {
+            val tds = tr.getElementsByTag("td")
+            if (tds.isEmpty()) {
+                continue
+            }
+
+            var day = 0
+
+            for (td in tds) {
+                day++
+                val divs = td.getElementsByTag("div")
+                for (div in divs) {
+                    if (div.attr("style") == "display: none;" || div.text().isBlank()) continue
+                    val split = div.html().split("<br>")
+                    var preIndex = -1
+                    for (i in 0 until split.size) {
+                        var valid = false
+                        if (split[i].contains('[') && split[i].contains(']') && split[i].contains('节') && split[i].contains('周')) {
+                            if (preIndex != -1) {
+                                valid = true
+                                preIndex = i
+                            } else {
+                                preIndex = i
+                            }
+                        }
+                        if (i == split.size - 1) {
+                            valid = true
+                        }
+                        if (valid) {
+                            val courseName = Jsoup.parse(split[preIndex - 3]).text().trim()
+                            val room = Jsoup.parse(split[preIndex + 1]).text().trim()
+                            val teacher = Jsoup.parse(split[preIndex - 1]).text().trim()
+                            val timeInfo = Jsoup.parse(split[preIndex]).text().trim().split("周[")
+                            val startWeek = timeInfo[0].split('-')[0].toInt()
+                            val endWeek = timeInfo[0].split('-')[1].toInt()
+                            val startNode = timeInfo[1].split('-')[0].toInt()
+                            val endNode = timeInfo[1].split('-')[1].substringBefore('节').toInt()
+                            val flag = isContainName(baseList, courseName)
+                            if (flag == -1) {
+                                id = baseList.size
+                                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", tableId = importId))
+                                detailList.add(CourseDetailBean(
+                                        id = id, room = room,
+                                        teacher = teacher, day = day,
+                                        step = endNode - startNode + 1,
+                                        startWeek = startWeek, endWeek = endWeek,
+                                        type = 0, startNode = startNode,
+                                        tableId = importId
+                                ))
+                            } else {
+                                detailList.add(CourseDetailBean(
+                                        id = flag, room = room,
+                                        teacher = teacher, day = day,
+                                        step = endNode - startNode + 1,
+                                        startWeek = startWeek, endWeek = endWeek,
+                                        type = 0, startNode = startNode,
+                                        tableId = importId
+                                ))
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return write2DB()
     }
 

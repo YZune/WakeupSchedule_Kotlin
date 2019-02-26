@@ -105,14 +105,14 @@ class LoginWebFragment : BaseFragment() {
                 else -> {
                     cardRe2C()
                     launch {
-                        val task = async(Dispatchers.IO) {
+                        val task = withContext(Dispatchers.IO) {
                             try {
                                 viewModel.login(et_id.text.toString(),
                                         et_pwd.text.toString(), et_code.text.toString())
                             } catch (e: Exception) {
                                 e.message
                             }
-                        }.await()
+                        }
                         when {
                             task == null -> {
                                 cardC2Re("请检查是否连接校园网")
@@ -145,6 +145,7 @@ class LoginWebFragment : BaseFragment() {
                                 getPrepared(et_id.text.toString())
                             }
                             task.contains("请耐心排队") -> {
+                                Log.d("登录", task)
                                 et_code.setText("")
                                 refreshCode()
                                 cardC2Re("选课排队中，稍后再试哦")

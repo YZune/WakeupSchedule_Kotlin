@@ -171,6 +171,7 @@ class HtmlImportFragment : BaseFragment() {
                     try {
                         val html = File(viewModel.htmlPath).readText(if (cp_utf.isChecked) Charsets.UTF_8 else Charset.forName("gbk"))
                         when (viewModel.htmlName) {
+                            in viewModel.oldQZList -> viewModel.parseOldQZ(html)
                             in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
                             "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                             "新正方教务" -> viewModel.parseNewZF(html)

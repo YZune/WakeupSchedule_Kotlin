@@ -265,6 +265,7 @@ class WebViewLoginFragment : BaseFragment() {
                     val task = withContext(Dispatchers.IO) {
                         try {
                             when (type) {
+                                in viewModel.oldQZList -> viewModel.parseOldQZ(html)
                                 in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
                                 "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
                                 "新正方教务" -> viewModel.parseNewZF(html)

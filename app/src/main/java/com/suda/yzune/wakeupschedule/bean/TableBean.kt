@@ -40,7 +40,7 @@ data class TableBean(
         var showSat: Boolean = true,
         var showSun: Boolean = true,
         var sundayFirst: Boolean = false,
-        var showOtherWeekCourse: Boolean = false,
+        var showOtherWeekCourse: Boolean = true,
         var showTime: Boolean = false,
         var type: Int = 0
 ) : Parcelable
