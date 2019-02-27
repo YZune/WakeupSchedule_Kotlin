@@ -259,7 +259,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     }
                 }
 
-                if (!strBuilder.endsWith("[非本周]") && ll.findViewWithTag<TextView?>("第${c.startNode}节") == null) {
+                if (tv.visibility == View.VISIBLE && !strBuilder.endsWith("[非本周]") && ll.findViewWithTag<TextView?>("第${c.startNode}节") == null) {
                     tv.tag = "第${c.startNode}节"
                 }
 
@@ -274,7 +274,9 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 if (ll.findViewWithTag<TextView?>("第${c.startNode}节") != null) {
                     tv.visibility = View.INVISIBLE
                     val textView = ll.findViewWithTag<TipTextView>("第${c.startNode}节")
-                    textView.visibility = View.VISIBLE
+                    if (textView.tipVisibility == TipTextView.TIP_INVISIBLE) {
+                        textView.tipVisibility = TipTextView.TIP_VISIBLE
+                    }
                 }
 
                 if (timeList.isNotEmpty()) {

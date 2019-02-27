@@ -579,50 +579,51 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     if (div.attr("style") == "display: none;" || div.text().isBlank()) continue
                     val split = div.html().split("<br>")
                     var preIndex = -1
+
+                    fun toCourse() {
+                        val courseName = Jsoup.parse(split[preIndex - 3]).text().trim()
+                        val room = Jsoup.parse(split[preIndex + 1]).text().trim()
+                        val teacher = Jsoup.parse(split[preIndex - 1]).text().trim()
+                        val timeInfo = Jsoup.parse(split[preIndex]).text().trim().split("周[")
+                        val startWeek = timeInfo[0].split('-')[0].toInt()
+                        val endWeek = timeInfo[0].split('-')[1].toInt()
+                        val startNode = timeInfo[1].split('-')[0].toInt()
+                        val endNode = timeInfo[1].split('-')[1].substringBefore('节').toInt()
+                        val flag = isContainName(baseList, courseName)
+                        if (flag == -1) {
+                            id = baseList.size
+                            baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", tableId = importId))
+                            detailList.add(CourseDetailBean(
+                                    id = id, room = room,
+                                    teacher = teacher, day = day,
+                                    step = endNode - startNode + 1,
+                                    startWeek = startWeek, endWeek = endWeek,
+                                    type = 0, startNode = startNode,
+                                    tableId = importId
+                            ))
+                        } else {
+                            detailList.add(CourseDetailBean(
+                                    id = flag, room = room,
+                                    teacher = teacher, day = day,
+                                    step = endNode - startNode + 1,
+                                    startWeek = startWeek, endWeek = endWeek,
+                                    type = 0, startNode = startNode,
+                                    tableId = importId
+                            ))
+                        }
+                    }
+
                     for (i in 0 until split.size) {
-                        var valid = false
                         if (split[i].contains('[') && split[i].contains(']') && split[i].contains('节') && split[i].contains('周')) {
-                            if (preIndex != -1) {
-                                valid = true
-                                preIndex = i
+                            preIndex = if (preIndex != -1) {
+                                toCourse()
+                                i
                             } else {
-                                preIndex = i
+                                i
                             }
                         }
                         if (i == split.size - 1) {
-                            valid = true
-                        }
-                        if (valid) {
-                            val courseName = Jsoup.parse(split[preIndex - 3]).text().trim()
-                            val room = Jsoup.parse(split[preIndex + 1]).text().trim()
-                            val teacher = Jsoup.parse(split[preIndex - 1]).text().trim()
-                            val timeInfo = Jsoup.parse(split[preIndex]).text().trim().split("周[")
-                            val startWeek = timeInfo[0].split('-')[0].toInt()
-                            val endWeek = timeInfo[0].split('-')[1].toInt()
-                            val startNode = timeInfo[1].split('-')[0].toInt()
-                            val endNode = timeInfo[1].split('-')[1].substringBefore('节').toInt()
-                            val flag = isContainName(baseList, courseName)
-                            if (flag == -1) {
-                                id = baseList.size
-                                baseList.add(CourseBaseBean(id, courseName, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}", tableId = importId))
-                                detailList.add(CourseDetailBean(
-                                        id = id, room = room,
-                                        teacher = teacher, day = day,
-                                        step = endNode - startNode + 1,
-                                        startWeek = startWeek, endWeek = endWeek,
-                                        type = 0, startNode = startNode,
-                                        tableId = importId
-                                ))
-                            } else {
-                                detailList.add(CourseDetailBean(
-                                        id = flag, room = room,
-                                        teacher = teacher, day = day,
-                                        step = endNode - startNode + 1,
-                                        startWeek = startWeek, endWeek = endWeek,
-                                        type = 0, startNode = startNode,
-                                        tableId = importId
-                                ))
-                            }
+                            toCourse()
                         }
                     }
                 }
