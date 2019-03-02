@@ -88,18 +88,13 @@ class WebViewLoginFragment : BaseFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             wv_course.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
         wv_course.webViewClient = object : WebViewClient() {
+
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 handler.proceed() //接受所有网站的证书
             }
-        }
-        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wv_course.webViewClient = object : WebViewClient() {
-            override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                super.onReceivedError(view, request, error)
-                ll_error.visibility = View.VISIBLE
-                wv_course.visibility = View.GONE
-            }
+
         }
         wv_course.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
@@ -212,7 +207,7 @@ class WebViewLoginFragment : BaseFragment() {
                 "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);"
 
         fab_import.setOnClickListener {
-            if (type !in viewModel.gzChengFangList || !viewModel.isUrp) {
+            if (type !in viewModel.urpList && type !in viewModel.gzChengFangList && !viewModel.isUrp) {
                 wv_course.loadUrl(js)
             }
             if (type in viewModel.gzChengFangList) {
@@ -231,7 +226,7 @@ class WebViewLoginFragment : BaseFragment() {
                     wv_course.loadUrl(js)
                 }
             }
-            if (viewModel.isUrp) {
+            if (type in viewModel.urpList || viewModel.isUrp) {
                 if (!isRefer) {
                     val referUrl = if (wv_course.url.endsWith('/')) wv_course.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
                     wv_course.loadUrl(referUrl)
@@ -265,6 +260,7 @@ class WebViewLoginFragment : BaseFragment() {
                     val task = withContext(Dispatchers.IO) {
                         try {
                             when (type) {
+                                in viewModel.urpList -> viewModel.parseURP(html)
                                 in viewModel.oldQZList -> viewModel.parseOldQZ(html)
                                 in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
                                 "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
