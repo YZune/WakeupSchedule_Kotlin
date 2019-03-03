@@ -37,8 +37,8 @@ import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
@@ -376,15 +376,15 @@ class ScheduleSettingsActivity : BaseListActivity() {
     override fun onBackPressed() {
         launch {
             AppWidgetUtils.updateWidget(applicationContext)
-            val list = async(Dispatchers.IO) {
+            val list = withContext(Dispatchers.IO) {
                 viewModel.saveSettings()
                 viewModel.getScheduleWidgetIds()
-            }.await()
+            }
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             list.forEach {
                 when (it.detailType) {
                     0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
-                    1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                    1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table, false)
                 }
             }
             setResult(RESULT_OK)

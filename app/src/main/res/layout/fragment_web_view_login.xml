@@ -251,6 +251,38 @@
 
                 </com.google.android.material.chip.ChipGroup>
 
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cg_old_qz"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    app:chipSpacingHorizontal="16dp"
+                    app:chipSpacingVertical="16dp"
+                    app:lineSpacing="20dp"
+                    app:singleSelection="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_old_qz1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="缩小"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/red" />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip_old_qz2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        android:text="放大"
+                        android:textColor="@android:color/white"
+                        app:chipBackgroundColor="@color/pink" />
+
+                </com.google.android.material.chip.ChipGroup>
+
             </RelativeLayout>
 
             <com.google.android.material.button.MaterialButton

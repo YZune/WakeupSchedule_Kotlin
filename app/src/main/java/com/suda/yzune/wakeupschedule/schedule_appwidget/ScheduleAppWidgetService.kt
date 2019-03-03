@@ -13,6 +13,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
@@ -36,6 +37,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
         private val timeList = arrayListOf<TimeDetailBean>()
+        private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
             table = tableDao.getDefaultTableInThread()
@@ -107,6 +109,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun hasStableIds(): Boolean {
             return false
+        }
+
+        private fun TextView.onShineEffect(colorInt: Int) {
+            this.setShadowLayer(24f, 0f, 0f, colorInt)
         }
 
         fun initView(view: View, weekPanel0: View) {
@@ -181,6 +187,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val strBuilder = StringBuilder()
                 val c = data[i]
                 val tv = TipTextView(context)
+
+                if (day == weekDay) {
+                    tv.onShineEffect(table.courseTextColor)
+                }
+
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         widgetItemHeight * c.step + marTop * (c.step - 1))
@@ -212,7 +223,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 strBuilder.append(c.courseName)
 
                 if (c.room != "") {
-                    strBuilder.append("@${c.room}")
+                    strBuilder.append("\n@${c.room}")
                 }
 
                 when (c.type) {

@@ -84,6 +84,14 @@ class WebViewLoginFragment : BaseFragment() {
             cg_zf.visibility = View.GONE
         }
 
+        if (type in viewModel.oldQZList1) {
+            cg_old_qz.visibility = View.VISIBLE
+            chip_old_qz2.isChecked = true
+            viewModel.oldQzType = 1
+        } else {
+            cg_old_qz.visibility = View.GONE
+        }
+
         wv_course.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             wv_course.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
@@ -123,7 +131,7 @@ class WebViewLoginFragment : BaseFragment() {
 
     private fun initEvent() {
 
-        var qzChipId = 0
+        var qzChipId = R.id.chip_qz1
         cg_qz.setOnCheckedChangeListener { chipGroup, id ->
             when (id) {
                 R.id.chip_qz1 -> {
@@ -160,7 +168,7 @@ class WebViewLoginFragment : BaseFragment() {
             }
         }
 
-        var zfChipId = 0
+        var zfChipId = R.id.chip_zf1
         cg_zf.setOnCheckedChangeListener { chipGroup, id ->
             when (id) {
                 R.id.chip_zf1 -> {
@@ -173,6 +181,23 @@ class WebViewLoginFragment : BaseFragment() {
                 }
                 else -> {
                     chipGroup.find<Chip>(zfChipId).isChecked = true
+                }
+            }
+        }
+
+        var oldQZChipId = R.id.chip_old_qz2
+        cg_old_qz.setOnCheckedChangeListener { chipGroup, id ->
+            when (id) {
+                R.id.chip_old_qz1 -> {
+                    oldQZChipId = id
+                    viewModel.oldQzType = 0
+                }
+                R.id.chip_old_qz2 -> {
+                    oldQZChipId = id
+                    viewModel.oldQzType = 1
+                }
+                else -> {
+                    chipGroup.find<Chip>(oldQZChipId).isChecked = true
                 }
             }
         }
@@ -207,8 +232,21 @@ class WebViewLoginFragment : BaseFragment() {
                 "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);"
 
         fab_import.setOnClickListener {
-            if (type !in viewModel.urpList && type !in viewModel.gzChengFangList && !viewModel.isUrp) {
+            if (type !in viewModel.oldQZList1 && type !in viewModel.urpList && type !in viewModel.gzChengFangList && !viewModel.isUrp) {
                 wv_course.loadUrl(js)
+            }
+            if (type in viewModel.oldQZList1) {
+                if (!isRefer) {
+                    val referUrl = when (type) {
+                        "湖南科技大学" -> "http://kdjw.hnust.cn/kdjw/tkglAction.do?method=goListKbByXs&istsxx=no"
+                        else -> if (wv_course.url.endsWith('/')) wv_course.url + "tkglAction.do?method=goListKbByXs&istsxx=no" else wv_course.url + "/tkglAction.do?method=goListKbByXs&istsxx=no"
+                    }
+                    wv_course.loadUrl(referUrl)
+                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    isRefer = true
+                } else {
+                    wv_course.loadUrl(js)
+                }
             }
             if (type in viewModel.gzChengFangList) {
                 if (!isRefer) {
@@ -260,6 +298,8 @@ class WebViewLoginFragment : BaseFragment() {
                     val task = withContext(Dispatchers.IO) {
                         try {
                             when (type) {
+                                "北京大学" -> viewModel.parsePeking(html)
+                                in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
                                 in viewModel.urpList -> viewModel.parseURP(html)
                                 in viewModel.oldQZList -> viewModel.parseOldQZ(html)
                                 in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)

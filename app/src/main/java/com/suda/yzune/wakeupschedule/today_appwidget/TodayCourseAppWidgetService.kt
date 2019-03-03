@@ -21,10 +21,19 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
     private val courseList = arrayListOf<CourseBean>()
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        return TodayCourseListRemoteViewsFactory()
+        return if (intent != null) {
+            val i = intent.data.schemeSpecificPart.toInt()
+            return if (i == 0) {
+                TodayCourseListRemoteViewsFactory(false)
+            } else {
+                TodayCourseListRemoteViewsFactory(true)
+            }
+        } else {
+            TodayCourseListRemoteViewsFactory()
+        }
     }
 
-    private inner class TodayCourseListRemoteViewsFactory : RemoteViewsService.RemoteViewsFactory {
+    private inner class TodayCourseListRemoteViewsFactory(val nextDay: Boolean = false) : RemoteViewsService.RemoteViewsFactory {
         private val dataBase = AppDatabase.getDatabase(applicationContext)
         private val tableDao = dataBase.tableDao()
         private val baseDao = dataBase.courseBaseDao()
@@ -33,15 +42,15 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         override fun onCreate() {
             table = tableDao.getDefaultTableInThread()
             try {
-                week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
+                week = CourseUtils.countWeek(table.startDate, table.sundayFirst, nextDay)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
             courseList.clear()
             if (week % 2 == 0) {
-                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id))
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
             } else {
-                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id))
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
             }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
@@ -50,15 +59,15 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         override fun onDataSetChanged() {
             table = tableDao.getDefaultTableInThread()
             try {
-                week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
+                week = CourseUtils.countWeek(table.startDate, table.sundayFirst, nextDay)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }
             courseList.clear()
             if (week % 2 == 0) {
-                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id))
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
             } else {
-                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id))
+                courseList.addAll(baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
             }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListInThread(table.timeTable))

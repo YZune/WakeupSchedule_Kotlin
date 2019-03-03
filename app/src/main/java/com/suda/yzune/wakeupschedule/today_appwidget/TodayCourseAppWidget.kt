@@ -75,6 +75,46 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                 manager.notify(index, notification.build())
             }
         }
+        if (intent.action == "WAKEUP_NEXT_DAY") {
+            val dataBase = AppDatabase.getDatabase(context)
+            val widgetDao = dataBase.appWidgetDao()
+            val tableDao = dataBase.tableDao()
+
+            job = GlobalScope.launch(Dispatchers.Main) {
+
+                val table = withContext(Dispatchers.IO) {
+                    tableDao.getDefaultTableInThread()
+                }
+
+                withContext(Dispatchers.IO) {
+                    for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
+                        AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
+                    }
+                }
+
+                job?.cancel()
+            }
+        }
+        if (intent.action == "WAKEUP_BACK_TIME") {
+            val dataBase = AppDatabase.getDatabase(context)
+            val widgetDao = dataBase.appWidgetDao()
+            val tableDao = dataBase.tableDao()
+
+            job = GlobalScope.launch(Dispatchers.Main) {
+
+                val table = withContext(Dispatchers.IO) {
+                    tableDao.getDefaultTableInThread()
+                }
+
+                withContext(Dispatchers.IO) {
+                    for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
+                        AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                    }
+                }
+
+                job?.cancel()
+            }
+        }
         if (intent.action == "WAKEUP_CANCEL_REMINDER") {
             val manager = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             manager.cancel(intent.getIntExtra("index", 0))

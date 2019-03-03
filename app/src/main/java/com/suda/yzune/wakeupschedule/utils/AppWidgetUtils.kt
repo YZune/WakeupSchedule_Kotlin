@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.TypedValue
 import android.view.View
 import android.widget.RemoteViews
@@ -11,6 +12,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
+import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
 
 object AppWidgetUtils {
@@ -79,25 +81,50 @@ object AppWidgetUtils {
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
     }
 
-    fun refreshTodayWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean) {
+    fun refreshTodayWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, tableBean: TableBean, nextDay: Boolean = false) {
         val mRemoteViews = RemoteViews(context.packageName, R.layout.today_course_app_widget)
-        val week = CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst)
+        val week = CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst, nextDay)
         val date = CourseUtils.getTodayDate()
-        val weekDay = CourseUtils.getWeekday()
+        val weekDay = CourseUtils.getWeekday(nextDay)
         mRemoteViews.setTextColor(R.id.tv_date, tableBean.widgetTextColor)
         mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
+        mRemoteViews.setInt(R.id.iv_next, "setColorFilter", tableBean.widgetTextColor)
         mRemoteViews.setTextViewTextSize(R.id.tv_week, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
-        mRemoteViews.setTextViewText(R.id.tv_date, date)
+        if (nextDay) {
+            mRemoteViews.setTextViewText(R.id.tv_date, "明天")
+            mRemoteViews.setViewVisibility(R.id.iv_next, View.GONE)
+            mRemoteViews.setViewVisibility(R.id.iv_back, View.VISIBLE)
+        } else {
+            mRemoteViews.setTextViewText(R.id.tv_date, date)
+            mRemoteViews.setViewVisibility(R.id.iv_next, View.VISIBLE)
+            mRemoteViews.setViewVisibility(R.id.iv_back, View.GONE)
+        }
         if (week > 0) {
             mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")
         } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
         }
         val lvIntent = Intent(context, TodayCourseAppWidgetService::class.java)
+        lvIntent.data = if (nextDay) {
+            Uri.fromParts("content", "1", null)
+        } else {
+            Uri.fromParts("content", "0", null)
+        }
         mRemoteViews.setRemoteAdapter(R.id.lv_course, lvIntent)
         val intent = Intent(context, SplashActivity::class.java)
         val pIntent = PendingIntent.getActivity(context, 0, intent, 0)
         mRemoteViews.setOnClickPendingIntent(R.id.tv_date, pIntent)
+
+        val i = Intent(context, TodayCourseAppWidget::class.java)
+        i.action = "WAKEUP_NEXT_DAY"
+        val pi = PendingIntent.getBroadcast(context, 1, i, PendingIntent.FLAG_UPDATE_CURRENT)
+        mRemoteViews.setOnClickPendingIntent(R.id.iv_next, pi)
+
+        val backIntent = Intent(context, TodayCourseAppWidget::class.java)
+        backIntent.action = "WAKEUP_BACK_TIME"
+        val backPi = PendingIntent.getBroadcast(context, 2, backIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        mRemoteViews.setOnClickPendingIntent(R.id.iv_back, backPi)
+
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.lv_course)
         appWidgetManager.updateAppWidget(appWidgetId, mRemoteViews)
     }

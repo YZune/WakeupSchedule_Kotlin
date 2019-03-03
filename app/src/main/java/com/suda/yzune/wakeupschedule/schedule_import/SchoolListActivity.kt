@@ -263,7 +263,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "河北科技师范学院", "http://121.22.25.47/"))
         schools.add(SchoolListBean("H", "杭州医学院", "http://edu.hmc.edu.cn/"))
         schools.add(SchoolListBean("W", "温州医科大学", "http://jwxt.wmu.edu.cn"))
-        schools.add(SchoolListBean("B", "北京理工大学珠海学院", "http://e.zhbit.com/"))
+        schools.add(SchoolListBean("B", "北京理工大学珠海学院", "http://e.zhbit.com/jsxsd/"))
         schools.add(SchoolListBean("B", "北京理工大学", "http://jwms.bit.edu.cn/"))
         schools.add(SchoolListBean("N", "南昌大学", "http://jwc104.ncu.edu.cn:8081/jsxsd/"))
         schools.add(SchoolListBean("H", "哈尔滨工程大学", ""))
@@ -286,6 +286,10 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("S", "山东农业大学", "http://jw.sdau.edu.cn/"))
         schools.add(SchoolListBean("H", "河海大学", "http://202.119.113.135/"))
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
+        schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
+
+        schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
+        schools.add(SchoolListBean("B", "北京大学", ""))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
@@ -302,7 +306,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         val adapter = SchoolImportListAdapter(R.layout.item_apply_info, showList)
         adapter.setOnItemClickListener { _, _, position ->
             if (fromLocal) {
-                setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", schools[position].name) })
+                setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", showList[position].name) })
                 finish()
             } else {
                 tableDao.getDefaultTableId().observe(this, Observer {

@@ -28,6 +28,7 @@ private const val weekParam = "week"
 class ScheduleFragment : BaseFragment() {
 
     private var week = 0
+    private var weekDay = 1
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
 
@@ -45,6 +46,7 @@ class ScheduleFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        weekDay = CourseUtils.getWeekdayInt()
         if (viewModel.table.showSun) {
             if (viewModel.table.sundayFirst) {
                 find<View>(R.id.anko_tv_title7).visibility = View.GONE
@@ -72,12 +74,21 @@ class ScheduleFragment : BaseFragment() {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title0_1 + i)
                 textView.setTextColor(viewModel.table.textColor)
+                if (weekDay == 7 && i == 0) {
+                    textView.onShineEffect(viewModel.table.textColor)
+                }
+                if (weekDay == i) {
+                    textView.onShineEffect(viewModel.table.textColor)
+                }
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
             }
         } else {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title1 + i)
                 textView.setTextColor(viewModel.table.textColor)
+                if (i == weekDay - 1) {
+                    textView.onShineEffect(viewModel.table.textColor)
+                }
                 textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
             }
         }
@@ -120,6 +131,10 @@ class ScheduleFragment : BaseFragment() {
         }
     }
 
+    private fun TextView.onShineEffect(colorInt: Int) {
+        this.setShadowLayer(24f, 0f, 0f, colorInt)
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(arg0: Int) =
@@ -156,6 +171,11 @@ class ScheduleFragment : BaseFragment() {
             }
 
             val textView = TipTextView(context!!)
+
+            if (day == weekDay) {
+                textView.onShineEffect(viewModel.table.courseTextColor)
+            }
+
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))

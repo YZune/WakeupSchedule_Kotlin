@@ -26,15 +26,15 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 63
-        versionName "3.53"
+        versionCode 65
+        versionName "3.535"
         flavorDimensions "versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled true
             zipAlignEnabled true
+            minifyEnabled true
             shrinkResources true
             proguardFile 'proguard-android.txt'
             proguardFile 'proguard-rules.pro'
@@ -106,8 +106,8 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-rc01"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-rc01"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0-rc02"
+    implementation "android.arch.navigation:navigation-ui:1.0.0-rc02"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'me.drakeet.multitype:multitype:4.0.0-alpha2'

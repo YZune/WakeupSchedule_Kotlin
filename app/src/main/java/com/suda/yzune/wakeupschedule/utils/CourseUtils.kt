@@ -204,9 +204,12 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun daysBetween(date: String): Int {
+    fun daysBetween(date: String, nextDay: Boolean = false): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         val cal = Calendar.getInstance()
+        if (nextDay) {
+            cal.add(Calendar.DATE, 1)
+        }
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)
         cal.set(Calendar.SECOND, 0)
@@ -226,8 +229,8 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun countWeek(date: String, sundayFirst: Boolean): Int {
-        val during = daysBetween(date)
+    fun countWeek(date: String, sundayFirst: Boolean, nextDay: Boolean = false): Int {
+        val during = daysBetween(date, nextDay)
         val cal = Calendar.getInstance()
         return if (!sundayFirst) {
             if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) during / 7 else during / 7 + 1
@@ -236,45 +239,17 @@ object CourseUtils {
         }
     }
 
-    @Throws(ParseException::class)
-    fun countWeekForExport(date: String, sundayFirst: Boolean): Int {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
-        var todayTime = sdf.format(Date())// 获取当前的日期
-        todayTime = "2016" + todayTime.substring(4)
-        val cal = Calendar.getInstance()
-        cal.time = sdf.parse(date)
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        val time1 = cal.timeInMillis
-        cal.time = sdf.parse(todayTime)
-        cal.set(Calendar.HOUR_OF_DAY, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        val time2 = cal.timeInMillis
-        var betweenDays = ((time2 - time1) / (1000 * 3600 * 24)).toInt()
-        if (betweenDays < 0) {
-            betweenDays--
-        }
-        return if (!sundayFirst) {
-            if (betweenDays < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) betweenDays / 7 else betweenDays / 7 + 1
-        } else {
-            if (betweenDays < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) betweenDays / 7 else betweenDays / 7 + 1
-        }
-    }
-
-    fun getWeekday(): String {
-        var weekDay = Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
-        if (weekDay == 1) {
-            weekDay = 7
-        } else {
-            weekDay -= 1
-        }
+    fun getWeekday(nextDay: Boolean = false): String {
+        val weekDay = getWeekdayInt(nextDay)
         return getDayStr(weekDay)
     }
 
-    fun getWeekdayInt(): Int {
-        var weekDay = Calendar.getInstance().get(java.util.Calendar.DAY_OF_WEEK)
+    fun getWeekdayInt(nextDay: Boolean = false): Int {
+        val cal = Calendar.getInstance()
+        if (nextDay) {
+            cal.add(Calendar.DATE, 1)
+        }
+        var weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {
             weekDay = 7
         } else {
