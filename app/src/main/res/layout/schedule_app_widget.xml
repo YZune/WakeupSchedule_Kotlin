@@ -95,4 +95,26 @@
         android:layout_below="@id/weekName"
         android:divider="@null" />
 
+    <ImageView
+        android:id="@+id/iv_next"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_above="@id/weekName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:padding="8dp"
+        android:rotation="180"
+        android:src="@drawable/ic_back" />
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_above="@id/weekName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_back"
+        android:visibility="gone" />
+
 </RelativeLayout>

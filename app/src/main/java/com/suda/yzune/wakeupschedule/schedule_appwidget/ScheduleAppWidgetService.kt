@@ -21,13 +21,23 @@ import org.jetbrains.anko.dip
 import java.text.ParseException
 
 class ScheduleAppWidgetService : RemoteViewsService() {
+
     private lateinit var table: TableBean
 
-    override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
-        return ScheduleRemoteViewsFactory()
+    override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
+        return if (intent != null) {
+            val i = intent.data?.schemeSpecificPart?.toInt()
+            return if (i == 1) {
+                ScheduleRemoteViewsFactory(true)
+            } else {
+                ScheduleRemoteViewsFactory(false)
+            }
+        } else {
+            ScheduleRemoteViewsFactory()
+        }
     }
 
-    private inner class ScheduleRemoteViewsFactory : RemoteViewsService.RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsService.RemoteViewsFactory {
         private var week = 0
         private var widgetItemHeight = 0
         private var marTop = 0
@@ -40,24 +50,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
-            table = tableDao.getDefaultTableInThread()
-            widgetItemHeight = dip(table.widgetItemHeight.toFloat())
-            marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-            val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
-            alphaStr = if (alphaInt != 0) {
-                Integer.toHexString(alphaInt)
-            } else {
-                "00"
-            }
-            if (alphaStr.length < 2) {
-                alphaStr = "0$alphaStr"
-            }
-            if (table.showTime) {
-                timeList.clear()
-                timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
-            } else {
-                timeList.clear()
-            }
+
         }
 
         override fun onDataSetChanged() {
@@ -82,7 +75,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         override fun onDestroy() {
-
+            timeList.clear()
         }
 
         override fun getCount(): Int {
@@ -154,7 +147,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initData(context: Context, views: RemoteViews) {
             try {
-                week = countWeek(table.startDate, table.sundayFirst)
+                week = if (nextWeek) countWeek(table.startDate, table.sundayFirst) + 1 else countWeek(table.startDate, table.sundayFirst)
             } catch (e: ParseException) {
                 e.printStackTrace()
             }

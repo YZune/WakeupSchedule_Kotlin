@@ -14,8 +14,8 @@ import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 
 class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
@@ -49,34 +49,35 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
 
         tv_got_it.setOnClickListener {
             launch {
-                val table = async(Dispatchers.IO) {
-                    viewModel.getDefaultTable()
-                }.await()
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                 //Log.d("包名", appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName)
                 when (appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName) {
                     ".schedule_appwidget.ScheduleAppWidget" -> {
-                        async(Dispatchers.IO) {
+                        val table = withContext(Dispatchers.IO) {
                             viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
-                        }.await()
+                            viewModel.getDefaultTable()
+                        }
                         AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                     ".today_appwidget.TodayCourseAppWidget" -> {
-                        async(Dispatchers.IO) {
+                        val table = withContext(Dispatchers.IO) {
                             viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
-                        }.await()
+                            viewModel.getDefaultTable()
+                        }
                         AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                     "com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidget" -> {
-                        async(Dispatchers.IO) {
+                        val table = withContext(Dispatchers.IO) {
                             viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, ""))
-                        }.await()
+                            viewModel.getDefaultTable()
+                        }
                         AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                     "com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget" -> {
-                        async(Dispatchers.IO) {
+                        val table = withContext(Dispatchers.IO) {
                             viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
-                        }.await()
+                            viewModel.getDefaultTable()
+                        }
                         AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                     }
                 }

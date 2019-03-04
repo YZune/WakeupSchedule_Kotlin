@@ -204,11 +204,14 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun daysBetween(date: String, nextDay: Boolean = false): Int {
+    fun daysBetween(date: String, nextDay: Boolean = false, nextWeek: Boolean = false): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         val cal = Calendar.getInstance()
         if (nextDay) {
             cal.add(Calendar.DATE, 1)
+        }
+        if (nextWeek) {
+            cal.add(Calendar.WEEK_OF_YEAR, 1)
         }
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)

@@ -4,10 +4,10 @@
         <item android:title="通用">
             <menu>
                 <item
-                    android:visible="false"
                     android:id="@+id/nav_wakeup"
                     android:icon="@drawable/wakeup"
-                    android:title="WakeUp" />
+                    android:title="WakeUp"
+                    android:visible="false" />
                 <item
                     android:id="@+id/nav_young"
                     android:icon="@drawable/young"
@@ -36,11 +36,13 @@
         </item>
 
         <item
+            android:id="@+id/nav_suda"
             android:title="苏大生活"
             android:visible="false">
             <menu>
-                <item android:title="空闲教室查询" />
-                <item android:title="澡堂使用情况" />
+                <item
+                    android:id="@+id/nav_bathroom"
+                    android:title="东区澡堂使用情况" />
             </menu>
         </item>
 

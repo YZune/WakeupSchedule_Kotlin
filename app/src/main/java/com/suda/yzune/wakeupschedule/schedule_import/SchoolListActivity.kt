@@ -280,16 +280,16 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("X", "徐州医科大学", "http://222.193.95.102/"))
         schools.add(SchoolListBean("F", "福建农林大学", "http://jwgl.fafu.edu.cn"))
         schools.add(SchoolListBean("Z", "浙江工业大学", "http://www.gdjw.zjut.edu.cn/"))
-
         schools.add(SchoolListBean("D", "东北财经大学", "http://202.199.165.159/"))
         schools.add(SchoolListBean("T", "天津工业大学", "http://jwpt.tjpu.edu.cn/"))
         schools.add(SchoolListBean("S", "山东农业大学", "http://jw.sdau.edu.cn/"))
         schools.add(SchoolListBean("H", "河海大学", "http://202.119.113.135/"))
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
-
         schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
         schools.add(SchoolListBean("B", "北京大学", ""))
+
+        schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 

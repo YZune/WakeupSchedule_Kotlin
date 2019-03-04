@@ -94,7 +94,6 @@ class ScheduleSettingsActivity : BaseListActivity() {
                     mRecyclerView.longSnackbar("找不到哦，换个关键词试试看，或者请仔细找找啦，一般都能找到的。")
                 }
             }
-
         }
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
@@ -144,13 +143,13 @@ class ScheduleSettingsActivity : BaseListActivity() {
         items.add(VerticalItem("格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边")))
         items.add(SeekBarItem("课程格子高度", viewModel.table.itemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示")))
         items.add(SeekBarItem("课程格子不透明度", viewModel.table.itemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示")))
-        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 11, 16, "sp", listOf("文字", "大小", "文字大小")))
+        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 8, 16, "sp", listOf("文字", "大小", "文字大小")))
         items.add(SwitchItem("显示非本周课程", viewModel.table.showOtherWeekCourse, listOf("非本周")))
 
         items.add(CategoryItem("桌面小部件外观", false))
         items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
         items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
-        items.add(SeekBarItem("小部件显示文字大小", viewModel.table.widgetItemTextSize, 11, 16, "sp", listOf("文字", "大小", "文字大小", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件显示文字大小", viewModel.table.widgetItemTextSize, 8, 16, "sp", listOf("文字", "大小", "文字大小", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件课程颜色", "指课程格子内的文字颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边", "小部件", "小", "插件", "桌面")))
