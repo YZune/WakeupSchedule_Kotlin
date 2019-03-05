@@ -22,8 +22,6 @@ import java.text.ParseException
 
 class ScheduleAppWidgetService : RemoteViewsService() {
 
-    private lateinit var table: TableBean
-
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return if (intent != null) {
             val i = intent.data?.schemeSpecificPart?.toInt()
@@ -38,6 +36,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
     }
 
     private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsService.RemoteViewsFactory {
+        private lateinit var table: TableBean
         private var week = 0
         private var widgetItemHeight = 0
         private var marTop = 0

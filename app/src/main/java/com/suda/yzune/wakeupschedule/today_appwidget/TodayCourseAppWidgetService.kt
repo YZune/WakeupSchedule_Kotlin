@@ -15,11 +15,6 @@ import java.text.ParseException
 
 class TodayCourseAppWidgetService : RemoteViewsService() {
 
-    private var week = 1
-    private lateinit var table: TableBean
-    private val timeList = arrayListOf<TimeDetailBean>()
-    private val courseList = arrayListOf<CourseBean>()
-
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return if (intent != null) {
             val i = intent.data?.schemeSpecificPart?.toInt()
@@ -39,6 +34,11 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         private val tableDao = dataBase.tableDao()
         private val baseDao = dataBase.courseBaseDao()
         private val timeDao = dataBase.timeDetailDao()
+
+        private var week = 1
+        private lateinit var table: TableBean
+        private val timeList = arrayListOf<TimeDetailBean>()
+        private val courseList = arrayListOf<CourseBean>()
 
         override fun onCreate() {
 
