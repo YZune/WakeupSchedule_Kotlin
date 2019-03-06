@@ -104,7 +104,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         private fun TextView.onShineEffect(colorInt: Int) {
-            this.setShadowLayer(24f, 0f, 0f, colorInt)
+            this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
         }
 
         fun initView(view: View, weekPanel0: View) {
@@ -181,7 +181,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val tv = TipTextView(context)
 
                 if (day == weekDay) {
-                    tv.onShineEffect(table.courseTextColor)
+                    tv.onShineEffect(table.widgetCourseTextColor)
                 }
 
                 val lp = LinearLayout.LayoutParams(

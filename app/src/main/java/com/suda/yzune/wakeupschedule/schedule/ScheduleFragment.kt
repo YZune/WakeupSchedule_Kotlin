@@ -132,7 +132,7 @@ class ScheduleFragment : BaseFragment() {
     }
 
     private fun TextView.onShineEffect(colorInt: Int) {
-        this.setShadowLayer(24f, 0f, 0f, colorInt)
+        this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
     }
 
     companion object {

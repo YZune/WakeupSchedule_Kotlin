@@ -269,7 +269,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "哈尔滨工程大学", ""))
         schools.add(SchoolListBean("S", "山东大学（威海）", ""))
         schools.add(SchoolListBean("J", "江苏科技大学", "http://jwgl.just.edu.cn:8080/jsxsd/"))
-        schools.add(SchoolListBean("Z", "中国石油大学胜利学院", ""))
+        //schools.add(SchoolListBean("Z", "中国石油大学胜利学院", ""))
         schools.add(SchoolListBean("D", "电子科技大学中山学院", "http://jwgln.zsc.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("H", "河北金融学院", ""))
         //schools.add(SchoolListBean("G", "桂林理工大学博文管理学院", "http://jw.bwgl.cn/"))
@@ -288,8 +288,12 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
         schools.add(SchoolListBean("B", "北京大学", ""))
-
         schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
+
+        schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))
+        schools.add(SchoolListBean("X", "西南石油大学", "http://jwxt.swpu.edu.cn/"))
+        schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn/xxjw/"))
+
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 

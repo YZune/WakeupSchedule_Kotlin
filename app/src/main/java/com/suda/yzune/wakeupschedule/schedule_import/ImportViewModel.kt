@@ -59,9 +59,9 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
-    val oldQZList1 = arrayOf("湖南科技大学")
+    val oldQZList1 = arrayOf("湖南科技大学", "湖南科技大学潇湘学院")
     val oldQZList = arrayOf("旧强智（需要 IE 的那种）", "湖南工学院")
-    val urpList = arrayOf("URP 系统", "北京邮电大学", "东北财经大学", "天津工业大学", "山东农业大学", "河海大学")
+    val urpList = arrayOf("西南石油大学", "河北大学", "北京邮电大学", "东北财经大学", "天津工业大学", "山东农业大学", "河海大学", "URP 系统")
     val ZFSchoolList = arrayOf("安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
     val ZFSchoolList1 = arrayOf("福建农林大学", "浙江万里学院", "重庆交通职业学院")
@@ -451,9 +451,9 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
         fun getStartNode(nodeE: Element): Int {
             return try {
-                nodeE.text().trim().substringBefore('大').toInt()
+                nodeE.text().trim().substringBefore('大').substringBefore('小').toInt()
             } catch (e: Exception) {
-                getNodeInt(nodeE.text().trim())
+                getNodeInt(nodeE.text().trim().substringBefore('大').substringBefore('小'))
             }
         }
 
