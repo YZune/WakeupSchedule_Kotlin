@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context=".widget.colorpicker.ColorPickerFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:text="选择颜色"
+        android:textColor="@android:color/black"
+        android:textStyle="bold" />
+
+    <com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerView
+        android:id="@+id/cpv_color"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cpv_alphaChannelVisible="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <View
+            android:id="@+id/v_color"
+            android:layout_width="72dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:background="@color/colorAccent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="24dp"
+            android:text="#" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_color"
+            style="@style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:digits="0123456789ABCDEFabcdef"
+            android:focusable="true"
+            android:imeOptions="actionGo"
+            android:inputType="textNoSuggestions"
+            android:maxLength="8"
+            android:maxLines="1"
+            android:typeface="monospace" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/DialogButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="取消" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            style="@style/DialogButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="保存"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

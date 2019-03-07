@@ -98,7 +98,6 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
-    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'jp.wasabeef:glide-transformations:4.0.1'
     implementation 'com.github.bumptech.glide:glide:4.6.1'
     implementation 'com.zhihu.android:matisse:0.5.2-beta4'

@@ -7,8 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.flask.colorpicker.ColorPickerView
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -27,6 +25,7 @@ import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -37,7 +36,12 @@ import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColorResource
 
 
-class AdvancedSettingsActivity : BaseListActivity() {
+class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
+
+    override fun onColorSelected(dialogId: Int, color: Int) {
+        PreferenceUtils.saveIntToSP(this, "nav_bar_color", color)
+        mRecyclerView.longSnackbar("重启App后生效哦~")
+    }
 
     private lateinit var dataBase: AppDatabase
     private lateinit var widgetDao: AppWidgetDao
@@ -167,19 +171,10 @@ class AdvancedSettingsActivity : BaseListActivity() {
             }
             "虚拟键颜色" -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ColorPickerDialogBuilder
-                            .with(this)
-                            .setTitle("选取颜色")
-                            .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                            .density(12)
-                            .setNegativeButton("取消") { _, _ -> }
-                            .initialColor(PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent)))
-                            .setPositiveButton("确定") { _, colorInt, _ ->
-                                PreferenceUtils.saveIntToSP(applicationContext, "nav_bar_color", colorInt)
-                                mRecyclerView.longSnackbar("重启App后生效哦~")
-                            }
-                            .build()
-                            .show()
+                    ColorPickerFragment.newBuilder()
+                            .setShowAlphaSlider(true)
+                            .setColor(PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent)))
+                            .show(this)
                 } else {
                     mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
                 }

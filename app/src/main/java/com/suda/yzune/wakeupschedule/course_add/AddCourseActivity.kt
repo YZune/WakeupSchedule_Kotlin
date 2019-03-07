@@ -15,13 +15,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.flask.colorpicker.ColorPickerView
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -31,7 +30,10 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
 
 
-class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextChangedListener {
+class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener, AddCourseAdapter.OnItemEditTextChangedListener {
+
+    private lateinit var tvColor: TextView
+    private lateinit var ivColor: TextView
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
@@ -161,12 +163,12 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
-        etName = view.find<EditText>(R.id.et_name)
+        etName = view.find(R.id.et_name)
         val rlRoot = view.find<RelativeLayout>(R.id.rl_root)
         rlRoot.topPadding = getStatusBarHeight() + dip(48)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
-        val tvColor = view.findViewById<TextView>(R.id.tv_color)
-        val ivColor = view.findViewById<TextView>(R.id.iv_color)
+        tvColor = view.findViewById(R.id.tv_color)
+        ivColor = view.findViewById(R.id.iv_color)
         etName.setText(baseBean.courseName)
         etName.setSelection(baseBean.courseName.length)
         etName.addTextChangedListener(object : TextWatcher {
@@ -187,24 +189,19 @@ class AddCourseActivity : BaseListActivity(), AddCourseAdapter.OnItemEditTextCha
             tvColor.setTextColor(colorInt)
         }
         llColor.setOnClickListener {
-            ColorPickerDialogBuilder
-                    .with(this)
-                    .setTitle("选取颜色")
-                    .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                    .density(12)
-                    .initialColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
-                    .lightnessSliderOnly()
-                    .setPositiveButton("确定") { _, colorInt, _ ->
-                        ivColor.textColor = colorInt
-                        tvColor.text = "点此更改颜色"
-                        tvColor.setTextColor(colorInt)
-                        baseBean.color = "#${Integer.toHexString(colorInt)}"
-                    }
-                    .setNegativeButton("取消") { _, _ -> }
-                    .build()
-                    .show()
+            ColorPickerFragment.newBuilder()
+                    .setColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
+                    .setShowAlphaSlider(false)
+                    .show(this)
         }
         return view
+    }
+
+    override fun onColorSelected(dialogId: Int, colorInt: Int) {
+        ivColor.textColor = colorInt
+        tvColor.text = "点此更改颜色"
+        tvColor.setTextColor(colorInt)
+        viewModel.baseBean.color = "#${Integer.toHexString(colorInt)}"
     }
 
     private fun initFooterView(adapter: AddCourseAdapter): View {

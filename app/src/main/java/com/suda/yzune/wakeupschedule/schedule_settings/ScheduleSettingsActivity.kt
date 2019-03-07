@@ -18,8 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
-import com.flask.colorpicker.ColorPickerView
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -33,6 +31,7 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.*
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
+import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
@@ -44,7 +43,25 @@ import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
 
-class ScheduleSettingsActivity : BaseListActivity() {
+private const val TITLE_COLOR = 1
+private const val COURSE_TEXT_COLOR = 2
+private const val STROKE_COLOR = 3
+private const val WIDGET_TITLE_COLOR = 4
+private const val WIDGET_COURSE_TEXT_COLOR = 5
+private const val WIDGET_STROKE_COLOR = 6
+
+class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
+
+    override fun onColorSelected(dialogId: Int, color: Int) {
+        when (dialogId) {
+            TITLE_COLOR -> viewModel.table.textColor = color
+            COURSE_TEXT_COLOR -> viewModel.table.courseTextColor = color
+            STROKE_COLOR -> viewModel.table.strokeColor = color
+            WIDGET_TITLE_COLOR -> viewModel.table.widgetTextColor = color
+            WIDGET_COURSE_TEXT_COLOR -> viewModel.table.widgetCourseTextColor = color
+            WIDGET_STROKE_COLOR -> viewModel.table.widgetStrokeColor = color
+        }
+    }
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
@@ -241,59 +258,22 @@ class ScheduleSettingsActivity : BaseListActivity() {
                 }
             }
             "界面文字颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.textColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.textColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.textColor, TITLE_COLOR)
             }
             "课程文字颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.courseTextColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.courseTextColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.courseTextColor, COURSE_TEXT_COLOR)
             }
             "格子边框颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.strokeColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.strokeColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.strokeColor, STROKE_COLOR)
             }
-
             "小部件标题颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.widgetTextColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.widgetTextColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.widgetTextColor, WIDGET_TITLE_COLOR)
             }
             "小部件课程颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.widgetCourseTextColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.widgetCourseTextColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.widgetCourseTextColor, WIDGET_COURSE_TEXT_COLOR)
             }
             "小部件格子边框颜色" -> {
-                buildColorPickerDialogBuilder()
-                        .initialColor(viewModel.table.widgetStrokeColor)
-                        .setPositiveButton("确定") { _, colorInt, _ ->
-                            viewModel.table.widgetStrokeColor = colorInt
-                        }
-                        .build()
-                        .show()
+                buildColorPickerDialogBuilder(viewModel.table.widgetStrokeColor, WIDGET_STROKE_COLOR)
             }
             "解锁高级功能" -> {
                 startActivity<AdvancedSettingsActivity>()
@@ -315,13 +295,12 @@ class ScheduleSettingsActivity : BaseListActivity() {
         }
     }
 
-    private fun buildColorPickerDialogBuilder(): ColorPickerDialogBuilder {
-        return ColorPickerDialogBuilder
-                .with(this)
-                .setTitle("选取颜色")
-                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                .density(12)
-                .setNegativeButton("取消") { _, _ -> }
+    private fun buildColorPickerDialogBuilder(color: Int, id: Int) {
+        ColorPickerFragment.newBuilder()
+                .setShowAlphaSlider(true)
+                .setColor(color)
+                .setDialogId(id)
+                .show(this)
     }
 
     private val mDateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
