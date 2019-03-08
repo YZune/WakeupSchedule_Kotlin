@@ -26,16 +26,16 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 67
-        versionName "3.537"
+        versionCode 68
+        versionName "3.538"
         flavorDimensions "versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            zipAlignEnabled true
             minifyEnabled true
             shrinkResources true
+            zipAlignEnabled true
             proguardFile 'proguard-android.txt'
             proguardFile 'proguard-rules.pro'
             signingConfig signingConfigs.config

@@ -742,11 +742,11 @@ class ColorPickerView @JvmOverloads constructor(context: Context, attrs: Attribu
 
     companion object {
         private const val DEFAULT_SLIDER_COLOR = -0x424243
-        private const val HUE_PANEL_WIDTH_DP = 8
+        private const val HUE_PANEL_WIDTH_DP = 32
         private const val ALPHA_PANEL_HEIGHT_DP = 8
         private const val PANEL_SPACING_DP = 16
         private const val CIRCLE_TRACKER_RADIUS_DP = 8
-        private const val SLIDER_TRACKER_SIZE_DP = 4
+        private const val SLIDER_TRACKER_SIZE_DP = 8
         private const val SLIDER_TRACKER_OFFSET_DP = 4
     }
 }

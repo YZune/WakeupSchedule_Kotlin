@@ -2,7 +2,6 @@
     <string name="text_login_web_title">登录教务系统</string>
     <string name="hint_student_id">学号</string>
     <string name="hint_password">密码</string>
-    <string name="color_picker_title">选取颜色</string>
     <string name="hint_check_code">验证码</string>
     <string name="toast_check_code_get_error">获取验证码失败</string>
     <string name="text_login">登录</string>

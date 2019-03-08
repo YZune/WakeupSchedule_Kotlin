@@ -17,12 +17,14 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import java.io.*
 import java.net.URLEncoder
+import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
@@ -61,8 +63,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
     val oldQZList1 = arrayOf("湖南科技大学", "湖南科技大学潇湘学院")
     val oldQZList = arrayOf("旧强智（需要 IE 的那种）", "湖南工学院")
-    val urpList = arrayOf("西南石油大学", "河北大学", "北京邮电大学", "东北财经大学", "天津工业大学", "山东农业大学", "河海大学", "URP 系统")
-    val ZFSchoolList = arrayOf("安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+    val urpList = arrayOf("山西工程技术学院", "安徽财经大学", "河北工程大学", "中国农业大学",
+            "上海海洋大学", "齐鲁师范学院", "山西农业大学", "中国石油大学（北京）", "内蒙古科技大学", "湖南理工学院",
+            "内蒙古大学", "齐齐哈尔大学", "河南理工大学", "西南石油大学", "河北大学", "北京邮电大学", "东北财经大学",
+            "天津工业大学", "山东农业大学", "河海大学", "URP 系统")
+    val ZFSchoolList = arrayOf("郑州大学西亚斯国际学院", "安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
     val ZFSchoolList1 = arrayOf("福建农林大学", "浙江万里学院", "重庆交通职业学院")
     val newZFSchoolList = arrayOf("济南大学", "西安邮电大学", "浙江工业大学", "徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
@@ -107,6 +112,92 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         } else {
             throw Exception()
         }
+    }
+
+    suspend fun loginShanghai(number: String, psd: String): String {
+        baseList.clear()
+        detailList.clear()
+        val course = ArrayList<String>()
+        val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%2fpassport%2freturn")
+        var doc = connect.get()
+
+        var ele = doc.body().select("input[name]")
+
+        val res = Jsoup.connect("https://sso.shu.edu.cn/idp/profile/SAML2/POST/SSO")
+                .data("SAMLRequest", ele[0].attr("value"), "RelayState", ele[1].attr("value"))
+                .method(Connection.Method.POST).timeout(10000).execute()
+        //.followRedirects(false)
+        val userPassword = HashMap<String, String>()
+        userPassword["j_username"] = number
+        userPassword["j_password"] = psd
+
+        doc = Jsoup.connect("https://sso.shu.edu.cn/idp/Authn/UserPassword")
+                .data(userPassword)
+                .cookies(res.cookies())
+                .post()
+        ele = doc.body().select("input[name]")
+
+        val res2 = Jsoup.connect("http://oauth.shu.edu.cn/oauth/Shibboleth.sso/SAML2/POST")
+                .data("SAMLResponse", ele[1].attr("value"), "RelayState", ele[0].attr("value"))
+                .method(Connection.Method.POST).timeout(10000).execute()
+
+        doc = Jsoup.connect("http://xk.autoisp.shu.edu.cn/StudentQuery/CtrlViewQueryCourseTable")
+                .data("studentNo", number)
+                .cookies(res2.cookies())
+                .post()
+        val ele2 = doc.body().select("tr")
+        for (i in 3 until ele2.size) {
+            if (ele2[i].getElementsByTag("td").text().isBlank()) {
+                break
+            }
+            course.add(ele2[i].getElementsByTag("td").text())
+        }
+
+        fun getInformation(info: String): List<String> {
+            val strList = Arrays.asList(*info.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            val list = ArrayList<String>()
+            list.add(strList[1])
+            list.add(strList[2])
+            list.add(strList[4])
+            list.add(strList[strList.size - 4])
+            val regex = "[一二三四五六七日][0-9]+-[0-9]+"
+            val pattern = Pattern.compile(regex)
+            val matcher = pattern.matcher(info)
+            var courseTime: MutableList<String> = ArrayList()
+            while (matcher.find()) {
+                courseTime.add(matcher.group())
+            }
+            courseTime = courseTime.subList(0, courseTime.size - 1)
+            list.addAll(courseTime)
+            return list
+        }
+
+        for (i in 0 until course.size - 1) {
+            val list = getInformation(course[i])
+            val id = baseList.size
+            baseList.add(CourseBaseBean(
+                    id = id, courseName = list[1],
+                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                    tableId = importId
+            ))
+            for (j in 4 until list.size) {
+                val day = getNodeInt(list[j][0].toString())
+                val startNode = list[j].substring(1, list[j].indexOf("-")).toInt()
+                val endNode = list[j].substring(list[j].indexOf("-") + 1).toInt()
+                val type = when {
+                    list[j].contains('单') -> 1
+                    list[j].contains('双') -> 2
+                    else -> 0
+                }
+                detailList.add(CourseDetailBean(
+                        id = id, day = day, room = list[3], teacher = list[2],
+                        startWeek = 1, endWeek = 10, startNode = startNode,
+                        step = endNode - startNode + 1,
+                        type = type, tableId = importId
+                ))
+            }
+        }
+        return write2DB()
     }
 
     suspend fun login(id: String, pwd: String, code: String): String {
@@ -433,8 +524,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         detailList.clear()
         val doc = Jsoup.parse(html)
 
-        val kbtable = doc.getElementsByAttributeValue("class", "displayTag").last()
-        val head = doc.getElementsByTag("thead").first()
+        var kbtables = doc.getElementsByAttributeValue("class", "displayTag")
+        try {
+            kbtables.last().getElementsByTag("tbody").first()
+        } catch (e: Exception) {
+            kbtables = doc.getElementsByAttributeValue("class", "table table-striped table-bordered")
+        }
         var nameIndex = -1
         var teacherIndex = -1
         var weekIndex = -1
@@ -443,109 +538,144 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         var stepIndex = -1
         var buildingIndex = -1
         var roomIndex = -1
-        val headSize = head.getElementsByTag("th").size
+        var step = 1
 
         fun getDay(dayE: Element): Int {
-            return dayE.text().trim().toInt()
+            val str = dayE.text().trim()
+            return try {
+                str.toInt()
+            } catch (e: Exception) {
+                getNodeInt(str)
+            }
         }
 
         fun getStartNode(nodeE: Element): Int {
-            return try {
-                nodeE.text().trim().substringBefore('大').substringBefore('小').toInt()
-            } catch (e: Exception) {
-                getNodeInt(nodeE.text().trim().substringBefore('大').substringBefore('小'))
+            return if (nodeE.text().contains('-')) {
+                val start = nodeE.text().trim().substringBefore('-').toInt()
+                step = nodeE.text().trim().substringAfter('-').substringBefore('节').toInt() - start + 1
+                start
+            } else {
+                try {
+                    nodeE.text().trim().substringAfter('第').substringBefore('大').substringBefore('小').toInt()
+                } catch (e: Exception) {
+                    getNodeInt(nodeE.text().trim().substringAfter('第').substringBefore('大').substringBefore('小'))
+                }
             }
         }
 
-        head.getElementsByTag("th").eachText().forEachIndexed { index, s ->
-            when (s.trim()) {
-                "课程名" -> nameIndex = index
-                "教师" -> teacherIndex = index
-                "周次" -> weekIndex = index
-                "星期" -> dayIndex = index
-                "节次" -> nodeIndex = index
-                "节数" -> stepIndex = index
-                "教学楼" -> buildingIndex = index
-                "教室" -> roomIndex = index
+        fun getStep(str: String): Int {
+            return try {
+                str.toInt()
+            } catch (e: Exception) {
+                getNodeInt(str)
             }
         }
-        val tBody = kbtable.getElementsByTag("tbody").first()
-        var teacher = ""
-        for (tr in tBody.getElementsByTag("tr")) {
-            val tds = tr.getElementsByTag("td")
-            val wholeFlag = tds.size > headSize - weekIndex
-            if (tds[if (wholeFlag) dayIndex else dayIndex - weekIndex].text().trim().isNotBlank()) {
-                if (wholeFlag) {
-                    if (tds[dayIndex].text().trim().isNotBlank()) {
-                        teacher = tds[teacherIndex].text().trim()
-                        baseList.add(CourseBaseBean(baseList.size, tds[nameIndex].text(), "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}", importId))
-                    }
+
+        kbtables.forEach { kbtable ->
+            if (kbtable.text().contains("星期一")) return@forEach
+            val head = kbtable.getElementsByTag("thead").first()
+            val headSize = head.getElementsByTag("th").size
+
+            head.getElementsByTag("th").eachText().forEachIndexed { index, s ->
+                when (s.trim()) {
+                    "课程名" -> nameIndex = index
+                    "教师" -> teacherIndex = index
+                    "周次" -> weekIndex = index
+                    "星期" -> dayIndex = index
+                    "节次" -> nodeIndex = index
+                    "节数" -> stepIndex = index
+                    "教学楼" -> buildingIndex = index
+                    "教室" -> roomIndex = index
                 }
-                val weekStr = tds[if (wholeFlag) weekIndex else 0].text().trim()
-                var startWeek = 1
-                var endWeek = 20
-                if (weekStr.contains(',') && !weekStr.contains('-')) {
-                    val weekList = arrayListOf<Int>()
-                    val weekStrList = weekStr.split(',')
-                    weekStrList.forEachIndexed { index, s ->
-                        if (index != weekStrList.size - 1) {
-                            weekList.add(s.toInt())
-                        } else {
-                            weekList.add(s.substringBefore('周').toInt())
+            }
+            if (dayIndex == -1) return@forEach
+            val tBody = kbtable.getElementsByTag("tbody").first()
+            var teacher = ""
+            for (tr in tBody.getElementsByTag("tr")) {
+                val tds = tr.getElementsByTag("td")
+                val wholeFlag = tds.size > headSize - weekIndex
+                if (tds[if (wholeFlag) dayIndex else dayIndex - weekIndex].text().trim().isNotBlank()) {
+                    if (wholeFlag) {
+                        if (tds[dayIndex].text().trim().isNotBlank()) {
+                            teacher = tds[teacherIndex].text().trim()
+                            baseList.add(CourseBaseBean(baseList.size, tds[nameIndex].text(), "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}", importId))
                         }
                     }
-                    weekList.sort()
-                    intList2WeekBeanList(weekList).forEach { weekBean ->
-                        detailList.add(CourseDetailBean(
-                                day = getDay(tds[if (wholeFlag) dayIndex else dayIndex - weekIndex]),
-                                teacher = teacher,
-                                room = try {
-                                    tds[if (wholeFlag) buildingIndex else buildingIndex - weekIndex].text().trim() + tds[if (wholeFlag) roomIndex else roomIndex - weekIndex].text().trim()
-                                } catch (e: Exception) {
-                                    ""
-                                },
-                                startNode = getStartNode(tds[if (wholeFlag) nodeIndex else nodeIndex - weekIndex]),
-                                step = tds[if (wholeFlag) stepIndex else stepIndex - weekIndex].text().trim().toInt(),
-                                startWeek = weekBean.start, endWeek = weekBean.end, type = weekBean.type,
-                                id = baseList.size - 1, tableId = importId
-                        ))
-                    }
-                } else {
-                    weekStr.split(',').forEach { week ->
-                        val matcher = weekPattern1.matcher(week)
-                        if (matcher.find()) {
-                            println(matcher.group(0))
-                            val temp = matcher.group(0).split('-')
-                            if (temp.size == 1) {
-                                startWeek = temp[0].toInt()
-                                endWeek = temp[0].toInt()
+                    val weekStr = tds[if (wholeFlag) weekIndex else 0].text().trim()
+                    var startWeek = 1
+                    var endWeek = 20
+                    if (weekStr.contains(',') && !weekStr.contains('-')) {
+                        val weekList = arrayListOf<Int>()
+                        val weekStrList = weekStr.split(',')
+                        weekStrList.forEachIndexed { index, s ->
+                            if (index != weekStrList.size - 1) {
+                                weekList.add(s.substringBefore('周').toInt())
                             } else {
-                                startWeek = temp[0].toInt()
-                                endWeek = temp[1].toInt()
+                                weekList.add(s.substringBefore('周').toInt())
                             }
                         }
-                        val type = when {
-                            week.contains('单') -> 1
-                            week.contains('双') -> 2
-                            else -> 0
+                        weekList.sort()
+                        intList2WeekBeanList(weekList).forEach { weekBean ->
+                            detailList.add(CourseDetailBean(
+                                    day = getDay(tds[if (wholeFlag) dayIndex else dayIndex - weekIndex]),
+                                    teacher = teacher,
+                                    room = try {
+                                        tds[if (wholeFlag) buildingIndex else buildingIndex - weekIndex].text().trim() + tds[if (wholeFlag) roomIndex else roomIndex - weekIndex].text().trim()
+                                    } catch (e: Exception) {
+                                        ""
+                                    },
+                                    startNode = getStartNode(tds[if (wholeFlag) nodeIndex else nodeIndex - weekIndex]),
+                                    step = if (stepIndex != -1) {
+                                        getStep(tds[if (wholeFlag) stepIndex else stepIndex - weekIndex].text().trim())
+                                    } else {
+                                        step
+                                    },
+                                    startWeek = weekBean.start, endWeek = weekBean.end, type = weekBean.type,
+                                    id = baseList.size - 1, tableId = importId
+                            ))
                         }
-                        detailList.add(CourseDetailBean(
-                                day = getDay(tds[if (wholeFlag) dayIndex else dayIndex - weekIndex]),
-                                teacher = teacher,
-                                room = try {
-                                    tds[if (wholeFlag) buildingIndex else buildingIndex - weekIndex].text().trim() + tds[if (wholeFlag) roomIndex else roomIndex - weekIndex].text().trim()
-                                } catch (e: Exception) {
-                                    ""
-                                },
-                                startNode = getStartNode(tds[if (wholeFlag) nodeIndex else nodeIndex - weekIndex]),
-                                step = tds[if (wholeFlag) stepIndex else stepIndex - weekIndex].text().trim().toInt(),
-                                startWeek = startWeek, endWeek = endWeek, type = type,
-                                id = baseList.size - 1, tableId = importId
-                        ))
+                    } else {
+                        weekStr.split(',').forEach { week ->
+                            val matcher = weekPattern1.matcher(week)
+                            if (matcher.find()) {
+                                println(matcher.group(0))
+                                val temp = matcher.group(0).split('-')
+                                if (temp.size == 1) {
+                                    startWeek = temp[0].toInt()
+                                    endWeek = temp[0].toInt()
+                                } else {
+                                    startWeek = temp[0].toInt()
+                                    endWeek = temp[1].toInt()
+                                }
+                            }
+                            val type = when {
+                                week.contains('单') -> 1
+                                week.contains('双') -> 2
+                                else -> 0
+                            }
+                            detailList.add(CourseDetailBean(
+                                    day = getDay(tds[if (wholeFlag) dayIndex else dayIndex - weekIndex]),
+                                    teacher = teacher,
+                                    room = try {
+                                        tds[if (wholeFlag) buildingIndex else buildingIndex - weekIndex].text().trim() + tds[if (wholeFlag) roomIndex else roomIndex - weekIndex].text().trim()
+                                    } catch (e: Exception) {
+                                        ""
+                                    },
+                                    startNode = getStartNode(tds[if (wholeFlag) nodeIndex else nodeIndex - weekIndex]),
+                                    step = if (stepIndex != -1) {
+                                        getStep(tds[if (wholeFlag) stepIndex else stepIndex - weekIndex].text().trim())
+                                    } else {
+                                        step
+                                    },
+                                    startWeek = startWeek, endWeek = endWeek, type = type,
+                                    id = baseList.size - 1, tableId = importId
+                            ))
+                        }
                     }
                 }
             }
         }
+
         return write2DB()
     }
 

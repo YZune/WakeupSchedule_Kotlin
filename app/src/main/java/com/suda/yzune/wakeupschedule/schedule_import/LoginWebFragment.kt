@@ -5,7 +5,6 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,7 +23,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.anko.support.v4.dip
@@ -39,23 +38,14 @@ class LoginWebFragment : BaseFragment() {
     private var year = ""
     private var term = ""
     private val years = arrayListOf<String>()
+    private var type = "苏州大学"
 
     private lateinit var viewModel: ImportViewModel
-
-    private val timer = object : CountDownTimer(3000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-
-        }
-
-        override fun onFinish() {
-            btn_text.text = "登录"
-            cv_login.isClickable = true
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
+        type = arguments!!.getString("type", "苏州大学")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +55,12 @@ class LoginWebFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        refreshCode()
+        if (type != "苏州大学") {
+            tv_vpn.visibility = View.GONE
+            ll_code.visibility = View.INVISIBLE
+        } else {
+            refreshCode()
+        }
         initEvent()
     }
 
@@ -101,59 +96,84 @@ class LoginWebFragment : BaseFragment() {
             when {
                 et_id.text.isEmpty() -> et_id.startAnimation(shake)
                 et_pwd.text.isEmpty() -> et_pwd.startAnimation(shake)
-                et_code.text.isEmpty() -> et_code.startAnimation(shake)
+                et_code.text.isEmpty() && type == "苏州大学" -> et_code.startAnimation(shake)
                 else -> {
                     cardRe2C()
-                    launch {
-                        val task = withContext(Dispatchers.IO) {
-                            try {
-                                viewModel.login(et_id.text.toString(),
-                                        et_pwd.text.toString(), et_code.text.toString())
-                            } catch (e: Exception) {
-                                e.message
+                    if (type == "苏州大学") {
+                        launch {
+                            val task = withContext(Dispatchers.IO) {
+                                try {
+                                    viewModel.login(et_id.text.toString(),
+                                            et_pwd.text.toString(), et_code.text.toString())
+                                } catch (e: Exception) {
+                                    e.message
+                                }
+                            }
+                            when {
+                                task == null -> {
+                                    cardC2Re("请检查是否连接校园网")
+                                }
+                                task == "error" -> {
+                                    cardC2Re("请检查是否连接校园网")
+                                }
+                                task.contains("验证码不正确") -> {
+                                    et_code.startAnimation(shake)
+                                    et_code.setText("")
+                                    cardC2Re("验证码不正确哦")
+                                    refreshCode()
+                                }
+                                task.contains("密码错误") -> {
+                                    et_code.setText("")
+                                    et_pwd.startAnimation(shake)
+                                    refreshCode()
+                                    cardC2Re("密码错误哦")
+                                }
+                                task.contains("用户名不存在") -> {
+                                    et_code.setText("")
+                                    et_id.startAnimation(shake)
+                                    refreshCode()
+                                    cardC2Re("看看学号是不是输错啦")
+                                }
+                                task.contains("欢迎您：") -> {
+                                    getPrepared(et_id.text.toString())
+                                }
+                                task.contains("同学，你好") -> {
+                                    getPrepared(et_id.text.toString())
+                                }
+                                task.contains("请耐心排队") -> {
+                                    Log.d("登录", task)
+                                    et_code.setText("")
+                                    refreshCode()
+                                    cardC2Re("选课排队中，稍后再试哦")
+                                }
+                                else -> {
+                                    et_code.setText("")
+                                    refreshCode()
+                                    cardC2Re("再试一次看看哦")
+                                }
                             }
                         }
-                        when {
-                            task == null -> {
-                                cardC2Re("请检查是否连接校园网")
+                    }
+                    if (type == "上海大学") {
+                        launch {
+                            val task = withContext(Dispatchers.IO) {
+                                try {
+                                    viewModel.loginShanghai(et_id.text.toString(),
+                                            et_pwd.text.toString())
+                                } catch (e: Exception) {
+                                    e.message
+                                }
                             }
-                            task == "error" -> {
-                                cardC2Re("请检查是否连接校园网")
-                            }
-                            task.contains("验证码不正确") -> {
-                                et_code.startAnimation(shake)
-                                et_code.setText("")
-                                cardC2Re("验证码不正确哦")
-                                refreshCode()
-                            }
-                            task.contains("密码错误") -> {
-                                et_code.setText("")
-                                et_pwd.startAnimation(shake)
-                                refreshCode()
-                                cardC2Re("密码错误哦")
-                            }
-                            task.contains("用户名不存在") -> {
-                                et_code.setText("")
-                                et_id.startAnimation(shake)
-                                refreshCode()
-                                cardC2Re("看看学号是不是输错啦")
-                            }
-                            task.contains("欢迎您：") -> {
-                                getPrepared(et_id.text.toString())
-                            }
-                            task.contains("同学，你好") -> {
-                                getPrepared(et_id.text.toString())
-                            }
-                            task.contains("请耐心排队") -> {
-                                Log.d("登录", task)
-                                et_code.setText("")
-                                refreshCode()
-                                cardC2Re("选课排队中，稍后再试哦")
-                            }
-                            else -> {
-                                et_code.setText("")
-                                refreshCode()
-                                cardC2Re("再试一次看看哦")
+                            when (task) {
+                                "ok" -> {
+                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                                    activity!!.setResult(RESULT_OK)
+                                    activity!!.finish()
+                                }
+                                else -> {
+                                    cardC2Re("发生异常>_<")
+                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }
@@ -206,13 +226,13 @@ class LoginWebFragment : BaseFragment() {
             }
         } else {
             launch {
-                val task = async(Dispatchers.IO) {
+                val task = withContext(Dispatchers.IO) {
                     try {
                         viewModel.toSchedule(id, name, year, term)
                     } catch (e: Exception) {
                         e.message
                     }
-                }.await()
+                }
 
                 if (task == null || task == "error") {
                     cardC2Re("网络错误")
@@ -245,13 +265,13 @@ class LoginWebFragment : BaseFragment() {
             rl_progress.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
-            val task = async(Dispatchers.IO) {
+            val task = withContext(Dispatchers.IO) {
                 try {
                     viewModel.getCheckCode()
                 } catch (e: Exception) {
                     null
                 }
-            }.await()
+            }
             if (task != null) {
                 rl_progress.visibility = View.GONE
                 iv_code.visibility = View.VISIBLE
@@ -263,7 +283,11 @@ class LoginWebFragment : BaseFragment() {
                 iv_error.visibility = View.VISIBLE
                 cv_login.isClickable = false
                 btn_text.text = "请检查是否连接校园网"
-                timer.start()
+                launch {
+                    delay(3000)
+                    btn_text.text = "登录"
+                    cv_login.isClickable = true
+                }
             }
         }
     }
@@ -308,16 +332,6 @@ class LoginWebFragment : BaseFragment() {
         fadeAnimation(btn_text, 1f, 0f, 200, 0)
         fadeAnimation(cpb, 0f, 1f, 100, 0)
         cv_login.isClickable = false
-//        val valueAnimator = ValueAnimator.ofInt(1, 100)
-//        valueAnimator.addUpdateListener { animation ->
-//            val intEvaluator = IntEvaluator()
-//            val fraction = animation.animatedFraction
-//            cv_login.layoutParams.width = intEvaluator.evaluate(fraction, loginBtnOldWidth, cv_login.height)!!
-//            btn_text.alpha = (cv_login.layoutParams.width - cv_login.height) / (loginBtnOldWidth - cv_login.height) * 1.0f
-//            cpb.alpha = 1 - (cv_login.layoutParams.width - cv_login.height) / (loginBtnOldWidth - cv_login.height) * 1.0f
-//            cv_login.requestLayout()
-//        }
-//        valueAnimator.duration = 300
     }
 
     private fun cardC2Re(msg: String) {
@@ -326,21 +340,17 @@ class LoginWebFragment : BaseFragment() {
         fadeAnimation(cpb, 1f, 0f, 100, 0)
         btn_text.text = msg
         fadeAnimation(btn_text, 0f, 1f, 200, 0)
-//        Handler().postDelayed({
-//            btn_text.text = "登录"
-//            cv_login.isClickable = true
-//        }, 3000)
-        timer.start()
+        launch {
+            delay(3000)
+            btn_text.text = "登录"
+            cv_login.isClickable = true
+        }
     }
 
     private fun cardC2Dialog(viewModel: ImportViewModel, years: List<String>) {
         cv_login.isClickable = false
         widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
         fadeAnimation(cpb, 1f, 0f, 100, 0)
-
-//        cvLoginLayoutParams.topMargin = 10
-//        cvLoginLayoutParams.setMargins()
-//        ObjectAnimator.ofArgb(cv_login, "setMargins")
 
         val raiseUp = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
@@ -404,20 +414,18 @@ class LoginWebFragment : BaseFragment() {
         val radiusOn = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, loginBtnOldRadius)
         radiusOn.duration = 100
         radiusOn.start()
-        //rl_login.isClickable = true
         iv_mask.visibility = View.GONE
 
         ll_dialog.visibility = View.GONE
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.cancel()
-    }
-
     companion object {
         @JvmStatic
-        fun newInstance() = LoginWebFragment()
+        fun newInstance(type: String) = LoginWebFragment().apply {
+            arguments = Bundle().apply {
+                putString("type", type)
+            }
+        }
     }
 }

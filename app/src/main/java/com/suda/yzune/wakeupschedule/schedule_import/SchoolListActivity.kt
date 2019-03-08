@@ -154,6 +154,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         val tableDao = dataBase.tableDao()
 
         schools.add(SchoolListBean("S", "苏州大学"))
+        schools.add(SchoolListBean("S", "上海大学"))
         schools.add(SchoolListBean("G", "广东外语外贸大学", "http://jxgl.gdufs.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("C", "长春大学", "http://cdjwc.ccu.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("D", "大连外国语大学", "http://cas.dlufl.edu.cn/cas/"))
@@ -293,7 +294,20 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))
         schools.add(SchoolListBean("X", "西南石油大学", "http://jwxt.swpu.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn/xxjw/"))
-
+        schools.add(SchoolListBean("Z", "郑州大学西亚斯国际学院", "http://218.198.176.111/default2.aspx"))
+        schools.add(SchoolListBean("H", "河南理工大学", ""))
+        schools.add(SchoolListBean("Q", "齐齐哈尔大学", ""))
+        schools.add(SchoolListBean("N", "内蒙古大学", "http://jwxt.imu.edu.cn/"))
+        schools.add(SchoolListBean("H", "湖南理工学院", "http://bkjw.hnist.cn/login"))
+        schools.add(SchoolListBean("N", "内蒙古科技大学", ""))
+        schools.add(SchoolListBean("S", "中国石油大学（北京）", "http://urp.cup.edu.cn/login"))
+        schools.add(SchoolListBean("S", "山西农业大学", "http://xsjwxt.sxau.edu.cn:7873/login"))
+        schools.add(SchoolListBean("Q", "齐鲁师范学院", ""))
+        schools.add(SchoolListBean("S", "上海海洋大学", "https://urp.shou.edu.cn/login"))
+        schools.add(SchoolListBean("Z", "中国农业大学", ""))
+        schools.add(SchoolListBean("H", "河北工程大学", "http://219.148.85.172:9111/login"))
+        schools.add(SchoolListBean("A", "安徽财经大学", ""))
+        schools.add(SchoolListBean("S", "山西工程技术学院", ""))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
