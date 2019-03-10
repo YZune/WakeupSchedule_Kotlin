@@ -734,27 +734,29 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 baseList.add(CourseBaseBean(id, importBean.name, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}"
                         , importId))
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
+                val day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
-                        teacher = importBean.teacher, day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay,
+                        teacher = importBean.teacher, day = day,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
                 ))
-                if (time[0] == 0) {
+                if (day == 0) {
                     retryList.add(importList.size - 1)
                 }
                 id++
             } else {
                 val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
+                val day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
-                        teacher = importBean.teacher, day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay,
+                        teacher = importBean.teacher, day = day,
                         step = time[1], startWeek = time[2], endWeek = time[3],
                         type = time[4], startNode = importBean.startNode,
                         tableId = importId
                 ))
-                if (time[0] == 0) {
+                if (day == 0) {
                     retryList.add(importList.size - 1)
                 }
             }
