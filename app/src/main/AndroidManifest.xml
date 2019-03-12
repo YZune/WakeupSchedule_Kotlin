@@ -17,6 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".suda_life.SudaLifeActivity"></activity>
 
         <meta-data
             android:name="CHANNEL"

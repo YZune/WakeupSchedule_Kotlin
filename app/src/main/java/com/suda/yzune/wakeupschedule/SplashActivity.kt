@@ -13,7 +13,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         UpdateUtils.tranOldData(applicationContext)
         startActivity<ScheduleActivity>()
-//       startActivity<MainActivity>()
+        //startActivity<SudaLifeActivity>()
         finish()
     }
 

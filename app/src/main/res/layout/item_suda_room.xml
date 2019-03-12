@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/tv_room_name"
+        android:layout_width="64dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:text="41C106" />
+
+    <com.suda.yzune.wakeupschedule.widget.RoomView
+        android:id="@+id/room_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -11,5 +11,7 @@ data class TodayWidgetBean(
         var courseColor: Int = 0xff000000.toInt(),
         var titleColor: Int = 0xff000000.toInt(),
         var timeColor: Int = 0xff000000.toInt(),
-        var textSize: Int = 14
+        var textSize: Int = 14,
+        var showTitle: Boolean = true,
+        var showButton: Boolean = true
 )

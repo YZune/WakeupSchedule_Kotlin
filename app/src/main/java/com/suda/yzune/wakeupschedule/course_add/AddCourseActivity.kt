@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
@@ -158,7 +159,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             }
         }
         mRecyclerView.adapter = adapter
-        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {

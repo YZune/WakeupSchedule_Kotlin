@@ -11,6 +11,7 @@ data class WeekWidgetBean(
         var courseColor: Int = 0xffffffff.toInt(),
         var titleColor: Int = 0xff000000.toInt(),
         var strokeColor: Int = 0x80ffffff.toInt(),
+        var highlightColor: Int,
         var textSize: Int = 14,
         var textAlignment: Int = 0,
         var itemHeight: Int = 56,
@@ -19,5 +20,7 @@ data class WeekWidgetBean(
         var showSun: Boolean = true,
         var sundayFirst: Boolean = false,
         var showOtherWeekCourse: Boolean = true,
-        var showTime: Boolean = false
+        var showTime: Boolean = false,
+        var showTitle: Boolean = true,
+        var showButton: Boolean = true
 )
