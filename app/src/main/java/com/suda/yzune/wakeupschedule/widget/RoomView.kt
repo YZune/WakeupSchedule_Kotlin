@@ -22,7 +22,6 @@ class RoomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         }
 
     init {
-        textPaint.color = Color.WHITE
         textPaint.textSize = sp(12).toFloat()
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.style = Paint.Style.FILL
@@ -38,9 +37,11 @@ class RoomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         var eachLeft = 0f
         for (i in 1..12) {
             if (i.toString() in list) {
+                textPaint.color = Color.WHITE
                 paint.color = ContextCompat.getColor(context, R.color.colorAccent)
             } else {
-                paint.color = Color.GRAY
+                textPaint.color = Color.GRAY
+                paint.color = Color.parseColor("#ffeeff")
             }
             canvas.drawRect(eachLeft, 0f, eachLeft + a, height.toFloat(), paint)
             canvas.drawText(i.toString(), eachLeft + a / 2, height / 2 + distance, textPaint)

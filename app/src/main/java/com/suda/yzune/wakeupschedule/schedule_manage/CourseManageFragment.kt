@@ -7,30 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.support.v4.startActivity
-import kotlin.coroutines.CoroutineContext
 
-class CourseManageFragment : Fragment(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class CourseManageFragment : BaseFragment() {
 
     private lateinit var viewModel: ScheduleManageViewModel
     private var tablePosition = 0
-    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleManageViewModel::class.java)
-        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -110,10 +106,5 @@ class CourseManageFragment : Fragment(), CoroutineScope {
             )
         }
         return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
     }
 }

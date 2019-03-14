@@ -16,8 +16,8 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 
 class TimeTableFragment : BaseFragment() {
@@ -83,14 +83,14 @@ class TimeTableFragment : BaseFragment() {
                         view.longSnackbar("不能删除已选中的时间表哦>_<")
                     } else {
                         launch {
-                            val task = async(Dispatchers.IO) {
+                            val task = withContext(Dispatchers.IO) {
                                 try {
                                     viewModel.deleteTimeTable(viewModel.timeTableList[position])
                                     "ok"
                                 } catch (e: Exception) {
                                     "删除错误>_<${e.message}"
                                 }
-                            }.await()
+                            }
                             if (task == "ok") {
                                 view.longSnackbar("删除成功~")
                             } else {
@@ -126,14 +126,14 @@ class TimeTableFragment : BaseFragment() {
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         launch {
-                            val task = async(Dispatchers.IO) {
+                            val task = withContext(Dispatchers.IO) {
                                 try {
                                     viewModel.addNewTimeTable(editText.text.toString())
                                     "ok"
                                 } catch (e: Exception) {
                                     "发生异常>_<${e.message}"
                                 }
-                            }.await()
+                            }
                             if (task == "ok") {
                                 Toasty.success(activity!!.applicationContext, "新建成功~").show()
                                 dialog.dismiss()

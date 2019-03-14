@@ -44,6 +44,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
+import com.suda.yzune.wakeupschedule.suda_life.SudaLifeActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
@@ -425,6 +426,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initNavView() {
         navigationView.itemIconTintList = null
+        navigationView.menu.findItem(R.id.nav_suda).isVisible = PreferenceUtils.getBooleanFromSP(this, "suda_life", true)
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_setting -> {
@@ -468,6 +470,20 @@ class ScheduleActivity : BaseActivity() {
                         BeforeFeedbackFragment.newInstance().apply {
                             isCancelable = false
                         }.show(supportFragmentManager, "BeforeFeedbackFragment")
+                    }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_empty_room -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity<SudaLifeActivity>("type" to "空教室")
+                    }, 360)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_bathroom -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    drawerLayout.postDelayed({
+                        startActivity<SudaLifeActivity>("type" to "澡堂")
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }

@@ -17,7 +17,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".suda_life.SudaLifeActivity"></activity>
+
+        <activity
+            android:name=".suda_life.SudaLifeActivity"
+            android:label="苏大生活" />
 
         <meta-data
             android:name="CHANNEL"

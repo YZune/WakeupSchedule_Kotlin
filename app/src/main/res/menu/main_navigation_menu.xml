@@ -37,9 +37,11 @@
 
         <item
             android:id="@+id/nav_suda"
-            android:title="苏大生活"
-            android:visible="false">
+            android:title="苏大生活">
             <menu>
+                <item
+                    android:id="@+id/nav_empty_room"
+                    android:title="空教室查询" />
                 <item
                     android:id="@+id/nav_bathroom"
                     android:title="东区澡堂使用情况" />

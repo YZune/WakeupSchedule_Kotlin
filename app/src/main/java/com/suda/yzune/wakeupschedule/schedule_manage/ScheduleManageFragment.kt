@@ -9,31 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.support.v4.startActivity
-import kotlin.coroutines.CoroutineContext
 
-class ScheduleManageFragment : Fragment(), CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + job
+class ScheduleManageFragment : BaseFragment() {
 
     private lateinit var viewModel: ScheduleManageViewModel
-    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleManageViewModel::class.java)
-        job = Job()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -82,9 +79,9 @@ class ScheduleManageFragment : Fragment(), CoroutineScope {
             when (view.id) {
                 R.id.ib_delete -> {
                     launch {
-                        async(Dispatchers.IO) {
+                        withContext(Dispatchers.IO) {
                             viewModel.deleteTable(data[position].id)
-                        }.await()
+                        }
                     }
                     return@setOnItemChildLongClickListener true
                 }
@@ -139,10 +136,5 @@ class ScheduleManageFragment : Fragment(), CoroutineScope {
             }).show(fragmentManager!!, "addTableFragment")
         }
         return view
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
     }
 }
