@@ -49,7 +49,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
-
         }
 
         override fun onDataSetChanged() {

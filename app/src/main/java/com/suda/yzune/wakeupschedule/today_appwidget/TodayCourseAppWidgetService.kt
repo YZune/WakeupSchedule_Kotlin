@@ -140,7 +140,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         }
 
         override fun hasStableIds(): Boolean {
-            return true
+            return false
         }
     }
 
