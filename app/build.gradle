@@ -105,8 +105,8 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0-rc02"
-    implementation "android.arch.navigation:navigation-ui:1.0.0-rc02"
+    implementation "android.arch.navigation:navigation-fragment:1.0.0"
+    implementation "android.arch.navigation:navigation-ui:1.0.0"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'me.drakeet.multitype:multitype:4.0.0-alpha2'
