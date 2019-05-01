@@ -35,7 +35,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
     }
 
-    private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsService.RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsFactory {
         private lateinit var table: TableBean
         private var week = 0
         private var widgetItemHeight = 0
@@ -49,6 +49,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
+            table = tableDao.getDefaultTableInThread()
         }
 
         override fun onDataSetChanged() {

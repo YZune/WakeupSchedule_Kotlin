@@ -65,7 +65,7 @@
 -optimizations !code/simplification/cast,!field/*,!class/merging/*
 
 #所有代码移动到一个包下
--repackageclasses me.bakumon.moneykeeper
+#-repackageclasses me.bakumon.moneykeeper
 
 #############################################
 #
@@ -247,4 +247,6 @@
 }
 
 # for Jsoup
--keep class org.jsoup.**{*;}
+#-keep class org.jsoup.**{*;}
+
+-dontwarn kotlinx.coroutines.flow.**

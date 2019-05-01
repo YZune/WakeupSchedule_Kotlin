@@ -76,20 +76,23 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     }
 
     private fun onItemsCreated(items: MutableList<Any>) {
+        val colorStr = PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color",
+                ContextCompat.getColor(applicationContext, R.color.colorAccent))
+                .toString(16)
         if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             items.add(CategoryItem("外观", true))
         } else {
             items.add(CategoryItem("愿意为之付费吗？", true))
-            items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#fa6278'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#fa6278'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#fa6278'>点击此处进行付款，谢谢:)</font></b><br>", true))
-            items.add(VerticalItem("解锁后", "解锁后，你可以在你自用的任何设备上安装使用，并且免费使用后续更新的高级功能。<br><b><font color='#fa6278'>放心，无论什么版本，App不会有任何形式的广告。</font></b>", true))
+            items.add(VerticalItem("如何解锁？", "高级功能理论上是可以直接使用的，但是，像无人看守的小卖部，付费后再使用是诚信的表现哦~<br>朋友、校友、亲人，以及在此之前已经捐赠过的用户，已经解锁了高级功能，<b><font color='#$colorStr'>无需再花钱</font></b>。<br>其他用户的解锁方式如下，<b><font color='#$colorStr'>二选一即可：</font></b><br>1. 应用商店5星 + 支付宝付款2元<br>2. 支付宝付款5元<br><b><font color='#$colorStr'>点击此处进行付款，谢谢:)</font></b><br>", true))
+            items.add(VerticalItem("解锁后", "解锁后，你可以在你自用的任何设备上安装使用，并且免费使用后续更新的高级功能。<br><b><font color='#$colorStr'>放心，无论什么版本，App不会有任何形式的广告。</font></b>", true))
             items.add(CategoryItem("外观", false))
         }
 
-        items.add(VerticalItem("虚拟键颜色", "调整虚拟键的颜色。\n以下关于虚拟键的设置，只对有虚拟键的手机有效哦，是为了有更好的沉浸效果~\n有实体按键或全面屏手势的手机本身就很棒啦~"))
+        items.add(VerticalItem("主题颜色", "调整大部分标签和虚拟键的颜色。\n以下关于虚拟键的设置，只对有虚拟键的手机有效哦，是为了有更好的沉浸效果~\n有实体按键或全面屏手势的手机本身就很棒啦~"))
         items.add(SwitchItem("主界面虚拟键沉浸", PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)))
 
         items.add(CategoryItem("上课提醒", false))
-        items.add(VerticalItem("功能说明", "本功能处于<b><font color='#fa6278'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#fa6278'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。<br>理论上<b><font color='#fa6278'>每次设置之后</font></b>需要半天以上的时间才会正常工作，理论上不会很耗电。", true))
+        items.add(VerticalItem("功能说明", "本功能处于<b><font color='#$colorStr'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#$colorStr'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。<br>理论上<b><font color='#$colorStr'>每次设置之后</font></b>需要半天以上的时间才会正常工作，理论上不会很耗电。", true))
         items.add(SwitchItem("开启上课提醒", PreferenceUtils.getBooleanFromSP(applicationContext, "course_reminder", false)))
         items.add(SwitchItem("提醒通知常驻", PreferenceUtils.getBooleanFromSP(applicationContext, "reminder_on_going", false)))
         items.add(SeekBarItem("提前几分钟提醒", PreferenceUtils.getIntFromSP(applicationContext, "reminder_min", 20), 0, 90, "分钟"))
@@ -169,15 +172,11 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     Toasty.info(applicationContext, "没有检测到支付宝客户端o(╥﹏╥)o").show()
                 }
             }
-            "虚拟键颜色" -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ColorPickerFragment.newBuilder()
-                            .setShowAlphaSlider(true)
-                            .setColor(PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent)))
-                            .show(this)
-                } else {
-                    mRecyclerView.longSnackbar("该设置仅对Android 5.0及以上版本有效>_<")
-                }
+            "主题颜色" -> {
+                ColorPickerFragment.newBuilder()
+                        .setShowAlphaSlider(true)
+                        .setColor(PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent)))
+                        .show(this)
             }
             "截至2018.12.02" -> {
                 CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")

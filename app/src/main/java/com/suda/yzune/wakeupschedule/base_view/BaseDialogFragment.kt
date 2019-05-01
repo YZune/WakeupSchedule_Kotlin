@@ -43,7 +43,7 @@ abstract class BaseDialogFragment : DialogFragment(), CoroutineScope {
         return root
     }
 
-    override fun show(manager: androidx.fragment.app.FragmentManager, tag: String) {
+    override fun show(manager: FragmentManager, tag: String) {
         mDismissed = false
         mShownByMe = true
         val ft = manager.beginTransaction()

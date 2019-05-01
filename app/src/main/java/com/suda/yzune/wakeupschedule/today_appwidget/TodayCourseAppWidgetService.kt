@@ -28,7 +28,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         }
     }
 
-    private inner class TodayCourseListRemoteViewsFactory(val nextDay: Boolean = false) : RemoteViewsService.RemoteViewsFactory {
+    private inner class TodayCourseListRemoteViewsFactory(val nextDay: Boolean = false) : RemoteViewsFactory {
 
         private val dataBase = AppDatabase.getDatabase(applicationContext)
         private val tableDao = dataBase.tableDao()
@@ -41,7 +41,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         private val courseList = arrayListOf<CourseBean>()
 
         override fun onCreate() {
-
+            table = tableDao.getDefaultTableInThread()
         }
 
         override fun onDataSetChanged() {

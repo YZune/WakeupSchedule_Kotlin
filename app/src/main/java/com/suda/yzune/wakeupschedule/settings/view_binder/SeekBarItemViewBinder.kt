@@ -1,18 +1,23 @@
 package com.suda.yzune.wakeupschedule.settings.view_binder
 
 import android.graphics.Color
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SeekBarItem
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
+import org.jetbrains.anko.custom.ankoView
 
 class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarItem, Int) -> Unit) : ItemViewBinder<SeekBarItem, SeekBarItemViewBinder.ViewHolder>() {
+
+    private inline fun ViewManager.appCompatSeekBar(init: androidx.appcompat.widget.AppCompatSeekBar.() -> Unit) = ankoView({ AppCompatSeekBar(it) }, theme = 0) { init() }
+
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): SeekBarItemViewBinder.ViewHolder {
         val view = AnkoContext.create(parent.context).apply {
             verticalLayout {
@@ -48,8 +53,11 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
                     topMargin = dip(16)
                 }
 
-                seekBar {
+                appCompatSeekBar {
                     id = R.id.anko_seek_bar
+                    val color = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
+                    DrawableCompat.setTint(thumb, color)
+                    DrawableCompat.setTint(progressDrawable, color)
                 }.lparams(matchParent, wrapContent) {
                     marginStart = dip(8)
                     marginEnd = dip(8)
@@ -61,7 +69,7 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: SeekBarItemViewBinder.ViewHolder, item: SeekBarItem) {
+    override fun onBindViewHolder(holder: ViewHolder, item: SeekBarItem) {
         //holder.setIsRecyclable(false)
 
         holder.tvTitle.text = item.title

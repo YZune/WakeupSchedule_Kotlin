@@ -12,8 +12,7 @@
         android:background="@color/colorAccent"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/v_line" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tv_time_name"
@@ -25,8 +24,7 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ib_edit"
-        app:layout_constraintStart_toEndOf="@id/v_selected"
-        app:layout_constraintTop_toBottomOf="@+id/v_line" />
+        app:layout_constraintStart_toEndOf="@id/v_selected" />
 
     <TextView
         android:id="@+id/ib_edit"
@@ -43,8 +41,7 @@
         android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ib_delete"
-        app:layout_constraintStart_toEndOf="@id/tv_time_name"
-        app:layout_constraintTop_toBottomOf="@+id/v_line" />
+        app:layout_constraintStart_toEndOf="@id/tv_time_name" />
 
     <TextView
         android:id="@+id/ib_delete"
@@ -59,7 +56,6 @@
         android:textColor="@color/red"
         android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/v_line" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

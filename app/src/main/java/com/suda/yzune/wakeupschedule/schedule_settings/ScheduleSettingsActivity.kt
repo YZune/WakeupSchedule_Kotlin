@@ -81,6 +81,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         return tvButton
     }
 
+    override fun onPause() {
+        super.onPause()
+        Toasty.info(applicationContext, "对小部件的编辑需要按「返回键」退出设置页面才能生效哦", Toast.LENGTH_LONG).show()
+    }
+
     private lateinit var viewModel: ScheduleSettingsViewModel
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     private val REQUEST_CODE_CHOOSE_BG = 23
@@ -217,7 +222,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     }
 
                     override fun onFinish(editText: EditText, dialog: Dialog) {
-                        if (!editText.text.toString().isEmpty()) {
+                        if (editText.text.toString().isNotEmpty()) {
                             viewModel.table.tableName = editText.text.toString()
                             item.value = editText.text.toString()
                             mRecyclerView.itemAnimator?.changeDuration = 250

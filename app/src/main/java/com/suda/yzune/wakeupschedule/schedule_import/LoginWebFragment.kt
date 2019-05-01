@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
+import com.suda.yzune.wakeupschedule.schedule_import.JLU.UIMS
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
@@ -173,6 +174,21 @@ class LoginWebFragment : BaseFragment() {
                                 else -> {
                                     cardC2Re("发生异常>_<")
                                     Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
+                    if (type == "吉林大学") {
+                        launch {
+                            val uims = UIMS(et_id.text.toString(), et_pwd.text.toString())
+                            val task = withContext(Dispatchers.IO) {
+                                try {
+                                    uims.connectToUIMS()
+                                    uims.login()
+                                    uims.getCurrentUserInfo()
+                                    uims.getCourseSchedule()
+                                } catch (e: Exception) {
+
                                 }
                             }
                         }

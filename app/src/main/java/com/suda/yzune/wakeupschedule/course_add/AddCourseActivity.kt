@@ -246,8 +246,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                     e.message
                 }
             }
-            val msg = task.await()
-            when (msg) {
+            when (val msg = task.await()) {
                 "ok" -> {
                     launch {
                         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)

@@ -106,7 +106,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun getCheckCode(): Bitmap {
         val response = importService.getCheckCode().execute()
         return if (response.isSuccessful) {
-            val verificationCode = response?.body()?.bytes()
+            val verificationCode = response.body()?.bytes()
             loginCookieStr = response.headers().values("Set-Cookie").joinToString("; ")
             BitmapFactory.decodeByteArray(verificationCode, 0, verificationCode!!.size)
         } else {
@@ -118,7 +118,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         baseList.clear()
         detailList.clear()
         val course = ArrayList<String>()
-        val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%2fpassport%2freturn")
+        //val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%2fpassport%2freturn")
+        val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%3a8080%2fpassport%2freturn")
         var doc = connect.get()
 
         var ele = doc.body().select("input[name]")
@@ -141,7 +142,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 .data("SAMLResponse", ele[1].attr("value"), "RelayState", ele[0].attr("value"))
                 .method(Connection.Method.POST).timeout(10000).execute()
 
-        doc = Jsoup.connect("http://xk.autoisp.shu.edu.cn/StudentQuery/CtrlViewQueryCourseTable")
+//        doc = Jsoup.connect("http://xk.autoisp.shu.edu.cn/StudentQuery/CtrlViewQueryCourseTable")
+//                .data("studentNo", number)
+//                .cookies(res2.cookies())
+//                .post()
+
+        doc = Jsoup.connect("http://xk.autoisp.shu.edu.cn:8080/StudentQuery/CtrlViewQueryCourseTable")
                 .data("studentNo", number)
                 .cookies(res2.cookies())
                 .post()
@@ -224,7 +230,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 cookies = loginCookieStr
         ).execute()
         if (response.isSuccessful) {
-            val result = response?.body()?.string()
+            val result = response.body()?.string()
             if (result != null) {
                 selectedSchedule = result
                 viewStatePostCode = parseViewStateCode(result)
@@ -249,7 +255,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 xqd = term
         ).execute()
         if (response.isSuccessful) {
-            val result = response?.body()?.string()
+            val result = response.body()?.string()
             if (result != null) {
                 return result
             } else {
@@ -1054,7 +1060,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     suspend fun parseHNIU(html: String): String {
         baseList.clear()
         detailList.clear()
-        val doc = org.jsoup.Jsoup.parse(html, "utf-8")
+        val doc = Jsoup.parse(html, "utf-8")
 
         val tBody = doc.getElementsByAttributeValue("bordercolordark", "#FFFFFF")[0].getElementsByTag("tbody")[0]
         val trs = tBody.getElementsByTag("tr")
@@ -1074,16 +1080,16 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         if (courseSource[0].isBlank()) continue
                         convertHNIU(day, courseSource)
                     } else {
-                        var startIndex = 0
+                        var startIndex = 1
                         courseSource.forEachIndexed { index, s ->
-                            if (s.contains("总学时")) {
-                                if (index != 0) {
-                                    convertHNIU(day, courseSource.subList(startIndex, index))
+                            if (s.contains('[') && s.contains(']') && s.contains('周') && s.contains('节')) {
+                                if (index - 1 != 0) {
+                                    convertHNIU(day, courseSource.subList(startIndex - 1, index - 1))
                                     startIndex = index
                                 }
                             }
                             if (index == courseSource.size - 1) {
-                                convertHNIU(day, courseSource.subList(startIndex, index))
+                                convertHNIU(day, courseSource.subList(startIndex - 1, index))
                             }
                         }
                     }
@@ -1103,7 +1109,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
         val courseName = courseSource[0].split(' ')[0]
         val teacher = courseSource[1].split(' ')[0]
-        val room = courseSource[2].trim()
+        val room = if (courseSource.size > 2 && courseSource[2].trim().isNotBlank()) {
+            courseSource[2].trim()
+        } else {
+            val tmp = courseSource[1].split(' ')
+            tmp[tmp.size - 1]
+        }
         val timeStr = courseSource[1].substringAfter('[').substringBeforeLast('节')
         val weekList = timeStr.split("周][")[0].split(", ", ",")
         val nodeStr = timeStr.split("周][")[1]

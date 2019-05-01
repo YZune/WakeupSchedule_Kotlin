@@ -54,13 +54,13 @@ class HorizontalItemViewBinder constructor(private val onHorizontalItemClickList
     override fun onBindViewHolder(holder: ViewHolder, item: HorizontalItem) {
         holder.tvTitle.text = item.title
         holder.tvValue.text = item.value
-        holder.llVerticalItem.setOnClickListener { onHorizontalItemClickListener.invoke(item) }
+        holder.llItem.setOnClickListener { onHorizontalItemClickListener.invoke(item) }
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.find(R.id.anko_text_view)
         val tvValue: TextView = itemView.find(R.id.anko_tv_value)
-        val llVerticalItem: LinearLayout = itemView.find(R.id.anko_layout)
+        val llItem: LinearLayout = itemView.find(R.id.anko_layout)
     }
 
 }

@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
@@ -25,7 +27,7 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
 
                 linearLayout {
                     setPadding(dip(16), dip(2), dip(16), dip(2))
-                    backgroundColorResource = R.color.colorAccent
+                    backgroundColor = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
                     textView {
                         id = R.id.anko_text_view
                         textColor = Color.WHITE
@@ -43,9 +45,9 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, category: CategoryItem) {
-        holder.tvCategory.text = category.name
-        if (category.hasMarginTop) {
+    override fun onBindViewHolder(holder: ViewHolder, item: CategoryItem) {
+        holder.tvCategory.text = item.name
+        if (item.hasMarginTop) {
             holder.vTop.visibility = View.VISIBLE
         } else {
             holder.vTop.visibility = View.GONE
