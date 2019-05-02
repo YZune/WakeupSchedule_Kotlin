@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.util.SparseArray
 import android.util.Xml
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
@@ -17,6 +18,8 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import org.json.JSONArray
+import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -29,6 +32,8 @@ import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
+import kotlin.collections.HashMap
+
 
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -204,6 +209,119 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             }
         }
         return write2DB()
+    }
+
+    suspend fun convertJLU(courseJSON: JSONObject): String {
+
+        baseList.clear()
+        detailList.clear()
+
+        val coursesJsonArray = courseJSON.getJSONArray("value")
+
+        var teachClassMaster: JSONObject
+        var lessonTeachers: JSONArray
+        var lessonSegment: JSONObject
+        var lessonSchedules: JSONArray
+        var timeBlock: JSONObject
+        var classroom: JSONObject
+        var teacherName: String
+        var courName: String
+
+        var classSet: Int
+        var dayOfWeek: Int
+        var beginWeek: Int
+        var endWeek: Int
+        var nodeTime: Array<Int>
+        var weekOddEven = ""
+        var classroomName = ""
+
+        for (i in 0 until coursesJsonArray.length()) {
+
+            teachClassMaster = coursesJsonArray.getJSONObject(i).getJSONObject("teachClassMaster")
+
+            lessonSegment = teachClassMaster.getJSONObject("lessonSegment")
+            lessonSchedules = teachClassMaster.getJSONArray("lessonSchedules")
+            lessonTeachers = teachClassMaster.getJSONArray("lessonTeachers")
+
+            courName = lessonSegment.getString("fullName")
+
+            teacherName = lessonTeachers.getJSONObject(0).getJSONObject("teacher").getString("name")
+
+            val course = CourseBaseBean(
+                    id = lessonSegment.getInt("lssgId"),
+                    courseName = courName,
+                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                    tableId = importId
+            )
+
+            for (j in 0 until lessonSchedules.length()) {
+
+                timeBlock = lessonSchedules.getJSONObject(j).getJSONObject("timeBlock")
+                classroom = lessonSchedules.getJSONObject(j).getJSONObject("classroom")
+                classroomName = classroom.getString("fullName")
+
+                classSet = timeBlock.getInt("classSet")
+                dayOfWeek = timeBlock.getInt("dayOfWeek")
+                beginWeek = timeBlock.getInt("beginWeek")
+                endWeek = timeBlock.getInt("endWeek")
+
+                weekOddEven = try {
+                    timeBlock.getString("weekOddEven")
+                } catch (e: Exception) {
+                    ""
+                }
+
+                nodeTime = mathStartEnd(classSet)
+
+                val detail = CourseDetailBean(
+                        id = lessonSegment.getInt("lssgId"),
+                        teacher = teacherName,
+                        startWeek = beginWeek,
+                        endWeek = endWeek,
+                        room = classroomName,
+                        day = dayOfWeek,
+                        startNode = nodeTime[0],
+                        step = nodeTime[1] - nodeTime[0] + 1,
+                        tableId = importId,
+                        type =
+                        when (weekOddEven.toUpperCase()) {
+                            "O" -> 1
+                            "E" -> 2
+                            else -> 0
+                        }
+                )
+                detailList.add(detail)
+            }
+            baseList.add(course)
+        }
+        return write2DB()
+    }
+
+    private val nodeHashMap = SparseArray<Array<Int>?>()
+
+    private fun mathStartEnd(lessonValue: Int): Array<Int> {
+        if (nodeHashMap.get(lessonValue) != null) {
+            return nodeHashMap.get(lessonValue)!!
+        }
+        var now: Int
+        for (s in 1..11) {
+            for (e in s..11) {
+                now = getIndexSum(s, e)
+                nodeHashMap.put(now, arrayOf(s, e))
+                if (now == lessonValue) {
+                    return arrayOf(s, e)
+                }
+            }
+        }
+        return arrayOf(12, 12)
+    }
+
+    private fun getIndexSum(start: Int, end: Int): Int {
+        var value = 0
+        for (i in start..end) {
+            value += (1 shl i)
+        }
+        return value
     }
 
     suspend fun login(id: String, pwd: String, code: String): String {

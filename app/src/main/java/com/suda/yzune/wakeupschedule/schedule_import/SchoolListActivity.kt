@@ -155,6 +155,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
         schools.add(SchoolListBean("S", "苏州大学"))
         schools.add(SchoolListBean("S", "上海大学"))
+        schools.add(SchoolListBean("J", "吉林大学"))
         schools.add(SchoolListBean("G", "广东外语外贸大学", "http://jxgl.gdufs.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("C", "长春大学", "http://cdjwc.ccu.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("D", "大连外国语大学", "http://cas.dlufl.edu.cn/cas/"))

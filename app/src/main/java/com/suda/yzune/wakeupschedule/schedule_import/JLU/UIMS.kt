@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_import.JLU
 
-import android.util.Log
 import com.suda.yzune.wakeupschedule.utils.Utils
 import okhttp3.*
 import org.json.JSONObject
@@ -12,15 +11,15 @@ import java.util.concurrent.TimeUnit
 
 class UIMS(private var user: String, private var pass: String) {
 
-    lateinit var cookie1: String//有pwdStrength
-    lateinit var cookie3: String//j_spring_security_check返回
+    lateinit var cookie1: String
+    lateinit var cookie3: String
     lateinit var cookie4: String
-    lateinit var student_id: String
+    lateinit var studentId: String
     lateinit var jssionID: String
     lateinit var jssionID2: String
     lateinit var adcId: String
 
-    lateinit var term_id: String
+    lateinit var termId: String
 
     lateinit var courseJSON: JSONObject
 
@@ -69,12 +68,7 @@ class UIMS(private var user: String, private var pass: String) {
                 .header("Referer", Address.hostAddress + "/ntms/userLogin.jsp?reason=nologin")
                 .post(formBody)
                 .build()
-        Log.i("OKHttp_Request", String.format("Sending request %s %n%s",
-                request.url(), request.headers()))
-        Log.i("okhttp_request_body", request.body()!!.toString())
         val response = httpClient.newCall(request).execute()
-        Log.i("OKHttp_Request", String.format("Received response for %s %n%s",
-                response.request().url(), response.headers()))
         var str = response.headers().get("Set-Cookie")
         str = str!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
         jssionID2 = str.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
@@ -109,15 +103,15 @@ class UIMS(private var user: String, private var pass: String) {
         val obj = JSONObject(entityStringBuilder.toString())
 
         val defRes = obj.get("defRes") as JSONObject
-        student_id = defRes.getString("personId")
-        term_id = defRes.getString("term_l")
+        studentId = defRes.getString("personId")
+        termId = defRes.getString("term_l")
         adcId = defRes.getString("adcId")
     }
 
     fun getCourseSchedule() {
         val params = JSONObject()
-        params.put("termId", term_id)
-        params.put("studId", student_id)
+        params.put("termId", termId)
+        params.put("studId", studentId)
 
         val jsonObject = JSONObject()
         jsonObject.put("tag", "teachClassStud@schedule")

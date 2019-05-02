@@ -104,7 +104,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         private fun TextView.onShineEffect(colorInt: Int) {
-            this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
+            //this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
         }
 
         fun initView(view: View, weekPanel0: View) {
@@ -166,6 +166,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)
             ViewUtils.layoutView(scrollView, dip(375), dip(375))
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
+            scrollView.removeAllViews()
+            weekPanel0.removeAllViews()
         }
 
         private fun initWeekPanel(weekPanel0: LinearLayout, context: Context, view: View, data: List<CourseBean>?, day: Int) {

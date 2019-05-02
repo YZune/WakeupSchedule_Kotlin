@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.drakeet.multitype.MultiTypeAdapter
+import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -66,6 +67,7 @@ class SettingsActivity : BaseListActivity() {
     private fun onItemsCreated(items: MutableList<Any>) {
         items.add(CategoryItem("常规", true))
         items.add(SwitchItem("自动检查更新", PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)))
+        items.add(SwitchItem("显示日视图背景", PreferenceUtils.getBooleanFromSP(applicationContext, "s_colorful_day_widget", false)))
         items.add(SwitchItem("显示侧栏「苏大生活」", PreferenceUtils.getBooleanFromSP(applicationContext, "suda_life", true)))
         items.add(HorizontalItem("设置当前课表", ""))
 
@@ -90,6 +92,10 @@ class SettingsActivity : BaseListActivity() {
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
         when (item.title) {
             "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
+            "显示日视图背景" -> {
+                PreferenceUtils.saveBooleanToSP(applicationContext, "s_colorful_day_widget", isChecked)
+                mRecyclerView.longSnackbar("请点击小部件右上角的「切换按钮」查看效果~")
+            }
             "显示侧栏「苏大生活」" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "suda_life", isChecked)
                 mRecyclerView.snackbar("重启App后生效哦")

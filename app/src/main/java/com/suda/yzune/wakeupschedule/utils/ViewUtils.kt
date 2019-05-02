@@ -109,8 +109,8 @@ object ViewUtils {
                                 }
                             }
                         }
-                        val barHeight = if (ViewUtils.getVirtualBarHeight(context) in 1..48) {
-                            ViewUtils.getVirtualBarHeight(context)
+                        val barHeight = if (getVirtualBarHeight(context) in 1..48) {
+                            getVirtualBarHeight(context)
                         } else {
                             dip(48)
                         }

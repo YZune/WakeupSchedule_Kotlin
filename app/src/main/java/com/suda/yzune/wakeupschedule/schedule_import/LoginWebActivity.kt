@@ -39,6 +39,13 @@ class LoginWebActivity : BaseActivity() {
                 transaction.commit()
                 showImportSettingDialog()
             }
+            intent.getStringExtra("type") == "吉林大学" -> {
+                val fragment = LoginWebFragment.newInstance("吉林大学")
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "JLU")
+                transaction.commit()
+                showImportSettingDialog()
+            }
             intent.getStringExtra("type") == "apply" -> {
                 val fragment = SchoolInfoFragment.newInstance()
                 val transaction = supportFragmentManager.beginTransaction()

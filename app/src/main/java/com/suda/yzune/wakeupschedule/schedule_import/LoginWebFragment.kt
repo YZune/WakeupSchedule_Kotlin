@@ -187,8 +187,20 @@ class LoginWebFragment : BaseFragment() {
                                     uims.login()
                                     uims.getCurrentUserInfo()
                                     uims.getCourseSchedule()
+                                    viewModel.convertJLU(uims.courseJSON)
                                 } catch (e: Exception) {
-
+                                    e.message
+                                }
+                            }
+                            when (task) {
+                                "ok" -> {
+                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                                    activity!!.setResult(RESULT_OK)
+                                    activity!!.finish()
+                                }
+                                else -> {
+                                    cardC2Re("发生异常>_<")
+                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
