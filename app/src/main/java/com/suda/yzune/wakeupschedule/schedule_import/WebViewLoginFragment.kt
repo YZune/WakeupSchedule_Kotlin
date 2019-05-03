@@ -299,6 +299,7 @@ class WebViewLoginFragment : BaseFragment() {
                         try {
                             when (type) {
                                 "北京大学" -> viewModel.parsePeking(html)
+                                "北京师范大学珠海分校" -> viewModel.parseZFNewer(html)
                                 in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
                                 in viewModel.urpList -> viewModel.parseURP(html)
                                 in viewModel.oldQZList -> viewModel.parseOldQZ(html)

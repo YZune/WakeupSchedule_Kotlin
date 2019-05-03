@@ -173,6 +173,7 @@ class HtmlImportFragment : BaseFragment() {
                         when (viewModel.htmlName) {
                             "北京大学" -> viewModel.parsePeking(html)
                             "苏州大学" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+                            "北京师范大学珠海分校" -> viewModel.parseZFNewer(html)
                             //"吉林大学" -> viewModel.convertJLU(JSONObject(html))
                             in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
                             in viewModel.urpList -> viewModel.parseURP(html)
