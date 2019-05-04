@@ -248,5 +248,3 @@
 
 # for Jsoup
 #-keep class org.jsoup.**{*;}
-
--dontwarn kotlinx.coroutines.flow.**
