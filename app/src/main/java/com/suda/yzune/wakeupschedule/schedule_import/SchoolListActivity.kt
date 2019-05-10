@@ -316,6 +316,11 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
         schools.add(SchoolListBean("N", "南宁职业技术学院", "http://jwxt.ncvt.net:8088/jwglxt/"))
         schools.add(SchoolListBean("C", "常州机电职业技术学院", ""))
+        schools.add(SchoolListBean("B", "渤海大学", "http://jw.bhu.edu.cn/"))
+        schools.add(SchoolListBean("H", "黑龙江外国语学院", ""))
+        schools.add(SchoolListBean("M", "茂名职业技术学院", "http://jwc.mmvtc.cn/"))
+        schools.add(SchoolListBean("H", "河南工程学院", "http://125.219.48.18/"))
+        schools.add(SchoolListBean("H", "湖南农业大学", "http://jwc.hunau.edu.cn/xsxk/"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
