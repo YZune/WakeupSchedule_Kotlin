@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
     </style>
@@ -55,10 +56,10 @@
         <item name="wheel_cyclic">true</item>
         <item name="wheel_curved">false</item>
         <item name="wheel_visible_item_count">3</item>
-        <item name="wheel_curtain_color">#64ffffff</item>
+        <item name="wheel_curtain_color">#64ff9393</item>
         <item name="wheel_atmospheric">true</item>
-        <item name="wheel_item_text_color">@android:color/white</item>
-        <item name="wheel_selected_item_text_color">@android:color/white</item>
+        <item name="wheel_item_text_color">@color/grey</item>
+        <item name="wheel_selected_item_text_color">@android:color/black</item>
         <item name="wheel_item_text_size">20sp</item>
     </style>
 

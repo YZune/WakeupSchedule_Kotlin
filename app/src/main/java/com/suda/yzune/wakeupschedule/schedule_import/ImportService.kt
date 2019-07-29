@@ -10,7 +10,7 @@ interface ImportService {
 
     @POST("/default2.aspx")
     @FormUrlEncoded
-    @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
+    @Headers("Host: xk-old.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
     fun login(@Field("txtUserName") xh: String,
               @Field("Textbox2") pwd: String,
               @Field("txtSecretCode") code: String,
@@ -26,7 +26,7 @@ interface ImportService {
 
     @POST("/")
     @FormUrlEncoded
-    @Headers("Host: xk.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
+    @Headers("Host: xk-old.suda.edu.cn", "User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko")
     fun login(@Field("TextBox1") xh: String,
               @Field("TextBox2") pwd: String,
               @Field("TextBox3") code: String,

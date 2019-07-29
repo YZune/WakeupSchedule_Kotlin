@@ -36,7 +36,7 @@ class ModifyTableNameFragment : BaseDialogFragment() {
 
     private fun initEvent() {
         tv_save.setOnClickListener {
-            listener?.onFinish(et_table_name, dialog)
+            listener?.onFinish(et_table_name, dialog!!)
         }
 
         tv_cancel.setOnClickListener {

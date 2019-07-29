@@ -1,272 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".schedule_import.LoginWebFragment">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
-        android:paddingTop="16dp"
-        android:text="@string/text_login_web_title"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/et_id"
-        style="@style/LoginEditText"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_title"
-        android:layout_marginTop="56dp"
-        android:hint="@string/hint_student_id"
-        android:inputType="number"
-        android:singleLine="true" />
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
-    <LinearLayout
-        android:id="@+id/ll_pwd"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_id">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:paddingTop="16dp"
+            android:text="@string/text_login_web_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/et_pwd"
-            style="@style/LoginEditText"
-            android:layout_width="0dp"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_id"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
+            android:hint="@string/hint_student_id"
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:helperTextEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_pwd"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="@string/hint_password"
-            android:inputType="textPassword"
-            android:singleLine="true" />
+            app:endIconMode="password_toggle"
+            app:errorEnabled="true"
+            app:helperTextEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/input_id">
 
-        <CheckBox
-            android:id="@+id/cb_check_pwd"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="-2dp"
-            android:button="@null"
-            android:checked="false"
-            android:fontFamily="@font/iconfont"
-            android:text=""
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp" />
-    </LinearLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_pwd">
-
-        <EditText
-            android:id="@+id/et_code"
-            style="@style/LoginEditText"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_code"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_weight="1"
+            android:layout_marginTop="8dp"
             android:hint="@string/hint_check_code"
-            android:inputType="textVisiblePassword"
-            android:singleLine="true" />
+            app:endIconMode="clear_text"
+            app:errorEnabled="true"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toStartOf="@id/rl_code"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_pwd">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textVisiblePassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_code"
             android:layout_width="120dp"
-            android:layout_height="56dp"
-            android:layout_gravity="bottom"
-            android:paddingEnd="24dp">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/input_code"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/input_code"
+            app:layout_constraintTop_toTopOf="@id/input_code">
 
             <TextView
-                style="@style/IconTextViewStyle"
                 android:id="@+id/iv_error"
-                android:layout_marginStart="32dp"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentBottom="true"
+                style="@style/IconTextViewStyle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true"
                 android:text=""
-                android:layout_marginBottom="2dp"
                 android:textColor="@color/orange" />
-
-            <RelativeLayout
-                android:id="@+id/rl_progress"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="32dp"
-                android:layout_marginBottom="2dp">
-
-                <fr.castorflex.android.circularprogressbar.CircularProgressBar
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="true"
-                    app:cpb_color="@color/grey"
-                    app:cpb_max_sweep_angle="360"
-                    app:cpb_min_sweep_angle="360"
-                    app:cpb_rotation_speed="1.0"
-                    app:cpb_stroke_width="4dp"
-                    app:cpb_sweep_speed="10.0" />
-
-                <fr.castorflex.android.circularprogressbar.CircularProgressBar
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:indeterminate="true"
-                    app:cpb_color="#fa6278"
-                    app:cpb_max_sweep_angle="30"
-                    app:cpb_min_sweep_angle="150"
-                    app:cpb_rotation_speed="2.0"
-                    app:cpb_stroke_width="4dp"
-                    app:cpb_sweep_speed="0.5" />
-            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/iv_code"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:layout_alignParentBottom="true" />
+                android:layout_centerInParent="true" />
 
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv_mask"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="#96ffffff"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tv_vpn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ll_code"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:padding="8dp"
-        android:text="不在苏大WiFi覆盖区域？"
-        android:textColor="@color/colorAccent"
-        android:textSize="12sp"
-        android:textStyle="bold" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cv_login"
-        style="@style/ButtonBackground"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_below="@id/ll_code"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginRight="32dp"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="0dp">
-
-        <RelativeLayout
-            android:id="@+id/rl_login"
+        <ImageView
+            android:id="@+id/iv_mask"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/login_btn_bg">
+            android:clickable="true"
+            android:focusable="true"
+            android:src="#96ffffff"
+            android:visibility="gone" />
 
-            <fr.castorflex.android.circularprogressbar.CircularProgressBar
-                android:id="@+id/cpb"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_centerInParent="true"
-                android:alpha="0"
-                android:indeterminate="true"
-                app:cpb_color="@android:color/white"
-                app:cpb_max_sweep_angle="30"
-                app:cpb_min_sweep_angle="150"
-                app:cpb_rotation_speed="2.0"
-                app:cpb_stroke_width="4dp"
-                app:cpb_sweep_speed="0.5" />
+        <TextView
+            android:id="@+id/tv_vpn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:padding="8dp"
+            android:text="不在苏大WiFi覆盖区域？"
+            android:textColor="@color/colorAccent"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_code" />
 
-            <TextView
-                android:id="@+id/btn_text"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_login"
+            style="@style/ButtonBackground"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="96dp"
+            android:layout_marginRight="32dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_code">
+
+            <RelativeLayout
+                android:id="@+id/rl_login"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="@string/text_login"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:background="@drawable/login_btn_bg">
 
-            <LinearLayout
-                android:id="@+id/ll_dialog"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:orientation="vertical"
-                android:visibility="gone">
+                <fr.castorflex.android.circularprogressbar.CircularProgressBar
+                    android:id="@+id/cpb"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerInParent="true"
+                    android:alpha="0"
+                    android:indeterminate="true"
+                    app:cpb_color="@android:color/white"
+                    app:cpb_max_sweep_angle="30"
+                    app:cpb_min_sweep_angle="150"
+                    app:cpb_rotation_speed="2.0"
+                    app:cpb_stroke_width="4dp"
+                    app:cpb_sweep_speed="0.5" />
 
                 <TextView
+                    android:id="@+id/btn_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="请选择要导入的学期"
+                    android:singleLine="true"
+                    android:text="@string/text_login"
                     android:textColor="@android:color/white"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/ll_dialog1"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent"
+                    android:alpha="0"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-                    <com.aigestudio.wheelpicker.WheelPicker
-                        android:id="@+id/wp_years"
-                        style="@style/TermDataPicker"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        tools:ignore="NestedWeights" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:gravity="center"
+                        android:text="请选择要导入的学期"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
 
-                    <com.aigestudio.wheelpicker.WheelPicker
-                        android:id="@+id/wp_term"
-                        style="@style/TermDataPicker"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1">
+
+                        <com.aigestudio.wheelpicker.WheelPicker
+                            android:id="@+id/wp_years1"
+                            style="@style/TermDataPicker"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            tools:ignore="NestedWeights" />
+
+                        <com.aigestudio.wheelpicker.WheelPicker
+                            android:id="@+id/wp_term1"
+                            style="@style/TermDataPicker"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cv_to_schedule1"
+                        style="@style/ButtonBackground"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="确定"
+                            android:textColor="@color/colorAccent"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_to_schedule"
-                    style="@style/ButtonBackground"
-                    android:layout_width="120dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp">
+            </RelativeLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="确定"
-                        android:textColor="@color/colorAccent"
-                        android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
-                </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="?attr/scrimBackground"
+        android:visibility="invisible"
+        app:layout_behavior="@string/fab_transformation_scrim_behavior" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="456dp" />
+
+    <com.google.android.material.transformation.TransformationChildCard
+        android:id="@+id/sheet"
+        android:layout_width="match_parent"
+        android:layout_height="288dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="invisible"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:layout_behavior="@string/fab_transformation_sheet_behavior">
+
+        <LinearLayout
+            android:id="@+id/ll_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="请选择要导入的学期"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <com.aigestudio.wheelpicker.WheelPicker
+                    android:id="@+id/wp_years"
+                    style="@style/TermDataPicker"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    tools:ignore="NestedWeights" />
+
+                <com.aigestudio.wheelpicker.WheelPicker
+                    android:id="@+id/wp_term"
+                    style="@style/TermDataPicker"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
-        </RelativeLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_to_schedule"
+                style="@style/DialogButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="确定" />
 
-    </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
-</RelativeLayout>
+    </com.google.android.material.transformation.TransformationChildCard>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -5,18 +5,17 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.app.Activity.RESULT_OK
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.view.animation.Transformation
-import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.schedule_import.JLU.UIMS
@@ -31,7 +30,7 @@ import org.jetbrains.anko.support.v4.dip
 
 class LoginWebFragment : BaseFragment() {
 
-    private lateinit var cvLoginLayoutParams: RelativeLayout.LayoutParams
+    private lateinit var cvLoginLayoutParams: ConstraintLayout.LayoutParams
     private var loginBtnOldWidth = 0
     private var loginBtnOldHeight = 0
     private var loginBtnOldRadius = 0f
@@ -58,11 +57,20 @@ class LoginWebFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (type != "苏州大学") {
             tv_vpn.visibility = View.GONE
-            ll_code.visibility = View.INVISIBLE
+            input_code.visibility = View.INVISIBLE
+            rl_code.visibility = View.INVISIBLE
         } else {
             refreshCode()
         }
         initEvent()
+    }
+
+    private fun TextInputLayout.showError(str: String, dur: Long = 3000) {
+        launch {
+            this@showError.error = str
+            delay(dur)
+            this@showError.error = null
+        }
     }
 
     private fun initEvent() {
@@ -70,7 +78,7 @@ class LoginWebFragment : BaseFragment() {
             CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
         }
 
-        cvLoginLayoutParams = cv_login.layoutParams as RelativeLayout.LayoutParams
+        cvLoginLayoutParams = cv_login.layoutParams as ConstraintLayout.LayoutParams
 
         iv_code.setOnClickListener {
             refreshCode()
@@ -80,24 +88,26 @@ class LoginWebFragment : BaseFragment() {
             refreshCode()
         }
 
-        cb_check_pwd.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                cb_check_pwd.text = "\uE6E8"
-                et_pwd.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                et_pwd.setSelection(et_pwd.text.length)
-            } else {
-                cb_check_pwd.text = "\uE6A9"
-                et_pwd.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                et_pwd.setSelection(et_pwd.text.length)
-            }
+        btn_to_schedule.setOnClickListener {
+            cardDialog2C()
+            fab_login.isExpanded = false
+            getSchedule(viewModel, et_id.text.toString(), name, year, term)
         }
 
-        cv_login.setOnClickListener {
-            val shake = AnimationUtils.loadAnimation(context, R.anim.edittext_shake)
+//        fab_login.setOnClickListener {
+//            fab_login.isExpanded = !fab_login.isExpanded
+//        }
+
+        scrim.setOnClickListener {
+            // fab_login.isExpanded = false
+        }
+
+        fab_login.setOnClickListener {
+            //todo: val shake = AnimationUtils.loadAnimation(context, R.anim.edittext_shake)
             when {
-                et_id.text.isEmpty() -> et_id.startAnimation(shake)
-                et_pwd.text.isEmpty() -> et_pwd.startAnimation(shake)
-                et_code.text.isEmpty() && type == "苏州大学" -> et_code.startAnimation(shake)
+                et_id.text!!.isEmpty() -> input_id.showError("学号不能为空")
+                et_pwd.text!!.isEmpty() -> input_pwd.showError("密码不能为空")
+                et_code.text!!.isEmpty() && type == "苏州大学" -> input_code.showError("验证码不能为空")
                 else -> {
                     cardRe2C()
                     if (type == "苏州大学") {
@@ -118,20 +128,22 @@ class LoginWebFragment : BaseFragment() {
                                     cardC2Re("请检查是否连接校园网")
                                 }
                                 task.contains("验证码不正确") -> {
-                                    et_code.startAnimation(shake)
+                                    input_code.showError("验证码不正确哦", 5000)
                                     et_code.setText("")
                                     cardC2Re("验证码不正确哦")
                                     refreshCode()
                                 }
                                 task.contains("密码错误") -> {
                                     et_code.setText("")
-                                    et_pwd.startAnimation(shake)
+                                    et_pwd.requestFocus()
+                                    input_pwd.showError("密码错误哦", 5000)
                                     refreshCode()
                                     cardC2Re("密码错误哦")
                                 }
                                 task.contains("用户名不存在") -> {
                                     et_code.setText("")
-                                    et_id.startAnimation(shake)
+                                    et_id.requestFocus()
+                                    input_id.showError("看看学号是不是输错啦", 5000)
                                     refreshCode()
                                     cardC2Re("看看学号是不是输错啦")
                                 }
@@ -290,7 +302,7 @@ class LoginWebFragment : BaseFragment() {
 
     private fun refreshCode() {
         launch {
-            rl_progress.visibility = View.VISIBLE
+            //rl_progress.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
             val task = withContext(Dispatchers.IO) {
@@ -301,12 +313,12 @@ class LoginWebFragment : BaseFragment() {
                 }
             }
             if (task != null) {
-                rl_progress.visibility = View.GONE
+                //rl_progress.visibility = View.GONE
                 iv_code.visibility = View.VISIBLE
                 iv_error.visibility = View.INVISIBLE
                 iv_code.setImageBitmap(task)
             } else {
-                rl_progress.visibility = View.GONE
+                //rl_progress.visibility = View.GONE
                 iv_code.visibility = View.INVISIBLE
                 iv_error.visibility = View.VISIBLE
                 cv_login.isClickable = false
@@ -376,32 +388,32 @@ class LoginWebFragment : BaseFragment() {
     }
 
     private fun cardC2Dialog(viewModel: ImportViewModel, years: List<String>) {
-        cv_login.isClickable = false
-        widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
-        fadeAnimation(cpb, 1f, 0f, 100, 0)
-
-        val raiseUp = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                cvLoginLayoutParams.topMargin = (0 - dip(120) * interpolatedTime).toInt()
-                cv_login.layoutParams = cvLoginLayoutParams
-            }
-        }
-        raiseUp.interpolator = OvershootInterpolator()
-        raiseUp.duration = 500
-        cv_login.startAnimation(raiseUp)
-        heightAnimation(cv_login, cv_login.height, 6 * cv_login.height, 300, 0)
-
-        val radiusOff = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, 2f)
-        radiusOff.duration = 500
-        radiusOff.start()
-        rl_login.isClickable = true
-        iv_mask.visibility = View.VISIBLE
-        val maskOn = ObjectAnimator.ofFloat(iv_mask, "alpha", 0f, 1f)
-        maskOn.duration = 500
-        maskOn.start()
+//        cv_login.isClickable = false
+//        widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
+//        fadeAnimation(cpb, 1f, 0f, 100, 0)
+//
+//        val raiseUp = object : Animation() {
+//            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+//                cvLoginLayoutParams.topMargin = (0 - dip(120) * interpolatedTime).toInt()
+//                cv_login.layoutParams = cvLoginLayoutParams
+//            }
+//        }
+//        raiseUp.interpolator = OvershootInterpolator()
+//        raiseUp.duration = 500
+//        cv_login.startAnimation(raiseUp)
+//        heightAnimation(cv_login, cv_login.height, 6 * cv_login.height, 300, 0)
+//
+//        val radiusOff = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, 2f)
+//        radiusOff.duration = 500
+//        radiusOff.start()
+//        rl_login.isClickable = true
+//        iv_mask.visibility = View.VISIBLE
+//        val maskOn = ObjectAnimator.ofFloat(iv_mask, "alpha", 0f, 1f)
+//        maskOn.duration = 500
+//        maskOn.start()
 
         ll_dialog.visibility = View.VISIBLE
-        val terms = listOf<String>("1", "2", "3")
+        val terms = listOf("1", "2", "3")
         wp_term.data = terms
         wp_years.data = years
         wp_years.setOnItemSelectedListener { _, data, _ ->
@@ -412,15 +424,10 @@ class LoginWebFragment : BaseFragment() {
             term = data as String
             Log.d("选中", "选中学期$term")
         }
-
-        val contentOn = ObjectAnimator.ofFloat(ll_dialog, "alpha", 0f, 1f)
-        contentOn.duration = 500
-        contentOn.start()
-
-        cv_to_schedule.setOnClickListener {
-            cardDialog2C()
-            getSchedule(viewModel, et_id.text.toString(), name, year, term)
-        }
+        fab_login.isExpanded = !fab_login.isExpanded
+//        val contentOn = ObjectAnimator.ofFloat(ll_dialog, "alpha", 0f, 1f)
+//        contentOn.duration = 500
+//        contentOn.start()
     }
 
     private fun cardDialog2C() {

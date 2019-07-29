@@ -50,9 +50,9 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         if (!nested) {
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
             val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
             val cardView = root.find<MaterialCardView>(R.id.base_card_view)
             LayoutInflater.from(context).inflate(layoutId, cardView, true)

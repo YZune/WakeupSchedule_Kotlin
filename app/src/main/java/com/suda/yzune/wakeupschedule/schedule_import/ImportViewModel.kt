@@ -97,10 +97,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
 
-    private val retrofit = Retrofit.Builder().baseUrl("http://xk.suda.edu.cn").build()
+    private val retrofit = Retrofit.Builder().baseUrl("http://xk-old.suda.edu.cn/").build()
     private val importService = retrofit.create(ImportService::class.java)
     private var loginCookieStr = ""
-    private val viewStateLoginCode = "dDwtMTU5NzgwNzI1O3Q8O2w8aTwxPjs+O2w8dDw7bDxpPDQ+O2k8Nz47aTwxMD47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz4WALD6HDQjlsElm9Ef23s29CgGOQ=="
+    private val viewStateLoginCode = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
     private var viewStatePostCode = ""
 
     suspend fun getNewId(): Int {
@@ -448,7 +448,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
     suspend fun getPrepare(id: String): String {
         val response = importService.getPrepare(
-                xh = id, referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=$id",
+                xh = id, referer = "http://xk-old.suda.edu.cn/xskbcx.aspx?xh=$id",
                 cookies = loginCookieStr
         ).execute()
         if (response.isSuccessful) {
@@ -472,7 +472,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 event_argument = "",
                 view_state = viewStatePostCode,
                 cookies = loginCookieStr,
-                referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=" + id + "&xm=" + URLEncoder.encode(name, "gb2312") + "&gnmkdm=N121603",
+                referer = "http://xk-old.suda.edu.cn/xskbcx.aspx?xh=" + id + "&xm=" + URLEncoder.encode(name, "gb2312") + "&gnmkdm=N121603",
                 xnd = year,
                 xqd = term
         ).execute()
