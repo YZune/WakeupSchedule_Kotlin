@@ -1898,6 +1898,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 var startWeek = 0
                 var endWeek = 0
                 var type = 0
+                // Log.d("Excel", it[i][0] + ", " + it[i][1] + ", " + it[i][2] + ", " + it[i][3] + ", " + it[i][4] + ", " + it[i][5] + ", " + it[i][6])
                 val weekList = it[i][6].split('、')
                 weekList.forEach { weekStr ->
                     if (weekStr.contains('-')) {

@@ -93,6 +93,12 @@
             app:layout_constraintStart_toEndOf="@id/input_code"
             app:layout_constraintTop_toTopOf="@id/input_code">
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerInParent="true" />
+
             <TextView
                 android:id="@+id/iv_error"
                 style="@style/IconTextViewStyle"
@@ -133,118 +139,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/input_code" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_login"
-            style="@style/ButtonBackground"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="96dp"
-            android:layout_marginRight="32dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_code">
-
-            <RelativeLayout
-                android:id="@+id/rl_login"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/login_btn_bg">
-
-                <fr.castorflex.android.circularprogressbar.CircularProgressBar
-                    android:id="@+id/cpb"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_centerInParent="true"
-                    android:alpha="0"
-                    android:indeterminate="true"
-                    app:cpb_color="@android:color/white"
-                    app:cpb_max_sweep_angle="30"
-                    app:cpb_min_sweep_angle="150"
-                    app:cpb_rotation_speed="2.0"
-                    app:cpb_stroke_width="4dp"
-                    app:cpb_sweep_speed="0.5" />
-
-                <TextView
-                    android:id="@+id/btn_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="@string/text_login"
-                    android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/ll_dialog1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        android:gravity="center"
-                        android:text="请选择要导入的学期"
-                        android:textColor="@android:color/white"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <com.aigestudio.wheelpicker.WheelPicker
-                            android:id="@+id/wp_years1"
-                            style="@style/TermDataPicker"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            tools:ignore="NestedWeights" />
-
-                        <com.aigestudio.wheelpicker.WheelPicker
-                            android:id="@+id/wp_term1"
-                            style="@style/TermDataPicker"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cv_to_schedule1"
-                        style="@style/ButtonBackground"
-                        android:layout_width="120dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="16dp"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="0dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="确定"
-                            android:textColor="@color/colorAccent"
-                            android:textStyle="bold" />
-
-                    </androidx.cardview.widget.CardView>
-
-                </LinearLayout>
-
-            </RelativeLayout>
-
-        </androidx.cardview.widget.CardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
@@ -260,7 +154,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="456dp" />
+        android:layout_marginTop="432dp" />
 
     <com.google.android.material.transformation.TransformationChildCard
         android:id="@+id/sheet"
@@ -274,11 +168,16 @@
         app:cardElevation="2dp"
         app:layout_behavior="@string/fab_transformation_sheet_behavior">
 
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center" />
+
         <LinearLayout
             android:id="@+id/ll_dialog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:alpha="0"
             android:orientation="vertical">
 
             <TextView
@@ -312,12 +211,28 @@
 
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_to_schedule"
-                style="@style/DialogButtonStyle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="确定" />
+                android:layout_marginTop="8dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_cancel"
+                    style="@style/DialogButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="取消" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_to_schedule"
+                    style="@style/DialogButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="确定" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

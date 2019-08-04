@@ -10,6 +10,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -142,6 +143,7 @@ class LoginWebActivity : BaseActivity() {
                     try {
                         viewModel.importFromExcel(filePath)
                     } catch (e: Exception) {
+                        e.printStackTrace()
                         e.message
                     }
                 }
@@ -159,6 +161,15 @@ class LoginWebActivity : BaseActivity() {
                     else -> Toasty.error(applicationContext, "发生异常>_<请确保所有应填的格子不为空\n且没有更改模板的属性\n$import", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        val suda = supportFragmentManager.findFragmentByTag("sudaLogin")
+        if (suda != null && fab_login.isExpanded) {
+            fab_login.isExpanded = false
+        } else {
+            super.onBackPressed()
         }
     }
 

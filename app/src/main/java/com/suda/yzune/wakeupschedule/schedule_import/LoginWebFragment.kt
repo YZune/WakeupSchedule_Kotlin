@@ -1,19 +1,14 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-import android.animation.IntEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
 import android.app.Activity.RESULT_OK
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.OvershootInterpolator
-import android.view.animation.Transformation
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
@@ -21,6 +16,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.schedule_import.JLU.UIMS
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
+import jahirfiquitiva.libs.textdrawable.TextDrawable
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -30,10 +26,6 @@ import org.jetbrains.anko.support.v4.dip
 
 class LoginWebFragment : BaseFragment() {
 
-    private lateinit var cvLoginLayoutParams: ConstraintLayout.LayoutParams
-    private var loginBtnOldWidth = 0
-    private var loginBtnOldHeight = 0
-    private var loginBtnOldRadius = 0f
     private var name = ""
     private var year = ""
     private var term = ""
@@ -74,11 +66,19 @@ class LoginWebFragment : BaseFragment() {
     }
 
     private fun initEvent() {
+
+        val textDrawable = TextDrawable
+                .builder()
+                .textColor(Color.WHITE)
+                .fontSize(dip(24))
+                .useFont(ResourcesCompat.getFont(context!!, R.font.iconfont)!!)
+                .buildRect("\uE6DE", Color.TRANSPARENT)
+
+        fab_login.setImageDrawable(textDrawable)
+
         tv_vpn.setOnClickListener {
             CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
         }
-
-        cvLoginLayoutParams = cv_login.layoutParams as ConstraintLayout.LayoutParams
 
         iv_code.setOnClickListener {
             refreshCode()
@@ -88,28 +88,25 @@ class LoginWebFragment : BaseFragment() {
             refreshCode()
         }
 
-        btn_to_schedule.setOnClickListener {
-            cardDialog2C()
+        sheet.setOnClickListener {
             fab_login.isExpanded = false
+        }
+
+        btn_to_schedule.setOnClickListener {
             getSchedule(viewModel, et_id.text.toString(), name, year, term)
         }
 
-//        fab_login.setOnClickListener {
-//            fab_login.isExpanded = !fab_login.isExpanded
-//        }
-
-        scrim.setOnClickListener {
-            // fab_login.isExpanded = false
+        btn_cancel.setOnClickListener {
+            refreshCode()
+            fab_login.isExpanded = false
         }
 
         fab_login.setOnClickListener {
-            //todo: val shake = AnimationUtils.loadAnimation(context, R.anim.edittext_shake)
             when {
                 et_id.text!!.isEmpty() -> input_id.showError("学号不能为空")
                 et_pwd.text!!.isEmpty() -> input_pwd.showError("密码不能为空")
                 et_code.text!!.isEmpty() && type == "苏州大学" -> input_code.showError("验证码不能为空")
                 else -> {
-                    cardRe2C()
                     if (type == "苏州大学") {
                         launch {
                             val task = withContext(Dispatchers.IO) {
@@ -122,30 +119,24 @@ class LoginWebFragment : BaseFragment() {
                             }
                             when {
                                 task == null -> {
-                                    cardC2Re("请检查是否连接校园网")
+                                    Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
                                 }
                                 task == "error" -> {
-                                    cardC2Re("请检查是否连接校园网")
+                                    Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
                                 }
                                 task.contains("验证码不正确") -> {
                                     input_code.showError("验证码不正确哦", 5000)
-                                    et_code.setText("")
-                                    cardC2Re("验证码不正确哦")
                                     refreshCode()
                                 }
                                 task.contains("密码错误") -> {
-                                    et_code.setText("")
                                     et_pwd.requestFocus()
                                     input_pwd.showError("密码错误哦", 5000)
                                     refreshCode()
-                                    cardC2Re("密码错误哦")
                                 }
                                 task.contains("用户名不存在") -> {
-                                    et_code.setText("")
                                     et_id.requestFocus()
                                     input_id.showError("看看学号是不是输错啦", 5000)
                                     refreshCode()
-                                    cardC2Re("看看学号是不是输错啦")
                                 }
                                 task.contains("欢迎您：") -> {
                                     getPrepared(et_id.text.toString())
@@ -155,14 +146,12 @@ class LoginWebFragment : BaseFragment() {
                                 }
                                 task.contains("请耐心排队") -> {
                                     Log.d("登录", task)
-                                    et_code.setText("")
                                     refreshCode()
-                                    cardC2Re("选课排队中，稍后再试哦")
+                                    Toasty.error(context!!.applicationContext, "选课排队中，稍后再试哦", Toast.LENGTH_LONG).show()
                                 }
                                 else -> {
-                                    et_code.setText("")
                                     refreshCode()
-                                    cardC2Re("再试一次看看哦")
+                                    Toasty.error(context!!.applicationContext, "再试一次看看哦", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -184,7 +173,6 @@ class LoginWebFragment : BaseFragment() {
                                     activity!!.finish()
                                 }
                                 else -> {
-                                    cardC2Re("发生异常>_<")
                                     Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -211,7 +199,6 @@ class LoginWebFragment : BaseFragment() {
                                     activity!!.finish()
                                 }
                                 else -> {
-                                    cardC2Re("发生异常>_<")
                                     Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -224,6 +211,9 @@ class LoginWebFragment : BaseFragment() {
 
     private fun getPrepared(id: String) {
         launch {
+            pb_loading.visibility = View.VISIBLE
+            ll_dialog.visibility = View.INVISIBLE
+            fab_login.isExpanded = !fab_login.isExpanded
             val task = withContext(Dispatchers.IO) {
                 try {
                     viewModel.getPrepare(id)
@@ -239,9 +229,11 @@ class LoginWebFragment : BaseFragment() {
             }
 
             if (years.isEmpty()) {
-                cardC2Re("获取学期数据失败:(")
+                fab_login.isExpanded = !fab_login.isExpanded
+                Toasty.error(context!!.applicationContext, "获取学期数据失败:(", Toast.LENGTH_LONG).show()
             } else {
-                cardC2Dialog(viewModel, years)
+                pb_loading.visibility = View.GONE
+                cardC2Dialog(years)
             }
         }
     }
@@ -261,7 +253,9 @@ class LoginWebFragment : BaseFragment() {
                         Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
                         activity!!.finish()
                     }
-                    else -> Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                    else -> {
+                        Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         } else {
@@ -275,9 +269,8 @@ class LoginWebFragment : BaseFragment() {
                 }
 
                 if (task == null || task == "error") {
-                    cardC2Re("网络错误")
+                    Toasty.error(context!!.applicationContext, "网络错误", Toast.LENGTH_LONG).show()
                 } else if (task.contains("您本学期课所选学分小于 0分")) {
-                    cardC2Dialog(viewModel, years)
                     Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
                 } else {
                     val import = withContext(Dispatchers.IO) {
@@ -302,7 +295,8 @@ class LoginWebFragment : BaseFragment() {
 
     private fun refreshCode() {
         launch {
-            //rl_progress.visibility = View.VISIBLE
+            et_code.setText("")
+            progress_bar.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
             val task = withContext(Dispatchers.IO) {
@@ -313,105 +307,20 @@ class LoginWebFragment : BaseFragment() {
                 }
             }
             if (task != null) {
-                //rl_progress.visibility = View.GONE
+                progress_bar.visibility = View.GONE
                 iv_code.visibility = View.VISIBLE
                 iv_error.visibility = View.INVISIBLE
                 iv_code.setImageBitmap(task)
             } else {
-                //rl_progress.visibility = View.GONE
+                progress_bar.visibility = View.GONE
                 iv_code.visibility = View.INVISIBLE
                 iv_error.visibility = View.VISIBLE
-                cv_login.isClickable = false
-                btn_text.text = "请检查是否连接校园网"
-                launch {
-                    delay(3000)
-                    btn_text.text = "登录"
-                    cv_login.isClickable = true
-                }
+                Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
             }
         }
     }
 
-    private fun widthAnimation(target: View, start: Int, end: Int, duration: Int, delay: Long) {
-        val valueAnimator = ValueAnimator.ofInt(1, 100)
-        valueAnimator.addUpdateListener { animation ->
-            val intEvaluator = IntEvaluator()
-            val fraction = animation.animatedFraction
-            target.layoutParams.width = intEvaluator.evaluate(fraction, start, end)!!
-            target.requestLayout()
-        }
-        valueAnimator.startDelay = delay
-        valueAnimator.setDuration(duration.toLong()).start()
-    }
-
-    private fun heightAnimation(target: View, start: Int, end: Int, duration: Int, delay: Long) {
-        val valueAnimator = ValueAnimator.ofInt(1, 100)
-        valueAnimator.addUpdateListener { animation ->
-            val intEvaluator = IntEvaluator()
-            val fraction = animation.animatedFraction
-            target.layoutParams.height = intEvaluator.evaluate(fraction, start, end)!!
-            target.requestLayout()
-        }
-        valueAnimator.interpolator = OvershootInterpolator()
-        valueAnimator.startDelay = delay
-        valueAnimator.setDuration(duration.toLong()).start()
-    }
-
-    private fun fadeAnimation(target: View, start: Float, end: Float, duration: Long, delay: Long) {
-        val fadeAnimator = ObjectAnimator.ofFloat(target, "alpha", start, end)
-        fadeAnimator.duration = duration
-        fadeAnimator.startDelay = delay
-        fadeAnimator.start()
-    }
-
-    private fun cardRe2C() {
-        loginBtnOldWidth = cv_login.width
-        loginBtnOldHeight = cv_login.height
-        loginBtnOldRadius = cv_login.radius
-        widthAnimation(cv_login, loginBtnOldWidth, cv_login.height, 300, 0)
-        fadeAnimation(btn_text, 1f, 0f, 200, 0)
-        fadeAnimation(cpb, 0f, 1f, 100, 0)
-        cv_login.isClickable = false
-    }
-
-    private fun cardC2Re(msg: String) {
-        cv_login.isClickable = false
-        widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
-        fadeAnimation(cpb, 1f, 0f, 100, 0)
-        btn_text.text = msg
-        fadeAnimation(btn_text, 0f, 1f, 200, 0)
-        launch {
-            delay(3000)
-            btn_text.text = "登录"
-            cv_login.isClickable = true
-        }
-    }
-
-    private fun cardC2Dialog(viewModel: ImportViewModel, years: List<String>) {
-//        cv_login.isClickable = false
-//        widthAnimation(cv_login, cv_login.height, loginBtnOldWidth, 300, 0)
-//        fadeAnimation(cpb, 1f, 0f, 100, 0)
-//
-//        val raiseUp = object : Animation() {
-//            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-//                cvLoginLayoutParams.topMargin = (0 - dip(120) * interpolatedTime).toInt()
-//                cv_login.layoutParams = cvLoginLayoutParams
-//            }
-//        }
-//        raiseUp.interpolator = OvershootInterpolator()
-//        raiseUp.duration = 500
-//        cv_login.startAnimation(raiseUp)
-//        heightAnimation(cv_login, cv_login.height, 6 * cv_login.height, 300, 0)
-//
-//        val radiusOff = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, 2f)
-//        radiusOff.duration = 500
-//        radiusOff.start()
-//        rl_login.isClickable = true
-//        iv_mask.visibility = View.VISIBLE
-//        val maskOn = ObjectAnimator.ofFloat(iv_mask, "alpha", 0f, 1f)
-//        maskOn.duration = 500
-//        maskOn.start()
-
+    private fun cardC2Dialog(years: List<String>) {
         ll_dialog.visibility = View.VISIBLE
         val terms = listOf("1", "2", "3")
         wp_term.data = terms
@@ -424,35 +333,6 @@ class LoginWebFragment : BaseFragment() {
             term = data as String
             Log.d("选中", "选中学期$term")
         }
-        fab_login.isExpanded = !fab_login.isExpanded
-//        val contentOn = ObjectAnimator.ofFloat(ll_dialog, "alpha", 0f, 1f)
-//        contentOn.duration = 500
-//        contentOn.start()
-    }
-
-    private fun cardDialog2C() {
-        cv_login.isClickable = false
-        widthAnimation(cv_login, loginBtnOldWidth, loginBtnOldHeight, 300, 0)
-        fadeAnimation(cpb, 0f, 1f, 100, 0)
-        heightAnimation(cv_login, cv_login.height, loginBtnOldHeight, 300, 0)
-
-        val dropDown = object : Animation() {
-            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                cvLoginLayoutParams.topMargin = (dip(56) * interpolatedTime).toInt()
-                cv_login.layoutParams = cvLoginLayoutParams
-            }
-        }
-        dropDown.interpolator = OvershootInterpolator()
-        dropDown.duration = 500
-        cv_login.startAnimation(dropDown)
-
-        val radiusOn = ObjectAnimator.ofFloat(cv_login, "radius", cv_login.radius, loginBtnOldRadius)
-        radiusOn.duration = 100
-        radiusOn.start()
-        iv_mask.visibility = View.GONE
-
-        ll_dialog.visibility = View.GONE
-
     }
 
     companion object {
