@@ -126,6 +126,7 @@ class WebViewLoginFragment : BaseFragment() {
         wv_course.settings.javaScriptCanOpenWindowsAutomatically = true
         wv_course.settings.domStorageEnabled = true
         wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
+        wv_course.settings.textZoom = 100
         initEvent()
     }
 

@@ -2,6 +2,7 @@
 <resources>
     <item name="anko_cl_schedule" type="id" />
     <item name="anko_iv_bg" type="id" />
+    <item name="anko_iv_blur" type="id" />
     <item name="anko_tv_date" type="id" />
     <item name="anko_tv_week" type="id" />
     <item name="anko_tv_weekday" type="id" />

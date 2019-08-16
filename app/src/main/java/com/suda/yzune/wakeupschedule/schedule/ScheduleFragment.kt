@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,7 +66,7 @@ class ScheduleFragment : BaseFragment() {
             find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
             find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
         }
-
+        Log.d("周", "" + CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst))
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
         find<TextView>(R.id.anko_tv_title0).setTextColor(viewModel.table.textColor)
         find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"

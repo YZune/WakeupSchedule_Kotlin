@@ -307,9 +307,9 @@ object CourseUtils {
         } else if (newHour < 10 && newMin < 10) {
             strTime = "0$newHour:0$newMin"
         } else if (newHour >= 10 && newMin >= 10) {
-            strTime = newHour.toString() + ":" + newMin
+            strTime = "$newHour:$newMin"
         } else if (newHour >= 10 && newMin < 10) {
-            strTime = newHour.toString() + ":0" + newMin
+            strTime = "$newHour:0$newMin"
         }
         return strTime
     }
