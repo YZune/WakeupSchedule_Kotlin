@@ -2,34 +2,29 @@ package com.suda.yzune.wakeupschedule.main
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
-import com.suda.yzune.wakeupschedule.dao.TimeTableDao
-import com.suda.yzune.wakeupschedule.schedule.ScheduleActivityUI
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import es.dmoral.toasty.Toasty
+import com.suda.yzune.wakeupschedule.widget.MyViewPager
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
 import kotlin.math.abs
@@ -37,14 +32,11 @@ import kotlin.math.abs
 class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: MyViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var blurImageView: ImageView
 
     private lateinit var listener: ViewPager.OnPageChangeListener
-
-    private var index = 0
-    private var width = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
@@ -63,20 +55,66 @@ class MainActivity : BaseActivity() {
                 viewModel.getDefaultTable()
             }
 
-            val x = (ViewUtils.getRealSize(this@MainActivity).x * 0.5).toInt()
-            val y = (ViewUtils.getRealSize(this@MainActivity).y * 0.5).toInt()
+            initTheme()
+
+            initEvent()
+
+            viewModel.timeList = withContext(Dispatchers.IO) {
+                viewModel.getTimeList(viewModel.table.timeTable)
+            }
+
+            for (i in 1..7) {
+                viewModel.getRawCourseByDay(i, viewModel.table.id).observe(this@MainActivity, Observer { list ->
+                    if (list == null) return@Observer
+                    if (list.isNotEmpty() && list[0].tableId != viewModel.table.id) return@Observer
+                    viewModel.allCourseList[i - 1].value = list
+                })
+            }
+        }
+    }
+
+    private fun initTheme() {
+        if (viewModel.table.background != "") {
+            val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
+            val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
+            Glide.with(this@MainActivity)
+                    .load(viewModel.table.background)
+                    .override(x, y)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(bgImageView)
+            Glide.with(this@MainActivity)
+                    .load(viewModel.table.background)
+                    .override(x, y)
+                    .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 5)))
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(blurImageView)
+        } else {
+            val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
+            val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             Glide.with(this@MainActivity)
                     .load(R.drawable.main_background_2019)
                     .override(x, y)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
             Glide.with(this@MainActivity)
                     .load(R.drawable.main_background_2019)
                     .override(x, y)
                     .apply(RequestOptions.bitmapTransform(BlurTransformation(25, 5)))
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(blurImageView)
-
-            initEvent()
         }
+
+        if (ViewUtils.judgeColorIsLight(viewModel.table.textColor)) {
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+            }
+        }
+
+        viewModel.itemHeight = dip(viewModel.table.itemHeight)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -84,7 +122,7 @@ class MainActivity : BaseActivity() {
         viewPager.adapter =
                 object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
                     override fun getItem(position: Int): Fragment {
-                        return MainFragment.newInstance("", "")
+                        return MainFragment.newInstance(position + 1)
                     }
 
                     override fun getCount(): Int {
@@ -96,7 +134,7 @@ class MainActivity : BaseActivity() {
         listener = object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == 0) {
-                    ObjectAnimator.ofFloat(blurImageView, "alpha", if (index == 1) 0f else 1f).start()
+                    ObjectAnimator.ofFloat(blurImageView, "alpha", if (viewPager.currentItem == 1) 0f else 1f).start()
                 }
             }
 
@@ -104,7 +142,6 @@ class MainActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 ObjectAnimator.ofFloat(blurImageView, "alpha", if (position == 1) 0f else 1f).start()
-                index = position
             }
         }
 
@@ -112,39 +149,26 @@ class MainActivity : BaseActivity() {
 
         viewPager.currentItem = 1
 
-        val windowManager = applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val size = Point()
-        windowManager.defaultDisplay.getSize(size)
-        width = size.x
-
-        viewPager.setOnTouchListener(
-                object : View.OnTouchListener {
-                    var startX = 0f
-                    override fun onTouch(view: View, event: MotionEvent): Boolean {
-                        when (event.action) {
-                            MotionEvent.ACTION_DOWN -> {
-                                startX = event.x
-                            }
-                            MotionEvent.ACTION_MOVE -> {
-                                if (index == 1) {
-                                    if (abs(startX - event.x) >= width / 20) {
-                                        blurImageView.alpha = (abs(startX - event.x) - width / 20) * 1f / (width / 2)
-                                    }
-                                } else if (index == 2) {
-                                    if (event.x - startX >= width / 20) {
-                                        blurImageView.alpha = 1 - (event.x - startX - width / 20) * 1f / (width / 2)
-                                    }
-                                } else if (index == 0) {
-                                    if (startX - event.x >= width / 20) {
-                                        blurImageView.alpha = 1 - (startX - event.x - width / 20) * 1f / (width / 2)
-                                    }
-                                }
-                            }
+        viewPager.setOnTouchListener { view, event ->
+            when (event.action) {
+                MotionEvent.ACTION_MOVE -> {
+                    if (viewPager.currentItem == 1) {
+                        if (abs(viewPager.mDownPosX - event.x) >= view.width / 20) {
+                            blurImageView.alpha = (abs(viewPager.mDownPosX - event.x) - view.width / 20) * 1f / (view.width / 2)
                         }
-                        return false
+                    } else if (viewPager.currentItem == 2) {
+                        if (event.x - viewPager.mDownPosX >= view.width / 20) {
+                            blurImageView.alpha = 1 - (event.x - viewPager.mDownPosX - view.width / 20) * 1f / (view.width / 2)
+                        }
+                    } else if (viewPager.currentItem == 0) {
+                        if (viewPager.mDownPosX - event.x >= view.width / 20) {
+                            blurImageView.alpha = 1 - (viewPager.mDownPosX - event.x - view.width / 20) * 1f / (view.width / 2)
+                        }
                     }
                 }
-        )
+            }
+            false
+        }
     }
 
     override fun onDestroy() {
