@@ -45,7 +45,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
-    buildToolsVersion '29.0.1'
+    buildToolsVersion '29.0.2'
 
     productFlavors {
         google {
@@ -71,6 +71,12 @@ android {
             resValue "string", "app_name", "WakeUp课程表"
             manifestPlaceholders = [CHANNEL: "normal"]
             buildConfigField "String", "CHANNEL", "\"normal\""
+        }
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
         }
     }
 }
@@ -119,6 +125,8 @@ dependencies {
     implementation 'com.bigkoo:quicksidebar:1.0.3'
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
     testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test:core:1.2.0'
+    testImplementation 'org.robolectric:robolectric:4.3'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'

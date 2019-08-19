@@ -1,10 +1,7 @@
 package com.suda.yzune.wakeupschedule.main
 
-import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
@@ -19,7 +16,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import com.suda.yzune.wakeupschedule.widget.MyViewPager
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,11 +24,12 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
 import kotlin.math.abs
+import kotlin.math.max
 
 class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var viewPager: MyViewPager
+    private lateinit var viewPager: ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var blurImageView: ImageView
 
@@ -117,7 +114,6 @@ class MainActivity : BaseActivity() {
         viewModel.itemHeight = dip(viewModel.table.itemHeight)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun initEvent() {
         viewPager.adapter =
                 object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -132,43 +128,22 @@ class MainActivity : BaseActivity() {
                 }
 
         listener = object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-                if (state == 0) {
-                    ObjectAnimator.ofFloat(blurImageView, "alpha", if (viewPager.currentItem == 1) 0f else 1f).start()
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                if (position != 1) {
+                    blurImageView.alpha = max(0f, 1 - abs(positionOffset))
+                } else {
+                    blurImageView.alpha = max(0f, abs(positionOffset))
                 }
             }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                ObjectAnimator.ofFloat(blurImageView, "alpha", if (position == 1) 0f else 1f).start()
-            }
+            override fun onPageSelected(position: Int) {}
         }
 
         viewPager.addOnPageChangeListener(listener)
 
         viewPager.currentItem = 1
-
-        viewPager.setOnTouchListener { view, event ->
-            when (event.action) {
-                MotionEvent.ACTION_MOVE -> {
-                    if (viewPager.currentItem == 1) {
-                        if (abs(viewPager.mDownPosX - event.x) >= view.width / 20) {
-                            blurImageView.alpha = (abs(viewPager.mDownPosX - event.x) - view.width / 20) * 1f / (view.width / 2)
-                        }
-                    } else if (viewPager.currentItem == 2) {
-                        if (event.x - viewPager.mDownPosX >= view.width / 20) {
-                            blurImageView.alpha = 1 - (event.x - viewPager.mDownPosX - view.width / 20) * 1f / (view.width / 2)
-                        }
-                    } else if (viewPager.currentItem == 0) {
-                        if (viewPager.mDownPosX - event.x >= view.width / 20) {
-                            blurImageView.alpha = 1 - (viewPager.mDownPosX - event.x - view.width / 20) * 1f / (view.width / 2)
-                        }
-                    }
-                }
-            }
-            false
-        }
     }
 
     override fun onDestroy() {
