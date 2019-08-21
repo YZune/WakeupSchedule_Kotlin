@@ -245,6 +245,3 @@
     public *;
     private *;
 }
-
-# for Jsoup
-#-keep class org.jsoup.**{*;}

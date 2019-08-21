@@ -8,15 +8,22 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'io.fabric'
 
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+configurations {
+    // referenced in some portable lib. use android internal instead
+    compile.exclude group: 'commons-logging'
+}
+
 android {
     androidExtensions {
         experimental = true
     }
     signingConfigs {
         config {
-            keyAlias 'yzune'
+            keyAlias 'test'
             keyPassword '11166511'
-            storeFile file('/Volumes/Document/yzune.jks')
+            storeFile file('E:/test.jks')
             storePassword '11166511'
         }
     }
@@ -33,6 +40,27 @@ android {
         // vectorDrawables.useSupportLibrary = true
         packagingOptions {
             exclude 'META-INF/library_release.kotlin_module'
+
+            // prevent duplicate files
+            exclude 'META-INF/DEPENDENCIES.txt'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/notice.txt'
+            exclude 'META-INF/license.txt'
+            exclude 'META-INF/dependencies.txt'
+            exclude 'META-INF/LGPL2.1'
+            exclude 'META-INF/ASL2.0'
+
+            //!!! android buildToolsVersion 19.0.3 does not support exclude with wildcards yet :-(
+            exclude('org/apache/commons/codec/language/bm/*.txt')
+        }
+        ndk {
+            // 选择要添加的对应cpu类型的.so库。
+            abiFilters 'armeabi-v7a', "arm64-v8a", "x86"
+            // 还可以添加 'armeabi-v7a', 'armeabi-v8a','x86', 'x86_64', 'mips', 'mips64'
         }
     }
     buildTypes {
@@ -73,12 +101,6 @@ android {
             buildConfigField "String", "CHANNEL", "\"normal\""
         }
     }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
 }
 
 dependencies {
@@ -87,17 +109,13 @@ dependencies {
     implementation "org.jetbrains.anko:anko-design:$anko_version"
     implementation "org.jetbrains.anko:anko-constraint-layout:$anko_version"
     implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0-RC2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
-    implementation('org.mnode.ical4j:ical4j:2.0.0') {
-        exclude group: 'org.codehaus.groovy', module: 'groovy-all'
-    }
     implementation 'com.google.android.material:material:1.1.0-alpha09'
     implementation 'androidx.lifecycle:lifecycle-runtime:2.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     implementation 'androidx.room:room-runtime:2.1.0'
     kapt 'androidx.room:room-compiler:2.1.0'
@@ -109,12 +127,11 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
     implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-    implementation 'com.zhihu.android:matisse:0.5.2-beta5'
+    implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.2'
-    implementation "android.arch.navigation:navigation-fragment:1.0.0"
-    implementation "android.arch.navigation:navigation-ui:1.0.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'me.drakeet.multitype:multitype:4.0.0-alpha3'
@@ -125,9 +142,15 @@ dependencies {
     implementation 'com.bigkoo:quicksidebar:1.0.3'
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'androidx.test:core:1.2.0'
-    testImplementation 'org.robolectric:robolectric:4.3'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'org.mnode.ical4j:ical4j:2.0.0'
+//    implementation 'org.threeten:threetenbp:1.3.6'
+//    implementation 'javax.cache:cache-api:1.0.0'
+//    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
+//    implementation 'commons-codec:commons-codec:1.11'
+//    implementation 'org.apache.commons:commons-lang3:3.8.1'
+//    implementation 'org.apache.commons:commons-collections4:4.1'
+//    implementation 'biz.aQute.bnd:bndlib:2.3.0'
 }

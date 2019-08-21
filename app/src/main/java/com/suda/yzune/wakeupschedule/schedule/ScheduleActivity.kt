@@ -25,7 +25,6 @@ import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
@@ -47,6 +46,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
+import kotlinx.android.synthetic.main.fragment_base_dialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -66,7 +66,6 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var scheduleViewPager: androidx.viewpager.widget.ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
-    private var weekSeekBar: VerticalSeekBar? = null
     private lateinit var navImageButton: TextView
     private lateinit var shareImageButton: TextView
     private lateinit var addImageButton: TextView
@@ -110,9 +109,6 @@ class ScheduleActivity : BaseActivity() {
         scheduleViewPager = find(R.id.anko_vp_schedule)
         bgImageView = find(R.id.anko_iv_bg)
         scheduleConstraintLayout = find(R.id.anko_cl_schedule)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            weekSeekBar = find(R.id.anko_sb_week)
-        }
         navImageButton = find(R.id.anko_ib_nav)
         shareImageButton = find(R.id.anko_ib_share)
         addImageButton = find(R.id.anko_ib_add)
@@ -553,36 +549,6 @@ class ScheduleActivity : BaseActivity() {
             drawerLayout.openDrawer(GravityCompat.END)
         }
 
-        weekSeekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                try {
-                    val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
-                    if (currentWeek > 0) {
-                        if (progress + 1 == currentWeek) {
-                            weekTextView.text = "第${progress + 1}周"
-                            weekdayTextView.text = CourseUtils.getWeekday()
-                        } else {
-                            weekTextView.text = "第${progress + 1}周"
-                            weekdayTextView.text = "非本周"
-                        }
-                    } else {
-                        weekTextView.text = "还没有开学哦"
-                        weekdayTextView.text = CourseUtils.getWeekday()
-                    }
-                } catch (e: ParseException) {
-                    e.printStackTrace()
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                scheduleViewPager.currentItem = seekBar!!.progress
-            }
-        })
-
         navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
 
         shareImageButton.setOnClickListener {
@@ -611,7 +577,6 @@ class ScheduleActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
-                weekSeekBar?.progress = position
                 val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
                 try {
                     if (currentWeek > 0) {
@@ -657,7 +622,6 @@ class ScheduleActivity : BaseActivity() {
             }
 
             weekdayTextView.text = CourseUtils.getWeekday()
-            weekSeekBar?.max = viewModel.table.maxWeek - 1
 
             initTheme()
 

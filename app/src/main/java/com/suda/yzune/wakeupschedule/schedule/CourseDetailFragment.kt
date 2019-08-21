@@ -41,7 +41,7 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            course = it.getParcelable("course") as CourseBean
+            course = it.getParcelable<CourseBean>("course") as CourseBean
             nested = it.getBoolean("nested")
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)

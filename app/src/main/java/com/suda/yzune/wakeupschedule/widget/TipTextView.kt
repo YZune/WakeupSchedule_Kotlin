@@ -5,11 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Paint.Style
 import android.graphics.Path
 import android.util.AttributeSet
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+
 import org.jetbrains.anko.dip
 
 
-class TipTextView : TextView {
+class TipTextView : AppCompatTextView {
 
     private val path = Path()
 

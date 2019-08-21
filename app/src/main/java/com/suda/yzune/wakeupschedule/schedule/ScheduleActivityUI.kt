@@ -10,8 +10,6 @@ import android.view.ViewManager
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
-import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
-import com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
 import com.suda.yzune.wakeupschedule.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
@@ -22,9 +20,6 @@ import org.jetbrains.anko.support.v4.drawerLayout
 import org.jetbrains.anko.support.v4.viewPager
 
 class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
-
-    private inline fun ViewManager.verticalSeekBarWrapper(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper.() -> Unit) = ankoView({ VerticalSeekBarWrapper(it) }, theme = 0) { init() }
-    private inline fun ViewManager.verticalSeekBar(init: com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar.() -> Unit) = ankoView({ VerticalSeekBar(it) }, theme = 0) { init() }
 
     override fun createView(ui: AnkoContext<ScheduleActivity>) = ui.apply {
 
@@ -161,23 +156,6 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
                             bottomToBottom = PARENT_ID
                             startToStart = PARENT_ID
                             endToEnd = PARENT_ID
-                        }
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            verticalSeekBarWrapper {
-                                verticalSeekBar {
-                                    id = R.id.anko_sb_week
-                                    progressDrawable = context.getDrawable(R.color.transparent)
-                                    splitTrack = false
-                                    thumb = context.getDrawable(R.color.transparent)
-                                }
-                            }.lparams(wrapContent, 0) {
-                                topToBottom = R.id.anko_tv_week
-                                bottomToBottom = PARENT_ID
-                                endToEnd = PARENT_ID
-                                topMargin = dip(192)
-                                bottomMargin = dip(48)
-                            }
                         }
                     }
 

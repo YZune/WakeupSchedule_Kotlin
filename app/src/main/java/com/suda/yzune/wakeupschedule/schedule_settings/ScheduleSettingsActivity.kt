@@ -119,7 +119,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         }
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
-        viewModel.table = intent.extras!!.getParcelable("tableData") as TableBean
+        viewModel.table = intent.extras!!.getParcelable<TableBean>("tableData") as TableBean
 
         onAdapterCreated(mAdapter)
 

@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         UpdateUtils.tranOldData(applicationContext)
-        startActivity<MainActivity>()
+        startActivity<ScheduleActivity>()
         //startActivity<SudaLifeActivity>("type" to "澡堂")
         finish()
     }
