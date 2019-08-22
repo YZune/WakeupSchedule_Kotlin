@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -29,11 +30,8 @@ import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.bean.*
 import com.suda.yzune.wakeupschedule.settings.view_binder.*
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.GlideAppEngine
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
-import com.zhihu.matisse.Matisse
-import com.zhihu.matisse.MimeType
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -251,15 +249,21 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
                 } else {
-                    Matisse.from(this)
-                            .choose(MimeType.ofImage())
-                            .countable(true)
-                            .maxSelectable(1)
-                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
-                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                            .thumbnailScale(0.85f)
-                            .imageEngine(GlideAppEngine())
-                            .forResult(REQUEST_CODE_CHOOSE_BG)
+                    val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    try {
+                        startActivityForResult(intent, REQUEST_CODE_CHOOSE_BG)
+                    } catch (e: ActivityNotFoundException) {
+                        e.printStackTrace()
+                    }
+//                    Matisse.from(this)
+//                            .choose(MimeType.ofImage())
+//                            .countable(true)
+//                            .maxSelectable(1)
+//                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
+//                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//                            .thumbnailScale(0.85f)
+//                            .imageEngine(GlideAppEngine())
+//                            .forResult(REQUEST_CODE_CHOOSE_BG)
                 }
             }
             "界面文字颜色" -> {
@@ -324,18 +328,23 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             1 -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    Matisse.from(this)
-                            .choose(MimeType.ofImage())
-                            .countable(true)
-                            .maxSelectable(1)
-                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
-                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                            .thumbnailScale(0.85f)
-                            .imageEngine(GlideAppEngine())
-                            .forResult(REQUEST_CODE_CHOOSE_BG)
+                    val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    try {
+                        startActivityForResult(intent, REQUEST_CODE_CHOOSE_BG)
+                    } catch (e: ActivityNotFoundException) {
+                        e.printStackTrace()
+                    }
+//                    Matisse.from(this)
+//                            .choose(MimeType.ofImage())
+//                            .countable(true)
+//                            .maxSelectable(1)
+//                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
+//                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+//                            .thumbnailScale(0.85f)
+//                            .imageEngine(GlideAppEngine())
+//                            .forResult(REQUEST_CODE_CHOOSE_BG)
 
                 } else {
                     // permission denied, boo! Disable the
@@ -349,7 +358,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CHOOSE_BG && resultCode == RESULT_OK) {
-            viewModel.table.background = Matisse.obtainResult(data)[0].toString()
+            //viewModel.table.background = Matisse.obtainResult(data)[0].toString()
+            val uri = data?.data
+            if (uri != null) {
+                viewModel.table.background = uri.toString()
+            }
         }
         if (requestCode == REQUEST_CODE_CHOOSE_TABLE && resultCode == RESULT_OK) {
             viewModel.table.timeTable = data!!.getIntExtra("selectedId", 1)

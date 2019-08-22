@@ -56,6 +56,10 @@ android {
 
             //!!! android buildToolsVersion 19.0.3 does not support exclude with wildcards yet :-(
             exclude('org/apache/commons/codec/language/bm/*.txt')
+
+            exclude 'lib/*/libRSSupport.so'
+            exclude 'lib/*/librsjni.so'
+            exclude 'lib/*/librsjni_androidx.so'
         }
         ndk {
             // 选择要添加的对应cpu类型的.so库。
@@ -127,7 +131,7 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
     implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-    implementation 'com.zhihu.android:matisse:0.5.2'
+    // implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.google.code.gson:gson:2.8.5'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
