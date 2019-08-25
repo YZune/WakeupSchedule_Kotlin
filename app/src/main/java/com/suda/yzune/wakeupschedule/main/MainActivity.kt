@@ -29,7 +29,7 @@ import kotlin.math.max
 class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var viewPager: ViewPager
+    lateinit var viewPager: ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var blurImageView: ImageView
 
@@ -115,9 +115,15 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initEvent() {
+        viewPager.offscreenPageLimit = 3
+
         viewPager.adapter =
                 object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
                     override fun getItem(position: Int): Fragment {
+                        when (position) {
+                            0 -> return DashBoardFragment.newInstance()
+                            1 -> MainFragment.newInstance(1)
+                        }
                         return MainFragment.newInstance(position + 1)
                     }
 

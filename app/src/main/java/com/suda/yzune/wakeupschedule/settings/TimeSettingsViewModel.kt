@@ -26,7 +26,7 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
     var selectedId = 1
 
     suspend fun addNewTimeTable(name: String) {
-        timeTableDao.insertTimeTable(TimeTableBean(id = 0, name = name))
+        timeTableDao.initTimeTable(TimeTableBean(id = 0, name = name))
     }
 
     suspend fun initTimeTableData(id: Int) {

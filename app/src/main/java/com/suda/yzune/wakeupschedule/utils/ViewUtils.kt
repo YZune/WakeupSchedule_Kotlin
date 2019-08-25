@@ -3,10 +3,7 @@ package com.suda.yzune.wakeupschedule.utils
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Point
-import android.graphics.Typeface
+import android.graphics.*
 import android.os.Build
 import android.os.Environment
 import android.text.Html
@@ -33,7 +30,7 @@ object ViewUtils {
         return (0.213 * red + 0.715 * green + 0.072 * blue > 255 / 2)
     }
 
-    fun createScheduleView(context: Context): View {
+    fun createScheduleView(context: Context, tColor: Int = Color.BLACK, day: Int = -1): View {
         return context.UI {
             constraintLayout {
                 for (i in 0..8) {
@@ -42,9 +39,13 @@ object ViewUtils {
                         setPadding(0, dip(8), 0, dip(8))
                         textSize = 12f
                         gravity = Gravity.CENTER
+                        textColor = tColor
                         setLineSpacing(dip(2).toFloat(), 1f)
-                        if (i == 0) {
+                        if (i == 0 || i == day + 1 || (i == 1 && day == 7)) {
                             typeface = Typeface.DEFAULT_BOLD
+                            alpha = 1f
+                        } else {
+                            alpha = 0.4f
                         }
                     }.lparams(0, wrapContent) {
                         when (i) {
@@ -80,6 +81,7 @@ object ViewUtils {
                                 id = R.id.anko_tv_node1 + i - 1
                                 textSize = 12f
                                 gravity = Gravity.CENTER
+                                textColor = tColor
                             }.lparams(0, dip(56)) {
                                 topMargin = dip(2)
                                 when (i) {

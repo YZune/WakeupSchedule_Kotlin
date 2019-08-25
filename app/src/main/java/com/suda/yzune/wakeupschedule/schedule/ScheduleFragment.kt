@@ -23,6 +23,7 @@ import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
+import kotlin.math.roundToInt
 
 private const val weekParam = "week"
 
@@ -115,7 +116,7 @@ class ScheduleFragment : BaseFragment() {
             }
         }
 
-        val alphaInt = Math.round(255 * (viewModel.table.itemAlpha.toFloat() / 100))
+        val alphaInt = (255 * (viewModel.table.itemAlpha.toFloat() / 100)).roundToInt()
         viewModel.alphaStr = if (alphaInt != 0) {
             Integer.toHexString(alphaInt)
         } else {
@@ -202,7 +203,7 @@ class ScheduleFragment : BaseFragment() {
             textView.setPadding(dip(4), dip(4), dip(4), dip(4))
             textView.setTextColor(table.courseTextColor)
 
-            textView.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
+            textView.background = ContextCompat.getDrawable(activity!!, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
             myGrad.setStroke(dip(2), table.strokeColor)
 
@@ -233,7 +234,7 @@ class ScheduleFragment : BaseFragment() {
                             strBuilder.append("\n单周[非本周]")
                             textView.visibility = View.VISIBLE
                             textView.alpha = 0.6f
-                            myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
+                            myGrad.setColor(ContextCompat.getColor(activity!!, R.color.grey))
                         } else {
                             textView.visibility = View.INVISIBLE
                         }
@@ -247,7 +248,7 @@ class ScheduleFragment : BaseFragment() {
                             textView.alpha = 0.6f
                             strBuilder.append("\n双周[非本周]")
                             textView.visibility = View.VISIBLE
-                            myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
+                            myGrad.setColor(ContextCompat.getColor(activity!!, R.color.grey))
                         } else {
                             textView.visibility = View.INVISIBLE
                         }
@@ -264,7 +265,7 @@ class ScheduleFragment : BaseFragment() {
                         strBuilder.append("[非本周]")
                     }
                     textView.visibility = View.VISIBLE
-                    myGrad.setColor(ContextCompat.getColor(activity!!.applicationContext, R.color.grey))
+                    myGrad.setColor(ContextCompat.getColor(activity!!, R.color.grey))
                 } else {
                     textView.visibility = View.INVISIBLE
                 }
@@ -293,7 +294,7 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
-            if (table.showTime) {
+            if (table.showTime && viewModel.timeList.isNotEmpty()) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
             }
             textView.text = strBuilder

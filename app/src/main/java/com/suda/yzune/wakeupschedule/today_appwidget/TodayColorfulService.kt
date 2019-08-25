@@ -22,6 +22,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
 import java.text.ParseException
+import kotlin.math.roundToInt
 
 class TodayColorfulService : RemoteViewsService() {
 
@@ -99,7 +100,7 @@ class TodayColorfulService : RemoteViewsService() {
         private fun initView(context: Context): View {
             val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
             val dp = 5
-            val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
+            val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
             var alphaStr = if (alphaInt != 0) {
                 Integer.toHexString(alphaInt)
             } else {

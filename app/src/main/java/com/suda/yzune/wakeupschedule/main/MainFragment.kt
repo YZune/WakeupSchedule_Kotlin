@@ -1,11 +1,11 @@
 package com.suda.yzune.wakeupschedule.main
 
-
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -15,19 +15,20 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
+import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
-import com.suda.yzune.wakeupschedule.schedule.CourseDetailFragment
-import com.suda.yzune.wakeupschedule.schedule.MultiCourseFragment
-import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
+import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.schedule.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
@@ -36,15 +37,25 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
+import kotlin.math.roundToInt
 
 private const val weekParam = "week"
 
-class MainFragment : Fragment() {
+class MainFragment : BaseFragment() {
 
     private var week = 0
     private var weekDay = 1
     private lateinit var weekDate: List<String>
     private lateinit var viewModel: ScheduleViewModel
+
+    private lateinit var navImageButton: TextView
+    private lateinit var shareImageButton: TextView
+    private lateinit var addImageButton: TextView
+    private lateinit var importImageButton: TextView
+    private lateinit var moreImageButton: TextView
+    private lateinit var dateTextView: TextView
+    private lateinit var weekTextView: TextView
+    private lateinit var weekdayTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +63,7 @@ class MainFragment : Fragment() {
             week = it.getInt(weekParam)
         }
         viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
+        weekDay = CourseUtils.getWeekdayInt()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -65,9 +77,9 @@ class MainFragment : Fragment() {
             constraintLayout {
                 id = R.id.anko_cl_schedule
 
-                textView {
+                dateTextView = textView {
                     id = R.id.anko_tv_date
-                    textColor = Color.BLACK
+                    textColor = viewModel.table.textColor
                     textSize = 24f
                     typeface = Typeface.DEFAULT_BOLD
                 }.lparams {
@@ -77,18 +89,18 @@ class MainFragment : Fragment() {
                     topMargin = statusBarMargin
                 }
 
-                textView {
+                weekTextView = textView {
                     id = R.id.anko_tv_week
-                    textColor = Color.BLACK
+                    textColor = viewModel.table.textColor
                 }.lparams {
                     startToStart = R.id.anko_tv_date
                     topToBottom = R.id.anko_tv_date
                     topMargin = dip(4)
                 }
 
-                textView {
+                weekdayTextView = textView {
                     id = R.id.anko_tv_weekday
-                    textColor = Color.BLACK
+                    textColor = viewModel.table.textColor
                 }.lparams {
                     startToEnd = R.id.anko_tv_week
                     topToBottom = R.id.anko_tv_date
@@ -97,13 +109,14 @@ class MainFragment : Fragment() {
                 }
 
                 // 导航按钮
-                textView("\uE6A7") {
+                navImageButton = textView("\uE6A7") {
                     id = R.id.anko_ib_nav
                     backgroundResource = outValue.resourceId
                     textSize = 20f
                     gravity = Gravity.CENTER
                     includeFontPadding = false
                     typeface = iconFont
+                    textColor = viewModel.table.textColor
                 }.lparams(dip(32), dip(32)) {
                     topMargin = statusBarMargin
                     endToStart = R.id.anko_tv_date
@@ -111,13 +124,14 @@ class MainFragment : Fragment() {
                 }
 
                 // 添加按钮
-                textView("\uE6DC") {
+                addImageButton = textView("\uE6DC") {
                     id = R.id.anko_ib_add
                     backgroundResource = outValue.resourceId
                     textSize = 20f
                     gravity = Gravity.CENTER
                     includeFontPadding = false
                     typeface = iconFont
+                    textColor = viewModel.table.textColor
                 }.lparams(dip(32), dip(32)) {
                     topMargin = statusBarMargin
                     endToStart = R.id.anko_ib_import
@@ -125,13 +139,14 @@ class MainFragment : Fragment() {
                 }
 
                 // 导入按钮
-                textView("\uE6E2") {
+                importImageButton = textView("\uE6E2") {
                     id = R.id.anko_ib_import
                     backgroundResource = outValue.resourceId
                     textSize = 20f
                     gravity = Gravity.CENTER
                     includeFontPadding = false
                     typeface = iconFont
+                    textColor = viewModel.table.textColor
                 }.lparams(dip(32), dip(32)) {
                     topMargin = statusBarMargin
                     endToStart = R.id.anko_ib_share
@@ -139,26 +154,28 @@ class MainFragment : Fragment() {
                 }
 
                 // 分享按钮
-                textView("\uE6BA") {
+                shareImageButton = textView("\uE6BA") {
                     id = R.id.anko_ib_share
                     backgroundResource = outValue.resourceId
                     textSize = 20f
                     gravity = Gravity.CENTER
                     includeFontPadding = false
                     typeface = iconFont
+                    textColor = viewModel.table.textColor
                 }.lparams(dip(32), dip(32)) {
                     topMargin = statusBarMargin
                     endToStart = R.id.anko_ib_more
                     topToTop = ConstraintSet.PARENT_ID
                 }
 
-                textView("\uE6BF") {
+                moreImageButton = textView("\uE6BF") {
                     id = R.id.anko_ib_more
                     backgroundResource = outValue.resourceId
                     textSize = 20f
                     gravity = Gravity.CENTER
                     includeFontPadding = false
                     typeface = iconFont
+                    textColor = viewModel.table.textColor
                 }.lparams(dip(32), dip(32)) {
                     topMargin = statusBarMargin
                     marginEnd = dip(8)
@@ -166,7 +183,7 @@ class MainFragment : Fragment() {
                     topToTop = ConstraintSet.PARENT_ID
                 }
 
-                addView((ViewUtils.createScheduleView(context!!) as ConstraintLayout)
+                addView((ViewUtils.createScheduleView(context!!, viewModel.table.textColor, weekDay) as ConstraintLayout)
                         .lparams(matchParent, 0) {
                             topToBottom = R.id.anko_tv_week
                             bottomToBottom = ConstraintSet.PARENT_ID
@@ -174,14 +191,12 @@ class MainFragment : Fragment() {
                             endToEnd = ConstraintSet.PARENT_ID
                         })
             }
-        }.view.apply {
-            //visibility = View.GONE
-        }
+        }.view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        weekDay = CourseUtils.getWeekdayInt()
+
         if (viewModel.table.showSun) {
             if (viewModel.table.sundayFirst) {
                 find<View>(R.id.anko_tv_title7).visibility = View.GONE
@@ -200,30 +215,17 @@ class MainFragment : Fragment() {
             find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
             find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
         }
-        Log.d("周", "" + CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst))
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
-        find<TextView>(R.id.anko_tv_title0).setTextColor(viewModel.table.textColor)
         find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
         var textView: TextView
         if (viewModel.table.sundayFirst) {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title0_1 + i)
-                textView.setTextColor(viewModel.table.textColor)
-                if (weekDay == 7 && i == 0) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
-                if (weekDay == i) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
             }
         } else {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title1 + i)
-                textView.setTextColor(viewModel.table.textColor)
-                if (i == weekDay - 1) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
             }
         }
@@ -249,7 +251,7 @@ class MainFragment : Fragment() {
             }
         }
 
-        val alphaInt = Math.round(255 * (viewModel.table.itemAlpha.toFloat() / 100))
+        val alphaInt = (255 * (viewModel.table.itemAlpha.toFloat() / 100)).roundToInt()
         viewModel.alphaStr = if (alphaInt != 0) {
             Integer.toHexString(alphaInt)
         } else {
@@ -264,6 +266,22 @@ class MainFragment : Fragment() {
                 initWeekPanel(it, i, viewModel.table)
             })
         }
+
+        initEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
+
+        if (currentWeek > 0) {
+            weekTextView.text = "第${currentWeek}周"
+        } else {
+            weekTextView.text = "还没有开学哦"
+        }
+
+        weekdayTextView.text = CourseUtils.getWeekday()
+        dateTextView.text = CourseUtils.getTodayDate()
     }
 
     private fun initWeekPanel(data: List<CourseBean>?, day: Int, table: TableBean) {
@@ -292,10 +310,6 @@ class MainFragment : Fragment() {
             }
 
             val textView = TipTextView(context!!)
-
-            if (day == weekDay) {
-                textView.onShineEffect(viewModel.table.courseTextColor)
-            }
 
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -413,7 +427,7 @@ class MainFragment : Fragment() {
                 }
             }
 
-            if (table.showTime) {
+            if (table.showTime && viewModel.timeList.isNotEmpty()) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
             }
             textView.text = strBuilder
@@ -441,8 +455,34 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun TextView.onShineEffect(colorInt: Int) {
-        //this.setShadowLayer(12f, 0f, 0f, Color.WHITE)
+    private fun initEvent() {
+        addImageButton.setOnClickListener {
+            context?.startActivity<AddCourseActivity>(
+                    "tableId" to viewModel.table.id,
+                    "maxWeek" to viewModel.table.maxWeek,
+                    "nodes" to viewModel.table.nodes,
+                    "id" to -1)
+        }
+
+        moreImageButton.setOnClickListener {
+            (activity as MainActivity).viewPager.currentItem = 2
+        }
+
+        navImageButton.setOnClickListener {
+            (activity as MainActivity).viewPager.currentItem = 0
+        }
+
+        shareImageButton.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(activity!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+            } else {
+                ExportSettingsFragment().show(activity!!.supportFragmentManager, "share")
+            }
+        }
+
+        importImageButton.setOnClickListener {
+            ImportChooseFragment.newInstance().show(activity!!.supportFragmentManager, "importDialog")
+        }
     }
 
     companion object {

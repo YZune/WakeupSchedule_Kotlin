@@ -1,4 +1,8 @@
 <resources>
+    <plurals name="error_over_count">
+        <item quantity="one">只可以选择一个文件哦</item>
+        <item quantity="many">You can only select up to %1$d media files</item>
+    </plurals>
     <string name="text_login_web_title">登录教务系统</string>
     <string name="hint_student_id">学号</string>
     <string name="hint_password">密码</string>
@@ -31,9 +35,9 @@
     <string name="text_node">节</string>
     <string name="text_week">周</string>
     <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="add_widget">Add widget</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="school_BeijingLinYeDaXue">北京林业大学</string>
     <string name="school_SuzhouDaXue">苏州大学</string>
@@ -43,11 +47,7 @@
     <string name="school_TianjinZhongYiYaoDaXue">天津中医药大学</string>
     <string name="type_ZhengFang">正方教务</string>
     <string name="type_NewZhengFang">新正方教务</string>
-    <string name="type_QiangZhi">强智教务</string>
 
-    <plurals name="error_over_count">
-        <item quantity="one">只可以选择一个文件哦</item>
-        <item quantity="many">You can only select up to %1$d media files</item>
-    </plurals>
+    <string name="type_QiangZhi">强智教务</string>
 
 </resources>

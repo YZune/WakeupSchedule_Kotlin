@@ -18,8 +18,8 @@ import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.textColorResource
 
@@ -39,14 +39,14 @@ class TimeSettingsActivity : BaseTitleActivity() {
                 }
                 R.id.timeSettingsFragment -> {
                     launch {
-                        val task = async(Dispatchers.IO) {
+                        val task = withContext(Dispatchers.IO) {
                             try {
                                 viewModel.saveDetailData(viewModel.entryPosition)
                                 "ok"
                             } catch (e: Exception) {
                                 "出现错误>_<${e.message}"
                             }
-                        }.await()
+                        }
                         if (task == "ok") {
                             navController.navigateUp()
                             Toasty.success(applicationContext, "保存成功").show()
