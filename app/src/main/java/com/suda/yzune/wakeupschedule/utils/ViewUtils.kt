@@ -45,7 +45,7 @@ object ViewUtils {
                             typeface = Typeface.DEFAULT_BOLD
                             alpha = 1f
                         } else {
-                            alpha = 0.4f
+                            alpha = 0.32f
                         }
                     }.lparams(0, wrapContent) {
                         when (i) {

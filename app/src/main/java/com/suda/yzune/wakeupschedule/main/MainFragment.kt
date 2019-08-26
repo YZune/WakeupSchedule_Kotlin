@@ -21,7 +21,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
@@ -79,12 +78,14 @@ class MainFragment : BaseFragment() {
 
                 dateTextView = textView {
                     id = R.id.anko_tv_date
+                    gravity = Gravity.CENTER
                     textColor = viewModel.table.textColor
-                    textSize = 24f
+                    textSize = 20f
                     typeface = Typeface.DEFAULT_BOLD
                 }.lparams {
                     startToStart = ConstraintSet.PARENT_ID
                     topToTop = ConstraintSet.PARENT_ID
+                    bottomToBottom = R.id.anko_ib_nav
                     marginStart = dip(24)
                     topMargin = statusBarMargin
                 }

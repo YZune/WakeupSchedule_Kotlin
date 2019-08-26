@@ -1,15 +1,21 @@
 package com.suda.yzune.wakeupschedule.main
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
+import com.suda.yzune.wakeupschedule.intro.AboutActivity
+import com.suda.yzune.wakeupschedule.intro.IntroYoungActivity
+import com.suda.yzune.wakeupschedule.schedule.BeforeFeedbackFragment
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
+import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import kotlinx.android.synthetic.main.fragment_dash_board.*
+import org.jetbrains.anko.startActivityForResult
+import org.jetbrains.anko.support.v4.startActivity
 
 class DashBoardFragment : BaseFragment() {
 
@@ -32,6 +38,32 @@ class DashBoardFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         v_status.layoutParams.height = viewModel.statusBarMargin
+
+        initEvent()
+    }
+
+    private fun initEvent() {
+        ll_settings.setOnClickListener {
+            activity!!.startActivityForResult<SettingsActivity>(31)
+        }
+
+        ll_about.setOnClickListener {
+            startActivity<AboutActivity>()
+        }
+
+        ll_apply.setOnClickListener {
+            startActivity<ApplyInfoActivity>()
+        }
+
+        ll_young.setOnClickListener {
+            startActivity<IntroYoungActivity>()
+        }
+
+        ll_feedback.setOnClickListener {
+            BeforeFeedbackFragment.newInstance().apply {
+                isCancelable = false
+            }.show(fragmentManager!!, "BeforeFeedbackFragment")
+        }
     }
 
     companion object {

@@ -1,10 +1,10 @@
 package com.suda.yzune.wakeupschedule.main
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
@@ -15,6 +15,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
+import com.suda.yzune.wakeupschedule.schedule.AfterImportTipFragment
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -25,7 +26,6 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
-import org.jetbrains.anko.support.v4.dip
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -154,6 +154,19 @@ class MainActivity : BaseActivity() {
         viewPager.addOnPageChangeListener(listener)
 
         viewPager.currentItem = 1
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 16) {
+            initView()
+        }
+        if (requestCode == 32 && resultCode == RESULT_OK) {
+            AfterImportTipFragment.newInstance().show(supportFragmentManager, "AfterImportTipFragment")
+        }
+        if (requestCode == 31 && resultCode == RESULT_OK) {
+            initView()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
