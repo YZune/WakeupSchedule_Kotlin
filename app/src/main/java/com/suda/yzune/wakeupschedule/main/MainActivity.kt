@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.support.v4.dip
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -38,6 +41,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         super.onCreate(savedInstanceState)
+        viewModel.statusBarMargin = getStatusBarHeight() + dip(8)
         MainActivityUI().setContentView(this)
         initView()
     }
@@ -152,7 +156,16 @@ class MainActivity : BaseActivity() {
         viewPager.currentItem = 1
     }
 
+    override fun onBackPressed() {
+        if (viewPager.currentItem != 1) {
+            viewPager.currentItem = 1
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     override fun onDestroy() {
+        AppWidgetUtils.updateWidget(applicationContext)
         viewPager.removeOnPageChangeListener(listener)
         super.onDestroy()
     }

@@ -69,7 +69,7 @@ class MainFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val iconFont = ResourcesCompat.getFont(context!!, R.font.iconfont)
-        val statusBarMargin = (activity as BaseActivity).getStatusBarHeight() + dip(8)
+        val statusBarMargin = viewModel.statusBarMargin
         val outValue = TypedValue()
         context?.theme?.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 

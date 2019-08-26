@@ -36,6 +36,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var selectedWeek = 1
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     var itemHeight = 0
+    var statusBarMargin = 0
     var alphaStr = ""
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
