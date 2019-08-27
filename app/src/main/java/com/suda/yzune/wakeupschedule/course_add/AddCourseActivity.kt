@@ -1,5 +1,8 @@
 package com.suda.yzune.wakeupschedule.course_add
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.appwidget.AppWidgetManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -16,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
+import com.google.android.material.button.MaterialButton
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
@@ -35,6 +39,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     private lateinit var tvColor: TextView
     private lateinit var ivColor: TextView
+    private var showTip = false
 
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
@@ -46,13 +51,13 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             } else {
                 if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
                     launch {
-                        val task = async(Dispatchers.IO) {
+                        val task = withContext(Dispatchers.IO) {
                             viewModel.checkSameName()
                         }
-                        if (task.await() == null) {
+                        if (task == null) {
                             saveData()
                         } else {
-                            AddCourseTipFragment.newInstance().apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
+                            AddCourseTipFragment.newInstance(task).apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
                         }
                     }
                 } else {
@@ -79,7 +84,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
-
+        showTip = intent.extras!!.getBoolean("showTip", false)
         if (intent.extras!!.getInt("id") == -1) {
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
@@ -160,6 +165,9 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         }
         mRecyclerView.adapter = adapter
         mRecyclerView.layoutManager = LinearLayoutManager(this)
+        if (showTip) {
+            mRecyclerView.scrollToPosition(adapter.itemCount - 1)
+        }
     }
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {
@@ -207,7 +215,17 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     private fun initFooterView(adapter: AddCourseAdapter): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
-        val tvBtn = view.findViewById<TextView>(R.id.tv_add)
+        val tvBtn = view.findViewById<MaterialButton>(R.id.tv_add)
+        if (showTip) {
+            val colorAnim = ObjectAnimator.ofInt(tvBtn, "textColor",
+                    ContextCompat.getColor(this, R.color.colorAccent), Color.WHITE).apply {
+                duration = 500
+                setEvaluator(ArgbEvaluator())
+                repeatCount = ValueAnimator.INFINITE
+                repeatMode = ValueAnimator.REVERSE
+            }
+            colorAnim.start()
+        }
         tvBtn.setOnClickListener {
             adapter.addData(CourseEditBean(
                     teacher = viewModel.editList[0].teacher,

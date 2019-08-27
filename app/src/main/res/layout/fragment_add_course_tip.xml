@@ -22,16 +22,6 @@
         android:text=""
         android:textSize="20sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-8dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="温馨提示"
-        android:textColor="@android:color/black" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,27 +37,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
                 android:lineSpacingExtra="8dp"
-                android:text="不是不允许同一门课有多个上课时间！而是你的打开方式不对！\n看到下图中“添加时间段”的按钮了吗？请回去编辑已经存在的同名课程，然后添加上不同的时间段。\n如果理解不了，请把这段话和下图多看几次。"
+                android:text="发现你在添加重名课程哦。请注意到添加课程的页面，有“添加时间段”的按钮。请尝试点击下面的按钮，编辑已经存在的同名课程，然后添加上不同的时间段。"
                 android:textSize="12sp" />
 
-            <ImageView
-                android:id="@+id/iv_tip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_know"
+                android:id="@+id/tv_modify"
                 style="@style/DialogButtonStyle"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="我知道啦" />
+                android:text="查看同名课程并修改" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_all_course"
+                style="@style/DialogButtonStyle"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="查看已添加的所有课程" />
 
         </LinearLayout>
 
     </ScrollView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="温馨提示"
+        android:textColor="@android:color/black" />
 
 </LinearLayout>
