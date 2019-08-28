@@ -34,8 +34,8 @@ android {
         multiDexEnabled true
         minSdkVersion 18
         targetSdkVersion 29
-        versionCode 70
-        versionName "3.55"
+        versionCode 71
+        versionName "3.56-beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // vectorDrawables.useSupportLibrary = true
         packagingOptions {
@@ -134,6 +134,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     // implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.9.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

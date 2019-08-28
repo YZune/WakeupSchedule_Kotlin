@@ -19,6 +19,7 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import org.jetbrains.anko.dip
 import java.text.ParseException
+import kotlin.math.roundToInt
 
 class ScheduleAppWidgetService : RemoteViewsService() {
 
@@ -56,7 +57,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             table = tableDao.getDefaultTableInThread()
             widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-            val alphaInt = Math.round(255 * (table.widgetItemAlpha.toFloat() / 100))
+            val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
             alphaStr = if (alphaInt != 0) {
                 Integer.toHexString(alphaInt)
             } else {
@@ -135,7 +136,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val lp = tv.layoutParams
                 lp.height = widgetItemHeight
                 tv.layoutParams = lp
-                tv.setTextColor(table.widgetTextColor)
                 if (i >= table.nodes) {
                     tv.visibility = View.GONE
                 } else {
@@ -155,7 +155,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 week = 1
             }
 
-            val view = ViewUtils.createScheduleView(context)
+            val view = ViewUtils.createScheduleView(context, table.widgetTextColor, weekDay)
             val weekPanel0 = view.findViewById<LinearLayout>(R.id.anko_ll_week_panel_0)
             initView(view, weekPanel0)
 

@@ -264,7 +264,7 @@ object CourseUtils {
         if (nextDay) {
             cal.add(Calendar.DATE, 1)
         }
-        var weekDay = cal.get(java.util.Calendar.DAY_OF_WEEK)
+        var weekDay = cal.get(Calendar.DAY_OF_WEEK)
         if (weekDay == 1) {
             weekDay = 7
         } else {

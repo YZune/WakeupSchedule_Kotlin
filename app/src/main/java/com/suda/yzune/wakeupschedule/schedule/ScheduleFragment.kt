@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,12 +42,12 @@ class ScheduleFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ViewUtils.createScheduleView(context!!)
+        weekDay = CourseUtils.getWeekdayInt()
+        return ViewUtils.createScheduleView(context!!, viewModel.table.textColor, weekDay)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        weekDay = CourseUtils.getWeekdayInt()
         if (viewModel.table.showSun) {
             if (viewModel.table.sundayFirst) {
                 find<View>(R.id.anko_tv_title7).visibility = View.GONE
@@ -67,15 +66,12 @@ class ScheduleFragment : BaseFragment() {
             find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
             find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
         }
-        Log.d("周", "" + CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst))
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
-        find<TextView>(R.id.anko_tv_title0).setTextColor(viewModel.table.textColor)
         find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
         var textView: TextView
         if (viewModel.table.sundayFirst) {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title0_1 + i)
-                textView.setTextColor(viewModel.table.textColor)
                 if (weekDay == 7 && i == 0) {
                     textView.onShineEffect(viewModel.table.textColor)
                 }
@@ -87,7 +83,6 @@ class ScheduleFragment : BaseFragment() {
         } else {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title1 + i)
-                textView.setTextColor(viewModel.table.textColor)
                 if (i == weekDay - 1) {
                     textView.onShineEffect(viewModel.table.textColor)
                 }
@@ -108,7 +103,6 @@ class ScheduleFragment : BaseFragment() {
             val lp = textView.layoutParams
             lp.height = viewModel.itemHeight
             textView.layoutParams = lp
-            textView.setTextColor(viewModel.table.textColor)
             if (i >= viewModel.table.nodes) {
                 textView.visibility = View.GONE
             } else {

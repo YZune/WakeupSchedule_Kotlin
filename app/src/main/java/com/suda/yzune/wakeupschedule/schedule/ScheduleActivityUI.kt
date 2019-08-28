@@ -2,18 +2,15 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.os.Build
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.view.ViewManager
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
 import com.suda.yzune.wakeupschedule.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
-import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.design.navigationView
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.support.v4.drawerLayout
@@ -50,12 +47,14 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
                         textView {
                             id = R.id.anko_tv_date
+                            gravity = Gravity.CENTER
                             textColor = Color.BLACK
-                            textSize = 24f
+                            textSize = 20f
                             typeface = Typeface.DEFAULT_BOLD
                         }.lparams {
                             startToStart = PARENT_ID
                             topToTop = PARENT_ID
+                            bottomToBottom = R.id.anko_ib_nav
                             marginStart = dip(24)
                             topMargin = statusBarMargin
                         }

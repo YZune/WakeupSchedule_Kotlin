@@ -1,9 +1,14 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
@@ -18,6 +23,8 @@ import kotlinx.coroutines.withContext
 class LoginWebActivity : BaseActivity() {
 
     private lateinit var viewModel: ImportViewModel
+
+    private var importPath = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,24 +85,11 @@ class LoginWebActivity : BaseActivity() {
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
-                launch {
-                    val import = withContext(Dispatchers.IO) {
-                        try {
-                            viewModel.importFromFile(intent.data!!.path!!)
-                        } catch (e: Exception) {
-                            e.message
-                        }
-                    }
-                    when (import) {
-                        "ok" -> {
-                            Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                            val intent = Intent(this@LoginWebActivity, SplashActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                            finish()
-                        }
-                        else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
-                    }
+                importPath = intent.data!!.path!!.substringAfter("/external_files")
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 101)
+                } else {
+                    importFromShareFile()
                 }
             }
             else -> {
@@ -104,6 +98,28 @@ class LoginWebActivity : BaseActivity() {
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
                 transaction.commit()
                 showImportSettingDialog()
+            }
+        }
+    }
+
+    private fun importFromShareFile() {
+        launch {
+            val import = withContext(Dispatchers.IO) {
+                try {
+                    viewModel.importFromFile(importPath)
+                } catch (e: Exception) {
+                    e.message
+                }
+            }
+            when (import) {
+                "ok" -> {
+                    Toasty.success(applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this@LoginWebActivity, SplashActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                }
+                else -> Toasty.error(applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -118,6 +134,7 @@ class LoginWebActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val filePath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
+            Log.d("路径", filePath!!)
             launch {
                 val import = withContext(Dispatchers.IO) {
                     try {
@@ -159,6 +176,18 @@ class LoginWebActivity : BaseActivity() {
                         finish()
                     }
                     else -> Toasty.error(applicationContext, "发生异常>_<请确保所有应填的格子不为空\n且没有更改模板的属性\n$import", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            101 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    importFromShareFile()
+                } else {
+                    Toasty.error(applicationContext, "你取消了授权>_<无法导出", Toast.LENGTH_LONG).show()
                 }
             }
         }

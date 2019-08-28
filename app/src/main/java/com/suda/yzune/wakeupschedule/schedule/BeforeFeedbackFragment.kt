@@ -25,7 +25,9 @@ class BeforeFeedbackFragment : BaseDialogFragment() {
 
         tv_guide.setOnClickListener {
             dismiss()
-            // todo: (activity as ScheduleActivity).initIntro()
+            if (activity is ScheduleActivity) {
+                (activity as ScheduleActivity).initIntro()
+            }
         }
 
         tv_feedback.setOnClickListener {

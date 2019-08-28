@@ -83,16 +83,28 @@ object AppWidgetUtils {
             mRemoteViews.setViewVisibility(R.id.iv_next, View.VISIBLE)
             mRemoteViews.setViewVisibility(R.id.iv_back, View.GONE)
         }
+
+        val day = CourseUtils.getWeekdayInt()
+
         if (tableBean.sundayFirst) {
             for (i in 0..6) {
+                if (i == day || (i == 0 && day == 7)) {
+                    mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
+                } else {
+                    mRemoteViews.setTextColor(R.id.tv_title0_1 + i, (tableBean.widgetTextColor and 0x00ffffff) + 0x33000000)
+                }
                 mRemoteViews.setTextViewTextSize(R.id.tv_title0_1 + i, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
                 mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
                 mRemoteViews.setTextViewText(R.id.tv_title0_1 + i, daysArray[i] + "\n${weekDate[i + 1]}")
             }
         } else {
             for (i in 0..6) {
+                if (i == day - 1) {
+                    mRemoteViews.setTextColor(R.id.tv_title1 + i, tableBean.widgetTextColor)
+                } else {
+                    mRemoteViews.setTextColor(R.id.tv_title1 + i, (tableBean.widgetTextColor and 0x00ffffff) + 0x33000000)
+                }
                 mRemoteViews.setTextViewTextSize(R.id.tv_title1 + i, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
-                mRemoteViews.setTextColor(R.id.tv_title1 + i, tableBean.widgetTextColor)
                 mRemoteViews.setTextViewText(R.id.tv_title1 + i, daysArray[i + 1] + "\n${weekDate[i + 1]}")
             }
         }
