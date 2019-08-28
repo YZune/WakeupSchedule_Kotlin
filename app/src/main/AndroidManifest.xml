@@ -33,12 +33,8 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:host="*" />
-                <data android:scheme="file" />
-                <data android:mimeType="*/*" />
+                <data android:mimeType="application/octet-stream"/>
                 <data android:pathPattern=".*\\.wakeup_schedule" />
             </intent-filter>
         </activity>

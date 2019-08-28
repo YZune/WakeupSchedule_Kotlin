@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.course_add
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,14 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
+import org.jetbrains.anko.backgroundResource
 import org.jetbrains.anko.support.v4.dip
+import org.jetbrains.anko.textColor
 
 class SelectWeekFragment : BaseDialogFragment() {
 
@@ -42,7 +47,7 @@ class SelectWeekFragment : BaseDialogFragment() {
                 tv_all.setTextColor(Color.BLACK)
                 tv_all.background = null
             }
-            val flag = viewModel.judgeType(it!!, viewModel.maxWeek)
+            val flag = viewModel.judgeType(it!!)
             if (flag == 1) {
                 tv_type1.setTextColor(Color.WHITE)
                 tv_type1.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
@@ -71,55 +76,32 @@ class SelectWeekFragment : BaseDialogFragment() {
     }
 
     private fun showWeeks() {
-        ll_week.removeAllViews()
-        val context = ll_week.context
-        val margin = dip(4)
-        val textViewSize = dip(32)
-        val llHeight = dip(40)
-        for (i in 0 until Math.ceil(viewModel.maxWeek / 6.0).toInt()) {
-            val linearLayout = LinearLayout(context)
-            linearLayout.orientation = LinearLayout.HORIZONTAL
-            ll_week.addView(linearLayout)
-            val params = linearLayout.layoutParams
-            params.width = ViewGroup.LayoutParams.MATCH_PARENT
-            params.height = llHeight
-            linearLayout.layoutParams = params
-
-            for (j in 0..5) {
-                val week = i * 6 + j + 1
-                if (week > viewModel.maxWeek) {
-                    break
-                }
-                val textView = TextView(context)
-                val textParams = LinearLayout.LayoutParams(textViewSize, textViewSize)
-                textParams.setMargins(margin, margin, margin, margin)
-                textView.layoutParams = textParams
-                textView.text = "$week"
-                textView.gravity = Gravity.CENTER
-                if (week in result) {
-                    textView.setTextColor(Color.WHITE)
-                    textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                } else {
-                    textView.setTextColor(Color.BLACK)
-                    textView.background = null
-                }
-
-                textView.setOnClickListener {
-                    if (textView.background == null) {
-                        result.add(week)
+        val adapter = SelectWeekAdapter(R.layout.item_select_week, viewModel.maxWeek, result)
+        adapter.bindToRecyclerView(rv_week)
+        rv_week.layoutManager = StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL)
+        var prePos = -1
+        rv_week.positionChangedListener = object : SelectedRecyclerView.PositionChangedListener {
+            override fun changeState(pos: Int, isDown: Boolean) {
+                if (prePos != pos || isDown) {
+                    if (pos in 0 until viewModel.maxWeek) {
+                        if (!result.contains(pos + 1)) {
+                            result.add(pos + 1)
+                            adapter.getViewByPosition(pos, R.id.tv_num)?.backgroundResource =
+                                    R.drawable.week_selected_bg
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView).textColor =
+                                    Color.WHITE
+                        } else {
+                            result.remove(pos + 1)
+                            adapter.getViewByPosition(pos, R.id.tv_num)?.background = null
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView).textColor =
+                                    Color.BLACK
+                        }
                         liveData.value = result
-                        textView.setTextColor(Color.WHITE)
-                        textView.background = ContextCompat.getDrawable(context, R.drawable.week_selected_bg)
-                    } else {
-                        result.remove(week)
-                        liveData.value = result
-                        textView.setTextColor(Color.BLACK)
-                        textView.background = null
+                    }
+                    if (prePos != pos) {
+                        prePos = pos
                     }
                 }
-                textView.setLines(1)
-                linearLayout.addView(textView)
-                //selections[week - 1] = textView
             }
         }
     }
@@ -167,10 +149,9 @@ class SelectWeekFragment : BaseDialogFragment() {
         }
 
         btn_save.setOnClickListener {
-            if (result.size == 0){
+            if (result.size == 0) {
                 Toasty.error(context!!.applicationContext, "请至少选择一周").show()
-            }
-            else{
+            } else {
                 viewModel.editList[position].weekList.value = result
                 dismiss()
             }

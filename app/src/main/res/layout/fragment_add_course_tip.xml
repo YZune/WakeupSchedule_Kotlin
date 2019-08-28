@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="280dp"
-    android:layout_gravity="center"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".course_add.AddCourseTipFragment">
@@ -21,6 +21,16 @@
         android:includeFontPadding="false"
         android:text=""
         android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:text="温馨提示"
+        android:textColor="@android:color/black" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -57,15 +67,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-16dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:text="温馨提示"
-        android:textColor="@android:color/black" />
 
 </LinearLayout>

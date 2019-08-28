@@ -29,52 +29,20 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     var maxWeek = 30
     var nodes = 11
 
-    fun judgeType(list: ArrayList<Int>, weeksNum: Int): Int {
-        var flag = 0
-        //0表示不是全部的单周也不是全部的双周
-        if (weeksNum % 2 == 0 && list.size != weeksNum / 2) {
-            return flag
+    fun judgeType(list: ArrayList<Int>): Int {
+        val odd = list.filter {
+            it % 2 == 1
         }
-        if (weeksNum == list.size) {
-            return flag
+        val evenCount = maxWeek / 2
+        val oddCount = maxWeek - evenCount
+        // 0表示不是全部的单周也不是全部的双周
+        if (oddCount == odd.size && oddCount == list.size) {
+            return 1
         }
-        if (weeksNum % 2 != 0 && list.contains(weeksNum)) {
-            flag = 1
-            for (i in 1..weeksNum - 2 step 2) {
-                if (!list.contains(i)) {
-                    flag = 0
-                    break
-                }
-            }
+        if (evenCount == list.size && odd.isEmpty()) {
+            return 2
         }
-        if (weeksNum % 2 != 0 && !list.contains(weeksNum)) {
-            flag = 2
-            for (i in 2..weeksNum - 2 step 2) {
-                if (!list.contains(i)) {
-                    flag = 0
-                    break
-                }
-            }
-        }
-        if (weeksNum % 2 == 0 && list.contains(weeksNum)) {
-            flag = 2
-            for (i in 2..weeksNum - 2 step 2) {
-                if (!list.contains(i)) {
-                    flag = 0
-                    break
-                }
-            }
-        }
-        if (weeksNum % 2 == 0 && !list.contains(weeksNum)) {
-            flag = 1
-            for (i in 1..weeksNum - 2 step 2) {
-                if (!list.contains(i)) {
-                    flag = 0
-                    break
-                }
-            }
-        }
-        return flag
+        return 0
     }
 
     suspend fun preSaveData() {
