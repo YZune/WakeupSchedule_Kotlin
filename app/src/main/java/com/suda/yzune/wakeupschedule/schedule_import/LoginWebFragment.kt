@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
@@ -22,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.dip
 
 class LoginWebFragment : BaseFragment() {
@@ -31,6 +34,7 @@ class LoginWebFragment : BaseFragment() {
     private var term = ""
     private val years = arrayListOf<String>()
     private var type = "苏州大学"
+    private var shanghaiPort = 0
 
     private lateinit var viewModel: ImportViewModel
 
@@ -53,6 +57,17 @@ class LoginWebFragment : BaseFragment() {
             rl_code.visibility = View.INVISIBLE
         } else {
             refreshCode()
+        }
+        if (type == "上海大学") {
+            btg_ports.visibility = View.VISIBLE
+            btg_ports.addOnButtonCheckedListener { group, checkedId, isChecked ->
+                if (isChecked) {
+                    shanghaiPort = checkedId - R.id.btn_port1
+                }
+                if (!isChecked && shanghaiPort == checkedId - R.id.btn_port1) {
+                    group.find<MaterialButton>(checkedId).isChecked = true
+                }
+            }
         }
         initEvent()
     }
@@ -161,7 +176,7 @@ class LoginWebFragment : BaseFragment() {
                             val task = withContext(Dispatchers.IO) {
                                 try {
                                     viewModel.loginShanghai(et_id.text.toString(),
-                                            et_pwd.text.toString())
+                                            et_pwd.text.toString(), shanghaiPort)
                                 } catch (e: Exception) {
                                     e.message
                                 }
@@ -333,6 +348,11 @@ class LoginWebFragment : BaseFragment() {
             term = data as String
             Log.d("选中", "选中学期$term")
         }
+    }
+
+    override fun onDestroyView() {
+        btg_ports.clearOnButtonCheckedListeners()
+        super.onDestroyView()
     }
 
     companion object {

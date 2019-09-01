@@ -55,6 +55,7 @@
                 android:id="@+id/tv_modify"
                 style="@style/DialogButtonStyle"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
                 android:text="查看同名课程并修改" />
 
             <com.google.android.material.button.MaterialButton
@@ -62,7 +63,8 @@
                 style="@style/DialogButtonStyle"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
-                android:text="查看已添加的所有课程" />
+                android:text="查看已添加的所有课程"
+                android:visibility="gone" />
 
         </LinearLayout>
 

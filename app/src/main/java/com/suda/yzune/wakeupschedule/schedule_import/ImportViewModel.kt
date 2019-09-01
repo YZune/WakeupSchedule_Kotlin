@@ -72,10 +72,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             "上海海洋大学", "齐鲁师范学院", "山西农业大学", "中国石油大学（北京）", "内蒙古科技大学", "湖南理工学院",
             "内蒙古大学", "齐齐哈尔大学", "河南理工大学", "西南石油大学", "河北大学", "北京邮电大学", "东北财经大学",
             "天津工业大学", "山东农业大学", "河海大学", "URP 系统")
-    val ZFSchoolList = arrayOf("河南工程学院", "黑龙江外国语学院", "常州机电职业技术学院", "四川大学锦城学院", "郑州大学西亚斯国际学院", "安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+    val ZFSchoolList = arrayOf("渭南师范学院", "西安科技大学", "湖南城市学院", "武汉东湖学院", "沈阳师范大学", "厦门工学院", "北京联合大学", "浙江工业大学之江学院", "西安外事学院", "福建农林大学金山学院", "辽宁工业大学", "重庆邮电大学移通学院", "河南工程学院", "黑龙江外国语学院", "四川大学锦城学院", "郑州大学西亚斯国际学院", "安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
-    val ZFSchoolList1 = arrayOf("茂名职业技术学院", "福建农林大学", "浙江万里学院", "重庆交通职业学院")
-    val newZFSchoolList = arrayOf("南宁职业技术学院", "济南大学", "西安邮电大学", "浙江工业大学", "徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+    val ZFSchoolList1 = arrayOf("华中农业大学", "茂名职业技术学院", "福建农林大学", "浙江万里学院", "重庆交通职业学院")
+    val newZFSchoolList = arrayOf("常州机电职业技术学院", "保定学院", "河北环境工程学院", "安徽信息工程学院", "延安大学", "浙江财经大学", "中国医科大学", "苏州农业职业技术学院", "无锡太湖学院", "山东青年政治学院", "河南财经政法大学", "青岛科技大学", "三江学院", "西昌学院", "滨州医学院", "青岛滨海学院", "天津体育学院", "中国矿业大学徐海学院", "武昌首义学院", "四川轻化工大学", "安徽农业大学", "湖北工程学院新技术学院", "贺州学院", "河北政法职业学院", "浙江工商大学", "淮南师范学院", "广西大学", "湖北中医药大学", "南京城市职业学院", "北京化工大学", "信阳师范学院", "西南政法大学", "广西大学行健文理学院", "江西中医药大学", "嘉兴学院南湖学院", "湖北师范大学", "南宁职业技术学院", "济南大学", "西安邮电大学", "浙江工业大学", "徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
@@ -223,12 +223,16 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return write2DB()
     }
 
-    suspend fun loginShanghai(number: String, psd: String): String {
+    suspend fun loginShanghai(number: String, psd: String, port: Int): String {
         baseList.clear()
         detailList.clear()
         val course = ArrayList<String>()
-        //val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%2fpassport%2freturn")
-        val connect = Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%3a8080%2fpassport%2freturn")
+        val connect =
+                if (port == 0) {
+                    Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%2fpassport%2freturn")
+                } else {
+                    Jsoup.connect("https://oauth.shu.edu.cn/oauth/authorize?response_type=code&client_id=yRQLJfUsx326fSeKNUCtooKw&redirect_uri=http%3a%2f%2fxk.autoisp.shu.edu.cn%3a8080%2fpassport%2freturn")
+                }
         var doc = connect.get()
 
         var ele = doc.body().select("input[name]")
@@ -256,7 +260,12 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 //                .cookies(res2.cookies())
 //                .post()
 
-        doc = Jsoup.connect("http://xk.autoisp.shu.edu.cn:8080/StudentQuery/CtrlViewQueryCourseTable")
+        doc = Jsoup.connect(
+                if (port == 0) {
+                    "http://xk.autoisp.shu.edu.cn/StudentQuery/CtrlViewQueryCourseTable"
+                } else {
+                    "http://xk.autoisp.shu.edu.cn:8080/StudentQuery/CtrlViewQueryCourseTable"
+                })
                 .data("studentNo", number)
                 .cookies(res2.cookies())
                 .post()
@@ -269,7 +278,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
 
         fun getInformation(info: String): List<String> {
-            val strList = Arrays.asList(*info.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            val strList = listOf(*info.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
             val list = ArrayList<String>()
             list.add(strList[1])
             list.add(strList[2])
@@ -961,7 +970,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             if (flag == -1) {
                 baseList.add(CourseBaseBean(id, importBean.name, "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), id % 9))}"
                         , importId))
-                val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
+                val time = parseTime(importBean, importBean.timeInfo, importBean.startNode, source, importBean.name)
                 val day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay
                 detailList.add(CourseDetailBean(
                         id = id, room = importBean.room,
@@ -975,7 +984,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
                 id++
             } else {
-                val time = parseTime(importBean.timeInfo, importBean.startNode, source, importBean.name)
+                val time = parseTime(importBean, importBean.timeInfo, importBean.startNode, source, importBean.name)
                 val day = if (importBean.timeInfo.substring(0, 2) in WEEK) time[0] else importBean.cDay
                 detailList.add(CourseDetailBean(
                         id = flag, room = importBean.room,
@@ -1052,7 +1061,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                                 val matcher = nodePattern.matcher(timeStr)
                                 if (matcher.find()) {
                                     val nodeInfo = matcher.group(0)
-                                    val nodes = nodeInfo.substring(1, nodeInfo.length - 1).split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                                    val nodes = nodeInfo!!.substring(1, nodeInfo.length - 1).split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
                                     if (nodes.isNotEmpty()) {
                                         node = nodes[0].toInt()
@@ -1780,7 +1789,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return "ok"
     }
 
-    private fun parseTime(time: String, startNode: Int, source: String, courseName: String): Array<Int> {
+    private fun parseTime(importBean: ImportBean, time: String, startNode: Int, source: String, courseName: String): Array<Int> {
         val result = Array(5) { 0 }
         //按顺序分别为day, step, startWeek, endWeek, type
 
@@ -1822,8 +1831,19 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             time.contains("第${startNode}节") -> {
                 step = 1
             }
-
-            //周数
+        }
+        if (step == 0) {
+            val matcher = nodePattern.matcher(time)
+            if (matcher.find()) {
+                val nodeInfo = matcher.group(0)
+                val nodes = nodeInfo!!.substring(1, nodeInfo.length - 1).split("-".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                if (nodes.isNotEmpty()) {
+                    importBean.startNode = nodes[0].toInt()
+                }
+                if (nodes.size > 1) {
+                    step = nodes[1].toInt() - importBean.startNode + 1
+                }
+            }
         }
         result[1] = step
 

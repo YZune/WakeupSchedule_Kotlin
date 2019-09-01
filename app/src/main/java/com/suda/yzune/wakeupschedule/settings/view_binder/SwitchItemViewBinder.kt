@@ -47,7 +47,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                     supportButtonTintList = ColorStateList(states, colors)
                 }.lparams(wrapContent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
-                    marginEnd = dip(16)
+                    marginEnd = dip(8)
                 }
             }
         }.view

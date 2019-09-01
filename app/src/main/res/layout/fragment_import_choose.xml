@@ -39,7 +39,7 @@
         android:lineSpacingExtra="4dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:text="现在已支持从近百所学校的教务直接导入课程\n也可以去申请适配试试看:)"
+        android:text="已支持从两百多所学校的教务直接导入课程\n也可以去申请适配试试看:)"
         android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton

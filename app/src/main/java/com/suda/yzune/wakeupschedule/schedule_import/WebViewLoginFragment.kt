@@ -62,8 +62,10 @@ class WebViewLoginFragment : BaseFragment() {
             val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
             if (url != "") {
                 et_url.setText(url)
-                startVisit()
+            } else {
+                et_url.setText("https://www.baidu.com")
             }
+            startVisit()
         }
 
         if (type == "apply") {
@@ -294,6 +296,7 @@ class WebViewLoginFragment : BaseFragment() {
     internal inner class InJavaScriptLocalObj {
         @JavascriptInterface
         fun showSource(html: String) {
+            // Log.d("源码", html)
             if (type != "apply") {
                 launch {
                     val task = withContext(Dispatchers.IO) {
