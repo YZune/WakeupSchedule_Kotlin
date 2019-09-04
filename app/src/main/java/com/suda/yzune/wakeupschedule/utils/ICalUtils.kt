@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.utils
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import net.fortuna.ical4j.model.*
-import net.fortuna.ical4j.model.component.VAlarm
 import net.fortuna.ical4j.model.component.VEvent
 import net.fortuna.ical4j.model.parameter.Value
 import net.fortuna.ical4j.model.property.*
@@ -11,8 +10,6 @@ import net.fortuna.ical4j.util.UidGenerator
 import java.util.*
 import java.util.Calendar
 import java.util.Date
-import net.fortuna.ical4j.model.property.Summary
-import net.fortuna.ical4j.model.Dur
 
 
 object ICalUtils {
@@ -85,15 +82,15 @@ object ICalUtils {
         val event = VEvent(start, end, course.courseName)
 
         // set event
-        // event.properties.add(Uid(UidGenerator("WakeUpSchedule").generateUid().value))
-        event.properties.add(Uid("WakeUpSchedule" + course.courseName.hashCode().toString()))
+        event.properties.add(Uid(UidGenerator("WakeUpSchedule").generateUid().value))
+        // event.properties.add(Uid("WakeUpSchedule" + course.courseName.hashCode().toString()))
         event.properties.add(Location("${course.room} ${course.teacher}"))
-        // event.alarms.add(VAlarm(Dur(0, 0, -30, 0)))
-        val valarm = VAlarm(Dur(0, 0, -30, 0))
-        valarm.properties.add(Summary(course.courseName))
-        valarm.properties.add(Action.DISPLAY)
-        // 将VAlarm加入VEvent
-        event.alarms.add(valarm)
+
+//        val valarm = VAlarm(Dur(0, 0, -30, 0))
+//        valarm.properties.add(Summary(course.courseName))
+//        valarm.properties.add(Action.DISPLAY)
+//        // 将VAlarm加入VEvent
+//        event.alarms.add(valarm)
         event.properties.add(Description("${course.getNodeString()}\n${course.room}\n${course.teacher}"))
         event.properties.add(rdate)
         event.properties.add(rule)

@@ -27,13 +27,13 @@ android {
             storePassword '11166511'
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 28
     flavorDimensions "versionCode"
     defaultConfig {
         //applicationId "com.suda.yzune.wakeupschedule"
         multiDexEnabled true
-        minSdkVersion 18
-        targetSdkVersion 29
+        minSdkVersion 19
+        targetSdkVersion 28
         versionCode 72
         versionName "3.56"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -77,7 +77,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
-    buildToolsVersion '29.0.2'
+    buildToolsVersion '28.0.3'
 
     productFlavors {
         google {

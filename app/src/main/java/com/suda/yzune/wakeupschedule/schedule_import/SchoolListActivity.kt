@@ -340,7 +340,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("B", "北京联合大学", ""))
         schools.add(SchoolListBean("N", "南京城市职业学院", "http://jw.ncc.edu.cn/jwglxt/xtgl/"))
         schools.add(SchoolListBean("H", "湖北中医药大学", "http://jwxt.hbtcm.edu.cn/jwglxt/xtgl"))
-        schools.add(SchoolListBean("H", "华中农业大学", ""))
+        schools.add(SchoolListBean("H", "华中农业大学", "http://jwgl.hzau.edu.cn/xtgl/login_slogin.html"))
         schools.add(SchoolListBean("G", "广西大学", "http://jwxt2018.gxu.edu.cn/jwglxt/xtgl/"))
         schools.add(SchoolListBean("H", "淮南师范学院", "http://211.70.176.173/jwglxt/xtgl/"))
         schools.add(SchoolListBean("Z", "浙江工商大学", "http://124.160.64.163/jwglxt/xtgl/"))
@@ -373,6 +373,9 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("B", "保定学院", "http://jwgl.bdu.edu.cn/xtgl/login_slogin.html"))
         schools.add(SchoolListBean("X", "西安科技大学", "http://59.74.168.16:8989/"))
         schools.add(SchoolListBean("W", "渭南师范学院", "http://218.195.46.9"))
+
+        schools.add(SchoolListBean("G", "广东科学技术职业学院", ""))
+        schools.add(SchoolListBean("M", "闽南师范大学", "http://222.205.160.107/jwglxt/xtgl/login_slogin.html"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 

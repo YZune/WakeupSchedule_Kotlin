@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.MaterialFilePicker
-
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
@@ -46,6 +45,11 @@ class ExcelImportFragment : BaseFragment() {
                     .withPath(basePath)
                     .withFilter(Pattern.compile(".*\\.xlsx$")) // Filtering files and directories by file name using regexp
                     .start()
+//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+//                addCategory(Intent.CATEGORY_OPENABLE)
+//                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+//            }
+//            startActivityForResult(intent, 2)
         }
 
         ib_back.setOnClickListener {
