@@ -15,15 +15,19 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
+import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import kotlinx.android.synthetic.main.activity_school_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
 
@@ -152,6 +156,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     private fun initSchoolList() {
         val dataBase = AppDatabase.getDatabase(application)
         val tableDao = dataBase.tableDao()
+        val gson = Gson()
 
         schools.add(SchoolListBean("S", "苏州大学"))
         schools.add(SchoolListBean("S", "上海大学"))
@@ -377,6 +382,8 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("G", "广东科学技术职业学院", ""))
         schools.add(SchoolListBean("M", "闽南师范大学", "http://222.205.160.107/jwglxt/xtgl/login_slogin.html"))
 
+        schools.add(SchoolListBean("Q", "清华大学", ""))
+
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
         schools.add(0, SchoolListBean("★", "URP 系统"))
@@ -395,14 +402,18 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", showList[position].name) })
                 finish()
             } else {
-                tableDao.getDefaultTableId().observe(this, Observer {
+                launch {
+                    PreferenceUtils.saveStringToSP(applicationContext, "import_school", gson.toJson(showList[position]))
+                    val tableId = withContext(Dispatchers.IO) {
+                        tableDao.getDefaultTableIdInThread()
+                    }
                     startActivity<LoginWebActivity>(
                             "type" to showList[position].name,
-                            "tableId" to it,
+                            "tableId" to tableId,
                             "url" to showList[position].url
                     )
                     finish()
-                })
+                }
             }
         }
 

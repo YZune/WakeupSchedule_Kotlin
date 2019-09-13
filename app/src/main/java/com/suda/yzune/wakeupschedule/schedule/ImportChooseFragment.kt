@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
+import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -21,6 +22,7 @@ class ImportChooseFragment : BaseDialogFragment() {
         get() = R.layout.fragment_import_choose
 
     private lateinit var viewModel: ScheduleViewModel
+    private lateinit var importSchool: SchoolListBean
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +31,7 @@ class ImportChooseFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        importSchool = viewModel.getImportSchoolBean()
         initEvent()
     }
 
@@ -67,11 +70,13 @@ class ImportChooseFragment : BaseDialogFragment() {
             }
         }
 
-        tv_suda.setOnClickListener {
+        tv_school.text = "${importSchool.name}导入"
+        tv_school.setOnClickListener {
             activity!!.startActivityForResult<LoginWebActivity>(
                     32,
-                    "type" to "苏州大学",
-                    "tableId" to viewModel.table.id
+                    "type" to importSchool.name,
+                    "tableId" to viewModel.table.id,
+                    "url" to importSchool.url
             )
             dismiss()
         }

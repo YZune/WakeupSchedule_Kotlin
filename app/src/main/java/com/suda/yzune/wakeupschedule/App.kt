@@ -9,6 +9,7 @@ import android.graphics.Typeface
 import android.os.Build
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import es.dmoral.toasty.Toasty
 import io.fabric.sdk.android.Fabric
@@ -22,7 +23,7 @@ class App : Application() {
                 .setTextSize(12)
                 .apply()
         if (!BuildConfig.DEBUG && !Fabric.isInitialized()) {
-            Fabric.with(this, Crashlytics())
+            Fabric.with(this, Crashlytics(), Answers())
         }
         PreferenceUtils.init(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

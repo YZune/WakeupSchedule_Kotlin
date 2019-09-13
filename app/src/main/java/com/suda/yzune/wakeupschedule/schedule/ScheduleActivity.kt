@@ -26,7 +26,6 @@ import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
@@ -153,7 +152,7 @@ class ScheduleActivity : BaseActivity() {
                             if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
                                 UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
                             }
-                        } catch (e: JsonSyntaxException) {
+                        } catch (e: Exception) {
 
                         }
                     }

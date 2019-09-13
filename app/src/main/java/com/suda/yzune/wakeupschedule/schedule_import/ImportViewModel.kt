@@ -119,6 +119,80 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    suspend fun loginTsinghua(username: String, password: String): String {
+        //login
+        val LEARN_PREFIX = "https://learn2018.tsinghua.edu.cn"
+        baseList.clear()
+        detailList.clear()
+        var cookies: Map<String, String>?
+        val ticket = Jsoup.connect("https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/bb5df85216504820be7bba2b0ae1535b/0?/login.do")
+                .data("i_user", username).data("i_pass", password).data("atOnce", true.toString())
+                .timeout(10000).post()
+                .body().select("a").attr("href").split('=').last()
+        val loginResponse = Jsoup.connect("$LEARN_PREFIX/b/j_spring_security_thauth_roaming_entry?ticket=$ticket")
+                .execute().let {
+                    cookies = it.cookies()
+                    it.statusCode() in 200..299
+                }
+        if (!loginResponse) throw Exception("Incorrect username or password.")
+        //getSemesterIdList
+        val semesterIdArray = JSONArray(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xktjb_coassb/queryxnxq")
+                .cookies(cookies).execute().body()).let {
+            Array<String>(it.length()) { i: Int -> it.getString(i) }
+        }
+        //getCurrentSemester
+        var currentSemester = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/kc/zhjw_v_code_xnxq/getCurrentAndNextSemester")
+                .cookies(cookies).execute().body())
+                .getJSONObject("result").getString("id")
+        if (currentSemester.split("-").last() == "3" && semesterIdArray.indexOf(currentSemester) > 0)
+            currentSemester = semesterIdArray[semesterIdArray.indexOf(currentSemester) - 1]
+        //getCourseList
+        val courseList = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xkb_kcb_extend/student/loadCourseBySemesterId/$currentSemester")
+                .cookies(cookies).execute().body())
+                .getJSONArray("resultList")
+        val courseDetailList = Array<Array<String>>(courseList.length()) { i ->
+            JSONArray(Jsoup.connect("$LEARN_PREFIX/b/kc/v_wlkc_xk_sjddb/detail?id=${courseList.getJSONObject(i).getString("wlkcid")}")
+                    .cookies(cookies).execute().body()).let {
+                Array(it.length()) { idx ->
+                    it.getString(idx)
+                }
+            }
+        }
+        for (i in 0 until courseList.length()) {
+            baseList.add(CourseBaseBean(i,
+                    courseName = courseList.getJSONObject(i).getString("kcm"),
+                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), i % 9))}",
+                    tableId = importId
+            ))
+            for (element in courseDetailList[i]) {
+                val matcher = Pattern.compile("星期([一二三四五六七日])第([1-6])节\\((.*?)\\)，(.*)")
+                        .matcher(element)
+                if (matcher.find()) {
+                    val matchRs = matcher.toMatchResult()
+
+                    detailList.add(CourseDetailBean(i,
+                            day = "一二三四五六七日".indexOf(matchRs.group(1)) + 1,
+                            room = matchRs.group(4),
+                            teacher = courseList.getJSONObject(i).getString("jsm"),
+                            tableId = importId,
+                            startNode = when (matchRs.group(2).toInt()) {
+                                1 -> 1; 2 -> 3;3 -> 6;4 -> 8;5 -> 10;6 -> 12
+                                else -> 0
+                            },
+                            step = when (matchRs.group(2).toInt()) {
+                                2, 6 -> 3
+                                else -> 2
+                            },
+                            startWeek = if (matchRs.group(3).contains("后")) 9 else 1,
+                            endWeek = if (matchRs.group(3).contains("前")) 8 else 16,
+                            type = 0
+                    ))
+                }
+            }
+        }
+        return write2DB()
+    }
+
     suspend fun parseZFNewer(html: String): String {
         baseList.clear()
         detailList.clear()

@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
+import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -44,6 +45,17 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectList()
+    }
+
+    fun getImportSchoolBean(): SchoolListBean {
+        val json = PreferenceUtils.getStringFromSP(getApplication(), "import_school", null)
+                ?: return SchoolListBean("S", "苏州大学", "")
+        val gson = Gson()
+        return try {
+            gson.fromJson<SchoolListBean>(json, object : TypeToken<SchoolListBean>() {}.type)
+        } catch (e: Exception) {
+            SchoolListBean("S", "苏州大学", "")
+        }
     }
 
     fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {

@@ -43,7 +43,7 @@
         android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/tv_suda"
+        android:id="@+id/tv_school"
         style="@style/DialogButtonStyle"
         android:layout_marginTop="8dp"
         android:text="苏大教务导入" />

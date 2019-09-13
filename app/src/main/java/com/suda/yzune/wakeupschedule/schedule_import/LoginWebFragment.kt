@@ -3,11 +3,11 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.app.Activity.RESULT_OK
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
@@ -51,15 +51,20 @@ class LoginWebFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tv_title.text = type
         if (type != "苏州大学") {
-            tv_vpn.visibility = View.GONE
             input_code.visibility = View.INVISIBLE
             rl_code.visibility = View.INVISIBLE
+            tv_tip.visibility = View.GONE
         } else {
             refreshCode()
+            tv_tip.setOnClickListener {
+                CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
+            }
         }
         if (type == "上海大学") {
             btg_ports.visibility = View.VISIBLE
+            tv_thanks.text = "感谢 @Deep Sea\n能导入贵校课程离不开他无私贡献代码"
             btg_ports.addOnButtonCheckedListener { group, checkedId, isChecked ->
                 if (isChecked) {
                     shanghaiPort = checkedId - R.id.btn_port1
@@ -68,6 +73,14 @@ class LoginWebFragment : BaseFragment() {
                     group.find<MaterialButton>(checkedId).isChecked = true
                 }
             }
+        }
+        if (type == "清华大学") {
+            input_id.hint = "用户名"
+            tv_thanks.text = "感谢 @RikaSugisawa\n能导入贵校课程离不开他无私贡献代码"
+            et_id.inputType = InputType.TYPE_CLASS_TEXT
+        }
+        if (type == "吉林大学") {
+            tv_thanks.text = "感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码"
         }
         initEvent()
     }
@@ -90,10 +103,6 @@ class LoginWebFragment : BaseFragment() {
                 .buildRect("\uE6DE", Color.TRANSPARENT)
 
         fab_login.setImageDrawable(textDrawable)
-
-        tv_vpn.setOnClickListener {
-            CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
-        }
 
         iv_code.setOnClickListener {
             refreshCode()
@@ -167,6 +176,28 @@ class LoginWebFragment : BaseFragment() {
                                 else -> {
                                     refreshCode()
                                     Toasty.error(context!!.applicationContext, "再试一次看看哦", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
+                    if (type == "清华大学") {
+                        launch {
+                            val task = withContext(Dispatchers.IO) {
+                                try {
+                                    viewModel.loginTsinghua(et_id.text.toString(),
+                                            et_pwd.text.toString())
+                                } catch (e: Exception) {
+                                    e.message
+                                }
+                            }
+                            when (task) {
+                                "ok" -> {
+                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                                    activity!!.setResult(RESULT_OK)
+                                    activity!!.finish()
+                                }
+                                else -> {
+                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
