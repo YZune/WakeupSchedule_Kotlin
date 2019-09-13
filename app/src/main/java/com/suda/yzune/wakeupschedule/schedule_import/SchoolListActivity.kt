@@ -289,7 +289,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
-        schools.add(SchoolListBean("B", "北京大学", ""))
+        schools.add(SchoolListBean("B", "北京大学", "http://elective.pku.edu.cn"))
         schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
 
         schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))

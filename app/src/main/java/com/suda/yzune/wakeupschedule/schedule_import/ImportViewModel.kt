@@ -694,6 +694,8 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         for (tr in tBody.getElementsByTag("tr")) {
             val tds = tr.getElementsByTag("td")
             if (tds.size >= 11) {
+                if (tds[8].text().contains('未'))
+                    continue
                 val id = baseList.size
                 baseList.add(CourseBaseBean(
                         id = id, courseName = tds[0].text().trim(),
@@ -714,9 +716,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                         if (timeInfo[0].contains('~')) {
                             startWeek = timeInfo[0].substringBefore('~').toInt()
                             endWeek = timeInfo[0].substringAfter('~').substringBefore('周').toInt()
-                        } else {
-                            startWeek = timeInfo[0].substringBefore('周').toInt()
-                            endWeek = timeInfo[0].substringBefore('周').toInt()
                         }
                         type = when {
                             timeInfo[1].contains('单') -> 1
