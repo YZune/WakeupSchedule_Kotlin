@@ -7,10 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 
 class VerticalItemViewBinder constructor(

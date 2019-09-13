@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -30,7 +31,6 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.textColorResource

@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SeekBarItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 

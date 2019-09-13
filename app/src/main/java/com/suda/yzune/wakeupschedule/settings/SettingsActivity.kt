@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.settings
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -23,7 +24,6 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity

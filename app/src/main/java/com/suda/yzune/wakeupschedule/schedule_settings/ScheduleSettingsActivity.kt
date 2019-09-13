@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcel
@@ -19,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
+import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -36,7 +36,6 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult

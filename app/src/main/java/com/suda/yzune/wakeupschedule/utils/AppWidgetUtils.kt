@@ -119,9 +119,9 @@ object AppWidgetUtils {
         val pIntent = PendingIntent.getActivity(context, 0, intent, 0)
         mRemoteViews.setOnClickPendingIntent(R.id.tv_date, pIntent)
 
-        val i = Intent(context, ScheduleAppWidget::class.java)
-        i.action = "WAKEUP_NEXT_WEEK"
-        val pi = PendingIntent.getBroadcast(context, 1, i, PendingIntent.FLAG_UPDATE_CURRENT)
+        val nextIntent = Intent(context, ScheduleAppWidget::class.java)
+        nextIntent.action = "WAKEUP_NEXT_WEEK"
+        val pi = PendingIntent.getBroadcast(context, 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         mRemoteViews.setOnClickPendingIntent(R.id.iv_next, pi)
 
         val backIntent = Intent(context, ScheduleAppWidget::class.java)

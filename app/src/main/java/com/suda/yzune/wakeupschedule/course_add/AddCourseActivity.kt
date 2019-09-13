@@ -227,17 +227,31 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             colorAnim.start()
         }
         tvBtn.setOnClickListener {
-            adapter.addData(CourseEditBean(
-                    teacher = viewModel.editList[0].teacher,
-                    room = viewModel.editList[0].room,
-                    tableId = viewModel.tableId,
-                    weekList = MutableLiveData<ArrayList<Int>>().apply {
-                        this.value = ArrayList<Int>().apply {
-                            for (i in 1..viewModel.maxWeek) {
-                                this.add(i)
+            if (viewModel.editList.isEmpty()) {
+                adapter.addData(CourseEditBean(
+                        teacher = "",
+                        room = "",
+                        tableId = viewModel.tableId,
+                        weekList = MutableLiveData<ArrayList<Int>>().apply {
+                            this.value = ArrayList<Int>().apply {
+                                for (i in 1..viewModel.maxWeek) {
+                                    this.add(i)
+                                }
                             }
-                        }
-                    }))
+                        }))
+            } else {
+                adapter.addData(CourseEditBean(
+                        teacher = viewModel.editList[0].teacher,
+                        room = viewModel.editList[0].room,
+                        tableId = viewModel.tableId,
+                        weekList = MutableLiveData<ArrayList<Int>>().apply {
+                            this.value = ArrayList<Int>().apply {
+                                for (i in 1..viewModel.maxWeek) {
+                                    this.add(i)
+                                }
+                            }
+                        }))
+            }
         }
         return view
     }
