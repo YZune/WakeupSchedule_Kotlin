@@ -269,7 +269,7 @@ class ScheduleActivity : BaseActivity() {
                         }
                         list.forEach {
                             when (it.detailType) {
-                                0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
+                                // 0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
                                 1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, table)
                             }
                         }

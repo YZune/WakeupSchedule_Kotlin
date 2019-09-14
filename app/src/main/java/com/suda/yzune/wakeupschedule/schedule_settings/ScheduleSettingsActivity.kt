@@ -378,7 +378,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             list.forEach {
                 when (it.detailType) {
-                    0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                    0 -> {
+                        if (it.info == viewModel.table.id.toString()) {
+                            AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                        }
+                    }
                     1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table, false)
                 }
             }

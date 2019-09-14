@@ -24,19 +24,23 @@ import kotlin.math.roundToInt
 class ScheduleAppWidgetService : RemoteViewsService() {
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        return if (intent != null) {
-            val i = intent.data?.schemeSpecificPart?.toInt()
-            return if (i == 1) {
-                ScheduleRemoteViewsFactory(true)
+        if (intent != null) {
+            val list = intent.data?.schemeSpecificPart?.split(",")
+                    ?: return ScheduleRemoteViewsFactory()
+            if (list.size < 2) {
+                ScheduleRemoteViewsFactory(nextWeek = (list[0] == "1"))
+            }
+            return if (list[0] == "1") {
+                ScheduleRemoteViewsFactory(list[1].toInt(), true)
             } else {
-                ScheduleRemoteViewsFactory(false)
+                ScheduleRemoteViewsFactory(list[1].toInt(), false)
             }
         } else {
-            ScheduleRemoteViewsFactory()
+            return ScheduleRemoteViewsFactory()
         }
     }
 
-    private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory(val tableId: Int = -1, val nextWeek: Boolean = false) : RemoteViewsFactory {
         private lateinit var table: TableBean
         private var week = 0
         private var widgetItemHeight = 0
@@ -50,11 +54,19 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
-            table = tableDao.getDefaultTableInThread()
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableInThread()
+            } else {
+                tableDao.getTableByIdInThread(tableId)
+            }
         }
 
         override fun onDataSetChanged() {
-            table = tableDao.getDefaultTableInThread()
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableInThread()
+            } else {
+                tableDao.getTableByIdInThread(tableId)
+            }
             widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
@@ -102,10 +114,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun hasStableIds(): Boolean {
             return false
-        }
-
-        private fun TextView.onShineEffect(colorInt: Int) {
-            //this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
         }
 
         fun initView(view: View, weekPanel0: View) {
@@ -181,10 +189,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val strBuilder = StringBuilder()
                 val c = data[i]
                 val tv = TipTextView(context)
-
-                if (day == weekDay) {
-                    tv.onShineEffect(table.widgetCourseTextColor)
-                }
 
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,

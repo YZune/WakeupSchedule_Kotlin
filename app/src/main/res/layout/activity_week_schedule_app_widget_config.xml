@@ -14,7 +14,7 @@
         android:focusableInTouchMode="true"
         android:lineSpacingExtra="4dp"
         android:padding="16dp"
-        android:text="由于技术原因\n目前小部件只能显示App中选中显示的课表\n\n如果遇到小部件不能正常刷新的情况\n请允许App后台和自启动\n华为手机用户可以参考下图\n\n修改小部件样式请点主界面右上角进去课程表设置\n现在App支持日视图和周视图两种小部件\n若想修改日视图的文字颜色\n就去设置修改小部件文字颜色就好啦"
+        android:text="如果遇到小部件不能正常刷新的情况\n请允许App后台和自启动\n\n修改小部件样式请点主界面右上角进去课程表设置\n现在App支持日视图和周视图两种小部件\n若想修改日视图的文字颜色\n就去设置修改小部件文字颜色就好啦"
         android:textSize="12sp"
         android:textStyle="bold" />
 
@@ -37,6 +37,20 @@
         android:id="@+id/iv_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp" />
+        android:layout_margin="16dp"
+        tools:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_table_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            tools:listitem="@layout/item_table_list" />
+    </RelativeLayout>
 
 </LinearLayout>

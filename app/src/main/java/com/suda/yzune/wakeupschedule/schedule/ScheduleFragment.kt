@@ -72,20 +72,11 @@ class ScheduleFragment : BaseFragment() {
         if (viewModel.table.sundayFirst) {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title0_1 + i)
-                if (weekDay == 7 && i == 0) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
-                if (weekDay == i) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
             }
         } else {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title1 + i)
-                if (i == weekDay - 1) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
             }
         }
@@ -127,10 +118,6 @@ class ScheduleFragment : BaseFragment() {
         }
     }
 
-    private fun TextView.onShineEffect(colorInt: Int) {
-        //this.setShadowLayer(12f, 0f, 0f, Color.WHITE)
-    }
-
     companion object {
         @JvmStatic
         fun newInstance(arg0: Int) =
@@ -167,10 +154,6 @@ class ScheduleFragment : BaseFragment() {
             }
 
             val textView = TipTextView(context!!)
-
-            if (day == weekDay) {
-                textView.onShineEffect(viewModel.table.courseTextColor)
-            }
 
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,

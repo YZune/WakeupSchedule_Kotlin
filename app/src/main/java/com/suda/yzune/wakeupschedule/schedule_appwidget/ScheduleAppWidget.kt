@@ -25,9 +25,17 @@ class ScheduleAppWidget : AppWidgetProvider() {
             val widgetDao = dataBase.appWidgetDao()
             val tableDao = dataBase.tableDao()
             job = GlobalScope.launch(Dispatchers.IO) {
-                val table = tableDao.getDefaultTableInThread()
                 for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 0)) {
-                    AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
+                    try {
+                        val table = if (appWidget.info.isEmpty()) {
+                            tableDao.getDefaultTableInThread()
+                        } else {
+                            tableDao.getTableByIdInThread(appWidget.info.toInt())
+                        }
+                        AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
+                    } catch (ignore: Exception) {
+
+                    }
                 }
                 job?.cancel()
             }
@@ -37,9 +45,17 @@ class ScheduleAppWidget : AppWidgetProvider() {
             val widgetDao = dataBase.appWidgetDao()
             val tableDao = dataBase.tableDao()
             job = GlobalScope.launch(Dispatchers.IO) {
-                val table = tableDao.getDefaultTableInThread()
                 for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 0)) {
-                    AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                    try {
+                        val table = if (appWidget.info.isEmpty()) {
+                            tableDao.getDefaultTableInThread()
+                        } else {
+                            tableDao.getTableByIdInThread(appWidget.info.toInt())
+                        }
+                        AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                    } catch (ignore: Exception) {
+
+                    }
                 }
                 job?.cancel()
             }
@@ -54,9 +70,17 @@ class ScheduleAppWidget : AppWidgetProvider() {
         val widgetDao = dataBase.appWidgetDao()
         val tableDao = dataBase.tableDao()
         job = GlobalScope.launch(Dispatchers.IO) {
-            val table = tableDao.getDefaultTableInThread()
             for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 0)) {
-                AppWidgetUtils.refreshScheduleWidget(context, appWidgetManager, appWidget.id, table)
+                try {
+                    val table = if (appWidget.info.isEmpty()) {
+                        tableDao.getDefaultTableInThread()
+                    } else {
+                        tableDao.getTableByIdInThread(appWidget.info.toInt())
+                    }
+                    AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                } catch (ignore: Exception) {
+
+                }
             }
             job?.cancel()
         }

@@ -4,7 +4,7 @@
     android:initialKeyguardLayout="@layout/schedule_app_widget"
     android:initialLayout="@layout/schedule_app_widget"
     android:minWidth="250dp"
-    android:minHeight="180dp"
+    android:minHeight="110dp"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="10800000"
     android:widgetCategory="home_screen" />

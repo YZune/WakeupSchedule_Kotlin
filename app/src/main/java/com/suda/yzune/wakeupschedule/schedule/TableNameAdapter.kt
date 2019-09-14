@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.widget.ImageView
-import com.chad.library.adapter.base.BaseItemDraggableAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
@@ -10,7 +10,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import org.jetbrains.anko.dip
 
 class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
-        BaseItemDraggableAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
+        BaseQuickAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: TableSelectBean) {
         if (item.type == 1) {
