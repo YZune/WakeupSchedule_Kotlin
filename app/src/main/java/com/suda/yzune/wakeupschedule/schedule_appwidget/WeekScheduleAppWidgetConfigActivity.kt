@@ -80,6 +80,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                 list.addAll(withContext(Dispatchers.IO) {
                     viewModel.getTableList()
                 })
+                adapter.notifyDataSetChanged()
             }
         }
 
