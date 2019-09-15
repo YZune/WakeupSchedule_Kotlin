@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
@@ -20,26 +21,38 @@
         android:layout_width="match_parent"
         android:layout_height="240dp">
 
-        <com.aigestudio.wheelpicker.WheelPicker
+        <cn.carbswang.android.numberpickerview.library.NumberPickerView
             android:id="@+id/wp_day"
-            style="@style/TimeDataPicker"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:npv_RespondChangeOnDetached="false"
+            app:npv_ShownCount="5"
+            app:npv_TextSizeNormal="14sp"
+            app:npv_TextSizeSelected="14sp"
+            app:npv_WrapSelectorWheel="true" />
 
-        <com.aigestudio.wheelpicker.WheelPicker
+        <cn.carbswang.android.numberpickerview.library.NumberPickerView
             android:id="@+id/wp_start"
-            style="@style/TimeDataPicker"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:npv_RespondChangeOnDetached="false"
+            app:npv_ShownCount="5"
+            app:npv_TextSizeNormal="14sp"
+            app:npv_TextSizeSelected="14sp"
+            app:npv_WrapSelectorWheel="false" />
 
-        <com.aigestudio.wheelpicker.WheelPicker
+        <cn.carbswang.android.numberpickerview.library.NumberPickerView
             android:id="@+id/wp_end"
-            style="@style/TimeDataPicker"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            app:npv_RespondChangeOnDetached="false"
+            app:npv_ShownCount="5"
+            app:npv_TextSizeNormal="14sp"
+            app:npv_TextSizeSelected="14sp"
+            app:npv_WrapSelectorWheel="false" />
 
     </LinearLayout>
 

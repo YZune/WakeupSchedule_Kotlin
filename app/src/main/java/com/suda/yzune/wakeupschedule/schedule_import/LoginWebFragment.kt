@@ -368,15 +368,23 @@ class LoginWebFragment : BaseFragment() {
 
     private fun cardC2Dialog(years: List<String>) {
         ll_dialog.visibility = View.VISIBLE
-        val terms = listOf("1", "2", "3")
-        wp_term.data = terms
-        wp_years.data = years
-        wp_years.setOnItemSelectedListener { _, data, _ ->
-            year = data as String
+        val terms = arrayOf("1", "2", "3")
+        wp_term.displayedValues = terms
+        wp_term.value = 0
+        wp_term.minValue = 0
+        wp_term.maxValue = terms.size - 1
+
+        wp_years.displayedValues = years.toTypedArray()
+        wp_years.value = 0
+        wp_years.minValue = 0
+        wp_years.maxValue = years.size - 1
+
+        wp_years.setOnValueChangedListener { _, _, newVal ->
+            year = years[newVal]
             Log.d("选中", "选中学年$year")
         }
-        wp_term.setOnItemSelectedListener { _, data, _ ->
-            term = data as String
+        wp_term.setOnValueChangedListener { _, _, newVal ->
+            term = terms[newVal]
             Log.d("选中", "选中学期$term")
         }
     }
