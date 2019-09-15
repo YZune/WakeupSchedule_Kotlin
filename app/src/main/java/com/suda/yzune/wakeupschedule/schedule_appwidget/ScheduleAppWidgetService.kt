@@ -28,7 +28,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             val list = intent.data?.schemeSpecificPart?.split(",")
                     ?: return ScheduleRemoteViewsFactory()
             if (list.size < 2) {
-                ScheduleRemoteViewsFactory(nextWeek = (list[0] == "1"))
+                return ScheduleRemoteViewsFactory(nextWeek = (list[0] == "1"))
             }
             return if (list[0] == "1") {
                 ScheduleRemoteViewsFactory(list[1].toInt(), true)

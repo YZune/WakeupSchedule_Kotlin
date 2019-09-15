@@ -34,8 +34,8 @@ android {
         multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 72
-        versionName "3.56"
+        versionCode 75
+        versionName "3.57-beta"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // vectorDrawables.useSupportLibrary = true
         packagingOptions {
@@ -152,7 +152,11 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'org.mnode.ical4j:ical4j:2.0.0'
+    implementation('net.sf.biweekly:biweekly:0.6.3') {
+        exclude module: 'jackson-core'
+        exclude group: 'com.fasterxml.jackson.core'
+    }
+//    implementation 'org.mnode.ical4j:ical4j:2.0.0'
 //    implementation 'org.threeten:threetenbp:1.3.6'
 //    implementation 'javax.cache:cache-api:1.0.0'
 //    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
