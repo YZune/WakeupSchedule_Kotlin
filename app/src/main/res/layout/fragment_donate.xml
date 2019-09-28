@@ -51,6 +51,11 @@
         android:text="应用商店五星好评" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_weibo"
+        style="@style/DialogButtonStyle"
+        android:text="微博求关注" />
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_donate"
         style="@style/DialogButtonStyle"
         android:text="支付宝随意捐赠" />

@@ -8,8 +8,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
@@ -51,7 +51,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
         val what = appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName
         isTodayType = (what == ".today_appwidget.TodayCourseAppWidget" || what == "com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget")
         if (isTodayType) {
-            GlideApp.with(this)
+            Glide.with(this)
                     .load("https://ws2.sinaimg.cn/large/0069RVTdgy1fv5ypjuqs1j30u01hcdlt.jpg")
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(iv_tip)

@@ -1,9 +1,9 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.widget.ImageView
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
@@ -26,13 +26,13 @@ class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
         }
         val imageView = helper.getView<ImageView>(R.id.iv_table_bg)
         if (item.background != "") {
-            GlideApp.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(item.background)
                     .override(200, 300)
                     .transform(RoundedCornersTransformation(mContext.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
                     .into(imageView)
         } else {
-            GlideApp.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(R.drawable.main_background_2019)
                     .override(200, 300)
                     .transform(RoundedCornersTransformation(mContext.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))

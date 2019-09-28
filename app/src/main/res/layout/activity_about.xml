@@ -98,6 +98,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
+        android:text="微博：WakeUp课程表"
+        android:textIsSelectable="true"
+        android:textSize="12sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_horizontal"
         android:text="WakeUp课程表交流群：161714534"
         android:textIsSelectable="true"
         android:textSize="12sp" />

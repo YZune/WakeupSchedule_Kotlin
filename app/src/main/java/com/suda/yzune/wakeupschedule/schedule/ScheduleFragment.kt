@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +19,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.padding
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
 import kotlin.math.roundToInt
@@ -153,7 +153,7 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
-            val textView = TipTextView(context!!)
+            val textView = TipTextView(table.courseTextColor, table.itemTextSize, context!!)
 
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -175,10 +175,11 @@ class ScheduleFragment : BaseFragment() {
             }
 
             textView.layoutParams = lp
-            textView.textSize = table.itemTextSize.toFloat()
-            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
-            textView.setTextColor(table.courseTextColor)
+            textView.padding = dip(4)
+//            textView.textSize = table.itemTextSize.toFloat()
+//            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
+//            textView.setTextColor(table.courseTextColor)
 
             textView.background = ContextCompat.getDrawable(activity!!, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
@@ -274,7 +275,7 @@ class ScheduleFragment : BaseFragment() {
             if (table.showTime && viewModel.timeList.isNotEmpty()) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
             }
-            textView.text = strBuilder
+            textView.text = strBuilder.toString()
 
             textView.setOnClickListener {
                 try {

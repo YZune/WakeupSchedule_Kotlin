@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.schedule_appwidget
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.*
@@ -18,6 +17,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.padding
 import java.text.ParseException
 import kotlin.math.roundToInt
 
@@ -172,7 +172,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)
-            ViewUtils.layoutView(scrollView, dip(375), dip(375))
+            val info = ViewUtils.getScreenInfo(applicationContext)
+            ViewUtils.layoutView(scrollView, info[0], info[1])
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
             scrollView.removeAllViews()
             weekPanel0.removeAllViews()
@@ -188,7 +189,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             for (i in data.indices) {
                 val strBuilder = StringBuilder()
                 val c = data[i]
-                val tv = TipTextView(context)
+                val tv = TipTextView(table.widgetCourseTextColor, table.widgetItemTextSize, context)
 
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -200,11 +201,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     lp.setMargins(0, (c.startNode - 1) * (widgetItemHeight + marTop) + marTop, 0, 0)
                 }
                 tv.layoutParams = lp
+                tv.padding = dip(4)
                 //tv.gravity = Gravity.CENTER_VERTICAL
-                tv.textSize = table.widgetItemTextSize.toFloat()
-                tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                tv.setPadding(8, 8, 8, 8)
-                tv.setTextColor(table.widgetCourseTextColor)
+//                tv.textSize = table.widgetItemTextSize.toFloat()
+//                tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//                tv.setPadding(8, 8, 8, 8)
+//                tv.setTextColor(table.widgetCourseTextColor)
 
                 tv.background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
@@ -292,7 +294,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     strBuilder.insert(0, timeList[c.startNode - 1].startTime + "\n")
                 }
 
-                tv.text = strBuilder
+                tv.text = strBuilder.toString()
                 if (day == 7) {
                     if (table.sundayFirst) {
                         weekPanel0.addView(tv)

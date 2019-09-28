@@ -21,13 +21,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.getkeepsafe.taptargetview.TapTarget
 import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -182,12 +182,12 @@ class ScheduleActivity : BaseActivity() {
         if (viewModel.table.background != "") {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
+            Glide.with(this.applicationContext)
                     .load(viewModel.table.background)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
-            GlideApp.with(this.applicationContext)
+            Glide.with(this.applicationContext)
                     .load(viewModel.table.background)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -195,12 +195,12 @@ class ScheduleActivity : BaseActivity() {
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
+            Glide.with(this.applicationContext)
                     .load(R.drawable.main_background_2019)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
-            GlideApp.with(this.applicationContext)
+            Glide.with(this.applicationContext)
                     .load(R.drawable.main_background_2019)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())

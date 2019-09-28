@@ -293,13 +293,13 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "河海大学", "http://202.119.113.135/"))
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
-        schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
+        schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn:8080/kdjw"))
         schools.add(SchoolListBean("B", "北京大学", "http://elective.pku.edu.cn"))
         schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
 
         schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))
         schools.add(SchoolListBean("X", "西南石油大学", "http://jwxt.swpu.edu.cn/"))
-        schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn/xxjw/"))
+        schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn:8080/xxjw/"))
         schools.add(SchoolListBean("Z", "郑州大学西亚斯国际学院", "http://218.198.176.111/default2.aspx"))
         schools.add(SchoolListBean("H", "河南理工大学", ""))
         schools.add(SchoolListBean("Q", "齐齐哈尔大学", ""))
@@ -383,6 +383,8 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("M", "闽南师范大学", "http://222.205.160.107/jwglxt/xtgl/login_slogin.html"))
 
         schools.add(SchoolListBean("Q", "清华大学", ""))
+
+        schools.add(SchoolListBean("X", "西安建筑科技大学", "http://xk.xauat.edu.cn/default2.aspx#a"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
