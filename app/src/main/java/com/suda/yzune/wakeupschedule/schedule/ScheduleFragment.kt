@@ -153,6 +153,15 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
+            if (c.step <= 0) {
+                c.step = 1
+                Toasty.error(context!!, "检测到课程数据有误，请仔细核对").show()
+            }
+            if (c.startNode <= 0) {
+                c.startNode = 1
+                Toasty.error(context!!, "检测到课程数据有误，请仔细核对").show()
+            }
+
             val textView = TipTextView(table.courseTextColor, table.itemTextSize, context!!)
 
             val lp = LinearLayout.LayoutParams(

@@ -12,7 +12,6 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import org.jetbrains.anko.dip
-import kotlin.math.min
 
 
 @SuppressLint("ViewConstructor")
@@ -53,17 +52,7 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
 
         // determine the height
-        var height: Int
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        val heightRequirement = MeasureSpec.getSize(heightMeasureSpec)
-        if (heightMode == MeasureSpec.EXACTLY) {
-            height = heightRequirement
-        } else {
-            height = mStaticLayout!!.height + paddingTop + paddingBottom
-            if (heightMode == MeasureSpec.AT_MOST) {
-                height = min(height, heightRequirement)
-            }
-        }
+        val height = MeasureSpec.getSize(heightMeasureSpec)
 
         // Required call: set width and height
         setMeasuredDimension(width, height)
