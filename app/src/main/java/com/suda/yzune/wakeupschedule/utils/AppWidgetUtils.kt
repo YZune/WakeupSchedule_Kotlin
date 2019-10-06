@@ -76,6 +76,7 @@ object AppWidgetUtils {
         mRemoteViews.setInt(R.id.iv_back, "setColorFilter", tableBean.widgetTextColor)
         val weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst), week, tableBean.sundayFirst)
         mRemoteViews.setTextColor(R.id.tv_title0, tableBean.widgetTextColor)
+        mRemoteViews.setTextViewTextSize(R.id.tv_title0, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
         mRemoteViews.setTextViewText(R.id.tv_title0, weekDate[0] + "\n月")
         if (nextWeek) {
             mRemoteViews.setTextViewText(R.id.tv_date, "下周")

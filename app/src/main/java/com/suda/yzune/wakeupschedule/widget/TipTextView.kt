@@ -10,6 +10,7 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import org.jetbrains.anko.dip
 
@@ -26,7 +27,7 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
         }
 
     private val mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = mSize * resources.displayMetrics.density
+        textSize = mSize * resources.displayMetrics.scaledDensity
         typeface = Typeface.DEFAULT_BOLD
         color = mColor
     }
