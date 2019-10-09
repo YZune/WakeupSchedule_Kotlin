@@ -29,7 +29,7 @@ interface TableDao {
     fun setNewDefaultTable(newId: Int)
 
     @Query("select * from tablebean where id = :tableId")
-    fun getTableByIdInThread(tableId: Int): TableBean
+    fun getTableByIdInThread(tableId: Int): TableBean?
 
     @Query("select * from tablebean where id = :tableId")
     fun getTableById(tableId: Int): LiveData<TableBean>

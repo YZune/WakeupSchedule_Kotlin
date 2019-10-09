@@ -57,7 +57,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             table = if (tableId == -1) {
                 tableDao.getDefaultTableInThread()
             } else {
-                tableDao.getTableByIdInThread(tableId)
+                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
             }
         }
 
@@ -65,7 +65,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             table = if (tableId == -1) {
                 tableDao.getDefaultTableInThread()
             } else {
-                tableDao.getTableByIdInThread(tableId)
+                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
             }
             widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)

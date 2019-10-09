@@ -15,6 +15,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
+import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,11 +67,16 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                         viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, "${list[position].id}"))
                         viewModel.getTableById(list[position].id)
                     }
-                    AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
-                    val resultValue = Intent()
-                    resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
-                    setResult(Activity.RESULT_OK, resultValue)
-                    finish()
+                    if (table == null) {
+                        Toasty.error(applicationContext, "该课表读取错误>_<").show()
+                        finish()
+                    } else {
+                        AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
+                        val resultValue = Intent()
+                        resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)
+                        setResult(Activity.RESULT_OK, resultValue)
+                        finish()
+                    }
                 }
             }
             adapter.bindToRecyclerView(rv_table_list)

@@ -66,8 +66,12 @@ class ScheduleManageFragment : BaseFragment() {
                     launch {
                         val task = async(Dispatchers.IO) {
                             viewModel.getTableById(data[position].id)
+                        }.await()
+                        if (task != null) {
+                            startActivity<ScheduleSettingsActivity>("tableData" to task)
+                        } else {
+                            Toasty.error(context!!.applicationContext, "读取课表异常>_<")
                         }
-                        startActivity<ScheduleSettingsActivity>("tableData" to task.await())
                     }
                 }
                 R.id.ib_delete -> {

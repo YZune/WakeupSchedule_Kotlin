@@ -16,7 +16,7 @@ class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidVi
         return tableDao.getDefaultTableInThread()
     }
 
-    suspend fun getTableById(id: Int): TableBean {
+    suspend fun getTableById(id: Int): TableBean? {
         return tableDao.getTableByIdInThread(id)
     }
 

@@ -32,7 +32,9 @@ class ScheduleAppWidget : AppWidgetProvider() {
                         } else {
                             tableDao.getTableByIdInThread(appWidget.info.toInt())
                         }
-                        AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
+                        if (table != null) {
+                            AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
+                        }
                     } catch (ignore: Exception) {
 
                     }
@@ -52,7 +54,9 @@ class ScheduleAppWidget : AppWidgetProvider() {
                         } else {
                             tableDao.getTableByIdInThread(appWidget.info.toInt())
                         }
-                        AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                        if (table != null) {
+                            AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                        }
                     } catch (ignore: Exception) {
 
                     }
@@ -77,7 +81,9 @@ class ScheduleAppWidget : AppWidgetProvider() {
                     } else {
                         tableDao.getTableByIdInThread(appWidget.info.toInt())
                     }
-                    AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                    if (table != null) {
+                        AppWidgetUtils.refreshScheduleWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
+                    }
                 } catch (ignore: Exception) {
 
                 }

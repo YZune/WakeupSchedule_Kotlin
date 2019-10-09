@@ -34,6 +34,7 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var type: String
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
+    private var wv_course: WebView? = null
     private var isRefer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +55,9 @@ class WebViewLoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
+
+        wv_course = WebView(activity)
+        fl_webview.addView(wv_course)
 
         if (url != "") {
             et_url.setText(url)
@@ -94,19 +98,19 @@ class WebViewLoginFragment : BaseFragment() {
             cg_old_qz.visibility = View.GONE
         }
 
-        wv_course.settings.javaScriptEnabled = true
+        wv_course!!.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            wv_course.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            wv_course!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wv_course.webViewClient = object : WebViewClient() {
+        wv_course!!.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
+        wv_course!!.webViewClient = object : WebViewClient() {
 
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 handler.proceed() //接受所有网站的证书
             }
 
         }
-        wv_course.webChromeClient = object : WebChromeClient() {
+        wv_course!!.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
@@ -119,16 +123,16 @@ class WebViewLoginFragment : BaseFragment() {
             }
         }
         //设置自适应屏幕，两者合用
-        wv_course.settings.useWideViewPort = true //将图片调整到适合WebView的大小
-        wv_course.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
+        wv_course!!.settings.useWideViewPort = true //将图片调整到适合WebView的大小
+        wv_course!!.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
         // 缩放操作
-        wv_course.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-        wv_course.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        wv_course.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
-        wv_course.settings.javaScriptCanOpenWindowsAutomatically = true
-        wv_course.settings.domStorageEnabled = true
-        wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
-        wv_course.settings.textZoom = 100
+        wv_course!!.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        wv_course!!.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        wv_course!!.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
+        wv_course!!.settings.javaScriptCanOpenWindowsAutomatically = true
+        wv_course!!.settings.domStorageEnabled = true
+        wv_course!!.settings.userAgentString = wv_course!!.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
+        wv_course!!.settings.textZoom = 100
         initEvent()
     }
 
@@ -236,19 +240,19 @@ class WebViewLoginFragment : BaseFragment() {
 
         fab_import.setOnClickListener {
             if (type !in viewModel.oldQZList1 && type !in viewModel.urpList && type !in viewModel.gzChengFangList && !viewModel.isUrp) {
-                wv_course.loadUrl(js)
+                wv_course!!.loadUrl(js)
             }
             if (type in viewModel.oldQZList1) {
                 if (!isRefer) {
                     val referUrl = when (type) {
                         "湖南科技大学" -> "http://kdjw.hnust.cn/kdjw/tkglAction.do?method=goListKbByXs&istsxx=no"
-                        else -> if (wv_course.url.endsWith('/')) wv_course.url + "tkglAction.do?method=goListKbByXs&istsxx=no" else wv_course.url + "/tkglAction.do?method=goListKbByXs&istsxx=no"
+                        else -> if (wv_course!!.url.endsWith('/')) wv_course!!.url + "tkglAction.do?method=goListKbByXs&istsxx=no" else wv_course!!.url + "/tkglAction.do?method=goListKbByXs&istsxx=no"
                     }
-                    wv_course.loadUrl(referUrl)
+                    wv_course!!.loadUrl(referUrl)
                     it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
-                    wv_course.loadUrl(js)
+                    wv_course!!.loadUrl(js)
                 }
             }
             if (type in viewModel.gzChengFangList) {
@@ -258,35 +262,35 @@ class WebViewLoginFragment : BaseFragment() {
                         "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
                         "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
                         "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                        else -> if (wv_course.url.endsWith('/')) wv_course.url + "xsgrkbcx!getXsgrbkList.action" else wv_course.url + "/xsgrkbcx!getXsgrbkList.action"
+                        else -> if (wv_course!!.url.endsWith('/')) wv_course!!.url + "xsgrkbcx!getXsgrbkList.action" else wv_course!!.url + "/xsgrkbcx!getXsgrbkList.action"
                     }
-                    wv_course.loadUrl(referUrl)
+                    wv_course!!.loadUrl(referUrl)
                     it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
                     isRefer = true
                 } else {
-                    wv_course.loadUrl(js)
+                    wv_course!!.loadUrl(js)
                 }
             }
             if (type in viewModel.urpList || viewModel.isUrp) {
                 if (!isRefer) {
-                    val referUrl = if (wv_course.url.endsWith('/')) wv_course.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
-                    wv_course.loadUrl(referUrl)
+                    val referUrl = if (wv_course!!.url.endsWith('/')) wv_course!!.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course!!.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
+                    wv_course!!.loadUrl(referUrl)
                     it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
-                    wv_course.loadUrl(js)
+                    wv_course!!.loadUrl(js)
                 }
             }
         }
     }
 
     private fun startVisit() {
-        wv_course.visibility = View.VISIBLE
+        wv_course!!.visibility = View.VISIBLE
         ll_error.visibility = View.GONE
         val url = if (et_url.text.toString().startsWith("http://") || et_url.text.toString().startsWith("https://"))
             et_url.text.toString() else "http://" + et_url.text.toString()
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
-            wv_course.loadUrl(url)
+            wv_course!!.loadUrl(url)
             PreferenceUtils.saveStringToSP(activity!!.applicationContext, "school_url", url)
         } else {
             Toasty.error(context!!.applicationContext, "请输入正确的网址╭(╯^╰)╮").show()
@@ -387,12 +391,12 @@ class WebViewLoginFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-        wv_course.webViewClient = null
-        wv_course.webChromeClient = null
-        wv_course.clearCache(true)
-        wv_course.clearHistory()
-        wv_course.removeAllViews()
-        wv_course.destroy()
+        wv_course?.webViewClient = null
+        wv_course?.webChromeClient = null
+        wv_course?.clearCache(true)
+        wv_course?.clearHistory()
+        wv_course?.removeAllViews()
+        wv_course?.destroy()
         super.onDestroyView()
     }
 
