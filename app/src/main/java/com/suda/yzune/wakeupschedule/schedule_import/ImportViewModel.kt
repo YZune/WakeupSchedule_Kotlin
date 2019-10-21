@@ -441,7 +441,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 val textTeacher = ps[0].html().replace(" ", "").split("：").last()
 
                 if(hashMapCourse.containsKey(courseName)) {
-                    hashMapCourse[courseName]!!.forEach { it.teacher = "${it.teacher},$textTeacher" }
+                    hashMapCourse[courseName]!!.forEach { if(!it.teacher!!.split(',').contains(textTeacher)) it.teacher = "${it.teacher},$textTeacher" }
                     continue
                 }
 
