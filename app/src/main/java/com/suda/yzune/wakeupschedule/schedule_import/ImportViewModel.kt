@@ -18,6 +18,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import kotlinx.coroutines.selects.select
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Connection
@@ -27,11 +28,13 @@ import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import java.io.*
 import java.net.URLEncoder
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
@@ -409,6 +412,73 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         }
         return write2DB()
     }
+
+    fun convertHUST(courseHTML: String): String {
+        val doc = Jsoup.parse(courseHTML)
+
+        val ktlist = doc.getElementById("ktlist")
+        val lis = doc.select("li:has(p)")
+
+        val teachers = HashMap<String, ArrayList<String>>()
+        val hashMapDay = hashMapOf("一" to 1, "二" to 2, "三" to 3, "四" to 4, "五" to 5, "六" to 6, "天" to 7, "日" to 7)
+
+
+        data class CourseInfo(var courseBase: CourseBaseBean, var courseDetails: ArrayList<CourseDetailBean>) {}
+        val hashMapCourse = HashMap<String, ArrayList<CourseDetailBean>>()
+
+            for ((courseId, i) in lis.withIndex()) {
+                val courseName = i.selectFirst("strong").html().trim()
+
+                val course = CourseBaseBean(
+                        id = courseId,
+                        courseName = courseName,
+                        color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                        tableId = importId
+                )
+
+                baseList.add(course)
+
+                val ps = i.select("p")
+                val textTeacher = ps[0].html().replace(" ", "").split("：").last()
+
+                if(hashMapCourse.containsKey(courseName)) {
+                    hashMapCourse[courseName]!!.forEach { it.teacher = "${it.teacher},$textTeacher" }
+                    continue
+                }
+
+                hashMapCourse[courseName] = ArrayList()
+
+                // 周次、星期、节次、地点
+                val segments = i.select("div[class=\"grid demo-grid\"]:has(div[class=\"col-0\"])")
+                for(segment in segments) {
+                    val infos = segment.select("div[class~=col-]").map { it.html().trim() }
+                    val nodes = infos[2].substring(1, infos[2].length - 1).split('-').map { it.toInt() }
+                    val week = infos[0].split('-').map {it.toInt()}
+
+                    val detail = CourseDetailBean(
+                            id = courseId,
+                            teacher = textTeacher,
+                            startWeek = week[0],
+                            endWeek = week[1],
+                            room = infos[3],
+                            day = hashMapDay[infos[1].substring("星期".length, infos[1].length)]!!,
+                            startNode = nodes[0],
+                            step = nodes[1] - nodes[0] + 1,
+                            tableId = importId,
+                            type = 0
+                    )
+
+                    hashMapCourse[courseName]!!.add(detail)
+                    detailList.add(detail)
+
+                }
+
+            }
+
+
+
+            return write2DB()
+        }
 
     private val nodeHashMap = SparseArray<Array<Int>?>()
 
