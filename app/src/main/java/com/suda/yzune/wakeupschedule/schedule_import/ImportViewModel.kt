@@ -423,7 +423,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val hashMapDay = hashMapOf("一" to 1, "二" to 2, "三" to 3, "四" to 4, "五" to 5, "六" to 6, "天" to 7, "日" to 7)
 
 
-        data class CourseInfo(var courseBase: CourseBaseBean, var courseDetails: ArrayList<CourseDetailBean>) {}
         val hashMapCourse = HashMap<String, ArrayList<CourseDetailBean>>()
 
             for ((courseId, i) in lis.withIndex()) {
