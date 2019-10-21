@@ -24,6 +24,7 @@ import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
 import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import java.io.*
@@ -426,7 +427,17 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val hashMapCourse = HashMap<String, ArrayList<CourseDetailBean>>()
 
             for ((courseId, i) in lis.withIndex()) {
-                val courseName = i.selectFirst("strong").html().trim()
+
+                var courseName: String
+                var ps: Elements
+                var textTeacher: String
+                try {
+                    courseName = i.selectFirst("strong").html().trim()
+                    ps = i.select("p")
+                    textTeacher = ps[0].html().replace(" ", "").split("：").lastOrNull() ?: ""
+                } catch(e: Exception) {
+                    continue
+                }
 
                 val course = CourseBaseBean(
                         id = courseId,
@@ -437,8 +448,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
                 baseList.add(course)
 
-                val ps = i.select("p")
-                val textTeacher = ps[0].html().replace(" ", "").split("：").last()
+
 
                 if(hashMapCourse.containsKey(courseName)) {
                     hashMapCourse[courseName]!!.forEach { if(!it.teacher!!.split(',').contains(textTeacher)) it.teacher = "${it.teacher},$textTeacher" }
@@ -450,9 +460,19 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 // 周次、星期、节次、地点
                 val segments = i.select("div[class=\"grid demo-grid\"]:has(div[class=\"col-0\"])")
                 for(segment in segments) {
-                    val infos = segment.select("div[class~=col-]").map { it.html().trim() }
-                    val nodes = infos[2].substring(1, infos[2].length - 1).split('-').map { it.toInt() }
-                    val week = infos[0].split('-').map {it.toInt()}
+                    var infos: List<String>
+                    var nodes: List<Int>
+                    var week: List<Int>
+
+                    try {
+                        infos = segment.select("div[class~=col-]").map { it.html().trim() }
+                        nodes = infos[2].substring(1, infos[2].length - 1).split('-').map { it.toInt() }
+                        week = infos[0].split('-').map {it.toInt()}
+
+                        assert(infos.count() == 4 && nodes.count() == 2 && week.count() == 2)
+                    } catch (e: Exception) {
+                        continue
+                    }
 
                     val detail = CourseDetailBean(
                             id = courseId,
@@ -469,7 +489,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
                     hashMapCourse[courseName]!!.add(detail)
                     detailList.add(detail)
-
                 }
 
             }

@@ -236,7 +236,6 @@ class LoginWebFragment : BaseFragment() {
                                     }
 
                                 } catch (e: Exception) {
-                                    e.printStackTrace()
                                     e.message
                                 }
                             }
@@ -249,9 +248,12 @@ class LoginWebFragment : BaseFragment() {
                                 "no login" -> {
                                     Toasty.error(activity!!.applicationContext, "学号或密码错误，请检查后再输入", Toast.LENGTH_LONG).show()
                                 }
-
                                 else -> {
-                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                    if(task?.contains("failed to connect") == true) {
+                                        Toasty.error(activity!!.applicationContext, "无法访问HUB系统，请检查是否连接校园网", Toast.LENGTH_LONG).show()
+                                    } else {
+                                        Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                         }
