@@ -36,6 +36,10 @@ class MobileHub (private var user: String, private var password: String){
 
     lateinit var courseHTML: String
 
+    init {
+        user = user.toUpperCase()
+    }
+
     fun refreshSession() {
         val request = Request.Builder()
                 .url(loginUrl)
