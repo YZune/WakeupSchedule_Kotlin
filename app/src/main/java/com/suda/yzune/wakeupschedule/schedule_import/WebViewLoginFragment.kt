@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 
 import android.app.Activity.RESULT_OK
+import android.content.res.Configuration
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +27,9 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
+import android.content.res.Resources.NotFoundException
+import android.content.res.Resources
+
 
 class WebViewLoginFragment : BaseFragment() {
 
@@ -56,7 +60,12 @@ class WebViewLoginFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
 
-        wv_course = WebView(activity)
+        wv_course = try {
+            WebView(activity)
+        } catch (e: NotFoundException) {
+            WebView(activity!!.createConfigurationContext(Configuration()))
+        }
+
         fl_webview.addView(wv_course)
 
         if (url != "") {
