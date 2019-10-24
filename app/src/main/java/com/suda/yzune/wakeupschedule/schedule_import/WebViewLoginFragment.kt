@@ -38,7 +38,6 @@ class WebViewLoginFragment : BaseFragment() {
     private lateinit var type: String
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
-    private var wv_course: WebView? = null
     private var isRefer = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,14 +58,6 @@ class WebViewLoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
-
-        wv_course = try {
-            WebView(activity)
-        } catch (e: NotFoundException) {
-            WebView(activity!!.createConfigurationContext(Configuration()))
-        }
-
-        fl_webview.addView(wv_course)
 
         if (url != "") {
             et_url.setText(url)
