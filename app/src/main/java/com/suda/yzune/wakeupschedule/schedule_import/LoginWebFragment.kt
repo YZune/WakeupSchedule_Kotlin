@@ -3,11 +3,11 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.app.Activity.RESULT_OK
 import android.graphics.Color
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +15,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
+import com.suda.yzune.wakeupschedule.schedule_import.HUST.MobileHub
 import com.suda.yzune.wakeupschedule.schedule_import.JLU.UIMS
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
@@ -68,6 +69,9 @@ class LoginWebFragment : BaseFragment() {
                     group.find<MaterialButton>(checkedId).isChecked = true
                 }
             }
+        }
+        if(type == "华中科技大学") {
+            et_id.inputType = InputType.TYPE_CLASS_TEXT
         }
         initEvent()
     }
@@ -215,6 +219,41 @@ class LoginWebFragment : BaseFragment() {
                                 }
                                 else -> {
                                     Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
+                    if (type == "华中科技大学") {
+                        launch {
+                            val task = withContext(Dispatchers.IO) {
+                                val hub = MobileHub(et_id.text.toString(), et_pwd.text.toString())
+                                try {
+                                    if(!hub.login()) {
+                                        "no login"
+                                    } else {
+                                        hub.getCourseSchedule()
+                                        viewModel.convertHUST(hub.courseHTML)
+                                    }
+
+                                } catch (e: Exception) {
+                                    e.message
+                                }
+                            }
+                            when (task) {
+                                "ok" -> {
+                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                                    activity!!.setResult(RESULT_OK)
+                                    activity!!.finish()
+                                }
+                                "no login" -> {
+                                    Toasty.error(activity!!.applicationContext, "学号或密码错误，请检查后再输入", Toast.LENGTH_LONG).show()
+                                }
+                                else -> {
+                                    if(task?.contains("failed to connect") == true) {
+                                        Toasty.error(activity!!.applicationContext, "无法访问HUB系统，请检查是否连接校园网", Toast.LENGTH_LONG).show()
+                                    } else {
+                                        Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                    }
                                 }
                             }
                         }
