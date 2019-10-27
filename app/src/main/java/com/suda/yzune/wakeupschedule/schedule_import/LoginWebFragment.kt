@@ -83,8 +83,9 @@ class LoginWebFragment : BaseFragment() {
         if (type == "吉林大学") {
             tv_thanks.text = "感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码"
         }
-        if(type == "华中科技大学") {
+        if (type == "华中科技大学") {
             et_id.inputType = InputType.TYPE_CLASS_TEXT
+            tv_thanks.text = "感谢 @Lyt99\n能导入贵校课程离不开他无私贡献代码"
         }
         initEvent()
     }
@@ -259,7 +260,7 @@ class LoginWebFragment : BaseFragment() {
                             val task = withContext(Dispatchers.IO) {
                                 val hub = MobileHub(et_id.text.toString(), et_pwd.text.toString())
                                 try {
-                                    if(!hub.login()) {
+                                    if (!hub.login()) {
                                         "no login"
                                     } else {
                                         hub.getCourseSchedule()
@@ -280,7 +281,7 @@ class LoginWebFragment : BaseFragment() {
                                     Toasty.error(activity!!.applicationContext, "学号或密码错误，请检查后再输入", Toast.LENGTH_LONG).show()
                                 }
                                 else -> {
-                                    if(task?.contains("failed to connect") == true) {
+                                    if (task?.contains("failed to connect") == true) {
                                         Toasty.error(activity!!.applicationContext, "无法访问HUB系统，请检查是否连接校园网", Toast.LENGTH_LONG).show()
                                     } else {
                                         Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
