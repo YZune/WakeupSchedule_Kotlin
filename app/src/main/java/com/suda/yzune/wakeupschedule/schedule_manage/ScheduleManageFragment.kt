@@ -64,9 +64,9 @@ class ScheduleManageFragment : BaseFragment() {
                 }
                 R.id.ib_edit -> {
                     launch {
-                        val task = async(Dispatchers.IO) {
+                        val task = withContext(Dispatchers.IO) {
                             viewModel.getTableById(data[position].id)
-                        }.await()
+                        }
                         if (task != null) {
                             startActivity<ScheduleSettingsActivity>("tableData" to task)
                         } else {
