@@ -26,6 +26,8 @@ class VerticalItemViewBinder constructor(
                 val outValue = TypedValue()
                 context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
                 backgroundResource = outValue.resourceId
+                topPadding = dip(16)
+                bottomPadding = dip(16)
 
                 lparams(matchParent, wrapContent)
                 textView {
@@ -33,7 +35,6 @@ class VerticalItemViewBinder constructor(
                     textColor = Color.BLACK
                     textSize = 16f
                 }.lparams(wrapContent, wrapContent) {
-                    topMargin = dip(16)
                     marginStart = dip(16)
                     marginEnd = dip(16)
                 }
@@ -42,7 +43,6 @@ class VerticalItemViewBinder constructor(
                     textSize = 12f
                 }.lparams(wrapContent, wrapContent) {
                     topMargin = dip(4)
-                    bottomMargin = dip(16)
                     marginStart = dip(16)
                     marginEnd = dip(16)
                 }
@@ -53,13 +53,18 @@ class VerticalItemViewBinder constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, item: VerticalItem) {
         holder.tvTitle.text = item.title
-        if (item.isSpanned) {
-            holder.tvDescription.text = ViewUtils.getHtmlSpannedString(item.description)
-        } else {
-            holder.tvDescription.text = item.description
-        }
         holder.llVerticalItem.setOnClickListener { onVerticalItemClickListener.invoke(item) }
         holder.llVerticalItem.setOnLongClickListener { onVerticalItemLongClickListener.invoke(item) }
+        if (item.description.isEmpty()) {
+            holder.tvDescription.visibility = View.GONE
+        } else {
+            holder.tvDescription.visibility = View.VISIBLE
+            if (item.isSpanned) {
+                holder.tvDescription.text = ViewUtils.getHtmlSpannedString(item.description)
+            } else {
+                holder.tvDescription.text = item.description
+            }
+        }
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {

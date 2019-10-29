@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
@@ -16,17 +17,17 @@
         android:textSize="12sp" />
 
     <TextView
-        style="@style/ButtonBackground"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:fontFamily="@font/iconfont"
-        android:includeFontPadding="false"
         android:id="@+id/ib_delete"
-        android:text=""
+        style="@style/ButtonBackground"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text=""
         android:textSize="20sp" />
 
     <LinearLayout
@@ -78,7 +79,11 @@
             android:gravity="center_vertical"
             android:hint="周一    第1 - 2节"
             android:lines="1"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:autoSizeMaxTextSize="14sp"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform" />
     </LinearLayout>
 
     <TextView

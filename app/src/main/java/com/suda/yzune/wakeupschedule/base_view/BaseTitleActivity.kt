@@ -65,10 +65,10 @@ abstract class BaseTitleActivity : BaseActivity() {
 
                 }
 
-                view {
-                    backgroundColorResource = R.color.grey
-                    alpha = 0.5f
-                }.lparams(wrapContent, dip(1))
+//                view {
+//                    backgroundColorResource = R.color.grey
+//                    alpha = 0.5f
+//                }.lparams(wrapContent, dip(1))
             }
         }.view
     }

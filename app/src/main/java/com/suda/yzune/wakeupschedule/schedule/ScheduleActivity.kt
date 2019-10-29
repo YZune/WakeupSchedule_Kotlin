@@ -42,6 +42,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
+import com.suda.yzune.wakeupschedule.settings.SettingsHostActivity
 import com.suda.yzune.wakeupschedule.suda_life.SudaLifeActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
@@ -426,7 +427,7 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivityForResult<SettingsActivity>(31)
+                        startActivityForResult<SettingsHostActivity>(31)
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
