@@ -29,7 +29,6 @@ class HorizontalItemViewBinder constructor(private val onHorizontalItemClickList
 
                 textView {
                     id = R.id.anko_text_view
-                    textColor = Color.BLACK
                     textSize = 16f
                     gravity = Gravity.CENTER_VERTICAL
                     lines = 1

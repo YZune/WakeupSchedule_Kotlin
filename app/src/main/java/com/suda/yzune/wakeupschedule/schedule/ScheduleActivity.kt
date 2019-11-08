@@ -420,7 +420,6 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initNavView() {
-        navigationView.itemIconTintList = null
         navigationView.menu.findItem(R.id.nav_suda).isVisible = PreferenceUtils.getBooleanFromSP(this, "suda_life", true)
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {

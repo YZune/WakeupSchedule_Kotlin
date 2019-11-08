@@ -245,6 +245,17 @@ object ViewUtils {
         return vh
     }
 
+    fun createColorStateList(color: Int): ColorStateList {
+        val colors = intArrayOf(color, color, color, color, color, color)
+        val states = arrayOfNulls<IntArray>(6)
+        states[0] = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+        states[1] = intArrayOf(android.R.attr.state_enabled, android.R.attr.state_focused)
+        states[2] = intArrayOf(android.R.attr.state_enabled)
+        states[3] = intArrayOf(android.R.attr.state_focused)
+        states[4] = intArrayOf(android.R.attr.state_window_focused)
+        states[5] = intArrayOf()
+        return ColorStateList(states, colors)
+    }
 
     fun createColorStateList(normal: Int, pressed: Int, focused: Int, unable: Int): ColorStateList {
         val colors = intArrayOf(pressed, focused, normal, focused, unable, normal)

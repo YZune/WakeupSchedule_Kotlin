@@ -32,7 +32,6 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                 lparams(matchParent, dip(64))
                 textView {
                     id = R.id.anko_text_view
-                    textColor = Color.BLACK
                     textSize = 16f
                 }.lparams(0, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL

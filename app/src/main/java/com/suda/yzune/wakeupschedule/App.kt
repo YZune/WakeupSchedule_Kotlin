@@ -7,6 +7,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Typeface
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
@@ -36,6 +37,8 @@ class App : Application() {
             importance = NotificationManager.IMPORTANCE_LOW
             createNotificationChannel(this, channelId, channelName, importance)
         }
+        // todo: 6.0以后才允许设置。5.1上会导致WebView闪退。
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 
     @TargetApi(Build.VERSION_CODES.O)

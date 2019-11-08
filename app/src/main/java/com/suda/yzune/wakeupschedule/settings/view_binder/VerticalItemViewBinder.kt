@@ -32,7 +32,6 @@ class VerticalItemViewBinder constructor(
                 lparams(matchParent, wrapContent)
                 textView {
                     id = R.id.anko_text_view
-                    textColor = Color.BLACK
                     textSize = 16f
                 }.lparams(wrapContent, wrapContent) {
                     marginStart = dip(16)

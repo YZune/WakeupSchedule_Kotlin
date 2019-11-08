@@ -12,7 +12,6 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="请选择周数"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
@@ -36,8 +35,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="全周"
-            android:textColor="@android:color/black" />
+            android:text="全周" />
 
         <TextView
             android:id="@+id/tv_type1"
@@ -46,8 +44,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="单周"
-            android:textColor="@android:color/black" />
+            android:text="单周" />
 
         <TextView
             android:id="@+id/tv_type2"
@@ -56,8 +53,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="双周"
-            android:textColor="@android:color/black" />
+            android:text="双周" />
     </LinearLayout>
 
     <LinearLayout

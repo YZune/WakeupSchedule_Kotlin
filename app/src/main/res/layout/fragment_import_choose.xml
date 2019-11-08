@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
+    android:background="?attr/colorSurface"
     android:layout_gravity="center"
     android:orientation="vertical"
     tools:context=".schedule.ImportChooseFragment">
@@ -28,7 +29,6 @@
         android:layout_marginTop="-16dp"
         android:gravity="center"
         android:text="导入课程"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <TextView

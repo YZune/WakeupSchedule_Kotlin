@@ -11,8 +11,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.tintedImageButton
 import org.jetbrains.anko.constraint.layout.constraintLayout
 
 abstract class BaseBlurTitleActivity : BaseActivity() {
@@ -34,7 +37,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
     private fun createView(): View {
         return UI {
             constraintLayout {
-                backgroundColorResource = R.color.backgroundColor
+                backgroundColor = colorAttr(R.attr.colorSurface)
                 scrollView {
                     overScrollMode = View.OVER_SCROLL_NEVER
                     isVerticalScrollBarEnabled = false
@@ -52,13 +55,14 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColor = Color.WHITE
+                    backgroundColor = colorAttr(R.attr.colorSurface)
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-                    imageButton(R.drawable.ic_back) {
+                    tintedImageButton(R.drawable.ic_back) {
                         backgroundResource = outValue.resourceId
                         padding = dip(8)
+                        setColorFilter(colorAttr(R.attr.colorOnBackground))
                         setOnClickListener {
                             onBackPressed()
                         }
@@ -85,14 +89,14 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                view {
-                    backgroundColorResource = R.color.grey
-                    alpha = 0.5f
-                }.lparams(matchParent, dip(1)) {
-                    topToBottom = R.id.anko_layout
-                    startToStart = ConstraintSet.PARENT_ID
-                    endToEnd = ConstraintSet.PARENT_ID
-                }
+//                view {
+//                    backgroundColorResource = R.color.grey
+//                    alpha = 0.5f
+//                }.lparams(matchParent, dip(1)) {
+//                    topToBottom = R.id.anko_layout
+//                    startToStart = ConstraintSet.PARENT_ID
+//                    endToEnd = ConstraintSet.PARENT_ID
+//                }
             }
         }.view
 

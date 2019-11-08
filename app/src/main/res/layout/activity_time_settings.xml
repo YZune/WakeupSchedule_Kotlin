@@ -6,7 +6,6 @@
     android:id="@+id/ll_root"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/backgroundColor"
     tools:context="com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity">
 
     <fragment

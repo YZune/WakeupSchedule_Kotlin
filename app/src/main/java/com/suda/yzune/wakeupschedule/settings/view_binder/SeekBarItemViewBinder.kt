@@ -26,7 +26,6 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
                 linearLayout {
                     textView {
                         id = R.id.anko_text_view
-                        textColor = Color.BLACK
                         textSize = 16f
                         gravity = Gravity.CENTER_VERTICAL
                     }.lparams(0, matchParent) {

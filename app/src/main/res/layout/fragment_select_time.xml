@@ -14,7 +14,6 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="请选择时间"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -28,6 +27,7 @@
             android:layout_weight="1"
             app:npv_RespondChangeOnDetached="false"
             app:npv_ShownCount="5"
+            app:npv_TextColorNormal="?attr/colorOnBackground"
             app:npv_TextSizeNormal="14sp"
             app:npv_TextSizeSelected="14sp"
             app:npv_WrapSelectorWheel="true" />
@@ -39,6 +39,7 @@
             android:layout_weight="1"
             app:npv_RespondChangeOnDetached="false"
             app:npv_ShownCount="5"
+            app:npv_TextColorNormal="?attr/colorOnBackground"
             app:npv_TextSizeNormal="14sp"
             app:npv_TextSizeSelected="14sp"
             app:npv_WrapSelectorWheel="false" />
@@ -50,6 +51,7 @@
             android:layout_weight="1"
             app:npv_RespondChangeOnDetached="false"
             app:npv_ShownCount="5"
+            app:npv_TextColorNormal="?attr/colorOnBackground"
             app:npv_TextSizeNormal="14sp"
             app:npv_TextSizeSelected="14sp"
             app:npv_WrapSelectorWheel="false" />

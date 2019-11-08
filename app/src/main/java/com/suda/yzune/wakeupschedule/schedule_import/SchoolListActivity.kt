@@ -55,16 +55,17 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     override fun createTitleBar(): View {
         return UI {
             verticalLayout {
-                backgroundColorResource = R.color.backgroundColor
+                backgroundColor = colorAttr(R.attr.colorSurface)
                 linearLayout {
                     topPadding = getStatusBarHeight()
-                    backgroundColor = Color.WHITE
+                    backgroundColor = colorAttr(R.attr.colorSurface)
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
                     imageButton(R.drawable.ic_back) {
                         backgroundResource = outValue.resourceId
                         padding = dip(8)
+                        setColorFilter(colorAttr(R.attr.colorOnBackground))
                         setOnClickListener {
                             onBackPressed()
                         }
@@ -138,10 +139,10 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                     }
                 }
 
-                view {
-                    backgroundColorResource = R.color.grey
-                    alpha = 0.5f
-                }.lparams(wrapContent, dip(1))
+//                view {
+//                    backgroundColorResource = R.color.grey
+//                    alpha = 0.5f
+//                }.lparams(wrapContent, dip(1))
             }
         }.view
     }

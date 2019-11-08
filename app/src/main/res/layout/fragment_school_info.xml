@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".schedule_import.SchoolInfoFragment">
 
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@android:color/white" />
+        android:layout_height="24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/white">
+        android:layout_height="48dp">
 
         <ImageButton
             android:id="@+id/ib_back"
@@ -25,6 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
+            android:tint="?attr/colorOnBackground"
             android:src="@drawable/ic_back" />
 
         <TextView
@@ -37,12 +35,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
 
     <ScrollView
         android:layout_width="match_parent"
