@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            android:tint="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -34,12 +35,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -81,34 +76,30 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="12sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_template"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="点击此处获取模板"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_import"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginBottom="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="选取 Excel 文件导入"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 

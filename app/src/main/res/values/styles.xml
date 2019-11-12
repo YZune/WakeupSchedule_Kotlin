@@ -11,7 +11,7 @@
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:background">@drawable/splash</item>
@@ -28,20 +28,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
 
-    </style>
-
-    <style name="LoginEditText">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">8dp</item>
-        <item name="android:layout_marginStart">24dp</item>
-        <item name="android:layout_marginEnd">24dp</item>
-        <item name="android:drawableBottom">@drawable/login_edittext_bottom</item>
-        <item name="android:drawablePadding">8dp</item>
-        <item name="android:textCursorDrawable">@drawable/login_edittext_cursor</item>
-        <item name="android:background">@null</item>
     </style>
 
     <style name="MainHeadDetailText">

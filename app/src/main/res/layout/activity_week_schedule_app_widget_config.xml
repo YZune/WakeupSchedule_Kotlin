@@ -18,18 +18,16 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_got_it"
-        android:layout_width="160dp"
-        android:layout_height="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:text="我知道啦"
-        android:textColor="@android:color/white"
         android:textSize="12sp"
         android:textStyle="bold" />
 

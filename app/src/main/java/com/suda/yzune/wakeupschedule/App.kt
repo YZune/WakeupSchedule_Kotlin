@@ -37,7 +37,6 @@ class App : Application() {
             importance = NotificationManager.IMPORTANCE_LOW
             createNotificationChannel(this, channelId, channelName, importance)
         }
-        // todo: 6.0以后才允许设置。5.1上会导致WebView闪退。
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
     }
 

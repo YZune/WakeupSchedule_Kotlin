@@ -32,7 +32,6 @@ class LoginWebActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_NO
         setContentView(R.layout.activity_login_web)
 
         viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)

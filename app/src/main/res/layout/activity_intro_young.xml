@@ -26,17 +26,15 @@
         android:text="咩咩\n一个简单的待重构的纪念日、倒数日App\n有丰富的桌面小部件样式\n迟些时间将会集成到课程表\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/YoungCommemoration"
         android:textSize="12sp" />
 
-    <TextView
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_download"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="160dp"
-        android:layout_height="32dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:background="@drawable/select_textview_bg"
-        android:gravity="center"
         android:text="前去下载"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textSize="12sp" />
 
 </LinearLayout>

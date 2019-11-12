@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
@@ -72,6 +73,7 @@ class ImportChooseFragment : BaseDialogFragment() {
 
         tv_school.text = "${importSchool.name}导入"
         tv_school.setOnClickListener {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivityForResult<LoginWebActivity>(
                     32,
                     "type" to importSchool.name,

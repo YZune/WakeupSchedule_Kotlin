@@ -177,7 +177,6 @@
         android:layout_marginBottom="16dp"
         android:gravity="center"
         android:lineSpacingExtra="4dp"
-        android:textColor="@android:color/black"
         android:textSize="12sp"
         tools:text="感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码" />
 

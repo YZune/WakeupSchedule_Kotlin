@@ -30,7 +30,6 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="ヾ(=･ω･=)o"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <TextView

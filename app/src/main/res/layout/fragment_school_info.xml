@@ -22,8 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:tint="?attr/colorOnBackground"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            android:tint="?attr/colorOnBackground" />
 
         <TextView
             android:layout_width="0dp"
@@ -159,17 +159,15 @@
                 android:singleLine="true"
                 android:textSize="14sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_next"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="160dp"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="32dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="下一步"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>

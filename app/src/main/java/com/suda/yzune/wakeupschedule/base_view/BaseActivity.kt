@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.base_view
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -12,9 +13,11 @@ import androidx.core.content.ContextCompat
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import org.jetbrains.anko.configuration
 import kotlin.coroutines.CoroutineContext
 
 
@@ -25,12 +28,6 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
         get() = job + Dispatchers.Main
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            val intent = Intent(this, SplashActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(intent)
-            finish()
-        }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
@@ -53,6 +50,18 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.navigationBarColor = PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent))
+        }
+        when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_NO -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                }
+            } // Night mode is not active, we're using the light theme
+            Configuration.UI_MODE_NIGHT_YES -> {
+                window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            } // Night mode is active, we're using dark theme
         }
         job = Job()
         super.onCreate(savedInstanceState)

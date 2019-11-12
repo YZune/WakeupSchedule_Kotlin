@@ -9,8 +9,7 @@
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@android:color/white" />
+        android:layout_height="24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,11 +17,12 @@
 
         <ImageButton
             android:id="@+id/ib_back"
+            style="@style/ButtonBackground"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            style="@style/ButtonBackground"
             android:padding="8dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            android:tint="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -35,12 +35,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -71,64 +65,56 @@
                 android:text="如果是从QQ或Tim或者微信收到分享的导出文件，请点击对应的按钮。如果存放在其他路径，请自行选择。"
                 android:textSize="12sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_qq"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="我从QQ接收的分享文件"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_tim"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="我从Tim接收的分享文件"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_wechat"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="我从微信接收的分享文件"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_self"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginBottom="48dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="我要自己选择路径"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 

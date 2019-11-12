@@ -19,6 +19,7 @@ import com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 import org.jetbrains.anko.backgroundResource
+import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.textColor
 
@@ -31,6 +32,7 @@ class SelectWeekFragment : BaseDialogFragment() {
     private lateinit var viewModel: AddCourseViewModel
     private val liveData = MutableLiveData<ArrayList<Int>>()
     private val result = ArrayList<Int>()
+    private var colorSurface: Int = Color.BLACK
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +40,14 @@ class SelectWeekFragment : BaseDialogFragment() {
             position = it.getInt("position")
         }
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
+        colorSurface = context!!.colorAttr(R.attr.colorOnSurface)
         liveData.observe(this, Observer {
             if (it?.size == viewModel.maxWeek) {
                 tv_all.setTextColor(Color.WHITE)
                 tv_all.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (it?.size != viewModel.maxWeek) {
-                tv_all.setTextColor(Color.BLACK)
+                tv_all.setTextColor(colorSurface)
                 tv_all.background = null
             }
             val flag = viewModel.judgeType(it!!)
@@ -53,7 +56,7 @@ class SelectWeekFragment : BaseDialogFragment() {
                 tv_type1.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (flag != 1) {
-                tv_type1.setTextColor(Color.BLACK)
+                tv_type1.setTextColor(colorSurface)
                 tv_type1.background = null
             }
             if (flag == 2) {
@@ -61,7 +64,7 @@ class SelectWeekFragment : BaseDialogFragment() {
                 tv_type2.background = ContextCompat.getDrawable(context!!, R.drawable.select_textview_bg)
             }
             if (flag != 2) {
-                tv_type2.setTextColor(Color.BLACK)
+                tv_type2.setTextColor(colorSurface)
                 tv_type2.background = null
             }
         })
@@ -94,7 +97,7 @@ class SelectWeekFragment : BaseDialogFragment() {
                             result.remove(pos + 1)
                             adapter.getViewByPosition(pos, R.id.tv_num)?.background = null
                             (adapter.getViewByPosition(pos, R.id.tv_num) as TextView).textColor =
-                                    Color.BLACK
+                                    colorSurface
                         }
                         liveData.value = result
                     }

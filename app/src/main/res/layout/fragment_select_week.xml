@@ -16,10 +16,10 @@
 
     <com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
         android:id="@+id/rv_week"
-       android:layout_gravity="center_horizontal"
-        android:layout_margin="8dp"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="8dp"
         android:orientation="vertical" />
 
     <LinearLayout
