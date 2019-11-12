@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -341,7 +340,6 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("X", "信阳师范学院", "http://jwc.xynu.edu.cn/jxzhxxfwpt.htm"))
         schools.add(SchoolListBean("A", "安徽建筑大学", "http://219.231.0.156/"))
         schools.add(SchoolListBean("B", "北京化工大学", "http://jwglxt.buct.edu.cn/"))
-        schools.add(SchoolListBean("Z", "北京化工大学", "http://jwglxt.buct.edu.cn/"))
         schools.add(SchoolListBean("Z", "浙江工业大学之江学院", "http://jwgl.zzjc.edu.cn/default2.aspx"))
         schools.add(SchoolListBean("B", "北京联合大学", ""))
         schools.add(SchoolListBean("N", "南京城市职业学院", "http://jw.ncc.edu.cn/jwglxt/xtgl/"))
