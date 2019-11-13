@@ -15,7 +15,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:scaleType="centerCrop"
-        android:text=""
+        android:text="@string/icon_add"
         android:textSize="20sp" />
 
     <TextView
@@ -34,8 +34,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:scaleType="centerCrop"
-        android:src="@drawable/setting"
-        android:text=""
+        android:text="@string/icon_setting"
         android:textSize="20sp" />
 
     <TextView
