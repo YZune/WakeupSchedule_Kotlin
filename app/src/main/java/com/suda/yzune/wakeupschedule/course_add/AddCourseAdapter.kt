@@ -31,35 +31,8 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
         helper.addOnClickListener(R.id.ib_delete)
         helper.addOnClickListener(R.id.ll_weeks)
         helper.addOnClickListener(R.id.ll_time)
-        val etRoom = helper.getView<EditText>(R.id.et_room)
-        val etTeacher = helper.getView<EditText>(R.id.et_teacher)
-        etRoom.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                mListener?.onEditTextAfterTextChanged(s, helper.layoutPosition - 1, "room")
-            }
-        })
-
-        etTeacher.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                mListener?.onEditTextAfterTextChanged(s, helper.layoutPosition - 1, "teacher")
-            }
-        })
+        helper.addOnClickListener(R.id.ll_teacher)
+        helper.addOnClickListener(R.id.ll_room)
     }
 
     interface OnItemEditTextChangedListener {

@@ -85,50 +85,60 @@
             app:autoSizeTextType="uniform" />
     </LinearLayout>
 
-    <TextView
-        style="@style/IconTextViewStyle"
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_below="@id/ll_time"
-        android:text="@string/icon_person"
-        android:textColor="#1571D5" />
-
-    <EditText
-        android:id="@+id/et_teacher"
+    <LinearLayout
+        android:id="@+id/ll_teacher"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="24dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:hint="授课老师（可不填）"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp" />
+        android:background="?android:attr/selectableItemBackground">
 
-    <TextView
-        style="@style/IconTextViewStyle"
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_below="@id/et_teacher"
-        android:text="@string/icon_location"
-        android:textColor="#F63D3E" />
+        <TextView
+            style="@style/IconTextViewStyle"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:text="@string/icon_person"
+            android:textColor="#1571D5" />
 
-    <EditText
-        android:id="@+id/et_room"
+        <TextView
+            android:id="@+id/et_teacher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="授课老师（可不填）"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_room"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_below="@id/et_teacher"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="24dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:hint="上课地点（可不填）"
-        android:imeOptions="actionDone"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp" />
+        android:layout_below="@id/ll_teacher"
+        android:background="?android:attr/selectableItemBackground">
 
+        <TextView
+            style="@style/IconTextViewStyle"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:text="@string/icon_location"
+            android:textColor="#F63D3E" />
+
+        <TextView
+            android:id="@+id/et_room"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="上课地点（可不填）"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
