@@ -83,7 +83,6 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        savedInstanceState?.remove("android:support:fragments")
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

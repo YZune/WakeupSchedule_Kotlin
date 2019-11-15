@@ -24,30 +24,6 @@
     <string name="icon_nav" translatable="false"></string>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <string name="text_login_web_title">登录教务系统</string>
     <string name="hint_student_id">学号</string>
     <string name="hint_password">密码</string>

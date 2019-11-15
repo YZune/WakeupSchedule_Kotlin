@@ -13,8 +13,10 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 
 class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
 
-    lateinit var editList: MutableList<CourseEditBean>
-    lateinit var baseBean: CourseBaseBean
+    val editList = mutableListOf<CourseEditBean>()
+    val baseBean: CourseBaseBean by lazy {
+        CourseBaseBean(-1, "", "", tableId)
+    }
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val baseDao = dataBase.courseBaseDao()
@@ -93,7 +95,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun initData(maxWeek: Int): MutableList<CourseEditBean> {
-        editList = mutableListOf(CourseEditBean(
+        editList.add(CourseEditBean(
                 tableId = tableId,
                 weekList = MutableLiveData<ArrayList<Int>>().apply {
                     this.value = ArrayList<Int>().apply {
@@ -106,7 +108,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     suspend fun initData(id: Int, tableId: Int): List<CourseDetailBean> {
-        editList = mutableListOf()
         return detailDao.getDetailByIdOfTableInThread(id, tableId)
     }
 
@@ -114,17 +115,15 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return baseDao.getLastIdOfTableInThread(tableId)
     }
 
-    fun initBaseData(): CourseBaseBean {
-        baseBean = CourseBaseBean(-1, "", "", tableId)
-        return baseBean
-    }
-
     suspend fun initBaseData(id: Int): CourseBaseBean {
-        baseBean = CourseBaseBean(-1, "", "", tableId)
         return baseDao.getCourseByIdOfTableInThread(id, tableId)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
         return widgetDao.getWidgetsByBaseTypeInThread(0)
+    }
+
+    suspend fun getExistedTeachers(): ArrayList<String> {
+        return ArrayList(detailDao.getExistedTeachers(tableId))
     }
 }

@@ -25,6 +25,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
@@ -89,7 +90,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.initBaseData())
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.baseBean)
         } else {
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
@@ -160,6 +161,12 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                     val selectWeekDialog = SelectWeekFragment.newInstance(position)
                     selectWeekDialog.isCancelable = false
                     selectWeekDialog.show(supportFragmentManager, "selectWeek")
+                }
+                R.id.ll_teacher -> {
+                    launch {
+                        val data = viewModel.getExistedTeachers()
+                        EditDetailFragment.newInstance(data).show(supportFragmentManager, null)
+                    }
                 }
             }
         }

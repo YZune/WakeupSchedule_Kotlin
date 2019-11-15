@@ -64,6 +64,7 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
             } // Night mode is active, we're using dark theme
         }
         job = Job()
+        savedInstanceState?.remove("android:support:fragments")
         super.onCreate(savedInstanceState)
     }
 

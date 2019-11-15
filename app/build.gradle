@@ -123,6 +123,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'androidx.lifecycle:lifecycle-compiler:2.1.0'
     implementation 'androidx.room:room-runtime:2.2.1'
+    implementation 'androidx.room:room-ktx:2.2.1'
     kapt 'androidx.room:room-compiler:2.2.1'
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
