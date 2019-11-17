@@ -61,7 +61,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <WebView
             android:id="@+id/wv_course"
@@ -296,5 +297,19 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/colorSurface">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            style="@style/ButtonBackground"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back" />
+
+    </LinearLayout>
 
 </LinearLayout>

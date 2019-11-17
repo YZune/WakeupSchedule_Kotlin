@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="280dp"
-    android:layout_gravity="center"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:orientation="vertical"
     tools:context=".UpdateFragment">
 
     <TextView
+        android:id="@+id/ib_close"
         style="@style/ButtonBackground"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:fontFamily="@font/iconfont"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text=""
-        android:id="@+id/ib_close"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_gravity="end"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
         android:textSize="20sp" />
 
 
@@ -27,8 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="-16dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="有可用更新哦"
         android:textStyle="bold" />
@@ -37,9 +36,9 @@
         android:id="@+id/tv_old_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:lineSpacingExtra="8dp"
         android:text="当前版本："
         android:textSize="12sp" />
@@ -48,9 +47,9 @@
         android:id="@+id/tv_new_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:lineSpacingExtra="8dp"
         android:text="最新版本："
         android:textSize="12sp" />
@@ -58,9 +57,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:lineSpacingExtra="8dp"
         android:text="更新内容："
         android:textSize="12sp"
@@ -72,29 +71,26 @@
         android:layout_marginTop="8dp">
 
         <TextView
-            android:minHeight="120dp"
             android:id="@+id/tv_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:lineSpacingExtra="8dp"
+            android:minHeight="120dp"
             android:text=""
             android:textSize="12sp" />
     </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_visit"
+        style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="160dp"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:text="去看看"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold"
-        app:cornerRadius="64dp"
-        app:strokeColor="@color/colorAccent" />
+        android:text="去看看"
+        android:textStyle="bold" />
 
 </LinearLayout>

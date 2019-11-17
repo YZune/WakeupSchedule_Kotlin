@@ -32,6 +32,7 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
                         id = R.id.anko_text_view
                         textSize = 12f
                         lines = 1
+                        textColor = Color.WHITE
                         gravity = Gravity.CENTER_VERTICAL
                         typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent)

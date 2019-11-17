@@ -174,6 +174,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "华东理工大学", "http://inquiry.ecust.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("Z", "中南大学", "https://csujwc.its.csu.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南商学院", "http://jwgl.hnuc.edu.cn/"))
+        schools.add(SchoolListBean("H", "湖南工商大学", "http://jwgl.hnuc.edu.cn/"))
         schools.add(SchoolListBean("S", "山东大学威海校区", "https://portal.wh.sdu.edu.cn/"))
         schools.add(SchoolListBean("J", "江苏师范大学", "http://sdjw.jsnu.edu.cn/"))
         schools.add(SchoolListBean("J", "吉首大学", "http://jwxt.jsu.edu.cn/"))
@@ -289,13 +290,13 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("Z", "浙江工业大学", "http://www.gdjw.zjut.edu.cn/"))
         schools.add(SchoolListBean("D", "东北财经大学", "http://202.199.165.159/"))
         schools.add(SchoolListBean("T", "天津工业大学", "http://jwpt.tjpu.edu.cn/"))
-        schools.add(SchoolListBean("S", "山东农业大学", "http://jw.sdau.edu.cn/"))
+        schools.add(SchoolListBean("S", "山东农业大学", "http://xjw.sdau.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("H", "河海大学", "http://202.119.113.135/"))
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn:8080/kdjw"))
         schools.add(SchoolListBean("B", "北京大学", "http://elective.pku.edu.cn"))
-        schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
+        schools.add(SchoolListBean("J", "济南大学", "http://jwgl4.ujn.edu.cn/jwglxt"))
 
         schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))
         schools.add(SchoolListBean("X", "西南石油大学", "http://jwxt.swpu.edu.cn/"))
@@ -386,6 +387,9 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
         schools.add(SchoolListBean("X", "西安建筑科技大学", "http://xk.xauat.edu.cn/default2.aspx#a"))
         schools.add(SchoolListBean("J", "江西农业大学南昌商学院", "http://223.83.249.67:8080/jsxsd/"))
+
+        schools.add(SchoolListBean("C", "长沙理工大学", "http://xk.csust.edu.cn/"))
+        schools.add(SchoolListBean("L", "辽宁机电职业技术学院", "http://jwgl.lnjdp.com/"))
 
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 

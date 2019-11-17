@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 
 import android.app.Activity.RESULT_OK
-import android.content.res.Configuration
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
@@ -27,8 +26,6 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
-import android.content.res.Resources.NotFoundException
-import android.content.res.Resources
 
 
 class WebViewLoginFragment : BaseFragment() {
@@ -122,7 +119,7 @@ class WebViewLoginFragment : BaseFragment() {
                 }
             }
         }
-        //设置自适应屏幕，两者合用
+        // 设置自适应屏幕，两者合用
         wv_course!!.settings.useWideViewPort = true //将图片调整到适合WebView的大小
         wv_course!!.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
         // 缩放操作
@@ -280,6 +277,12 @@ class WebViewLoginFragment : BaseFragment() {
                 } else {
                     wv_course!!.loadUrl(js)
                 }
+            }
+        }
+
+        btn_back.setOnClickListener {
+            if (wv_course.canGoBack()) {
+                wv_course.goBack()
             }
         }
     }

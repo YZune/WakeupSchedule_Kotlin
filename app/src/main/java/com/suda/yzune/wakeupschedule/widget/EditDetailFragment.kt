@@ -1,14 +1,15 @@
 package com.suda.yzune.wakeupschedule.widget
 
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import androidx.fragment.app.BaseDialogFragment
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_edit_detail.*
 import org.jetbrains.anko.find
-import org.jetbrains.anko.support.v4.longToast
 
 class EditDetailFragment : BaseDialogFragment() {
 
@@ -16,23 +17,29 @@ class EditDetailFragment : BaseDialogFragment() {
         arguments?.getStringArrayList("data")
     }
 
+    private val title: String by lazy {
+        arguments?.getString("title") ?: "编辑"
+    }
+
+    private val value: String by lazy {
+        arguments?.getString("value") ?: ""
+    }
+
+    var listener: OnSaveClickedListener? = null
+
     override val layoutId: Int
         get() = R.layout.fragment_edit_detail
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tv_title.text = title
+        et_detail.setText(value)
         val hasData = detailData?.any {
             it.isNotBlank()
         } ?: false
         if (!hasData) {
-            cg_details.visibility = View.GONE
+            sv_details.visibility = View.GONE
+            et_detail.hint = "请输入…"
         }
         detailData?.forEach {
             if (it.isEmpty()) return@forEach
@@ -40,19 +47,33 @@ class EditDetailFragment : BaseDialogFragment() {
             chip.text = it
             cg_details.addView(chip)
         }
-
         cg_details.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId < 0) return@setOnCheckedChangeListener
             val t = group.find<Chip>(checkedId).text
+            et_detail.setText(t)
         }
+        tv_save.setOnClickListener {
+            listener?.save(et_detail, dialog!!)
+        }
+    }
+
+    interface OnSaveClickedListener {
+        fun save(editText: EditText, dialog: Dialog)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(data: ArrayList<String>) =
+        fun newInstance(title: String, data: ArrayList<String>, str: String) =
                 EditDetailFragment().apply {
                     arguments = Bundle().apply {
+                        putString("title", title)
                         putStringArrayList("data", data)
+                        putString("value", str)
                     }
                 }
     }

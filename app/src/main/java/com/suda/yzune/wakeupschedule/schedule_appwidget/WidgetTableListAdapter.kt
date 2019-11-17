@@ -22,12 +22,12 @@ class WidgetTableListAdapter(layoutResId: Int, data: List<TableSelectBean>) :
         }
         val imageView = helper.getView<ImageView>(R.id.iv_pic)
         if (item.background != "") {
-            Glide.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(item.background)
                     .override(400, 600)
                     .into(imageView)
         } else {
-            Glide.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(R.drawable.main_background_2019)
                     .override(400, 600)
                     .into(imageView)

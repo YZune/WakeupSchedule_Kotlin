@@ -84,11 +84,13 @@ class ImportChooseFragment : BaseDialogFragment() {
         }
 
         tv_more.setOnClickListener {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivityForResult<SchoolListActivity>(32)
             dismiss()
         }
 
         tv_feedback.setOnClickListener {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivity<LoginWebActivity>("type" to "apply")
             dismiss()
         }

@@ -6,11 +6,9 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
-import android.os.PersistableBundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,13 +18,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.getkeepsafe.taptargetview.TapTarget
-import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -44,7 +39,6 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
-import com.suda.yzune.wakeupschedule.settings.SettingsHostActivity
 import com.suda.yzune.wakeupschedule.suda_life.SudaLifeActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
@@ -184,25 +178,27 @@ class ScheduleActivity : BaseActivity() {
         if (viewModel.table.background != "") {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            Glide.with(this.applicationContext)
+            Glide.with(this)
                     .load(viewModel.table.background)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.main_background_2019)
                     .into(bgImageView)
-            Glide.with(this.applicationContext)
+            Glide.with(this)
                     .load(viewModel.table.background)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.main_background_2019)
                     .into(navigationView.getHeaderView(0).find(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            Glide.with(this.applicationContext)
+            Glide.with(this)
                     .load(R.drawable.main_background_2019)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
-            Glide.with(this.applicationContext)
+            Glide.with(this)
                     .load(R.drawable.main_background_2019)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -342,7 +338,7 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivityForResult<SettingsHostActivity>(31)
+                        startActivityForResult<SettingsActivity>(31)
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }

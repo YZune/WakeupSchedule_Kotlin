@@ -18,6 +18,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         CourseBaseBean(-1, "", "", tableId)
     }
 
+    var teacherList: ArrayList<String>? = null
+    var roomList: ArrayList<String>? = null
+
     private val dataBase = AppDatabase.getDatabase(application)
     private val baseDao = dataBase.courseBaseDao()
     private val detailDao = dataBase.courseDetailDao()
@@ -125,5 +128,9 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
 
     suspend fun getExistedTeachers(): ArrayList<String> {
         return ArrayList(detailDao.getExistedTeachers(tableId))
+    }
+
+    suspend fun getExistedRooms(): ArrayList<String> {
+        return ArrayList(detailDao.getExistedRooms(tableId))
     }
 }

@@ -33,4 +33,7 @@ interface CourseDetailDao {
 
     @Query("select distinct teacher from coursedetailbean where tableId = :tableId order by length(teacher)")
     suspend fun getExistedTeachers(tableId: Int) : List<String>
+
+    @Query("select distinct room from coursedetailbean where tableId = :tableId order by length(room)")
+    suspend fun getExistedRooms(tableId: Int): List<String>
 }

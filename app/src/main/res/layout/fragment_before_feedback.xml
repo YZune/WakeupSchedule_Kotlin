@@ -18,7 +18,7 @@
         android:fontFamily="@font/iconfont"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text=""
+        android:text="@string/icon_close"
         android:textSize="20sp" />
 
 
@@ -63,6 +63,7 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/tv_guide"
                 style="@style/DialogButtonStyle"
                 android:text="查看新手引导" />

@@ -34,8 +34,8 @@ android {
         multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 78
-        versionName "3.575"
+        versionCode 79
+        versionName "3.576"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // vectorDrawables.useSupportLibrary = true
         packagingOptions {
@@ -136,7 +136,7 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     // implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
+    // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.10.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -157,6 +157,8 @@ dependencies {
         exclude module: 'jackson-core'
         exclude group: 'com.fasterxml.jackson.core'
     }
+    implementation "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion"
+    implementation "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
 //    implementation 'org.mnode.ical4j:ical4j:2.0.0'
 //    implementation 'org.threeten:threetenbp:1.3.6'
 //    implementation 'javax.cache:cache-api:1.0.0'

@@ -1,7 +1,5 @@
 package com.suda.yzune.wakeupschedule.base_view
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextWatcher
@@ -137,5 +135,11 @@ abstract class BaseListActivity : BaseActivity() {
 //                }
             }
         }.view
+    }
+
+    override fun onDestroy() {
+        searchView.removeTextChangedListener(textWatcher)
+        textWatcher = null
+        super.onDestroy()
     }
 }
