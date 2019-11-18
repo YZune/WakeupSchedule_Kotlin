@@ -14,7 +14,7 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
 
     val editList = mutableListOf<CourseEditBean>()
-    val baseBean: CourseBaseBean by lazy {
+    val baseBean: CourseBaseBean by lazy(LazyThreadSafetyMode.NONE) {
         CourseBaseBean(-1, "", "", tableId)
     }
 
