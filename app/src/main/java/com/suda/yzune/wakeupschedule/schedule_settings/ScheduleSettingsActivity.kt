@@ -347,10 +347,8 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     override fun onBackPressed() {
         launch {
             AppWidgetUtils.updateWidget(applicationContext)
-            val list = withContext(Dispatchers.IO) {
-                viewModel.saveSettings()
-                viewModel.getScheduleWidgetIds()
-            }
+            viewModel.saveSettings()
+            val list = viewModel.getScheduleWidgetIds()
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             list.forEach {
                 when (it.detailType) {

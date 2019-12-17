@@ -63,10 +63,9 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
             val adapter = WidgetTableListAdapter(R.layout.item_table_list, list)
             adapter.setOnItemClickListener { _, _, position ->
                 launch {
-                    val table = withContext(Dispatchers.IO) {
-                        viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, "${list[position].id}"))
-                        viewModel.getTableById(list[position].id)
-                    }
+                    viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 0, "${list[position].id}"))
+                    val table = viewModel.getTableById(list[position].id)
+
                     if (table == null) {
                         Toasty.error(applicationContext, "该课表读取错误>_<").show()
                         finish()
@@ -83,9 +82,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
             rv_table_list.layoutManager = LinearLayoutManager(this)
             launch {
                 list.clear()
-                list.addAll(withContext(Dispatchers.IO) {
-                    viewModel.getTableList()
-                })
+                list.addAll(viewModel.getTableList())
                 adapter.notifyDataSetChanged()
             }
         }
@@ -93,11 +90,9 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
 
         tv_got_it.setOnClickListener {
             launch {
-                //Log.d("包名", appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName)
-                val table = withContext(Dispatchers.IO) {
-                    viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
-                    viewModel.getDefaultTable()
-                }
+                // Log.d("包名", appWidgetManager.getAppWidgetInfo(mAppWidgetId).provider.shortClassName)
+                viewModel.insertWeekAppWidgetData(AppWidgetBean(mAppWidgetId, 0, 1, ""))
+                val table = viewModel.getDefaultTable()
                 AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, mAppWidgetId, table)
                 val resultValue = Intent()
                 resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId)

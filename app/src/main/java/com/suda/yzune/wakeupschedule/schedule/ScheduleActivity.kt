@@ -255,16 +255,10 @@ class ScheduleActivity : BaseActivity() {
                 if (data[position].id != viewModel.table.id) {
                     fadeOutAni.start()
                     launch {
-                        withContext(Dispatchers.IO) {
-                            viewModel.changeDefaultTable(data[position].id)
-                        }
+                        viewModel.changeDefaultTable(data[position].id)
                         initView()
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
-                        val table = withContext(Dispatchers.IO) {
-                            viewModel.getDefaultTable()
-                        }
+                        val list = viewModel.getScheduleWidgetIds()
+                        val table = viewModel.getDefaultTable()
                         list.forEach {
                             when (it.detailType) {
                                 // 0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
@@ -522,9 +516,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initView() {
         launch {
-            viewModel.table = withContext(Dispatchers.IO) {
-                viewModel.getDefaultTable()
-            }
+            viewModel.table = viewModel.getDefaultTable()
 
             val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
 

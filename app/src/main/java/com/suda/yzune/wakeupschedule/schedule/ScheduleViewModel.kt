@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import biweekly.Biweekly
 import biweekly.ICalVersion
 import biweekly.ICalendar
@@ -26,8 +25,7 @@ import java.util.*
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dataBase = AppDatabase.getDatabase(application)
-    private val baseDao = dataBase.courseBaseDao()
-    private val detailDao = dataBase.courseDetailDao()
+    private val courseDao = dataBase.courseDao()
     private val tableDao = dataBase.tableDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val timeTableDao = dataBase.timeTableDao()
@@ -45,7 +43,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
-        return tableDao.getTableSelectList()
+        return tableDao.getTableSelectListLiveData()
     }
 
     fun getImportSchoolBean(): SchoolListBean {
@@ -66,7 +64,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getDefaultTable(): TableBean {
-        return tableDao.getDefaultTableInThread()
+        return tableDao.getDefaultTable()
     }
 
     suspend fun getTimeList(timeTableId: Int): List<TimeDetailBean> {
@@ -78,31 +76,30 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun changeDefaultTable(id: Int) {
-        tableDao.resetOldDefaultTable(table.id)
-        tableDao.setNewDefaultTable(id)
+        tableDao.changeDefaultTable(table.id, id)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
-        return baseDao.getCourseByDayOfTable(day, tableId)
+        return courseDao.getCourseByDayOfTable(day, tableId)
     }
 
     suspend fun deleteCourseBean(courseBean: CourseBean) {
-        detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
+        courseDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
     }
 
     suspend fun deleteCourseBaseBean(id: Int, tableId: Int) {
-        baseDao.deleteCourseBaseBeanOfTable(id, tableId)
+        courseDao.deleteCourseBaseBeanOfTable(id, tableId)
     }
 
     suspend fun updateFromOldVer(json: String) {
         val gson = Gson()
         val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
         }.type)
-        val lastId = tableDao.getLastIdInThread()
+        val lastId = tableDao.getLastId()
         val tableId = if (lastId != null) {
             lastId + 1
         } else {
@@ -137,8 +134,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
                 ))
             }
         }
-        baseDao.insertList(baseList)
-        detailDao.insertList(detailList)
+        courseDao.insertCourses(baseList, detailList)
         PreferenceUtils.remove(getApplication(), "course")
     }
 
@@ -157,8 +153,8 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
         strBuilder.append("\n${gson.toJson(timeList)}")
         strBuilder.append("\n${gson.toJson(table)}")
-        strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(table.id))}")
-        strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(table.id))}")
+        strBuilder.append("\n${gson.toJson(courseDao.getCourseBaseBeanOfTable(table.id))}")
+        strBuilder.append("\n${gson.toJson(courseDao.getDetailOfTableInThread(table.id))}")
         val tableName = if (table.tableName == "") {
             "我的课表"
         } else {

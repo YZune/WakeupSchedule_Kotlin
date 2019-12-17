@@ -8,18 +8,16 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.coroutineScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import org.jetbrains.anko.configuration
 import kotlin.coroutines.CoroutineContext
 
 
 abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
 
-    private lateinit var job: Job
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+        get() = lifecycle.coroutineScope.coroutineContext
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -54,7 +52,6 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
                         or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
             } // Night mode is active, we're using dark theme
         }
-        job = Job()
         savedInstanceState?.remove("android:support:fragments")
         super.onCreate(savedInstanceState)
     }
@@ -74,8 +71,4 @@ abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
         return result
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
 }

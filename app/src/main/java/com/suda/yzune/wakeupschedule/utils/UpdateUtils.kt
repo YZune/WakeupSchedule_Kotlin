@@ -24,7 +24,7 @@ object UpdateUtils {
         return packInfo.versionName
     }
 
-    fun tranOldData(context: Context) {
+    suspend fun tranOldData(context: Context) {
         if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false) &&
                 !PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_adjust", false)) {
             val tableData = TableBean(

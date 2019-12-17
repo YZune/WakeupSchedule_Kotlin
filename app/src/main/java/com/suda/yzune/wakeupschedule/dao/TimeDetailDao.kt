@@ -10,7 +10,7 @@ import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 @Dao
 interface TimeDetailDao {
     @Insert
-    fun insertTimeList(list: List<TimeDetailBean>)
+    suspend fun insertTimeList(list: List<TimeDetailBean>)
 
     @Update
     fun updateTimeDetail(timeDetailBean: TimeDetailBean)

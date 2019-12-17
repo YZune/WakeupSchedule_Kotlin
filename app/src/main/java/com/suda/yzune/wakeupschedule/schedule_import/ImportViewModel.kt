@@ -47,8 +47,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
-    private val baseDao = dataBase.courseBaseDao()
-    private val detailDao = dataBase.courseDetailDao()
+    private val courseDao = dataBase.courseDao()
     private val timeTableDao = dataBase.timeTableDao()
     private val timeDetailDao = dataBase.timeDetailDao()
     private var hasTypeFlag = false
@@ -103,7 +102,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private var viewStatePostCode = ""
 
     suspend fun getNewId(): Int {
-        val lastId = tableDao.getLastIdInThread()
+        val lastId = tableDao.getLastId()
         return if (lastId != null) lastId + 1 else 1
     }
 
@@ -561,8 +560,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             }
 
         }
-
-
 
         return write2DB()
     }
@@ -1925,23 +1922,21 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         timeTableDao.insertTimeTable(timeTable)
         timeDetailDao.insertTimeList(timeDetails)
         tableDao.insertTable(table)
-        baseDao.insertList(courseBaseList)
-        detailDao.insertList(courseDetailList)
+        courseDao.insertCourses(courseBaseList, courseDetailList)
         return "ok"
     }
 
-    private fun write2DB(): String {
+    private suspend fun write2DB(): String {
         if (baseList.isEmpty()) {
             throw Exception("解析错误>_<请确保选择了正确的教务类型，并在显示了课程的页面")
         }
         //todo: 增量添加课程
         if (!newFlag) {
-            baseDao.removeCourseBaseBeanOfTable(importId)
+            courseDao.removeCourseBaseBeanOfTable(importId)
         } else {
             tableDao.insertTable(TableBean(id = importId, tableName = "未命名"))
         }
-        baseDao.insertList(baseList)
-        detailDao.insertList(detailList)
+        courseDao.insertCourses(baseList, detailList)
         return "ok"
     }
 

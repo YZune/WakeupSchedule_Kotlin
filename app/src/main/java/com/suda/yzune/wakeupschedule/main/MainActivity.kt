@@ -52,9 +52,7 @@ class MainActivity : BaseActivity() {
         blurImageView = find(R.id.anko_iv_blur)
 
         launch {
-            viewModel.table = withContext(Dispatchers.IO) {
-                viewModel.getDefaultTable()
-            }
+            viewModel.table = viewModel.getDefaultTable()
 
             initTheme()
 

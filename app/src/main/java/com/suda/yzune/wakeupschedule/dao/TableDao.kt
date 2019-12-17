@@ -1,57 +1,48 @@
 package com.suda.yzune.wakeupschedule.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 
 @Dao
 interface TableDao {
     @Insert
-    fun insertTable(tableBean: TableBean)
+    suspend fun insertTable(tableBean: TableBean)
 
     @Update
-    fun updateTable(tableBean: TableBean)
+    suspend fun updateTable(tableBean: TableBean)
 
     @Query("select max(id) from tablebean")
-    fun getLastId(): LiveData<Int>
+    suspend fun getLastId(): Int?
 
-    @Query("select max(id) from tablebean")
-    fun getLastIdInThread(): Int?
+    @Transaction
+    suspend fun changeDefaultTable(oldId: Int, newId: Int) {
+        resetOldDefaultTable(oldId)
+        setNewDefaultTable(newId)
+    }
 
     @Query("update tablebean set type = 0 where id = :oldId")
-    fun resetOldDefaultTable(oldId: Int)
+    suspend fun resetOldDefaultTable(oldId: Int)
 
     @Query("update tablebean set type = 1 where id = :newId")
-    fun setNewDefaultTable(newId: Int)
+    suspend fun setNewDefaultTable(newId: Int)
 
     @Query("select * from tablebean where id = :tableId")
-    fun getTableByIdInThread(tableId: Int): TableBean?
-
-    @Query("select * from tablebean where id = :tableId")
-    fun getTableById(tableId: Int): LiveData<TableBean>
-
-    @Query("select * from tablebean where type = 1")
-    fun getDefaultTable(): LiveData<TableBean>
+    suspend fun getTableById(tableId: Int): TableBean?
 
     @Query("select id from tablebean where type = 1")
-    fun getDefaultTableId(): LiveData<Int>
-
-    @Query("select id from tablebean where type = 1")
-    fun getDefaultTableIdInThread(): Int
+    suspend fun getDefaultTableId(): Int
 
     @Query("select * from tablebean where type = 1")
-    fun getDefaultTableInThread(): TableBean
+    suspend fun getDefaultTable(): TableBean
 
     @Query("select id, tableName, background, maxWeek, nodes, type from tablebean")
-    fun getTableSelectList(): LiveData<List<TableSelectBean>>
+    fun getTableSelectListLiveData(): LiveData<List<TableSelectBean>>
 
     @Query("select id, tableName, background, maxWeek, nodes, type from tablebean")
-    fun getTableSelectListInThread(): List<TableSelectBean>
+    suspend fun getTableSelectList(): List<TableSelectBean>
 
     @Query("delete from tablebean where id = :id")
-    fun deleteTable(id: Int)
+    suspend fun deleteTable(id: Int)
 }

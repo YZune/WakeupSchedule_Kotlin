@@ -10,17 +10,17 @@ import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 interface AppWidgetDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAppWidget(appWidgetBean: AppWidgetBean)
+    suspend fun insertAppWidget(appWidgetBean: AppWidgetBean)
 
     @Query("update appwidgetbean set info = '1'")
-    fun updateFromOldVer()
+    suspend fun updateFromOldVer()
 
     @Query("delete from appwidgetbean where id = :id")
-    fun deleteAppWidget(id: Int)
+    suspend fun deleteAppWidget(id: Int)
 
     @Query("select * from appwidgetbean where baseType = :baseType and detailType = :detailType")
-    fun getWidgetsByTypesInThread(baseType: Int, detailType: Int): List<AppWidgetBean>
+    suspend fun getWidgetsByTypes(baseType: Int, detailType: Int): List<AppWidgetBean>
 
     @Query("select * from appwidgetbean where baseType = :baseType")
-    fun getWidgetsByBaseTypeInThread(baseType: Int): List<AppWidgetBean>
+    suspend fun getWidgetsByBaseType(baseType: Int): List<AppWidgetBean>
 }

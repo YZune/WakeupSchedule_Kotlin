@@ -22,8 +22,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     var roomList: ArrayList<String>? = null
 
     private val dataBase = AppDatabase.getDatabase(application)
-    private val baseDao = dataBase.courseBaseDao()
-    private val detailDao = dataBase.courseDetailDao()
+    private val courseDao = dataBase.courseDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val saveList = mutableListOf<CourseDetailBean>()
 
@@ -83,18 +82,15 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
 
     private fun saveData() {
         if (updateFlag) {
-            baseDao.updateCourseBaseBean(baseBean)
-            detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
-            detailDao.insertList(saveList)
+            courseDao.updateSingleCourse(baseBean, saveList)
         } else {
-            baseDao.insertCourseBase(baseBean)
-            detailDao.insertList(saveList)
+            courseDao.insertSingleCourse(baseBean, saveList)
         }
 
     }
 
     suspend fun checkSameName(): CourseBaseBean? {
-        return baseDao.checkSameNameInTableInThread(baseBean.courseName, baseBean.tableId)
+        return courseDao.checkSameNameInTableInThread(baseBean.courseName, baseBean.tableId)
     }
 
     fun initData(maxWeek: Int): MutableList<CourseEditBean> {
@@ -111,26 +107,26 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     suspend fun initData(id: Int, tableId: Int): List<CourseDetailBean> {
-        return detailDao.getDetailByIdOfTableInThread(id, tableId)
+        return courseDao.getDetailByIdOfTableInThread(id, tableId)
     }
 
     suspend fun getLastId(): Int? {
-        return baseDao.getLastIdOfTableInThread(tableId)
+        return courseDao.getLastIdOfTableInThread(tableId)
     }
 
     suspend fun initBaseData(id: Int): CourseBaseBean {
-        return baseDao.getCourseByIdOfTableInThread(id, tableId)
+        return courseDao.getCourseByIdOfTableInThread(id, tableId)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     suspend fun getExistedTeachers(): ArrayList<String> {
-        return ArrayList(detailDao.getExistedTeachers(tableId))
+        return ArrayList(courseDao.getExistedTeachers(tableId))
     }
 
     suspend fun getExistedRooms(): ArrayList<String> {
-        return ArrayList(detailDao.getExistedRooms(tableId))
+        return ArrayList(courseDao.getExistedRooms(tableId))
     }
 }

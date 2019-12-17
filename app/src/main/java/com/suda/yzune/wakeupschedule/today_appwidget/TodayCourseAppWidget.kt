@@ -19,6 +19,7 @@ import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.goAsync
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -28,7 +29,6 @@ import java.util.*
  */
 class TodayCourseAppWidget : AppWidgetProvider() {
 
-    private var job: Job? = null
     private var calendar = Calendar.getInstance()
 
     @SuppressLint("NewApi")
@@ -79,40 +79,22 @@ class TodayCourseAppWidget : AppWidgetProvider() {
             val dataBase = AppDatabase.getDatabase(context)
             val widgetDao = dataBase.appWidgetDao()
             val tableDao = dataBase.tableDao()
-
-            job = GlobalScope.launch(Dispatchers.Main) {
-
-                val table = withContext(Dispatchers.IO) {
-                    tableDao.getDefaultTableInThread()
+            goAsync {
+                val table = tableDao.getDefaultTable()
+                for (appWidget in widgetDao.getWidgetsByTypes(0, 1)) {
+                    AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
                 }
-
-                withContext(Dispatchers.IO) {
-                    for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
-                        AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table, true)
-                    }
-                }
-
-                job?.cancel()
             }
         }
         if (intent.action == "WAKEUP_BACK_TIME") {
             val dataBase = AppDatabase.getDatabase(context)
             val widgetDao = dataBase.appWidgetDao()
             val tableDao = dataBase.tableDao()
-
-            job = GlobalScope.launch(Dispatchers.Main) {
-
-                val table = withContext(Dispatchers.IO) {
-                    tableDao.getDefaultTableInThread()
+            goAsync {
+                val table = tableDao.getDefaultTable()
+                for (appWidget in widgetDao.getWidgetsByTypes(0, 1)) {
+                    AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
                 }
-
-                withContext(Dispatchers.IO) {
-                    for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
-                        AppWidgetUtils.refreshTodayWidget(context, AppWidgetManager.getInstance(context), appWidget.id, table)
-                    }
-                }
-
-                job?.cancel()
             }
         }
         if (intent.action == "WAKEUP_CANCEL_REMINDER") {
@@ -127,15 +109,11 @@ class TodayCourseAppWidget : AppWidgetProvider() {
         val dataBase = AppDatabase.getDatabase(context)
         val widgetDao = dataBase.appWidgetDao()
         val tableDao = dataBase.tableDao()
-        val baseDao = dataBase.courseBaseDao()
+        val courseDao = dataBase.courseDao()
         val timeDao = dataBase.timeDetailDao()
 
-        job = GlobalScope.launch(Dispatchers.Main) {
-
-            val table = withContext(Dispatchers.IO) {
-                tableDao.getDefaultTableInThread()
-            }
-
+        goAsync {
+            val table = tableDao.getDefaultTable()
             if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
                 val week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
                 if (week >= 0) {
@@ -143,9 +121,9 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                     val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
                     val courseList = withContext(Dispatchers.IO) {
                         if (week % 2 == 0) {
-                            baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
+                            courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
                         } else {
-                            baseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
+                            courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
                         }
                     }
 
@@ -192,24 +170,19 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                 }
             }
 
-            withContext(Dispatchers.IO) {
-                for (appWidget in widgetDao.getWidgetsByTypesInThread(0, 1)) {
-                    AppWidgetUtils.refreshTodayWidget(context, appWidgetManager, appWidget.id, table)
-                }
+            for (appWidget in widgetDao.getWidgetsByTypes(0, 1)) {
+                AppWidgetUtils.refreshTodayWidget(context, appWidgetManager, appWidget.id, table)
             }
-
-            job?.cancel()
         }
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
         val dataBase = AppDatabase.getDatabase(context)
         val widgetDao = dataBase.appWidgetDao()
-        job = GlobalScope.launch(Dispatchers.IO) {
+        goAsync {
             for (id in appWidgetIds) {
                 widgetDao.deleteAppWidget(id)
             }
-            job?.cancel()
         }
     }
 }

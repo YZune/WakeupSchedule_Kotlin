@@ -105,9 +105,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun courseBaseDao(): CourseBaseDao
-
-    abstract fun courseDetailDao(): CourseDetailDao
+    abstract fun courseDao(): CourseDao
 
     abstract fun appWidgetDao(): AppWidgetDao
 

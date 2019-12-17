@@ -413,9 +413,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             } else {
                 launch {
                     PreferenceUtils.saveStringToSP(applicationContext, "import_school", gson.toJson(showList[position]))
-                    val tableId = withContext(Dispatchers.IO) {
-                        tableDao.getDefaultTableIdInThread()
-                    }
+                    val tableId = tableDao.getDefaultTableId()
                     startActivity<LoginWebActivity>(
                             "type" to showList[position].name,
                             "tableId" to tableId,

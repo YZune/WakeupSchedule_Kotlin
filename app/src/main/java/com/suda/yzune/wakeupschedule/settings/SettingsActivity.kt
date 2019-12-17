@@ -118,9 +118,7 @@ class SettingsActivity : BaseListActivity() {
         when (item.title) {
             "设置当前课表" -> {
                 launch {
-                    val table = withContext(Dispatchers.IO) {
-                        tableDao.getDefaultTableInThread()
-                    }
+                    val table = tableDao.getDefaultTable()
                     startActivityForResult<ScheduleSettingsActivity>(180, "tableData" to table)
                 }
             }

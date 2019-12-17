@@ -48,24 +48,24 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private var alphaStr = ""
         private val dataBase = AppDatabase.getDatabase(applicationContext)
         private val tableDao = dataBase.tableDao()
-        private val baseDao = dataBase.courseBaseDao()
+        private val courseDao = dataBase.courseDao()
         private val timeDao = dataBase.timeDetailDao()
         private val timeList = arrayListOf<TimeDetailBean>()
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
             table = if (tableId == -1) {
-                tableDao.getDefaultTableInThread()
+                tableDao.getDefaultTable()
             } else {
-                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
+                tableDao.getTableById(tableId) ?: tableDao.getDefaultTable()
             }
         }
 
         override fun onDataSetChanged() {
             table = if (tableId == -1) {
-                tableDao.getDefaultTableInThread()
+                tableDao.getDefaultTable()
             } else {
-                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
+                tableDao.getTableById(tableId) ?: tableDao.getDefaultTable()
             }
             widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
@@ -168,7 +168,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             initView(view, weekPanel0)
 
             for (i in 1..7) {
-                val list = baseDao.getCourseByDayOfTableInThread(i, table.id)
+                val list = courseDao.getCourseByDayOfTableInThread(i, table.id)
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)

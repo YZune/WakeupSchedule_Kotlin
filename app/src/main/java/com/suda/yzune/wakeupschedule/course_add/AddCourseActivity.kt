@@ -334,9 +334,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 "ok" -> {
                     launch {
                         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
+                        val list = viewModel.getScheduleWidgetIds()
                         list.forEach {
                             when (it.detailType) {
                                 0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)

@@ -266,7 +266,6 @@ class LoginWebFragment : BaseFragment() {
                                         hub.getCourseSchedule()
                                         viewModel.convertHUST(hub.courseHTML)
                                     }
-
                                 } catch (e: Exception) {
                                     e.message
                                 }

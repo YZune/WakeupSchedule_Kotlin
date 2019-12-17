@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.utils
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -16,6 +17,24 @@ import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayColorfulService
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+
+fun BroadcastReceiver.goAsync(
+        coroutineScope: CoroutineScope = GlobalScope,
+        block: suspend () -> Unit
+) {
+    val result = goAsync()
+    coroutineScope.launch {
+        try {
+            block()
+        } finally {
+            // Always call finish(), even if the coroutineScope was cancelled
+            result.finish()
+        }
+    }
+}
 
 object AppWidgetUtils {
     private val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")

@@ -8,7 +8,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 interface CourseDetailDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertList(courseDetailList: List<CourseDetailBean>)
+    fun insertDetailList(courseDetailList: List<CourseDetailBean>)
 
     @Query("select * from coursedetailbean where id = :id and tableId = :tableId")
     fun getDetailByIdOfTable(id: Int, tableId: Int): LiveData<List<CourseDetailBean>>

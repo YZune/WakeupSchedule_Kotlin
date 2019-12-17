@@ -31,9 +31,7 @@ class ImportSettingFragment : BaseDialogFragment() {
 
         tv_new.setOnClickListener {
             launch {
-                viewModel.importId = withContext(Dispatchers.IO) {
-                    viewModel.getNewId()
-                }
+                viewModel.importId = viewModel.getNewId()
                 viewModel.newFlag = true
                 dismiss()
             }

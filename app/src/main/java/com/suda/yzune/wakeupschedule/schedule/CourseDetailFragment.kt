@@ -130,20 +130,11 @@ class CourseDetailFragment : BaseDialogFragment() {
                 }
             } else {
                 launch {
-                    val msg = withContext(Dispatchers.IO) {
-                        try {
-                            viewModel.deleteCourseBean(course)
-                            "ok"
-                        } catch (e: Exception) {
-                            "出现异常>_<\n" + e.message
-                        }
-                    }
-                    if (msg == "ok") {
+                    try {
+                        viewModel.deleteCourseBean(course)
                         Toasty.success(context!!.applicationContext, "删除成功").show()
                         val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
+                        val list = viewModel.getScheduleWidgetIds()
                         list.forEach {
                             when (it.detailType) {
                                 0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
@@ -151,8 +142,8 @@ class CourseDetailFragment : BaseDialogFragment() {
                             }
                         }
                         dismiss()
-                    } else {
-                        Toasty.error(context!!.applicationContext, msg).show()
+                    } catch (e: Exception) {
+                        Toasty.error(context!!.applicationContext, "出现异常>_<\n" + e.message).show()
                     }
                 }
             }
@@ -171,9 +162,7 @@ class CourseDetailFragment : BaseDialogFragment() {
                 if (msg == "ok") {
                     Toasty.success(context!!.applicationContext, "删除成功").show()
                     val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                    val list = async(Dispatchers.IO) {
-                        viewModel.getScheduleWidgetIds()
-                    }.await()
+                    val list = viewModel.getScheduleWidgetIds()
                     list.forEach {
                         when (it.detailType) {
                             0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
