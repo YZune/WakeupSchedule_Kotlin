@@ -291,7 +291,7 @@ class ScheduleActivity : BaseActivity() {
                 }
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
-                    if (!editText.text.toString().isEmpty()) {
+                    if (editText.text.toString().isNotEmpty()) {
                         launch {
                             val task = async(Dispatchers.IO) {
                                 try {
