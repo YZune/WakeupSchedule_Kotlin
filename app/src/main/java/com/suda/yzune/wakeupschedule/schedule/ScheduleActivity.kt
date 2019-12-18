@@ -537,9 +537,7 @@ class ScheduleActivity : BaseActivity() {
 
             initEvent()
 
-            viewModel.timeList = withContext(Dispatchers.IO) {
-                viewModel.getTimeList(viewModel.table.timeTable)
-            }
+            viewModel.timeList = viewModel.getTimeList(viewModel.table.timeTable)
 
             for (i in 1..7) {
                 viewModel.getRawCourseByDay(i, viewModel.table.id).observe(this@ScheduleActivity, Observer { list ->

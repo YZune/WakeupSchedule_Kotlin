@@ -18,6 +18,8 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Connection
@@ -107,13 +109,15 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     suspend fun getCheckCode(): Bitmap {
-        val response = importService.getCheckCode().execute()
-        return if (response.isSuccessful) {
-            val verificationCode = response.body()?.bytes()
-            loginCookieStr = response.headers().values("Set-Cookie").joinToString("; ")
-            BitmapFactory.decodeByteArray(verificationCode, 0, verificationCode!!.size)
-        } else {
-            throw Exception()
+        return withContext(Dispatchers.IO) {
+            val response = importService.getCheckCode().execute()
+            if (response.isSuccessful) {
+                val verificationCode = response.body()?.bytes()
+                loginCookieStr = response.headers().values("Set-Cookie").joinToString("; ")
+                BitmapFactory.decodeByteArray(verificationCode, 0, verificationCode!!.size)
+            } else {
+                throw Exception()
+            }
         }
     }
 
@@ -1902,7 +1906,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         val table = gson.fromJson<TableBean>(list[2], object : TypeToken<TableBean>() {}.type)
         val courseBaseList = gson.fromJson<List<CourseBaseBean>>(list[3], object : TypeToken<List<CourseBaseBean>>() {}.type)
         val courseDetailList = gson.fromJson<List<CourseDetailBean>>(list[4], object : TypeToken<List<CourseDetailBean>>() {}.type)
-        val timeTableId = timeTableDao.getMaxIdInThread() + 1
+        val timeTableId = timeTableDao.getMaxId() + 1
         timeTable.id = timeTableId
         timeTable.name = "分享_" + timeTable.name
         timeDetails.forEach {

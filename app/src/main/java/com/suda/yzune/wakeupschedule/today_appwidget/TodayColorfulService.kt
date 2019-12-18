@@ -64,12 +64,12 @@ class TodayColorfulService : RemoteViewsService() {
             }
             courseList.clear()
             if (week % 2 == 0) {
-                courseList.addAll(courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
+                courseList.addAll(courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
             } else {
-                courseList.addAll(courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
+                courseList.addAll(courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
             }
             timeList.clear()
-            timeList.addAll(timeDao.getTimeListInThread(table.timeTable))
+            timeList.addAll(timeDao.getTimeList(table.timeTable))
         }
 
         override fun onDestroy() {

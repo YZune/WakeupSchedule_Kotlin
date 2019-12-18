@@ -13,17 +13,11 @@ interface TimeDetailDao {
     suspend fun insertTimeList(list: List<TimeDetailBean>)
 
     @Update
-    fun updateTimeDetail(timeDetailBean: TimeDetailBean)
-
-    @Update
-    fun updateTimeDetailList(timeDetailBeanList: List<TimeDetailBean>)
+    suspend fun updateTimeDetailList(timeDetailBeanList: List<TimeDetailBean>)
 
     @Query("select * from timedetailbean where timeTable = :id order by node")
-    fun getTimeList(id: Int): LiveData<List<TimeDetailBean>>
-
-    @Query("select count(*) from timedetailbean where timeTable = :id")
-    fun getTimeListSize(id: Int): LiveData<Int>
+    fun getTimeListLiveData(id: Int): LiveData<List<TimeDetailBean>>
 
     @Query("select * from timedetailbean where timeTable = :id order by node")
-    fun getTimeListInThread(id: Int): List<TimeDetailBean>
+    suspend fun getTimeList(id: Int): List<TimeDetailBean>
 }

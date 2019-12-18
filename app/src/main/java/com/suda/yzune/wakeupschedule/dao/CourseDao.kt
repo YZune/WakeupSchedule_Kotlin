@@ -38,37 +38,37 @@ interface CourseDao {
     suspend fun getCourseBaseBeanOfTable(tableId: Int): List<CourseBaseBean>
 
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
-    fun getCourseByDayOfTable(day: Int, tableId: Int): LiveData<List<CourseBean>>
+    fun getCourseByDayOfTableLiveData(day: Int, tableId: Int): LiveData<List<CourseBean>>
 
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
-    fun getCourseByDayOfTableInThread(day: Int, tableId: Int): List<CourseBean>
+    suspend fun getCourseByDayOfTable(day: Int, tableId: Int): List<CourseBean>
 
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId and startWeek <= :week and endWeek >= :week and (type = 0 or type = :type)")
-    fun getCourseByDayOfTableInThread(day: Int, week: Int, type: Int, tableId: Int): List<CourseBean>
+    suspend fun getCourseByDayOfTable(day: Int, week: Int, type: Int, tableId: Int): List<CourseBean>
 
     @Query("select * from coursebasebean where id = :id and tableId = :tableId")
-    fun getCourseByIdOfTableInThread(id: Int, tableId: Int): CourseBaseBean
+    suspend fun getCourseByIdOfTable(id: Int, tableId: Int): CourseBaseBean
 
     @Query("select max(id) from coursebasebean where tableId = :tableId")
-    fun getLastIdOfTableInThread(tableId: Int): Int?
+    suspend fun getLastIdOfTable(tableId: Int): Int?
 
     @Query("delete from coursebasebean where id = :id and tableId = :tableId")
-    fun deleteCourseBaseBeanOfTable(id: Int, tableId: Int)
+    suspend fun deleteCourseBaseBeanOfTable(id: Int, tableId: Int)
 
     @Query("select * from coursebasebean natural join coursedetailbean where courseName = :name and tableId = :tableId")
-    fun checkSameNameInTableInThread(name: String, tableId: Int): CourseBaseBean?
+    suspend fun checkSameNameInTable(name: String, tableId: Int): CourseBaseBean?
 
     @Query("delete from coursebasebean where tableId = :tableId")
-    fun removeCourseBaseBeanOfTable(tableId: Int)
+    suspend fun removeCourseBaseBeanOfTable(tableId: Int)
 
     @Query("delete from coursedetailbean where id = :id and tableId = :tableId")
-    fun deleteDetailByIdOfTable(id: Int, tableId: Int)
+    suspend fun deleteDetailByIdOfTable(id: Int, tableId: Int)
 
     @Query("select * from coursedetailbean where id = :id and tableId = :tableId")
-    fun getDetailByIdOfTableInThread(id: Int, tableId: Int): List<CourseDetailBean>
+    suspend fun getDetailByIdOfTable(id: Int, tableId: Int): List<CourseDetailBean>
 
     @Query("select * from coursedetailbean where tableId = :tableId")
-    fun getDetailOfTableInThread(tableId: Int): List<CourseDetailBean>
+    suspend fun getDetailOfTable(tableId: Int): List<CourseDetailBean>
 
     @Query("select distinct teacher from coursedetailbean where tableId = :tableId order by length(teacher)")
     suspend fun getExistedTeachers(tableId: Int): List<String>
@@ -86,6 +86,6 @@ interface CourseDao {
     suspend fun insertDetailList(courseDetailList: List<CourseDetailBean>)
 
     @Update
-    fun updateCourseBaseBean(course: CourseBaseBean)
+    suspend fun updateCourseBaseBean(course: CourseBaseBean)
 
 }

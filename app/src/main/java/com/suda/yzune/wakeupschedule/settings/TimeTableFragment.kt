@@ -15,9 +15,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 
 class TimeTableFragment : BaseFragment() {
@@ -83,17 +81,10 @@ class TimeTableFragment : BaseFragment() {
                         view.longSnackbar("不能删除已选中的时间表哦>_<")
                     } else {
                         launch {
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    viewModel.deleteTimeTable(viewModel.timeTableList[position])
-                                    "ok"
-                                } catch (e: Exception) {
-                                    "删除错误>_<${e.message}"
-                                }
-                            }
-                            if (task == "ok") {
+                            try {
+                                viewModel.deleteTimeTable(viewModel.timeTableList[position])
                                 view.longSnackbar("删除成功~")
-                            } else {
+                            } catch (e: Exception) {
                                 view.longSnackbar("该时间表仍被使用中>_<请确保它不被使用再删除哦")
                             }
                         }
@@ -126,19 +117,12 @@ class TimeTableFragment : BaseFragment() {
                 override fun onFinish(editText: EditText, dialog: Dialog) {
                     if (editText.text.toString().isNotEmpty()) {
                         launch {
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    viewModel.addNewTimeTable(editText.text.toString())
-                                    "ok"
-                                } catch (e: Exception) {
-                                    "发生异常>_<${e.message}"
-                                }
-                            }
-                            if (task == "ok") {
+                            try {
+                                viewModel.addNewTimeTable(editText.text.toString())
                                 Toasty.success(activity!!.applicationContext, "新建成功~").show()
                                 dialog.dismiss()
-                            } else {
-                                Toasty.error(activity!!.applicationContext, task).show()
+                            } catch (e: Exception) {
+                                Toasty.error(activity!!.applicationContext, "发生异常>_<${e.message}").show()
                             }
                         }
                     } else {

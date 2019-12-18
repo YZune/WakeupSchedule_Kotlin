@@ -20,7 +20,6 @@ import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.goAsync
-import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -119,17 +118,10 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                 if (week >= 0) {
                     val weekDay = CourseUtils.getWeekday()
                     val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
-                    val courseList = withContext(Dispatchers.IO) {
-                        if (week % 2 == 0) {
-                            courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 2, table.id)
-                        } else {
-                            courseDao.getCourseByDayOfTableInThread(CourseUtils.getWeekdayInt(), week, 1, table.id)
-                        }
-                    }
+                    val type = if (week % 2 == 0) 2 else 1
+                    val courseList = courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(), week, type, table.id)
 
-                    val timeList = withContext(Dispatchers.IO) {
-                        timeDao.getTimeListInThread(table.timeTable)
-                    }
+                    val timeList = timeDao.getTimeList(table.timeTable)
 
                     val manager = context.getSystemService(ALARM_SERVICE) as AlarmManager
                     courseList.forEachIndexed { index, courseBean ->

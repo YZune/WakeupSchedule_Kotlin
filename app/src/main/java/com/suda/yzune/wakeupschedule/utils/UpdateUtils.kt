@@ -135,7 +135,7 @@ object UpdateUtils {
             val tableDao = dataBase.tableDao()
             val timeDao = dataBase.timeDetailDao()
             val timeTableDao = dataBase.timeTableDao()
-            if (timeTableDao.getTimeTableInThread(1) == null) {
+            if (timeTableDao.getTimeTable(1) == null) {
                 timeTableDao.insertTimeTable(TimeTableBean(id = 1, name = "默认"))
             }
             val timeList = ArrayList<TimeDetailBean>().apply {

@@ -76,21 +76,20 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         if (selfUnique) {
             saveData()
         } else {
-            throw Exception("自身重复")
+            throw Exception("此处填写的时间有重复，请仔细检查")
         }
     }
 
-    private fun saveData() {
+    private suspend fun saveData() {
         if (updateFlag) {
             courseDao.updateSingleCourse(baseBean, saveList)
         } else {
             courseDao.insertSingleCourse(baseBean, saveList)
         }
-
     }
 
     suspend fun checkSameName(): CourseBaseBean? {
-        return courseDao.checkSameNameInTableInThread(baseBean.courseName, baseBean.tableId)
+        return courseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
     }
 
     fun initData(maxWeek: Int): MutableList<CourseEditBean> {
@@ -107,15 +106,15 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     suspend fun initData(id: Int, tableId: Int): List<CourseDetailBean> {
-        return courseDao.getDetailByIdOfTableInThread(id, tableId)
+        return courseDao.getDetailByIdOfTable(id, tableId)
     }
 
     suspend fun getLastId(): Int? {
-        return courseDao.getLastIdOfTableInThread(tableId)
+        return courseDao.getLastIdOfTable(tableId)
     }
 
     suspend fun initBaseData(id: Int): CourseBaseBean {
-        return courseDao.getCourseByIdOfTableInThread(id, tableId)
+        return courseDao.getCourseByIdOfTable(id, tableId)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {

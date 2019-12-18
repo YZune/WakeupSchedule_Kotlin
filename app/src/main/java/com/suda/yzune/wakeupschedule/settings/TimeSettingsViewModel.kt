@@ -65,7 +65,6 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
         timeDao.insertTimeList(timeList)
     }
 
-
     suspend fun deleteTimeTable(timeTableBean: TimeTableBean) {
         timeTableDao.deleteTimeTable(timeTableBean)
     }
@@ -75,7 +74,7 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun getTimeData(id: Int): LiveData<List<TimeDetailBean>> {
-        return timeDao.getTimeList(id)
+        return timeDao.getTimeListLiveData(id)
     }
 
     suspend fun saveDetailData(tablePosition: Int) {

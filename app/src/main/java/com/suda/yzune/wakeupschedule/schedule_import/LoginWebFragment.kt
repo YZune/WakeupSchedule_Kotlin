@@ -384,19 +384,13 @@ class LoginWebFragment : BaseFragment() {
             progress_bar.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
-            val task = withContext(Dispatchers.IO) {
-                try {
-                    viewModel.getCheckCode()
-                } catch (e: Exception) {
-                    null
-                }
-            }
-            if (task != null) {
+            try {
+                val bitmap = viewModel.getCheckCode()
                 progress_bar.visibility = View.GONE
                 iv_code.visibility = View.VISIBLE
                 iv_error.visibility = View.INVISIBLE
-                iv_code.setImageBitmap(task)
-            } else {
+                iv_code.setImageBitmap(bitmap)
+            } catch (e: Exception) {
                 progress_bar.visibility = View.GONE
                 iv_code.visibility = View.INVISIBLE
                 iv_error.visibility = View.VISIBLE

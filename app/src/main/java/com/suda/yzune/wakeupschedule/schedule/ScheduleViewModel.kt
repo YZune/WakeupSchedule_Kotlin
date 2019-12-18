@@ -17,6 +17,8 @@ import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -68,7 +70,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getTimeList(timeTableId: Int): List<TimeDetailBean> {
-        return timeDao.getTimeListInThread(timeTableId)
+        return timeDao.getTimeList(timeTableId)
     }
 
     suspend fun addBlankTableAsync(tableName: String) {
@@ -84,7 +86,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
-        return courseDao.getCourseByDayOfTable(day, tableId)
+        return courseDao.getCourseByDayOfTableLiveData(day, tableId)
     }
 
     suspend fun deleteCourseBean(courseBean: CourseBean) {
@@ -150,11 +152,11 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         val gson = Gson()
         val strBuilder = StringBuilder()
-        strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
+        strBuilder.append(gson.toJson(timeTableDao.getTimeTable(table.timeTable)))
         strBuilder.append("\n${gson.toJson(timeList)}")
         strBuilder.append("\n${gson.toJson(table)}")
         strBuilder.append("\n${gson.toJson(courseDao.getCourseBaseBeanOfTable(table.id))}")
-        strBuilder.append("\n${gson.toJson(courseDao.getDetailOfTableInThread(table.id))}")
+        strBuilder.append("\n${gson.toJson(courseDao.getDetailOfTable(table.id))}")
         val tableName = if (table.tableName == "") {
             "我的课表"
         } else {
@@ -176,21 +178,26 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             dir.mkdir()
         }
         //val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
+        withContext(Dispatchers.Default) {
+
+        }
         val ical = ICalendar()
-        ical.setProductId("-//YZune//WakeUpSchedule//EN")
+        withContext(Dispatchers.Default) {
+            ical.setProductId("-//YZune//WakeUpSchedule//EN")
 //        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
 //        calendar.properties.add(Version.VERSION_2_0)
 //        calendar.properties.add(CalScale.GREGORIAN)
-        val startTimeMap = ICalUtils.getClassTime(timeList, true)
-        val endTimeMap = ICalUtils.getClassTime(timeList, false)
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
-        val date = sdf.parse(table.startDate)
-        allCourseList.forEach {
-            it.value?.forEach { course ->
-                try {
-                    ICalUtils.getClassEvents(ical, startTimeMap, endTimeMap, table.maxWeek, course, date)
-                } catch (ignored: Exception) {
+            val startTimeMap = ICalUtils.getClassTime(timeList, true)
+            val endTimeMap = ICalUtils.getClassTime(timeList, false)
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+            val date = sdf.parse(table.startDate)
+            allCourseList.forEach {
+                it.value?.forEach { course ->
+                    try {
+                        ICalUtils.getClassEvents(ical, startTimeMap, endTimeMap, table.maxWeek, course, date)
+                    } catch (ignored: Exception) {
 
+                    }
                 }
             }
         }
@@ -202,7 +209,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             table.tableName
         }
         val file = File(myDir, "日历-$tableName.ics")
-        Biweekly.write(ical).go(file)
+        withContext(Dispatchers.IO) {
+            Biweekly.write(ical).go(file)
+        }
         return file.path
     }
 }
