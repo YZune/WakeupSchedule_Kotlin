@@ -1,10 +1,9 @@
 package com.suda.yzune.wakeupschedule.schedule_import.HUST
 
 import okhttp3.*
-import java.lang.Exception
 import java.math.BigInteger
 
-class MobileHub (private var user: String, private var password: String){
+class MobileHub(private var user: String, private var password: String) {
     private val loginUrl = "https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhub.m.hust.edu.cn%2Fcj%2Findex.jsp"
     private val getScheduleUrl = "http://hub.m.hust.edu.cn/kcb/todate/namecourse.action"
 
@@ -31,8 +30,8 @@ class MobileHub (private var user: String, private var password: String){
                 }
             })
             .build()
-    private lateinit var modulus : String
-    private lateinit var execution : String
+    private lateinit var modulus: String
+    private lateinit var execution: String
 
     lateinit var courseHTML: String
 
@@ -57,7 +56,7 @@ class MobileHub (private var user: String, private var password: String){
         execution = matchResult.groupValues.last()
     }
 
-    fun login() : Boolean{
+    fun login(): Boolean {
         refreshSession()
 
         val cipher = Cipher(HUST_RSA_EXPONENT, BigInteger(modulus, 16))

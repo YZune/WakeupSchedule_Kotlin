@@ -37,6 +37,17 @@ class DonateFragment : BaseDialogFragment() {
             dismiss()
         }
 
+        tv_weibo.setOnClickListener {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.addCategory("android.intent.category.DEFAULT")
+                intent.data = Uri.parse("sinaweibo://userinfo?uid=6970231444")
+                activity!!.startActivity(intent)
+            } catch (e: Exception) {
+                Toasty.info(context!!.applicationContext, "没有检测到微博客户端o(╥﹏╥)o").show()
+            }
+        }
+
         tv_star.setOnClickListener {
             try {
                 val uri = Uri.parse("market://details?id=com.suda.yzune.wakeupschedule")

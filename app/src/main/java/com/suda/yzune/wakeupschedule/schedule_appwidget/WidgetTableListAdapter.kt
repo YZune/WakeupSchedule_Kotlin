@@ -1,14 +1,14 @@
 package com.suda.yzune.wakeupschedule.schedule_appwidget
 
 import android.widget.ImageView
-import com.chad.library.adapter.base.BaseItemDraggableAdapter
+import com.bumptech.glide.Glide
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 
 class WidgetTableListAdapter(layoutResId: Int, data: List<TableSelectBean>) :
-        BaseItemDraggableAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
+        BaseQuickAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: TableSelectBean) {
         helper.setVisible(R.id.ib_share, false)
@@ -22,12 +22,12 @@ class WidgetTableListAdapter(layoutResId: Int, data: List<TableSelectBean>) :
         }
         val imageView = helper.getView<ImageView>(R.id.iv_pic)
         if (item.background != "") {
-            GlideApp.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(item.background)
                     .override(400, 600)
                     .into(imageView)
         } else {
-            GlideApp.with(mContext.applicationContext)
+            Glide.with(mContext)
                     .load(R.drawable.main_background_2019)
                     .override(400, 600)
                     .into(imageView)

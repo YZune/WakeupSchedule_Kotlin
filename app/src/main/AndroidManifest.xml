@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-
+        <activity android:name=".settings.SettingsHostActivity"></activity>
         <activity
             android:name=".suda_life.SudaLifeActivity"
             android:label="苏大生活" />
@@ -33,7 +33,9 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data
                     android:mimeType="application/octet-stream"
                     android:pathPattern=".*\\.wakeup_schedule" />

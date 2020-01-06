@@ -20,7 +20,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:text="第1周    周四"
+        android:text="我的课表 | 第1周    周四"
         android:textSize="12sp"
         android:textStyle="bold" />
 

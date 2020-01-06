@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +19,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
+import org.jetbrains.anko.padding
 import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.find
 import kotlin.math.roundToInt
@@ -72,20 +72,11 @@ class ScheduleFragment : BaseFragment() {
         if (viewModel.table.sundayFirst) {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title0_1 + i)
-                if (weekDay == 7 && i == 0) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
-                if (weekDay == i) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
             }
         } else {
             for (i in 0..6) {
                 textView = find(R.id.anko_tv_title1 + i)
-                if (i == weekDay - 1) {
-                    textView.onShineEffect(viewModel.table.textColor)
-                }
                 textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
             }
         }
@@ -127,10 +118,6 @@ class ScheduleFragment : BaseFragment() {
         }
     }
 
-    private fun TextView.onShineEffect(colorInt: Int) {
-        //this.setShadowLayer(12f, 0f, 0f, Color.WHITE)
-    }
-
     companion object {
         @JvmStatic
         fun newInstance(arg0: Int) =
@@ -166,11 +153,16 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
-            val textView = TipTextView(context!!)
-
-            if (day == weekDay) {
-                textView.onShineEffect(viewModel.table.courseTextColor)
+            if (c.step <= 0) {
+                c.step = 1
+                Toasty.error(context!!, "检测到课程数据有误，请仔细核对").show()
             }
+            if (c.startNode <= 0) {
+                c.startNode = 1
+                Toasty.error(context!!, "检测到课程数据有误，请仔细核对").show()
+            }
+
+            val textView = TipTextView(table.courseTextColor, table.itemTextSize, context!!)
 
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -192,10 +184,11 @@ class ScheduleFragment : BaseFragment() {
             }
 
             textView.layoutParams = lp
-            textView.textSize = table.itemTextSize.toFloat()
-            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
-            textView.setTextColor(table.courseTextColor)
+            textView.padding = dip(4)
+//            textView.textSize = table.itemTextSize.toFloat()
+//            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
+//            textView.setTextColor(table.courseTextColor)
 
             textView.background = ContextCompat.getDrawable(activity!!, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
@@ -291,7 +284,7 @@ class ScheduleFragment : BaseFragment() {
             if (table.showTime && viewModel.timeList.isNotEmpty()) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
             }
-            textView.text = strBuilder
+            textView.text = strBuilder.toString()
 
             textView.setOnClickListener {
                 try {

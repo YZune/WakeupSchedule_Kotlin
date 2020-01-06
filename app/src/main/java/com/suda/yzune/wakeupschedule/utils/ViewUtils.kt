@@ -11,8 +11,8 @@ import android.text.Spanned
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ScrollView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.text.HtmlCompat
 import com.suda.yzune.wakeupschedule.R
@@ -21,6 +21,7 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import java.io.File
 import java.io.FileOutputStream
 
+
 object ViewUtils {
 
     fun judgeColorIsLight(color: Int): Boolean {
@@ -28,6 +29,15 @@ object ViewUtils {
         val green = color and 0x00ff00 shr 8
         val blue = color and 0x0000ff
         return (0.213 * red + 0.715 * green + 0.072 * blue > 255 / 2)
+    }
+
+    fun getScreenInfo(context: Context): Array<Int> {
+        val displayMetrics = DisplayMetrics()
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        wm.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        return arrayOf(width, height)
     }
 
     fun createScheduleView(context: Context, tColor: Int = Color.BLACK, day: Int = -1): View {
@@ -235,6 +245,17 @@ object ViewUtils {
         return vh
     }
 
+    fun createColorStateList(color: Int): ColorStateList {
+        val colors = intArrayOf(color, color, color, color, color, color)
+        val states = arrayOfNulls<IntArray>(6)
+        states[0] = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+        states[1] = intArrayOf(android.R.attr.state_enabled, android.R.attr.state_focused)
+        states[2] = intArrayOf(android.R.attr.state_enabled)
+        states[3] = intArrayOf(android.R.attr.state_focused)
+        states[4] = intArrayOf(android.R.attr.state_window_focused)
+        states[5] = intArrayOf()
+        return ColorStateList(states, colors)
+    }
 
     fun createColorStateList(normal: Int, pressed: Int, focused: Int, unable: Int): ColorStateList {
         val colors = intArrayOf(pressed, focused, normal, focused, unable, normal)
@@ -280,18 +301,18 @@ object ViewUtils {
         //activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file1.getAbsolutePath())));
     }
 
-    fun getViewBitmap(scrollView: ScrollView): Bitmap {
+    fun getViewBitmap(viewGroup: ViewGroup, low: Boolean = false, marginBottom: Int = 0): Bitmap {
         var h = 0
         val bitmap: Bitmap
         // 获取scrollView实际高度,这里很重要
-        for (i in 0 until scrollView.childCount) {
-            h += scrollView.getChildAt(i).height
+        for (i in 0 until viewGroup.childCount) {
+            h += viewGroup.getChildAt(i).height + marginBottom
         }
         // 创建对应大小的bitmap
-        bitmap = Bitmap.createBitmap(scrollView.width, h,
-                Bitmap.Config.ARGB_8888)
+        bitmap = Bitmap.createBitmap(viewGroup.width, h,
+                if (low) Bitmap.Config.ARGB_4444 else Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        scrollView.draw(canvas)
+        viewGroup.draw(canvas)
         return bitmap
     }
 

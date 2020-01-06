@@ -21,7 +21,7 @@ object PreferenceUtils {
         editor.apply()
     }
 
-    fun getStringFromSP(context: Context, key: String, defaultString: String): String? {
+    fun getStringFromSP(context: Context, key: String, defaultString: String?): String? {
         init(context)
         return sp!!.getString(key, defaultString)
     }

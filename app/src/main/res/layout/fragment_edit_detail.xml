@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context=".widget.EditDetailFragment">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        android:textStyle="bold"
+        tools:text="标题" />
+
+    <ScrollView
+        android:id="@+id/sv_details"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/cg_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleSelection="true" />
+
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/et_detail"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:gravity="center"
+        android:hint="从上方选择或者重新输入…"
+        android:inputType="text"
+        android:lines="1"
+        android:singleLine="true"
+        android:textSize="14sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_save"
+        style="@style/DialogButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_marginTop="8dp"
+        android:text="保存"
+        android:textStyle="bold" />
+
+
+</LinearLayout>

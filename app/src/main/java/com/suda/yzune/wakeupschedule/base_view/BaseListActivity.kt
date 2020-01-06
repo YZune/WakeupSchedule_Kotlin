@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.base_view
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextWatcher
@@ -38,7 +37,6 @@ abstract class BaseListActivity : BaseActivity() {
     private fun createView(): View {
         return UI {
             constraintLayout {
-                backgroundColorResource = R.color.backgroundColor
                 mRecyclerView = recyclerView {
                     overScrollMode = OVER_SCROLL_NEVER
                 }.lparams(matchParent, matchParent) {
@@ -51,13 +49,14 @@ abstract class BaseListActivity : BaseActivity() {
                 linearLayout {
                     id = R.id.anko_layout
                     topPadding = getStatusBarHeight()
-                    backgroundColor = Color.WHITE
+                    backgroundColor = colorAttr(R.attr.colorSurface)
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
                     imageButton(R.drawable.ic_back) {
                         backgroundResource = outValue.resourceId
                         padding = dip(8)
+                        setColorFilter(colorAttr(R.attr.colorOnBackground))
                         setOnClickListener {
                             onBackPressed()
                         }
@@ -126,15 +125,21 @@ abstract class BaseListActivity : BaseActivity() {
                     endToEnd = ConstraintSet.PARENT_ID
                 }
 
-                view {
-                    backgroundColorResource = R.color.grey
-                    alpha = 0.5f
-                }.lparams(matchParent, dip(1)) {
-                    topToBottom = R.id.anko_layout
-                    startToStart = ConstraintSet.PARENT_ID
-                    endToEnd = ConstraintSet.PARENT_ID
-                }
+//                view {
+//                    backgroundColorResource = R.color.grey
+//                    alpha = 0.5f
+//                }.lparams(matchParent, dip(1)) {
+//                    topToBottom = R.id.anko_layout
+//                    startToStart = ConstraintSet.PARENT_ID
+//                    endToEnd = ConstraintSet.PARENT_ID
+//                }
             }
         }.view
+    }
+
+    override fun onDestroy() {
+        searchView.removeTextChangedListener(textWatcher)
+        textWatcher = null
+        super.onDestroy()
     }
 }

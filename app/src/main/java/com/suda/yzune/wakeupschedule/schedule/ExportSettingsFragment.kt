@@ -1,8 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
@@ -64,12 +66,19 @@ class ExportSettingsFragment : BaseDialogFragment() {
                     }
                 }
                 if (task != null) {
-                    Share2.Builder(activity)
-                            .setContentType(ShareContentType.FILE)
-                            .setShareFileUri(FileUtil.getFileUri(activity, null, File(task)))
-                            .setTitle("导出并分享课程文件")
-                            .build()
-                            .shareBySystem()
+                    val shareIntent = ShareCompat.IntentBuilder.from(activity)
+                            .setChooserTitle("导出并分享课程文件")
+                            .setStream(FileUtil.getFileUri(activity, null, File(task)))
+                            .setType("*/*")
+                            .createChooserIntent()
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(shareIntent)
+//                    Share2.Builder(activity)
+//                            .setContentType(ShareContentType.FILE)
+//                            .setShareFileUri(FileUtil.getFileUri(activity, null, File(task)))
+//                            .setTitle("导出并分享课程文件")
+//                            .build()
+//                            .shareBySystem()
                     dismiss()
                 } else {
                     Toasty.error(activity!!.applicationContext, "出现异常>_<").show()

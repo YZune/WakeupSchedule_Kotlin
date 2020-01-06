@@ -14,7 +14,6 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导入课程"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <TextView

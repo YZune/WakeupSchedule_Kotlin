@@ -84,7 +84,7 @@ class TimeSettingsViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun initTimeSelectList() {
-        for (i in 6..24) {
+        for (i in 6..23) {
             for (j in 0..55 step 5) {
                 val h = if (i < 10) "0$i" else i.toString()
                 val m = if (j < 10) "0$j" else j.toString()

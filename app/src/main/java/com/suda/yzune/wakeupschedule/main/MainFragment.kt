@@ -310,7 +310,7 @@ class MainFragment : BaseFragment() {
                 }
             }
 
-            val textView = TipTextView(context!!)
+            val textView = TipTextView(table.courseTextColor, table.itemTextSize, context!!)
 
             val lp = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -332,10 +332,11 @@ class MainFragment : BaseFragment() {
             }
 
             textView.layoutParams = lp
-            textView.textSize = table.itemTextSize.toFloat()
-            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
-            textView.setTextColor(table.courseTextColor)
+            textView.padding = dip(4)
+//            textView.textSize = table.itemTextSize.toFloat()
+//            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
+//            textView.setTextColor(table.courseTextColor)
 
             textView.background = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
@@ -431,7 +432,7 @@ class MainFragment : BaseFragment() {
             if (table.showTime && viewModel.timeList.isNotEmpty()) {
                 strBuilder.insert(0, viewModel.timeList[c.startNode - 1].startTime + "\n")
             }
-            textView.text = strBuilder
+            textView.text = strBuilder.toString()
 
             textView.setOnClickListener {
                 try {

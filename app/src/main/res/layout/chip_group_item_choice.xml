@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.chip.Chip xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:checkable="true"
+    android:textColor="?attr/colorSurface"
+    android:textSize="12sp"
+    app:chipBackgroundColor="@color/colorPrimary"
+    tools:text="hhhhhhhhhhh" />

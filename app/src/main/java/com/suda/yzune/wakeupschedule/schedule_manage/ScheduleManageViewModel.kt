@@ -27,7 +27,7 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
         return baseDao.getCourseBaseBeanOfTable(tableId)
     }
 
-    suspend fun getTableById(id: Int): TableBean {
+    suspend fun getTableById(id: Int): TableBean? {
         return tableDao.getTableByIdInThread(id)
     }
 

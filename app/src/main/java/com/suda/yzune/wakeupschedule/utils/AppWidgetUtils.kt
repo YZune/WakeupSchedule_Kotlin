@@ -37,14 +37,17 @@ object AppWidgetUtils {
         mRemoteViews.setTextViewTextSize(R.id.tv_date, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat() + 2)
         mRemoteViews.setTextViewTextSize(R.id.tv_week, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
         mRemoteViews.setTextViewText(R.id.tv_date, date)
+        if (tableBean.tableName.isEmpty()) {
+            tableBean.tableName = "我的课表"
+        }
         if (week > 0) {
             if (nextWeek) {
-                mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周")
+                mRemoteViews.setTextViewText(R.id.tv_week, "${tableBean.tableName} | 第${week}周")
             } else {
-                mRemoteViews.setTextViewText(R.id.tv_week, "第${week}周    $weekDay")
+                mRemoteViews.setTextViewText(R.id.tv_week, "${tableBean.tableName} | 第${week}周    $weekDay")
             }
         } else {
-            mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
+            mRemoteViews.setTextViewText(R.id.tv_week, "${tableBean.tableName} | 还没有开学哦")
             week = 1
         }
 
@@ -73,6 +76,7 @@ object AppWidgetUtils {
         mRemoteViews.setInt(R.id.iv_back, "setColorFilter", tableBean.widgetTextColor)
         val weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(tableBean.startDate, tableBean.sundayFirst), week, tableBean.sundayFirst)
         mRemoteViews.setTextColor(R.id.tv_title0, tableBean.widgetTextColor)
+        mRemoteViews.setTextViewTextSize(R.id.tv_title0, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
         mRemoteViews.setTextViewText(R.id.tv_title0, weekDate[0] + "\n月")
         if (nextWeek) {
             mRemoteViews.setTextViewText(R.id.tv_date, "下周")
@@ -110,18 +114,18 @@ object AppWidgetUtils {
         }
         val lvIntent = Intent(context, ScheduleAppWidgetService::class.java)
         lvIntent.data = if (nextWeek) {
-            Uri.fromParts("content", "1", null)
+            Uri.fromParts("content", "1,${tableBean.id}", null)
         } else {
-            Uri.fromParts("content", "0", null)
+            Uri.fromParts("content", "0,${tableBean.id}", null)
         }
         mRemoteViews.setRemoteAdapter(R.id.lv_schedule, lvIntent)
         val intent = Intent(context, SplashActivity::class.java)
         val pIntent = PendingIntent.getActivity(context, 0, intent, 0)
         mRemoteViews.setOnClickPendingIntent(R.id.tv_date, pIntent)
 
-        val i = Intent(context, ScheduleAppWidget::class.java)
-        i.action = "WAKEUP_NEXT_WEEK"
-        val pi = PendingIntent.getBroadcast(context, 1, i, PendingIntent.FLAG_UPDATE_CURRENT)
+        val nextIntent = Intent(context, ScheduleAppWidget::class.java)
+        nextIntent.action = "WAKEUP_NEXT_WEEK"
+        val pi = PendingIntent.getBroadcast(context, 1, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         mRemoteViews.setOnClickPendingIntent(R.id.iv_next, pi)
 
         val backIntent = Intent(context, ScheduleAppWidget::class.java)

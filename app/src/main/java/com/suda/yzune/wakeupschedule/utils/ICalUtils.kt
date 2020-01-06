@@ -1,28 +1,22 @@
 package com.suda.yzune.wakeupschedule.utils
 
+import biweekly.ICalendar
+import biweekly.component.VEvent
+import biweekly.property.Uid
+import biweekly.util.Frequency
+import biweekly.util.Recurrence
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
-import net.fortuna.ical4j.model.*
-import net.fortuna.ical4j.model.component.VAlarm
-import net.fortuna.ical4j.model.component.VEvent
-import net.fortuna.ical4j.model.parameter.Value
-import net.fortuna.ical4j.model.property.*
-import net.fortuna.ical4j.util.UidGenerator
 import java.util.*
-import java.util.Calendar
-import java.util.Date
-import net.fortuna.ical4j.model.property.Summary
-import net.fortuna.ical4j.model.Dur
 
 
 object ICalUtils {
 
-    fun getClassEvents(startTimeMap: ArrayList<Calendar>,
+    fun getClassEvents(ical: ICalendar, startTimeMap: ArrayList<Calendar>,
                        endTimeMap: ArrayList<Calendar>,
                        maxWeek: Int,
                        course: CourseBean,
-                       termStart: Date): List<VEvent> {
-        val result = arrayListOf<VEvent>()
+                       termStart: Date) {
         var i = 1
         while (i <= maxWeek) {
             if (course.inWeek(i)) {
@@ -31,14 +25,12 @@ object ICalUtils {
                 j--
                 val event = getClassEvent(startTimeMap, endTimeMap, course, 1, i, j, termStart)
                 if (event != null) {
-                    event.validate()
-                    result.add(event)
+                    ical.addEvent(event)
                 }
                 i += j - i
             }
             i++
         }
-        return result
     }
 
     private fun getClassEvent(startTimeMap: ArrayList<Calendar>,
@@ -53,9 +45,11 @@ object ICalUtils {
         val dayAfter = (endWeek - currentWeek) * 7 + course.day
 
         // repeat every week until endDate
-        val recur = Recur(Recur.WEEKLY, DateTime(CourseUtils.getDateAfter(termStart, dayAfter)))
-        recur.interval = 1
-        val rule = RRule(recur)
+        val recur = Recurrence.Builder(Frequency.WEEKLY).interval(1)
+                .until(CourseUtils.getDateAfter(termStart, dayAfter))
+                .build()
+//        Recur(Recur.WEEKLY, DateTime(CourseUtils.getDateAfter(termStart, dayAfter)))
+//        val rule = RRule(recur)
 
         val startTime = startTimeMap[course.startNode - 1]
         val endTime = endTimeMap[course.startNode + course.step - 2]
@@ -65,38 +59,23 @@ object ICalUtils {
         dailyStart.set(Calendar.HOUR_OF_DAY, startTime.get(Calendar.HOUR_OF_DAY))
         dailyStart.set(Calendar.MINUTE, startTime.get(Calendar.MINUTE))
         dailyStart.set(Calendar.DAY_OF_WEEK, weekDayConvert(course.day))
-        val start = DateTime(dailyStart.time)
 
         val dailyEnd = Calendar.getInstance()
         dailyEnd.time = CourseUtils.getDateBefore(termStart, dayBefore)
         dailyEnd.set(Calendar.HOUR_OF_DAY, endTime.get(Calendar.HOUR_OF_DAY))
         dailyEnd.set(Calendar.MINUTE, endTime.get(Calendar.MINUTE))
         dailyEnd.set(Calendar.DAY_OF_WEEK, weekDayConvert(course.day))
-        val end = DateTime(dailyEnd.time)
-
-        val paraList = ParameterList()
-        paraList.add(ParameterFactoryImpl.getInstance().createParameter(Value.PERIOD.name, Value.PERIOD.value))
-
-        val periodList = PeriodList()
-        periodList.add(Period(start, end))
-        val rdate = RDate(paraList, periodList)
 
         // create event, repeat weekly
-        val event = VEvent(start, end, course.courseName)
+        val event = VEvent()
+        event.setUid("WakeUpSchedule-" + Uid.random().value)
+        event.setSummary(course.courseName)
+        event.setDateStart(dailyStart.time)
+        event.setDateEnd(dailyEnd.time)
+        event.setRecurrenceRule(recur)
+        event.setLocation("${course.room} ${course.teacher}")
+        event.setDescription("${course.getNodeString()}\n${course.room}\n${course.teacher}")
 
-        // set event
-        // event.properties.add(Uid(UidGenerator("WakeUpSchedule").generateUid().value))
-        event.properties.add(Uid("WakeUpSchedule" + course.courseName.hashCode().toString()))
-        event.properties.add(Location("${course.room} ${course.teacher}"))
-        // event.alarms.add(VAlarm(Dur(0, 0, -30, 0)))
-        val valarm = VAlarm(Dur(0, 0, -30, 0))
-        valarm.properties.add(Summary(course.courseName))
-        valarm.properties.add(Action.DISPLAY)
-        // 将VAlarm加入VEvent
-        event.alarms.add(valarm)
-        event.properties.add(Description("${course.getNodeString()}\n${course.room}\n${course.teacher}"))
-        event.properties.add(rdate)
-        event.properties.add(rule)
         return event
     }
 

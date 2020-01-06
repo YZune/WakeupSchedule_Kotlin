@@ -58,13 +58,15 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:text="可容纳人数：90" />
+                        android:text="可容纳人数：90"
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="当前滞留人数：" />
+                        android:text="当前滞留人数："
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/tv_female_stay"
@@ -93,7 +95,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="拥挤度：0%" />
+                    android:text="拥挤度：0%"
+                    android:textColor="@android:color/black" />
 
             </LinearLayout>
 
@@ -138,13 +141,15 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
-                        android:text="可容纳人数：80" />
+                        android:text="可容纳人数：80"
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="当前滞留人数：" />
+                        android:text="当前滞留人数："
+                        android:textColor="@android:color/black" />
 
                     <TextView
                         android:id="@+id/tv_male_stay"
@@ -173,7 +178,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="拥挤度：0%" />
+                    android:text="拥挤度：0%"
+                    android:textColor="@android:color/black" />
 
             </LinearLayout>
 

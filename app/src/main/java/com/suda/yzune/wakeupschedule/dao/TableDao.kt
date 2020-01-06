@@ -29,7 +29,7 @@ interface TableDao {
     fun setNewDefaultTable(newId: Int)
 
     @Query("select * from tablebean where id = :tableId")
-    fun getTableByIdInThread(tableId: Int): TableBean
+    fun getTableByIdInThread(tableId: Int): TableBean?
 
     @Query("select * from tablebean where id = :tableId")
     fun getTableById(tableId: Int): LiveData<TableBean>
@@ -40,11 +40,17 @@ interface TableDao {
     @Query("select id from tablebean where type = 1")
     fun getDefaultTableId(): LiveData<Int>
 
+    @Query("select id from tablebean where type = 1")
+    fun getDefaultTableIdInThread(): Int
+
     @Query("select * from tablebean where type = 1")
     fun getDefaultTableInThread(): TableBean
 
     @Query("select id, tableName, background, maxWeek, nodes, type from tablebean")
     fun getTableSelectList(): LiveData<List<TableSelectBean>>
+
+    @Query("select id, tableName, background, maxWeek, nodes, type from tablebean")
+    fun getTableSelectListInThread(): List<TableSelectBean>
 
     @Query("delete from tablebean where id = :id")
     fun deleteTable(id: Int)

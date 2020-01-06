@@ -126,7 +126,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/tv_vpn"
+            android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -169,6 +169,17 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/tv_thanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:textSize="12sp"
+        tools:text="感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码" />
+
     <ImageView
         android:id="@+id/scrim"
         android:layout_width="match_parent"
@@ -194,7 +205,8 @@
         android:visibility="invisible"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
-        app:layout_behavior="@string/fab_transformation_sheet_behavior">
+        app:layout_behavior="@string/fab_transformation_sheet_behavior"
+        tools:visibility="visible">
 
         <ProgressBar
             android:id="@+id/pb_loading"
@@ -202,67 +214,81 @@
             android:layout_height="56dp"
             android:layout_gravity="center" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ll_dialog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_dialog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="请选择要导入的学期"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <cn.carbswang.android.numberpickerview.library.NumberPickerView
+                android:id="@+id/wp_years"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toTopOf="@id/btn_cancel"
+                app:layout_constraintEnd_toStartOf="@id/wp_term"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
+                app:npv_RespondChangeOnDetached="false"
+                app:npv_ShownCount="3"
+                app:npv_TextSizeNormal="14sp"
+                app:npv_TextSizeSelected="14sp"
+                app:npv_WrapSelectorWheel="true" />
 
-                <com.aigestudio.wheelpicker.WheelPicker
-                    android:id="@+id/wp_years"
-                    style="@style/TermDataPicker"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    tools:ignore="NestedWeights" />
+            <cn.carbswang.android.numberpickerview.library.NumberPickerView
+                android:id="@+id/wp_term"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toTopOf="@id/btn_to_schedule"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/wp_years"
+                app:layout_constraintTop_toBottomOf="@id/tv_dialog_title"
+                app:npv_RespondChangeOnDetached="false"
+                app:npv_ShownCount="3"
+                app:npv_TextSizeNormal="14sp"
+                app:npv_TextSizeSelected="14sp"
+                app:npv_WrapSelectorWheel="true" />
 
-                <com.aigestudio.wheelpicker.WheelPicker
-                    android:id="@+id/wp_term"
-                    style="@style/TermDataPicker"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel"
+                style="@style/DialogButtonStyle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="取消"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_to_schedule"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wp_years" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_cancel"
-                    style="@style/DialogButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="取消" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_to_schedule"
+                style="@style/DialogButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_weight="1"
+                android:text="确定"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btn_cancel"
+                app:layout_constraintTop_toBottomOf="@id/wp_term" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_to_schedule"
-                    style="@style/DialogButtonStyle"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="确定" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.transformation.TransformationChildCard>
 

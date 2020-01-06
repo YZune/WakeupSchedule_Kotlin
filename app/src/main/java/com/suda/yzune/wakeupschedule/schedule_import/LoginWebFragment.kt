@@ -52,15 +52,20 @@ class LoginWebFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        tv_title.text = type
         if (type != "苏州大学") {
-            tv_vpn.visibility = View.GONE
             input_code.visibility = View.INVISIBLE
             rl_code.visibility = View.INVISIBLE
+            tv_tip.visibility = View.GONE
         } else {
             refreshCode()
+            tv_tip.setOnClickListener {
+                CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
+            }
         }
         if (type == "上海大学") {
             btg_ports.visibility = View.VISIBLE
+            tv_thanks.text = "感谢 @Deep Sea\n能导入贵校课程离不开他无私贡献代码"
             btg_ports.addOnButtonCheckedListener { group, checkedId, isChecked ->
                 if (isChecked) {
                     shanghaiPort = checkedId - R.id.btn_port1
@@ -70,8 +75,17 @@ class LoginWebFragment : BaseFragment() {
                 }
             }
         }
-        if(type == "华中科技大学") {
+        if (type == "清华大学") {
+            input_id.hint = "用户名"
+            tv_thanks.text = "感谢 @RikaSugisawa\n能导入贵校课程离不开他无私贡献代码"
             et_id.inputType = InputType.TYPE_CLASS_TEXT
+        }
+        if (type == "吉林大学") {
+            tv_thanks.text = "感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码"
+        }
+        if (type == "华中科技大学") {
+            et_id.inputType = InputType.TYPE_CLASS_TEXT
+            tv_thanks.text = "感谢 @Lyt99\n能导入贵校课程离不开他无私贡献代码"
         }
         initEvent()
     }
@@ -94,10 +108,6 @@ class LoginWebFragment : BaseFragment() {
                 .buildRect("\uE6DE", Color.TRANSPARENT)
 
         fab_login.setImageDrawable(textDrawable)
-
-        tv_vpn.setOnClickListener {
-            CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
-        }
 
         iv_code.setOnClickListener {
             refreshCode()
@@ -175,6 +185,28 @@ class LoginWebFragment : BaseFragment() {
                             }
                         }
                     }
+                    if (type == "清华大学") {
+                        launch {
+                            val task = withContext(Dispatchers.IO) {
+                                try {
+                                    viewModel.loginTsinghua(et_id.text.toString(),
+                                            et_pwd.text.toString())
+                                } catch (e: Exception) {
+                                    e.message
+                                }
+                            }
+                            when (task) {
+                                "ok" -> {
+                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                                    activity!!.setResult(RESULT_OK)
+                                    activity!!.finish()
+                                }
+                                else -> {
+                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
                     if (type == "上海大学") {
                         launch {
                             val task = withContext(Dispatchers.IO) {
@@ -228,7 +260,7 @@ class LoginWebFragment : BaseFragment() {
                             val task = withContext(Dispatchers.IO) {
                                 val hub = MobileHub(et_id.text.toString(), et_pwd.text.toString())
                                 try {
-                                    if(!hub.login()) {
+                                    if (!hub.login()) {
                                         "no login"
                                     } else {
                                         hub.getCourseSchedule()
@@ -249,7 +281,7 @@ class LoginWebFragment : BaseFragment() {
                                     Toasty.error(activity!!.applicationContext, "学号或密码错误，请检查后再输入", Toast.LENGTH_LONG).show()
                                 }
                                 else -> {
-                                    if(task?.contains("failed to connect") == true) {
+                                    if (task?.contains("failed to connect") == true) {
                                         Toasty.error(activity!!.applicationContext, "无法访问HUB系统，请检查是否连接校园网", Toast.LENGTH_LONG).show()
                                     } else {
                                         Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
@@ -376,15 +408,23 @@ class LoginWebFragment : BaseFragment() {
 
     private fun cardC2Dialog(years: List<String>) {
         ll_dialog.visibility = View.VISIBLE
-        val terms = listOf("1", "2", "3")
-        wp_term.data = terms
-        wp_years.data = years
-        wp_years.setOnItemSelectedListener { _, data, _ ->
-            year = data as String
+        val terms = arrayOf("1", "2", "3")
+        wp_term.displayedValues = terms
+        wp_term.value = 0
+        wp_term.minValue = 0
+        wp_term.maxValue = terms.size - 1
+
+        wp_years.displayedValues = years.toTypedArray()
+        wp_years.value = 0
+        wp_years.minValue = 0
+        wp_years.maxValue = years.size - 1
+
+        wp_years.setOnValueChangedListener { _, _, newVal ->
+            year = years[newVal]
             Log.d("选中", "选中学年$year")
         }
-        wp_term.setOnItemSelectedListener { _, data, _ ->
-            term = data as String
+        wp_term.setOnValueChangedListener { _, _, newVal ->
+            term = terms[newVal]
             Log.d("选中", "选中学期$term")
         }
     }

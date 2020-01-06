@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
@@ -15,15 +14,19 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
+import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import kotlinx.android.synthetic.main.activity_school_list.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
 
@@ -51,16 +54,17 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     override fun createTitleBar(): View {
         return UI {
             verticalLayout {
-                backgroundColorResource = R.color.backgroundColor
+                backgroundColor = colorAttr(R.attr.colorSurface)
                 linearLayout {
                     topPadding = getStatusBarHeight()
-                    backgroundColor = Color.WHITE
+                    backgroundColor = colorAttr(R.attr.colorSurface)
                     val outValue = TypedValue()
                     context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
                     imageButton(R.drawable.ic_back) {
                         backgroundResource = outValue.resourceId
                         padding = dip(8)
+                        setColorFilter(colorAttr(R.attr.colorOnBackground))
                         setOnClickListener {
                             onBackPressed()
                         }
@@ -134,10 +138,10 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                     }
                 }
 
-                view {
-                    backgroundColorResource = R.color.grey
-                    alpha = 0.5f
-                }.lparams(wrapContent, dip(1))
+//                view {
+//                    backgroundColorResource = R.color.grey
+//                    alpha = 0.5f
+//                }.lparams(wrapContent, dip(1))
             }
         }.view
     }
@@ -152,6 +156,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
     private fun initSchoolList() {
         val dataBase = AppDatabase.getDatabase(application)
         val tableDao = dataBase.tableDao()
+        val gson = Gson()
 
         schools.add(SchoolListBean("S", "苏州大学"))
         schools.add(SchoolListBean("S", "上海大学"))
@@ -169,6 +174,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("H", "华东理工大学", "http://inquiry.ecust.edu.cn/jsxsd/"))
         schools.add(SchoolListBean("Z", "中南大学", "https://csujwc.its.csu.edu.cn/"))
         schools.add(SchoolListBean("H", "湖南商学院", "http://jwgl.hnuc.edu.cn/"))
+        schools.add(SchoolListBean("H", "湖南工商大学", "http://jwgl.hnuc.edu.cn/"))
         schools.add(SchoolListBean("S", "山东大学威海校区", "https://portal.wh.sdu.edu.cn/"))
         schools.add(SchoolListBean("J", "江苏师范大学", "http://sdjw.jsnu.edu.cn/"))
         schools.add(SchoolListBean("J", "吉首大学", "http://jwxt.jsu.edu.cn/"))
@@ -217,7 +223,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("N", "南京师范大学中北学院", "http://222.192.5.246/"))
         schools.add(SchoolListBean("H", "湖北经济学院", ""))
         schools.add(SchoolListBean("H", "华中师范大学", "http://xk.ccnu.edu.cn/xtgl/"))
-        schools.add(SchoolListBean("H", "华南理工大学", "http://xsjw2018.scuteo.com/driotlogin"))
+        schools.add(SchoolListBean("H", "华南理工大学", "http://xsjw2018.scuteo.com"))
         schools.add(SchoolListBean("G", "广东环境保护工程职业学院", "http://113.107.254.7/"))
         schools.add(SchoolListBean("X", "西华大学", "http://jwc.xhu.edu.cn/"))
         schools.add(SchoolListBean("X", "西安理工大学", "http://202.200.112.200/"))
@@ -284,17 +290,17 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("Z", "浙江工业大学", "http://www.gdjw.zjut.edu.cn/"))
         schools.add(SchoolListBean("D", "东北财经大学", "http://202.199.165.159/"))
         schools.add(SchoolListBean("T", "天津工业大学", "http://jwpt.tjpu.edu.cn/"))
-        schools.add(SchoolListBean("S", "山东农业大学", "http://jw.sdau.edu.cn/"))
+        schools.add(SchoolListBean("S", "山东农业大学", "http://xjw.sdau.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("H", "河海大学", "http://202.119.113.135/"))
         schools.add(SchoolListBean("X", "西安邮电大学", "http://www.zfjw.xupt.edu.cn/jwglxt/"))
         schools.add(SchoolListBean("B", "北京邮电大学", "https://jwxt.bupt.edu.cn/"))
-        schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn/kdjw"))
+        schools.add(SchoolListBean("H", "湖南科技大学", "http://kdjw.hnust.cn:8080/kdjw"))
         schools.add(SchoolListBean("B", "北京大学", "http://elective.pku.edu.cn"))
-        schools.add(SchoolListBean("J", "济南大学", "http://jwgl7.ujn.edu.cn/jwglxt"))
+        schools.add(SchoolListBean("J", "济南大学", "http://jwgl4.ujn.edu.cn/jwglxt"))
 
         schools.add(SchoolListBean("H", "河北大学", "http://zhjw.hbu.edu.cn/"))
         schools.add(SchoolListBean("X", "西南石油大学", "http://jwxt.swpu.edu.cn/"))
-        schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn/xxjw/"))
+        schools.add(SchoolListBean("H", "湖南科技大学潇湘学院", "http://xxjw.hnust.cn:8080/xxjw/"))
         schools.add(SchoolListBean("Z", "郑州大学西亚斯国际学院", "http://218.198.176.111/default2.aspx"))
         schools.add(SchoolListBean("H", "河南理工大学", ""))
         schools.add(SchoolListBean("Q", "齐齐哈尔大学", ""))
@@ -335,12 +341,11 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("X", "信阳师范学院", "http://jwc.xynu.edu.cn/jxzhxxfwpt.htm"))
         schools.add(SchoolListBean("A", "安徽建筑大学", "http://219.231.0.156/"))
         schools.add(SchoolListBean("B", "北京化工大学", "http://jwglxt.buct.edu.cn/"))
-        schools.add(SchoolListBean("Z", "北京化工大学", "http://jwglxt.buct.edu.cn/"))
         schools.add(SchoolListBean("Z", "浙江工业大学之江学院", "http://jwgl.zzjc.edu.cn/default2.aspx"))
         schools.add(SchoolListBean("B", "北京联合大学", ""))
         schools.add(SchoolListBean("N", "南京城市职业学院", "http://jw.ncc.edu.cn/jwglxt/xtgl/"))
         schools.add(SchoolListBean("H", "湖北中医药大学", "http://jwxt.hbtcm.edu.cn/jwglxt/xtgl"))
-        schools.add(SchoolListBean("H", "华中农业大学", ""))
+        schools.add(SchoolListBean("H", "华中农业大学", "http://jwgl.hzau.edu.cn/xtgl/login_slogin.html"))
         schools.add(SchoolListBean("G", "广西大学", "http://jwxt2018.gxu.edu.cn/jwglxt/xtgl/"))
         schools.add(SchoolListBean("H", "淮南师范学院", "http://211.70.176.173/jwglxt/xtgl/"))
         schools.add(SchoolListBean("Z", "浙江工商大学", "http://124.160.64.163/jwglxt/xtgl/"))
@@ -375,6 +380,17 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         schools.add(SchoolListBean("W", "渭南师范学院", "http://218.195.46.9"))
         schools.add(SchoolListBean("H", "华中科技大学", ""))
 
+        schools.add(SchoolListBean("G", "广东科学技术职业学院", ""))
+        schools.add(SchoolListBean("M", "闽南师范大学", "http://222.205.160.107/jwglxt/xtgl/login_slogin.html"))
+
+        schools.add(SchoolListBean("Q", "清华大学", ""))
+
+        schools.add(SchoolListBean("X", "西安建筑科技大学", "http://xk.xauat.edu.cn/default2.aspx#a"))
+        schools.add(SchoolListBean("J", "江西农业大学南昌商学院", "http://223.83.249.67:8080/jsxsd/"))
+
+        schools.add(SchoolListBean("C", "长沙理工大学", "http://xk.csust.edu.cn/"))
+        schools.add(SchoolListBean("L", "辽宁机电职业技术学院", "http://jwgl.lnjdp.com/"))
+
         schools.sortWith(compareBy({ it.sortKey }, { it.name }))
 
         schools.add(0, SchoolListBean("★", "URP 系统"))
@@ -393,14 +409,18 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", showList[position].name) })
                 finish()
             } else {
-                tableDao.getDefaultTableId().observe(this, Observer {
+                launch {
+                    PreferenceUtils.saveStringToSP(applicationContext, "import_school", gson.toJson(showList[position]))
+                    val tableId = withContext(Dispatchers.IO) {
+                        tableDao.getDefaultTableIdInThread()
+                    }
                     startActivity<LoginWebActivity>(
                             "type" to showList[position].name,
-                            "tableId" to it,
+                            "tableId" to tableId,
                             "url" to showList[position].url
                     )
                     finish()
-                })
+                }
             }
         }
 

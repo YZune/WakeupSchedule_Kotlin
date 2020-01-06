@@ -1,13 +1,13 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import com.chad.library.adapter.base.BaseItemDraggableAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import kotlinx.android.parcel.RawValue
 
 class TimeSettingsAdapter(private val layoutResId: Int, val list: @RawValue List<TimeDetailBean>) :
-        BaseItemDraggableAdapter<TimeDetailBean, BaseViewHolder>(layoutResId, list) {
+        BaseQuickAdapter<TimeDetailBean, BaseViewHolder>(layoutResId, list) {
 
     override fun convert(helper: BaseViewHolder, item: TimeDetailBean) {
         val name = "第 ${item.node} 节"

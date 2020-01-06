@@ -10,10 +10,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.content.ContextCompat
+import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 
@@ -32,7 +32,6 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                 lparams(matchParent, dip(64))
                 textView {
                     id = R.id.anko_text_view
-                    textColor = Color.BLACK
                     textSize = 16f
                 }.lparams(0, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,18 +13,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tv_donate"
-            android:layout_width="160dp"
-            android:layout_height="32dp"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:background="@drawable/select_textview_bg"
-            android:gravity="center"
             android:text="点这里支付宝随意捐赠"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="match_parent"

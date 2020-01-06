@@ -189,6 +189,7 @@ class HtmlImportFragment : BaseFragment() {
                                     3 -> viewModel.parseQZ(html, "青岛农业大学")
                                     4 -> viewModel.parseQZ(html, "锦州医科大学")
                                     5 -> viewModel.parseQZ(html, "山东科技大学")
+                                    6 -> viewModel.parseQZ(html, "佛山科学技术学院")
                                     else -> "没有贵校的信息哦>_<"
                                 }
                             }

@@ -3,6 +3,7 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -25,6 +26,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
@@ -89,7 +91,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.initBaseData())
+            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.baseBean)
         } else {
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
@@ -161,6 +163,56 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                     selectWeekDialog.isCancelable = false
                     selectWeekDialog.show(supportFragmentManager, "selectWeek")
                 }
+                R.id.ll_teacher -> {
+                    launch {
+                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_teacher) as TextView
+                        if (viewModel.teacherList == null) {
+                            viewModel.teacherList = viewModel.getExistedTeachers()
+                        }
+                        EditDetailFragment.newInstance("授课老师", viewModel.teacherList!!, viewModel.editList[position].teacher
+                                ?: "").apply {
+                            listener = object : EditDetailFragment.OnSaveClickedListener {
+                                override fun save(editText: EditText, dialog: Dialog) {
+                                    val teacher = editText.text.toString()
+                                    textView.text = teacher
+                                    viewModel.editList[position].teacher = teacher
+                                    val flag = viewModel.teacherList!!.any {
+                                        it == teacher
+                                    }
+                                    if (!flag) {
+                                        viewModel.teacherList!!.add(teacher)
+                                    }
+                                    dialog.dismiss()
+                                }
+                            }
+                        }.show(supportFragmentManager, null)
+                    }
+                }
+                R.id.ll_room -> {
+                    launch {
+                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_room) as TextView
+                        if (viewModel.roomList == null) {
+                            viewModel.roomList = viewModel.getExistedRooms()
+                        }
+                        EditDetailFragment.newInstance("上课地点", viewModel.roomList!!, viewModel.editList[position].room
+                                ?: "").apply {
+                            listener = object : EditDetailFragment.OnSaveClickedListener {
+                                override fun save(editText: EditText, dialog: Dialog) {
+                                    val room = editText.text.toString()
+                                    textView.text = room
+                                    viewModel.editList[position].room = room
+                                    val flag = viewModel.roomList!!.any {
+                                        it == room
+                                    }
+                                    if (!flag) {
+                                        viewModel.roomList!!.add(room)
+                                    }
+                                    dialog.dismiss()
+                                }
+                            }
+                        }.show(supportFragmentManager, null)
+                    }
+                }
             }
         }
         mRecyclerView.adapter = adapter
@@ -227,17 +279,31 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             colorAnim.start()
         }
         tvBtn.setOnClickListener {
-            adapter.addData(CourseEditBean(
-                    teacher = viewModel.editList[0].teacher,
-                    room = viewModel.editList[0].room,
-                    tableId = viewModel.tableId,
-                    weekList = MutableLiveData<ArrayList<Int>>().apply {
-                        this.value = ArrayList<Int>().apply {
-                            for (i in 1..viewModel.maxWeek) {
-                                this.add(i)
+            if (viewModel.editList.isEmpty()) {
+                adapter.addData(CourseEditBean(
+                        teacher = "",
+                        room = "",
+                        tableId = viewModel.tableId,
+                        weekList = MutableLiveData<ArrayList<Int>>().apply {
+                            this.value = ArrayList<Int>().apply {
+                                for (i in 1..viewModel.maxWeek) {
+                                    this.add(i)
+                                }
                             }
-                        }
-                    }))
+                        }))
+            } else {
+                adapter.addData(CourseEditBean(
+                        teacher = viewModel.editList[0].teacher,
+                        room = viewModel.editList[0].room,
+                        tableId = viewModel.tableId,
+                        weekList = MutableLiveData<ArrayList<Int>>().apply {
+                            this.value = ArrayList<Int>().apply {
+                                for (i in 1..viewModel.maxWeek) {
+                                    this.add(i)
+                                }
+                            }
+                        }))
+            }
         }
         return view
     }
