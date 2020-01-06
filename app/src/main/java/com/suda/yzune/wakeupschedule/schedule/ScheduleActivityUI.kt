@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.design.navigationView
@@ -160,17 +161,18 @@ class ScheduleActivityUI : AnkoComponent<ScheduleActivity> {
 
                     navigationView {
                         id = R.id.anko_nv
-                        backgroundColorResource = R.color.backgroundColor
+                        backgroundColor = colorAttr(R.attr.colorSurface)
                         fitsSystemWindows = false
                         inflateHeaderView(R.layout.nav_header)
                         inflateMenu(R.menu.main_navigation_menu)
+                        itemIconTintList = ViewUtils.createColorStateList(colorAttr(R.attr.colorOnBackground))
                     }.lparams(matchParent, matchParent) {
                         gravity = Gravity.START
                     }
 
                     navigationView {
                         id = R.id.anko_nv_end
-                        backgroundColorResource = R.color.backgroundColor
+                        backgroundColor = colorAttr(R.attr.colorSurface)
                         fitsSystemWindows = false
                         recyclerView {
                             id = R.id.anko_rv_table_name

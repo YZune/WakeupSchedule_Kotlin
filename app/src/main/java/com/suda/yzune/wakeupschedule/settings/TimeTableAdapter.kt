@@ -1,12 +1,12 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import com.chad.library.adapter.base.BaseItemDraggableAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 
 class TimeTableAdapter(layoutResId: Int, data: List<TimeTableBean>, var selectedId: Int) :
-        BaseItemDraggableAdapter<TimeTableBean, BaseViewHolder>(layoutResId, data) {
+        BaseQuickAdapter<TimeTableBean, BaseViewHolder>(layoutResId, data) {
 
     override fun convert(helper: BaseViewHolder, item: TimeTableBean) {
         if (item.id == 1) {

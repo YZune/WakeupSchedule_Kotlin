@@ -8,11 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 
 class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBinder.ViewHolder>() {
@@ -30,9 +30,9 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
                     backgroundColor = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
                     textView {
                         id = R.id.anko_text_view
-                        textColor = Color.WHITE
                         textSize = 12f
                         lines = 1
+                        textColor = Color.WHITE
                         gravity = Gravity.CENTER_VERTICAL
                         typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent)

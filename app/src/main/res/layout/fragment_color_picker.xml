@@ -5,7 +5,6 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".widget.colorpicker.ColorPickerFragment">
 
@@ -15,7 +14,6 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="选择颜色"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerView

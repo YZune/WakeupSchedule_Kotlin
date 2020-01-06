@@ -18,7 +18,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.intList2WeekBeanList
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.isContainName
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import kotlinx.coroutines.selects.select
 import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.Connection
@@ -29,14 +28,10 @@ import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
 import java.io.*
 import java.net.URLEncoder
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.regex.Pattern
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
@@ -75,22 +70,22 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     val urpList = arrayOf("渤海大学", "烟台大学", "山西工程技术学院", "安徽财经大学", "河北工程大学", "中国农业大学",
             "上海海洋大学", "齐鲁师范学院", "山西农业大学", "中国石油大学（北京）", "内蒙古科技大学", "湖南理工学院",
             "内蒙古大学", "齐齐哈尔大学", "河南理工大学", "西南石油大学", "河北大学", "北京邮电大学", "东北财经大学",
-            "天津工业大学", "山东农业大学", "河海大学", "URP 系统")
-    val ZFSchoolList = arrayOf("渭南师范学院", "西安科技大学", "湖南城市学院", "武汉东湖学院", "沈阳师范大学", "厦门工学院", "北京联合大学", "浙江工业大学之江学院", "西安外事学院", "福建农林大学金山学院", "辽宁工业大学", "重庆邮电大学移通学院", "河南工程学院", "黑龙江外国语学院", "四川大学锦城学院", "郑州大学西亚斯国际学院", "安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
+            "天津工业大学", "河海大学", "URP 系统")
+    val ZFSchoolList = arrayOf("西安建筑科技大学", "湖南农业大学", "渭南师范学院", "西安科技大学", "湖南城市学院", "武汉东湖学院", "沈阳师范大学", "厦门工学院", "北京联合大学", "浙江工业大学之江学院", "西安外事学院", "福建农林大学金山学院", "辽宁工业大学", "重庆邮电大学移通学院", "河南工程学院", "黑龙江外国语学院", "四川大学锦城学院", "郑州大学西亚斯国际学院", "安徽大学", "杭州医学院", "河北科技师范学院", "徐州幼儿师范高等专科学校", "海南师范大学", "华北电力大学科技学校", "山东师范大学", "广东海洋大学", "郑州航空工业管理学院", "河北经贸大学", "福建师范大学", "安徽工业大学", "潍坊学院", "大连工业大学艺术与信息工程学院", "华南农业大学", "大连大学", "成都理工大学工程技术学院", "云南财经大学", "重庆三峡学院", "杭州电子科技大学", "北京信息科技大学",
             "绍兴文理学院", "广东环境保护工程职业学院", "西华大学", "西安理工大学", "绍兴文理学院元培学院", "北京工业大学")
-    val ZFSchoolList1 = arrayOf("华中农业大学", "茂名职业技术学院", "福建农林大学", "浙江万里学院", "重庆交通职业学院")
-    val newZFSchoolList = arrayOf("常州机电职业技术学院", "保定学院", "河北环境工程学院", "安徽信息工程学院", "延安大学", "浙江财经大学", "中国医科大学", "苏州农业职业技术学院", "无锡太湖学院", "山东青年政治学院", "河南财经政法大学", "青岛科技大学", "三江学院", "西昌学院", "滨州医学院", "青岛滨海学院", "天津体育学院", "中国矿业大学徐海学院", "武昌首义学院", "四川轻化工大学", "安徽农业大学", "湖北工程学院新技术学院", "贺州学院", "河北政法职业学院", "浙江工商大学", "淮南师范学院", "广西大学", "湖北中医药大学", "南京城市职业学院", "北京化工大学", "信阳师范学院", "西南政法大学", "广西大学行健文理学院", "江西中医药大学", "嘉兴学院南湖学院", "湖北师范大学", "南宁职业技术学院", "济南大学", "西安邮电大学", "浙江工业大学", "徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
+    val ZFSchoolList1 = arrayOf("广东科学技术职业学院", "茂名职业技术学院", "福建农林大学", "浙江万里学院", "重庆交通职业学院")
+    val newZFSchoolList = arrayOf("山东农业大学", "辽宁机电职业技术学院", "华中农业大学", "常州机电职业技术学院", "保定学院", "河北环境工程学院", "安徽信息工程学院", "延安大学", "浙江财经大学", "中国医科大学", "苏州农业职业技术学院", "无锡太湖学院", "山东青年政治学院", "河南财经政法大学", "青岛科技大学", "三江学院", "西昌学院", "滨州医学院", "青岛滨海学院", "天津体育学院", "中国矿业大学徐海学院", "武昌首义学院", "四川轻化工大学", "安徽农业大学", "湖北工程学院新技术学院", "贺州学院", "河北政法职业学院", "浙江工商大学", "淮南师范学院", "广西大学", "湖北中医药大学", "南京城市职业学院", "北京化工大学", "信阳师范学院", "西南政法大学", "广西大学行健文理学院", "江西中医药大学", "嘉兴学院南湖学院", "湖北师范大学", "南宁职业技术学院", "济南大学", "西安邮电大学", "浙江工业大学", "徐州医科大学", "温州医科大学", "浙江农林大学", "中国地质大学（武汉）", "厦门理工学院", "浙江师范大学行知学院", "硅湖职业技术学院", "西南民族大学", "山东理工大学", "江苏工程职业技术学院",
             "南京工业大学", "德州学院", "南京特殊教育师范学院", "济南工程职业技术学院", "吉林建筑大学", "宁波工程学院", "西南大学", "河北师范大学",
             "贵州财经大学", "江苏建筑职业技术学院", "武汉纺织大学", "浙江师范大学",
             "山东政法大学", "石家庄学院", "中国矿业大学", "武汉轻工大学", "黄冈师范学院", "广州大学", "南京师范大学中北学院",
             "湖北经济学院", "华中师范大学", "华南理工大学", "潍坊职业学院")
     val gzChengFangList = arrayOf("南方医科大学", "广东工业大学", "五邑大学", "湖北医药学院")
     val qzCrazyList = arrayOf("河北金融学院", "桂林理工大学博文管理学院", "佛山科学技术学院", "华南农业大学珠江学院", "重庆大学城市科技学院")
-    val qzAbnormalNodeList = arrayOf("北京林业大学", "青岛农业大学", "广东金融学院")
+    val qzAbnormalNodeList = arrayOf("长沙理工大学", "江西农业大学南昌商学院", "北京林业大学", "青岛农业大学", "广东金融学院")
     val qzGuangwaiList = arrayOf("哈尔滨工程大学", "北京理工大学", "北京理工大学珠海学院", "江苏师范大学", "广东外语外贸大学", "海南大学", "广州医科大学", "长沙医学院")
     val qzLessNodeSchoolList = arrayOf("大庆师范学院", "吉林师范大学", "锦州医科大学", "中国药科大学", "广西师范学院", "南宁师范大学", "天津中医药大学", "山东大学威海校区",
             "吉首大学", "南京理工大学", "天津医科大学", "重庆交通大学", "沈阳工程学院", "韶关学院")
-    val qzMoreNodeSchoolList = arrayOf("电子科技大学中山学院", "中国石油大学胜利学院", "江苏科技大学", "山东大学（威海）", "南昌大学", "湖南工业大学", "南方科技大学", "山东财经大学", "湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
+    val qzMoreNodeSchoolList = arrayOf("湖南工商大学", "电子科技大学中山学院", "中国石油大学胜利学院", "江苏科技大学", "山东大学（威海）", "南昌大学", "湖南工业大学", "南方科技大学", "山东财经大学", "湘潭大学", "哈尔滨商业大学", "山东科技大学", "华东理工大学", "中南大学", "湖南商学院", "威海职业学院", "大连外国语大学",
             "中南林业科技大学", "东北林业大学", "齐鲁工业大学", "四川美术学院", "广东财经大学", "南昌航空大学", "皖西学院", "中南财经政法大学", "临沂大学")
     var selectedYear = ""
     var selectedTerm = ""
@@ -101,10 +96,10 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     private val detailList = arrayListOf<CourseDetailBean>()
     private val retryList = arrayListOf<Int>()
 
-    private val retrofit = Retrofit.Builder().baseUrl("http://xk-old.suda.edu.cn/").build()
+    private val retrofit = Retrofit.Builder().baseUrl("http://xk.suda.edu.cn/").build()
     private val importService = retrofit.create(ImportService::class.java)
     private var loginCookieStr = ""
-    private val viewStateLoginCode = "dDwtMTE5ODQzMDQ1NDt0PDtsPGk8MT47PjtsPHQ8O2w8aTw0PjtpPDc+O2k8OT47PjtsPHQ8cDw7cDxsPHZhbHVlOz47bDxcZTs+Pj47Oz47dDxwPDtwPGw8b25jbGljazs+O2w8d2luZG93LmNsb3NlKClcOzs+Pj47Oz47dDx0PDs7bDxpPDI+Oz4+Ozs+Oz4+Oz4+Oz5527rVtbyXbkyZdrm5O4U8rQ4EHA=="
+    private val viewStateLoginCode = "gL9F+JHumK2sqbV6zwQemFSg4zth6L+4YJUeYQOsGmGYGgicF/OqcZ/3Ocj2R8yHlucjhxo/qkiMTckoHKd1YfTaVtAxBVg5vqINlJUEHgUsbYYrCCMI6PRc83d5awHsV3aHev7t543cfjmKx/YhUT/xj+K2h1OQqFLYYZND8u58U+zuIxTfpVopvsko0oo0JpZkNXtiBfbdJ0lc5OVaUCFBK8E="
     private var viewStatePostCode = ""
 
     suspend fun getNewId(): Int {
@@ -121,6 +116,80 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         } else {
             throw Exception()
         }
+    }
+
+    suspend fun loginTsinghua(username: String, password: String): String {
+        //login
+        val LEARN_PREFIX = "https://learn2018.tsinghua.edu.cn"
+        baseList.clear()
+        detailList.clear()
+        var cookies: Map<String, String>?
+        val ticket = Jsoup.connect("https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/bb5df85216504820be7bba2b0ae1535b/0?/login.do")
+                .data("i_user", username).data("i_pass", password).data("atOnce", true.toString())
+                .timeout(10000).post()
+                .body().select("a").attr("href").split('=').last()
+        val loginResponse = Jsoup.connect("$LEARN_PREFIX/b/j_spring_security_thauth_roaming_entry?ticket=$ticket")
+                .execute().let {
+                    cookies = it.cookies()
+                    it.statusCode() in 200..299
+                }
+        if (!loginResponse) throw Exception("Incorrect username or password.")
+        //getSemesterIdList
+        val semesterIdArray = JSONArray(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xktjb_coassb/queryxnxq")
+                .cookies(cookies).execute().body()).let {
+            Array<String>(it.length()) { i: Int -> it.getString(i) }
+        }
+        //getCurrentSemester
+        var currentSemester = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/kc/zhjw_v_code_xnxq/getCurrentAndNextSemester")
+                .cookies(cookies).execute().body())
+                .getJSONObject("result").getString("id")
+        if (currentSemester.split("-").last() == "3" && semesterIdArray.indexOf(currentSemester) > 0)
+            currentSemester = semesterIdArray[semesterIdArray.indexOf(currentSemester) - 1]
+        //getCourseList
+        val courseList = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xkb_kcb_extend/student/loadCourseBySemesterId/$currentSemester")
+                .cookies(cookies).execute().body())
+                .getJSONArray("resultList")
+        val courseDetailList = Array<Array<String>>(courseList.length()) { i ->
+            JSONArray(Jsoup.connect("$LEARN_PREFIX/b/kc/v_wlkc_xk_sjddb/detail?id=${courseList.getJSONObject(i).getString("wlkcid")}")
+                    .cookies(cookies).execute().body()).let {
+                Array(it.length()) { idx ->
+                    it.getString(idx)
+                }
+            }
+        }
+        for (i in 0 until courseList.length()) {
+            baseList.add(CourseBaseBean(i,
+                    courseName = courseList.getJSONObject(i).getString("kcm"),
+                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), i % 9))}",
+                    tableId = importId
+            ))
+            for (element in courseDetailList[i]) {
+                val matcher = Pattern.compile("星期([一二三四五六七日])第([1-6])节\\((.*?)\\)，(.*)")
+                        .matcher(element)
+                if (matcher.find()) {
+                    val matchRs = matcher.toMatchResult()
+
+                    detailList.add(CourseDetailBean(i,
+                            day = "一二三四五六七日".indexOf(matchRs.group(1)) + 1,
+                            room = matchRs.group(4),
+                            teacher = courseList.getJSONObject(i).getString("jsm"),
+                            tableId = importId,
+                            startNode = when (matchRs.group(2).toInt()) {
+                                1 -> 1; 2 -> 3;3 -> 6;4 -> 8;5 -> 10;6 -> 12
+                                else -> 0
+                            },
+                            step = when (matchRs.group(2).toInt()) {
+                                2, 6 -> 3
+                                else -> 2
+                            },
+                            startWeek = if (matchRs.group(3).contains("后")) 9 else 1,
+                            endWeek = if (matchRs.group(3).contains("前")) 8 else 16,
+                            type = 0
+                    ))
+                }
+            }
+        }
+        return write2DB()
     }
 
     suspend fun parseZFNewer(html: String): String {
@@ -426,77 +495,77 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
         val hashMapCourse = HashMap<String, ArrayList<CourseDetailBean>>()
 
-            for ((courseId, i) in lis.withIndex()) {
+        for ((courseId, i) in lis.withIndex()) {
 
-                var courseName: String
-                var ps: Elements
-                var textTeacher: String
-                try {
-                    courseName = i.selectFirst("strong").html().trim()
-                    ps = i.select("p")
-                    textTeacher = ps[0].html().replace(" ", "").split("：").lastOrNull() ?: ""
-                } catch(e: Exception) {
-                    continue
-                }
-
-                val course = CourseBaseBean(
-                        id = courseId,
-                        courseName = courseName,
-                        color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
-                        tableId = importId
-                )
-
-                baseList.add(course)
-
-
-
-                if(hashMapCourse.containsKey(courseName)) {
-                    hashMapCourse[courseName]!!.forEach { if(!it.teacher!!.split(',').contains(textTeacher)) it.teacher = "${it.teacher},$textTeacher" }
-                    continue
-                }
-
-                hashMapCourse[courseName] = ArrayList()
-
-                // 周次、星期、节次、地点
-                val segments = i.select("div[class=\"grid demo-grid\"]:has(div[class=\"col-0\"])")
-                for(segment in segments) {
-                    var infos: List<String>
-                    var nodes: List<Int>
-                    var week: List<Int>
-
-                    try {
-                        infos = segment.select("div[class~=col-]").map { it.html().trim() }
-                        nodes = infos[2].substring(1, infos[2].length - 1).split('-').map { it.toInt() }
-                        week = infos[0].split('-').map {it.toInt()}
-
-                        assert(infos.count() == 4 && nodes.count() == 2 && week.count() == 2)
-                    } catch (e: Exception) {
-                        continue
-                    }
-
-                    val detail = CourseDetailBean(
-                            id = courseId,
-                            teacher = textTeacher,
-                            startWeek = week[0],
-                            endWeek = week[1],
-                            room = infos[3],
-                            day = hashMapDay[infos[1].substring("星期".length, infos[1].length)]!!,
-                            startNode = nodes[0],
-                            step = nodes[1] - nodes[0] + 1,
-                            tableId = importId,
-                            type = 0
-                    )
-
-                    hashMapCourse[courseName]!!.add(detail)
-                    detailList.add(detail)
-                }
-
+            var courseName: String
+            var ps: Elements
+            var textTeacher: String
+            try {
+                courseName = i.selectFirst("strong").html().trim()
+                ps = i.select("p")
+                textTeacher = ps[0].html().replace(" ", "").split("：").lastOrNull() ?: ""
+            } catch (e: Exception) {
+                continue
             }
 
+            val course = CourseBaseBean(
+                    id = courseId,
+                    courseName = courseName,
+                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                    tableId = importId
+            )
+
+            baseList.add(course)
 
 
-            return write2DB()
+
+            if (hashMapCourse.containsKey(courseName)) {
+                hashMapCourse[courseName]!!.forEach { if (!it.teacher!!.split(',').contains(textTeacher)) it.teacher = "${it.teacher},$textTeacher" }
+                continue
+            }
+
+            hashMapCourse[courseName] = ArrayList()
+
+            // 周次、星期、节次、地点
+            val segments = i.select("div[class=\"grid demo-grid\"]:has(div[class=\"col-0\"])")
+            for (segment in segments) {
+                var infos: List<String>
+                var nodes: List<Int>
+                var week: List<Int>
+
+                try {
+                    infos = segment.select("div[class~=col-]").map { it.html().trim() }
+                    nodes = infos[2].substring(1, infos[2].length - 1).split('-').map { it.toInt() }
+                    week = infos[0].split('-').map { it.toInt() }
+
+                    assert(infos.count() == 4 && nodes.count() == 2 && week.count() == 2)
+                } catch (e: Exception) {
+                    continue
+                }
+
+                val detail = CourseDetailBean(
+                        id = courseId,
+                        teacher = textTeacher,
+                        startWeek = week[0],
+                        endWeek = week[1],
+                        room = infos[3],
+                        day = hashMapDay[infos[1].substring("星期".length, infos[1].length)]!!,
+                        startNode = nodes[0],
+                        step = nodes[1] - nodes[0] + 1,
+                        tableId = importId,
+                        type = 0
+                )
+
+                hashMapCourse[courseName]!!.add(detail)
+                detailList.add(detail)
+            }
+
         }
+
+
+
+        return write2DB()
+    }
 
     private val nodeHashMap = SparseArray<Array<Int>?>()
 
@@ -545,7 +614,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
     suspend fun getPrepare(id: String): String {
         val response = importService.getPrepare(
-                xh = id, referer = "http://xk-old.suda.edu.cn/xskbcx.aspx?xh=$id",
+                xh = id, referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=$id",
                 cookies = loginCookieStr
         ).execute()
         if (response.isSuccessful) {
@@ -569,7 +638,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 event_argument = "",
                 view_state = viewStatePostCode,
                 cookies = loginCookieStr,
-                referer = "http://xk-old.suda.edu.cn/xskbcx.aspx?xh=" + id + "&xm=" + URLEncoder.encode(name, "gb2312") + "&gnmkdm=N121603",
+                referer = "http://xk.suda.edu.cn/xskbcx.aspx?xh=" + id + "&xm=" + URLEncoder.encode(name, "gb2312") + "&gnmkdm=N121603",
                 xnd = year,
                 xqd = term
         ).execute()

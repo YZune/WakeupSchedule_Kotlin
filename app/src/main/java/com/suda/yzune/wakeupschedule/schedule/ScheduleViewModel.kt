@@ -1,25 +1,27 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import biweekly.Biweekly
+import biweekly.ICalVersion
+import biweekly.ICalendar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
+import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import net.fortuna.ical4j.data.CalendarOutputter
-import net.fortuna.ical4j.model.property.CalScale
-import net.fortuna.ical4j.model.property.ProdId
-import net.fortuna.ical4j.model.property.Version
 import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -44,6 +46,17 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectList()
+    }
+
+    fun getImportSchoolBean(): SchoolListBean {
+        val json = PreferenceUtils.getStringFromSP(getApplication(), "import_school", null)
+                ?: return SchoolListBean("S", "苏州大学", "")
+        val gson = Gson()
+        return try {
+            gson.fromJson<SchoolListBean>(json, object : TypeToken<SchoolListBean>() {}.type)
+        } catch (e: Exception) {
+            SchoolListBean("S", "苏州大学", "")
+        }
     }
 
     fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {
@@ -166,13 +179,12 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         if (!dir.exists()) {
             dir.mkdir()
         }
-        var fos: FileOutputStream? = null
-
         //val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
-        val calendar = net.fortuna.ical4j.model.Calendar()
-        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
-        calendar.properties.add(Version.VERSION_2_0)
-        calendar.properties.add(CalScale.GREGORIAN)
+        val ical = ICalendar()
+        ical.setProductId("-//YZune//WakeUpSchedule//EN")
+//        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
+//        calendar.properties.add(Version.VERSION_2_0)
+//        calendar.properties.add(CalScale.GREGORIAN)
         val startTimeMap = ICalUtils.getClassTime(timeList, true)
         val endTimeMap = ICalUtils.getClassTime(timeList, false)
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
@@ -180,25 +192,21 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         allCourseList.forEach {
             it.value?.forEach { course ->
                 try {
-                    val events = ICalUtils.getClassEvents(startTimeMap, endTimeMap, table.maxWeek, course, date)
-                    calendar.components.addAll(events)
+                    ICalUtils.getClassEvents(ical, startTimeMap, endTimeMap, table.maxWeek, course, date)
                 } catch (ignored: Exception) {
 
                 }
             }
         }
-        calendar.validate()
+        val warnings = ical.validate(ICalVersion.V2_0)
+        Log.d("日历", warnings.toString())
         val tableName = if (table.tableName == "") {
             "我的课表"
         } else {
             table.tableName
         }
         val file = File(myDir, "日历-$tableName.ics")
-        fos = FileOutputStream(file)
-        val calOut = CalendarOutputter()
-        calOut.output(calendar, fos)
-        fos.close()
-
+        Biweekly.write(ical).go(file)
         return file.path
     }
 }

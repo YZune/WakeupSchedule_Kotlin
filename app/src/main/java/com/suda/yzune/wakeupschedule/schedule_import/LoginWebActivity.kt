@@ -7,14 +7,18 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProviders
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.SearchEvent
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
+import io.fabric.sdk.android.Fabric
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,55 +36,67 @@ class LoginWebActivity : BaseActivity() {
 
         viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
 
+        val type = intent.getStringExtra("type")
+
+        if (Fabric.isInitialized()) {
+            Answers.getInstance().logSearch(SearchEvent().putQuery(type))
+        }
         when {
-            intent.getStringExtra("type") == "苏州大学" -> {
+            type == "苏州大学" -> {
                 val fragment = LoginWebFragment.newInstance("苏州大学")
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "sudaLogin")
                 transaction.commit()
                 showImportSettingDialog()
             }
-            intent.getStringExtra("type") == "上海大学" -> {
+            type == "清华大学" -> {
+                val fragment = LoginWebFragment.newInstance("清华大学")
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.fl_fragment, fragment, "tsinghuaLogin")
+                transaction.commit()
+                showImportSettingDialog()
+            }
+            type == "上海大学" -> {
                 val fragment = LoginWebFragment.newInstance("上海大学")
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "shanghaiLogin")
                 transaction.commit()
                 showImportSettingDialog()
             }
-            intent.getStringExtra("type") == "吉林大学" -> {
+            type == "吉林大学" -> {
                 val fragment = LoginWebFragment.newInstance("吉林大学")
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "JLU")
                 transaction.commit()
                 showImportSettingDialog()
             }
-            intent.getStringExtra("type") == "华中科技大学" -> {
+            type == "华中科技大学" -> {
                 val fragment = LoginWebFragment.newInstance("华中科技大学")
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "HUST")
                 transaction.commit()
                 showImportSettingDialog()
             }
-            intent.getStringExtra("type") == "apply" -> {
+            type == "apply" -> {
                 val fragment = SchoolInfoFragment.newInstance()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "schoolInfo")
                 transaction.commit()
             }
-            intent.getStringExtra("type") == "file" -> {
+            type == "file" -> {
                 val fragment = FileImportFragment()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "fileImport")
                 transaction.commit()
             }
-            intent.getStringExtra("type") == "excel" -> {
+            type == "excel" -> {
                 val fragment = ExcelImportFragment()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "excelImport")
                 transaction.commit()
                 showImportSettingDialog()
             }
-            intent.getStringExtra("type") == "html" -> {
+            type == "html" -> {
                 val fragment = HtmlImportFragment()
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "htmlImport")
@@ -100,7 +116,8 @@ class LoginWebActivity : BaseActivity() {
                 }
             }
             else -> {
-                val fragment = WebViewLoginFragment.newInstance(intent.getStringExtra("type"), intent.getStringExtra("url"))
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                val fragment = WebViewLoginFragment.newInstance(type, intent.getStringExtra("url"))
                 val transaction = supportFragmentManager.beginTransaction()
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
                 transaction.commit()

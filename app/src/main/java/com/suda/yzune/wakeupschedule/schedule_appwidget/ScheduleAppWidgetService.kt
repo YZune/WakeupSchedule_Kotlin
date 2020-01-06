@@ -3,7 +3,6 @@ package com.suda.yzune.wakeupschedule.schedule_appwidget
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.*
@@ -18,25 +17,30 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import org.jetbrains.anko.dip
+import org.jetbrains.anko.padding
 import java.text.ParseException
 import kotlin.math.roundToInt
 
 class ScheduleAppWidgetService : RemoteViewsService() {
 
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
-        return if (intent != null) {
-            val i = intent.data?.schemeSpecificPart?.toInt()
-            return if (i == 1) {
-                ScheduleRemoteViewsFactory(true)
+        if (intent != null) {
+            val list = intent.data?.schemeSpecificPart?.split(",")
+                    ?: return ScheduleRemoteViewsFactory()
+            if (list.size < 2) {
+                return ScheduleRemoteViewsFactory(nextWeek = (list[0] == "1"))
+            }
+            return if (list[0] == "1") {
+                ScheduleRemoteViewsFactory(list[1].toInt(), true)
             } else {
-                ScheduleRemoteViewsFactory(false)
+                ScheduleRemoteViewsFactory(list[1].toInt(), false)
             }
         } else {
-            ScheduleRemoteViewsFactory()
+            return ScheduleRemoteViewsFactory()
         }
     }
 
-    private inner class ScheduleRemoteViewsFactory(val nextWeek: Boolean = false) : RemoteViewsFactory {
+    private inner class ScheduleRemoteViewsFactory(val tableId: Int = -1, val nextWeek: Boolean = false) : RemoteViewsFactory {
         private lateinit var table: TableBean
         private var week = 0
         private var widgetItemHeight = 0
@@ -50,11 +54,19 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
-            table = tableDao.getDefaultTableInThread()
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableInThread()
+            } else {
+                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
+            }
         }
 
         override fun onDataSetChanged() {
-            table = tableDao.getDefaultTableInThread()
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableInThread()
+            } else {
+                tableDao.getTableByIdInThread(tableId) ?: tableDao.getDefaultTableInThread()
+            }
             widgetItemHeight = dip(table.widgetItemHeight)
             marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
             val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
@@ -102,10 +114,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun hasStableIds(): Boolean {
             return false
-        }
-
-        private fun TextView.onShineEffect(colorInt: Int) {
-            //this.setShadowLayer(24f, 0f, 0f, Color.WHITE)
         }
 
         fun initView(view: View, weekPanel0: View) {
@@ -164,7 +172,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)
-            ViewUtils.layoutView(scrollView, dip(375), dip(375))
+            val info = ViewUtils.getScreenInfo(applicationContext)
+            ViewUtils.layoutView(scrollView, info[0], info[1])
             views.setBitmap(R.id.iv_schedule, "setImageBitmap", ViewUtils.getViewBitmap(scrollView))
             scrollView.removeAllViews()
             weekPanel0.removeAllViews()
@@ -180,11 +189,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             for (i in data.indices) {
                 val strBuilder = StringBuilder()
                 val c = data[i]
-                val tv = TipTextView(context)
-
-                if (day == weekDay) {
-                    tv.onShineEffect(table.widgetCourseTextColor)
-                }
+                val tv = TipTextView(table.widgetCourseTextColor, table.widgetItemTextSize, context)
 
                 val lp = LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -196,11 +201,12 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     lp.setMargins(0, (c.startNode - 1) * (widgetItemHeight + marTop) + marTop, 0, 0)
                 }
                 tv.layoutParams = lp
+                tv.padding = dip(4)
                 //tv.gravity = Gravity.CENTER_VERTICAL
-                tv.textSize = table.widgetItemTextSize.toFloat()
-                tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                tv.setPadding(8, 8, 8, 8)
-                tv.setTextColor(table.widgetCourseTextColor)
+//                tv.textSize = table.widgetItemTextSize.toFloat()
+//                tv.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+//                tv.setPadding(8, 8, 8, 8)
+//                tv.setTextColor(table.widgetCourseTextColor)
 
                 tv.background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg)
                 val myGrad = tv.background as GradientDrawable
@@ -288,7 +294,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     strBuilder.insert(0, timeList[c.startNode - 1].startTime + "\n")
                 }
 
-                tv.text = strBuilder
+                tv.text = strBuilder.toString()
                 if (day == 7) {
                     if (table.sundayFirst) {
                         weekPanel0.addView(tv)

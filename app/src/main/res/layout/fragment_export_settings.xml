@@ -12,7 +12,6 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="导出课程"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <TextView
@@ -40,13 +39,11 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_export_ics"
         style="@style/DialogButtonStyle"
-        android:layout_marginTop="8dp"
         android:text="仅导出ics格式" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_share_ics"
         style="@style/DialogButtonStyle"
-        android:layout_marginTop="8dp"
         android:text="导出ics格式并分享" />
 
     <com.google.android.material.button.MaterialButton

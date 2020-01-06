@@ -3,6 +3,8 @@ package com.suda.yzune.wakeupschedule.settings
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
+import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -23,7 +25,6 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.startActivity
@@ -70,6 +71,7 @@ class SettingsActivity : BaseListActivity() {
         items.add(SwitchItem("显示日视图背景", PreferenceUtils.getBooleanFromSP(applicationContext, "s_colorful_day_widget", false)))
         items.add(SwitchItem("显示侧栏「苏大生活」", PreferenceUtils.getBooleanFromSP(applicationContext, "suda_life", true)))
         items.add(HorizontalItem("设置当前课表", ""))
+        items.add(SwitchItem("使用暗黑模式", PreferenceUtils.getBooleanFromSP(applicationContext, "s_night_mode", false)))
 
         items.add(CategoryItem("高级", false))
         when (BuildConfig.CHANNEL) {
@@ -99,6 +101,14 @@ class SettingsActivity : BaseListActivity() {
             "显示侧栏「苏大生活」" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "suda_life", isChecked)
                 mRecyclerView.snackbar("重启App后生效哦")
+            }
+            "使用暗黑模式" -> {
+                PreferenceUtils.saveBooleanToSP(applicationContext, "s_night_mode", isChecked)
+                if (isChecked) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
             }
         }
         item.checked = isChecked

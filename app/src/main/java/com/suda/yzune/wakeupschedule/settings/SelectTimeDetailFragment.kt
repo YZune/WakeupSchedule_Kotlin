@@ -36,8 +36,16 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        wp_start.data = viewModel.timeSelectList
-        wp_end.data = viewModel.timeSelectList
+        val valueArray = viewModel.timeSelectList.toTypedArray()
+
+        wp_start.displayedValues = valueArray
+        wp_start.minValue = 0
+        wp_start.maxValue = valueArray.size - 1
+
+        wp_end.displayedValues = valueArray
+        wp_end.minValue = 0
+        wp_end.maxValue = valueArray.size - 1
+
         if (viewModel.timeTableList[tablePosition].sameLen) {
             tv_title.text = "请选择开始时间"
             wp_end.visibility = View.GONE
@@ -59,20 +67,21 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
         if (endIndex == -1) {
             endIndex = 0
         }
-        wp_start.selectedItemPosition = startIndex
-        wp_end.selectedItemPosition = endIndex
 
-        wp_start.setOnItemSelectedListener { _, _, position ->
-            startIndex = position
+        wp_start.value = startIndex
+        wp_end.value = endIndex
+
+        wp_start.setOnValueChangedListener { _, _, newVal ->
+            startIndex = newVal
             if (endIndex < startIndex) {
-                wp_end.selectedItemPosition = startIndex
+                wp_end.smoothScrollToValue(startIndex, false)
                 endIndex = startIndex
             }
         }
-        wp_end.setOnItemSelectedListener { _, _, position ->
-            endIndex = position
+        wp_end.setOnValueChangedListener { _, _, newVal ->
+            endIndex = newVal
             if (endIndex < startIndex) {
-                wp_end.selectedItemPosition = startIndex
+                wp_end.smoothScrollToValue(startIndex, false)
                 endIndex = startIndex
             }
         }

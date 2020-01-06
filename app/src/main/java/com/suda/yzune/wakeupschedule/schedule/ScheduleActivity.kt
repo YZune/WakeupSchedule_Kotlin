@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
@@ -21,14 +20,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.getkeepsafe.taptargetview.TapTarget
-import com.getkeepsafe.taptargetview.TapTargetSequence
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import com.suda.yzune.wakeupschedule.GlideApp
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -81,9 +77,8 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
-
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
@@ -153,7 +148,7 @@ class ScheduleActivity : BaseActivity() {
                             if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
                                 UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
                             }
-                        } catch (e: JsonSyntaxException) {
+                        } catch (e: Exception) {
 
                         }
                     }
@@ -183,25 +178,27 @@ class ScheduleActivity : BaseActivity() {
         if (viewModel.table.background != "") {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
+            Glide.with(this)
                     .load(viewModel.table.background)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.main_background_2019)
                     .into(bgImageView)
-            GlideApp.with(this.applicationContext)
+            Glide.with(this)
                     .load(viewModel.table.background)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.main_background_2019)
                     .into(navigationView.getHeaderView(0).find(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
-            GlideApp.with(this.applicationContext)
+            Glide.with(this)
                     .load(R.drawable.main_background_2019)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
-            GlideApp.with(this.applicationContext)
+            Glide.with(this)
                     .load(R.drawable.main_background_2019)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
@@ -270,7 +267,7 @@ class ScheduleActivity : BaseActivity() {
                         }
                         list.forEach {
                             when (it.detailType) {
-                                0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
+                                // 0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
                                 1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, table)
                             }
                         }
@@ -294,7 +291,7 @@ class ScheduleActivity : BaseActivity() {
                 }
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
-                    if (!editText.text.toString().isEmpty()) {
+                    if (editText.text.toString().isNotEmpty()) {
                         launch {
                             val task = async(Dispatchers.IO) {
                                 try {
@@ -327,91 +324,6 @@ class ScheduleActivity : BaseActivity() {
     }
 
     fun initIntro() {
-        TapTargetSequence(this)
-                .targets(
-                        TapTarget.forView(addImageButton, "这是手动添加课程的按钮", "新版本中添加课程变得友好很多哦，试试看\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.red)
-                                .outerCircleAlpha(0.96f)
-                                .targetCircleColorInt(Color.WHITE)
-                                .titleTextSize(16)
-                                .titleTextColorInt(Color.WHITE)
-                                .descriptionTextSize(12)
-                                .textColorInt(Color.WHITE)
-                                .dimColorInt(Color.BLACK)
-                                .drawShadow(true)
-                                .cancelable(false)
-                                .tintTarget(true)
-                                .transparentTarget(false)
-                                .targetRadius(60),
-                        TapTarget.forView(importImageButton, "这是导入课程的按钮", "现在已经支持采用正方教务系统的学校的课程自动导入了！\n还有别人分享给你的文件也要从这里导入哦~\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.lightBlue)
-                                .outerCircleAlpha(0.96f)
-                                .targetCircleColorInt(Color.WHITE)
-                                .titleTextSize(16)
-                                .titleTextColorInt(Color.WHITE)
-                                .descriptionTextSize(12)
-                                .textColorInt(Color.WHITE)
-                                .dimColorInt(Color.BLACK)
-                                .drawShadow(true)
-                                .cancelable(false)
-                                .tintTarget(true)
-                                .transparentTarget(false)
-                                .targetRadius(60),
-                        TapTarget.forView(shareImageButton, "点击此处可分享或导出", "可以导出成多种格式呢\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.deepOrange)
-                                .outerCircleAlpha(0.96f)
-                                .targetCircleColorInt(Color.WHITE)
-                                .titleTextSize(16)
-                                .titleTextColorInt(Color.WHITE)
-                                .descriptionTextSize(12)
-                                .textColorInt(Color.WHITE)
-                                .dimColorInt(Color.BLACK)
-                                .drawShadow(true)
-                                .cancelable(false)
-                                .tintTarget(true)
-                                .transparentTarget(false)
-                                .targetRadius(60),
-                        TapTarget.forView(moreImageButton, "点这里发现更多", "比如可以分享课表给别人哦~\n多点去探索吧\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.blue)
-                                .outerCircleAlpha(0.96f)
-                                .targetCircleColorInt(Color.WHITE)
-                                .titleTextSize(16)
-                                .titleTextColorInt(Color.WHITE)
-                                .descriptionTextSize(12)
-                                .textColorInt(Color.WHITE)
-                                .dimColorInt(Color.BLACK)
-                                .drawShadow(true)
-                                .cancelable(false)
-                                .tintTarget(true)
-                                .transparentTarget(false)
-                                .targetRadius(60),
-                        TapTarget.forView(weekdayTextView, "点击此处可快速回到当前周", "主界面左右滑动可以切换周数\n点击这里就可以快速回到当前周啦\n点击白色区域告诉我你get到了")
-                                .outerCircleColor(R.color.deepOrange)
-                                .outerCircleAlpha(0.96f)
-                                .targetCircleColorInt(Color.WHITE)
-                                .titleTextSize(16)
-                                .titleTextColorInt(Color.WHITE)
-                                .descriptionTextSize(12)
-                                .textColorInt(Color.WHITE)
-                                .dimColorInt(Color.BLACK)
-                                .drawShadow(true)
-                                .cancelable(false)
-                                .tintTarget(true)
-                                .transparentTarget(false)
-                                .targetRadius(60)
-                ).listener(object : TapTargetSequence.Listener {
-                    override fun onSequenceCanceled(lastTarget: TapTarget?) {
-
-                    }
-
-                    override fun onSequenceFinish() {
-                        PreferenceUtils.saveBooleanToSP(this@ScheduleActivity.applicationContext, "has_intro", true)
-                    }
-
-                    override fun onSequenceStep(lastTarget: TapTarget?, targetClicked: Boolean) {
-                    }
-
-                }).start()
     }
 
     override fun onStart() {
@@ -420,7 +332,6 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initNavView() {
-        navigationView.itemIconTintList = null
         navigationView.menu.findItem(R.id.nav_suda).isVisible = PreferenceUtils.getBooleanFromSP(this, "suda_life", true)
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {

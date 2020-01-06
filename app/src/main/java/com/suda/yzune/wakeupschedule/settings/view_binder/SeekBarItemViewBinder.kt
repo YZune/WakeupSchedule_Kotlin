@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SeekBarItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import me.drakeet.multitype.ItemViewBinder
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
 
@@ -26,7 +26,6 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
                 linearLayout {
                     textView {
                         id = R.id.anko_text_view
-                        textColor = Color.BLACK
                         textSize = 16f
                         gravity = Gravity.CENTER_VERTICAL
                     }.lparams(0, matchParent) {

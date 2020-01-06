@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".schedule_import.SchoolInfoFragment">
 
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@android:color/white" />
+        android:layout_height="24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/white">
+        android:layout_height="48dp">
 
         <ImageButton
             android:id="@+id/ib_back"
@@ -25,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:padding="8dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            android:tint="?attr/colorOnBackground" />
 
         <TextView
             android:layout_width="0dp"
@@ -37,12 +35,6 @@
             android:textStyle="bold" />
 
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -167,17 +159,15 @@
                 android:singleLine="true"
                 android:textSize="14sp" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_next"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="160dp"
-                android:layout_height="32dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="32dp"
-                android:background="@drawable/select_textview_bg"
-                android:gravity="center"
                 android:text="下一步"
-                android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold" />
         </LinearLayout>

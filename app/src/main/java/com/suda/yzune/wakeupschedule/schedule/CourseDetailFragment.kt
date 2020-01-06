@@ -27,7 +27,7 @@ import org.jetbrains.anko.find
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.dip
 
-class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
+class CourseDetailFragment : BaseDialogFragment() {
 
     override val layoutId: Int
         get() = R.layout.fragment_course_detail
@@ -76,25 +76,13 @@ class CourseDetailFragment : BaseDialogFragment(), CoroutineScope {
     }
 
     private fun initView() {
-        tv_item.setTextColor(Color.BLACK)
         tv_item.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-        et_weeks.setTextColor(Color.BLACK)
-        et_time.setTextColor(Color.BLACK)
-        et_teacher.setTextColor(Color.BLACK)
-        et_room.setTextColor(Color.BLACK)
-
-        et_teacher.isEnabled = false
-        et_teacher.isFocusable = false
-        et_teacher.isFocusableInTouchMode = false
-        et_room.isEnabled = false
-        et_room.isFocusable = false
-        et_room.isFocusableInTouchMode = false
     }
 
     private fun showData() {
         tv_item.text = course.courseName
-        et_teacher.setText(course.teacher)
-        et_room.setText(course.room)
+        et_teacher.text = course.teacher
+        et_room.text = course.room
         val type = when (course.type) {
             1 -> "单周"
             2 -> "双周"

@@ -4,7 +4,6 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".schedule.BeforeFeedbackFragment">
 
@@ -19,7 +18,7 @@
         android:fontFamily="@font/iconfont"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text=""
+        android:text="@string/icon_close"
         android:textSize="20sp" />
 
 
@@ -31,7 +30,6 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="温馨提示"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <ScrollView
@@ -50,10 +48,22 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="首先，你需要搞清楚你是想反馈，还是想问App怎么操作？\n如果是使用过程中有什么疑问，请先看侧栏的使用技巧，还有多去翻翻设置，节省大家宝贵的时间哦。\n或者是点下面的新手引导按钮，重新看一遍教程吧。谢谢配合。"
+                android:text="如果是使用过程中有什么疑问，请先看侧栏的使用技巧，还有多去翻翻设置，节省你宝贵的时间！\n或者是点下面的新手引导按钮，重新看一遍教程吧。再有就是求您看一眼文字说明吧。谢谢配合。"
                 android:textSize="12sp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:lineSpacingExtra="4dp"
+                android:text="常见问题：\n1. 课程时间不对……可以自行修改！求求您看一眼「设置」和「设置当前课表」吧，实在找不到，这些页面的右上角还有「搜索」按钮，求求您搜一下「时间」吧。\n2. 周数不对……去修改「开学日期」，怎么修改看上一条。\n3. 怎么放小部件……这个实在没想到需要我们来科普。长按桌面空白处，或者在桌面做双指捏合手势，选择桌面小工具，肯定是有的，仔细找找，不要截图让我一张张帮您找了诶。\n4. 桌面小部件不更新……求您去看一眼添加小部件时的说明。"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/tv_guide"
                 style="@style/DialogButtonStyle"
                 android:text="查看新手引导" />

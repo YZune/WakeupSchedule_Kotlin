@@ -5,6 +5,8 @@ import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
+import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.textColor
 
 class SelectWeekAdapter(layoutResId: Int, max: Int, private val intData: List<Int>) :
         BaseQuickAdapter<Int, BaseViewHolder>(layoutResId, (1..max).toList()) {
@@ -15,8 +17,9 @@ class SelectWeekAdapter(layoutResId: Int, max: Int, private val intData: List<In
             helper.setTextColor(R.id.tv_num, Color.WHITE)
             helper.setBackgroundRes(R.id.tv_num, R.drawable.week_selected_bg)
         } else {
-            helper.setTextColor(R.id.tv_num, Color.BLACK)
-            helper.getView<TextView>(R.id.tv_num).background = null
+            val v = helper.getView<TextView>(R.id.tv_num)
+            v.setTextColor(v.colorAttr(R.attr.colorOnSurface))
+            v.background = null
         }
     }
 }

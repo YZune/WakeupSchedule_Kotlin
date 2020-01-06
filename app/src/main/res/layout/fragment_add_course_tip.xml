@@ -4,7 +4,6 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".course_add.AddCourseTipFragment">
 
@@ -29,8 +28,7 @@
         android:layout_marginTop="-16dp"
         android:layout_marginBottom="8dp"
         android:gravity="center"
-        android:text="温馨提示"
-        android:textColor="@android:color/black" />
+        android:text="温馨提示" />
 
     <ScrollView
         android:layout_width="match_parent"

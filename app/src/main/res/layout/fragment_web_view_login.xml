@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
     android:orientation="vertical"
     tools:context=".schedule_import.WebViewLoginFragment">
 
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:background="@android:color/white" />
+        android:layout_height="24dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@android:color/white">
+        android:layout_height="48dp">
 
         <EditText
             android:id="@+id/et_url"
@@ -64,7 +61,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <WebView
             android:id="@+id/wv_course"
@@ -75,7 +73,7 @@
             android:id="@+id/tv_tips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
+            android:background="?attr/colorSurface"
             android:lineSpacingExtra="8dp"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
@@ -89,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_tips"
-            android:background="@android:color/white"
+            android:background="?attr/colorSurface"
             android:gravity="right"
             android:paddingEnd="16dp"
             android:paddingBottom="16dp"
@@ -299,5 +297,19 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="?attr/colorSurface">
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            style="@style/ButtonBackground"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_back" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -15,8 +15,8 @@ class SelectTimeFragment : BaseDialogFragment() {
         get() = R.layout.fragment_select_time
 
     var position = -1
-    private val dayList = listOf<String>("周一", "周二", "周三", "周四", "周五", "周六", "周日")
-    private val nodeList = arrayListOf<String>()
+    private val dayList = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
+    private val nodeList = arrayOfNulls<String>(30)
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var course: CourseEditBean
     var day = 1
@@ -33,10 +33,10 @@ class SelectTimeFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initNodeList(viewModel.nodes)
-        wp_day.data = dayList
-        wp_start.data = nodeList
-        wp_end.data = nodeList
+        initNodeList()
+        wp_day.displayedValues = dayList
+        wp_start.displayedValues = nodeList
+        wp_end.displayedValues = nodeList
         course = viewModel.editList[position]
         day = course.time.value!!.day
         start = if (course.time.value!!.startNode > viewModel.nodes) viewModel.nodes else course.time.value!!.startNode
@@ -44,31 +44,41 @@ class SelectTimeFragment : BaseDialogFragment() {
         initEvent()
     }
 
-    private fun initNodeList(max: Int) {
-        for (i in 1..max) {
-            nodeList.add("第 $i 节")
+    private fun initNodeList() {
+        for (i in 1..30) {
+            nodeList[i - 1] = "第 $i 节"
         }
     }
 
     private fun initEvent() {
-        wp_day.selectedItemPosition = day - 1
-        wp_start.selectedItemPosition = start - 1
-        wp_end.selectedItemPosition = end - 1
+        wp_day.minValue = 0
+        wp_day.maxValue = dayList.size - 1
+        wp_day.value = day - 1
 
-        wp_day.setOnItemSelectedListener { _, _, position ->
-            day = position + 1
+        wp_start.minValue = 0
+        wp_start.maxValue = viewModel.nodes - 1
+        wp_start.value = start - 1
+
+        wp_end.minValue = 0
+        wp_end.maxValue = viewModel.nodes - 1
+        wp_end.value = end - 1
+
+        wp_day.setOnValueChangedListener { _, _, newVal ->
+            day = newVal + 1
         }
-        wp_start.setOnItemSelectedListener { _, _, position ->
-            start = position + 1
+
+        wp_start.setOnValueChangedListener { _, _, newVal ->
+            start = newVal + 1
             if (end < start) {
-                wp_end.selectedItemPosition = start - 1
+                wp_end.smoothScrollToValue(start - 1, false)
                 end = start
             }
         }
-        wp_end.setOnItemSelectedListener { _, _, position ->
-            end = position + 1
+
+        wp_end.setOnValueChangedListener { _, _, newVal ->
+            end = newVal + 1
             if (end < start) {
-                wp_end.selectedItemPosition = start - 1
+                wp_end.smoothScrollToValue(start - 1, false)
                 end = start
             }
         }

@@ -5,11 +5,11 @@ import android.view.View
 import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import kotlinx.android.synthetic.main.fragment_after_import_tip.*
+import kotlinx.android.synthetic.main.fragment_tip.*
 
 class AfterImportTipFragment : BaseDialogFragment() {
     override val layoutId: Int
-        get() = R.layout.fragment_after_import_tip
+        get() = R.layout.fragment_tip
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         isCancelable = false

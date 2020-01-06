@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_settings"
+    app:startDestination="@id/settingsFragment">
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.suda.yzune.wakeupschedule.settings.SettingsFragment"
+        android:label="SettingsFragment" />
+</navigation>

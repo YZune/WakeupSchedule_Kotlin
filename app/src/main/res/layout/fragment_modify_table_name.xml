@@ -14,7 +14,6 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="课表名字"
-        android:textColor="@android:color/black"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,8 +1,29 @@
 <resources>
-    <plurals name="error_over_count">
-        <item quantity="one">只可以选择一个文件哦</item>
-        <item quantity="many">You can only select up to %1$d media files</item>
-    </plurals>
+    <string name="icon_location" translatable="false"></string>
+    <string name="icon_back" translatable="false"></string>
+    <string name="icon_send" translatable="false"></string>
+    <string name="icon_share" translatable="false"></string>
+    <string name="icon_more" translatable="false"></string>
+    <string name="icon_close" translatable="false"></string>
+    <string name="icon_heart" translatable="false"></string>
+    <string name="icon_date" translatable="false"></string>
+    <string name="icon_delete" translatable="false"></string>
+    <string name="icon_upload" translatable="false"></string>
+    <string name="icon_clock" translatable="false"></string>
+    <string name="icon_setting" translatable="false"></string>
+    <string name="icon_search" translatable="false"></string>
+    <string name="icon_info" translatable="false"></string>
+    <string name="icon_refresh" translatable="false"></string>
+    <string name="icon_add" translatable="false"></string>
+    <string name="icon_done" translatable="false"></string>
+    <string name="icon_doc" translatable="false"></string>
+    <string name="icon_msg" translatable="false"></string>
+    <string name="icon_download" translatable="false"></string>
+    <string name="icon_star" translatable="false"></string>
+    <string name="icon_person" translatable="false"></string>
+    <string name="icon_nav" translatable="false"></string>
+
+
     <string name="text_login_web_title">登录教务系统</string>
     <string name="hint_student_id">学号</string>
     <string name="hint_password">密码</string>

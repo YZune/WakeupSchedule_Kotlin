@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="96dp"
     android:layout_height="wrap_content"
-    android:foreground="@null"
     android:gravity="center"
     android:orientation="vertical">
 
@@ -16,7 +15,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:scaleType="centerCrop"
-        android:text=""
+        android:text="@string/icon_add"
         android:textSize="20sp" />
 
     <TextView
@@ -35,8 +34,7 @@
         android:gravity="center"
         android:includeFontPadding="false"
         android:scaleType="centerCrop"
-        android:src="@drawable/setting"
-        android:text=""
+        android:text="@string/icon_setting"
         android:textSize="20sp" />
 
     <TextView

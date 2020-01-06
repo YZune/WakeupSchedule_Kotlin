@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.chad.library.adapter.base.BaseItemDraggableAdapter
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter
 import org.jetbrains.anko.find
 
 class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolListBean>) :
-        BaseItemDraggableAdapter<SchoolListBean, BaseViewHolder>(layoutResId, data),
+        BaseQuickAdapter<SchoolListBean, BaseViewHolder>(layoutResId, data),
         StickyRecyclerHeadersAdapter<androidx.recyclerview.widget.RecyclerView.ViewHolder> {
 
     override fun getHeaderId(position: Int): Long {

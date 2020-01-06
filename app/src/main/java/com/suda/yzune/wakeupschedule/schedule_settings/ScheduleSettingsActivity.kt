@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcel
@@ -19,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProviders
+import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -36,7 +36,6 @@ import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.drakeet.multitype.MultiTypeAdapter
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -65,7 +64,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
         tvButton.typeface = iconFont
         tvButton.textSize = 20f
-        tvButton.text = "\uE6C2"
+        tvButton.text = getString(R.string.icon_heart)
         if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             tvButton.setOnClickListener {
                 val dialog = DonateFragment.newInstance()
@@ -77,11 +76,6 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             }
         }
         return tvButton
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Toasty.info(applicationContext, "对小部件的编辑需要按「返回键」退出设置页面才能生效哦", Toast.LENGTH_LONG).show()
     }
 
     private lateinit var viewModel: ScheduleSettingsViewModel
@@ -147,10 +141,10 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     private fun onItemsCreated(items: MutableList<Any>) {
         items.add(CategoryItem("课程数据", true))
         items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
+        items.add(HorizontalItem("上课时间", "点击此处更改", listOf("时间")))
         items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))
-        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 4, 30, "节", listOf("节数", "数量", "数")))
-        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 10, 30, "周", listOf("学期", "周", "时间")))
-        items.add(HorizontalItem("上课时间", "", listOf("时间")))
+        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 1, 30, "节", listOf("节数", "数量", "数")))
+        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 1, 30, "周", listOf("学期", "周", "时间")))
         items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst, listOf("周日", "第一天", "起始", "星期天", "天")))
         items.add(SwitchItem("显示周六", viewModel.table.showSat, listOf("周六", "显示", "星期六", "六")))
         items.add(SwitchItem("显示周日", viewModel.table.showSun, listOf("周日", "显示", "星期日", "日", "星期天", "周天")))
@@ -255,15 +249,6 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     } catch (e: ActivityNotFoundException) {
                         e.printStackTrace()
                     }
-//                    Matisse.from(this)
-//                            .choose(MimeType.ofImage())
-//                            .countable(true)
-//                            .maxSelectable(1)
-//                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
-//                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-//                            .thumbnailScale(0.85f)
-//                            .imageEngine(GlideAppEngine())
-//                            .forResult(REQUEST_CODE_CHOOSE_BG)
                 }
             }
             "界面文字颜色" -> {
@@ -336,16 +321,6 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     } catch (e: ActivityNotFoundException) {
                         e.printStackTrace()
                     }
-//                    Matisse.from(this)
-//                            .choose(MimeType.ofImage())
-//                            .countable(true)
-//                            .maxSelectable(1)
-//                            .gridExpectedSize(resources.getDimensionPixelSize(R.dimen.grid_expected_size))
-//                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-//                            .thumbnailScale(0.85f)
-//                            .imageEngine(GlideAppEngine())
-//                            .forResult(REQUEST_CODE_CHOOSE_BG)
-
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -379,7 +354,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
             list.forEach {
                 when (it.detailType) {
-                    0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                    0 -> {
+                        if (it.info == viewModel.table.id.toString()) {
+                            AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, viewModel.table)
+                        }
+                    }
                     1 -> AppWidgetUtils.refreshTodayWidget(applicationContext, appWidgetManager, it.id, viewModel.table, false)
                 }
             }

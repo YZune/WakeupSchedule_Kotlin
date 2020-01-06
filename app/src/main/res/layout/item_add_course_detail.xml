@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    android:background="@android:color/white">
+    android:layout_marginBottom="16dp">
 
     <TextView
         android:id="@+id/tv_item"
@@ -16,17 +16,17 @@
         android:textSize="12sp" />
 
     <TextView
-        style="@style/ButtonBackground"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:fontFamily="@font/iconfont"
-        android:includeFontPadding="false"
         android:id="@+id/ib_delete"
-        android:text=""
+        style="@style/ButtonBackground"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="@string/icon_close"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -40,7 +40,7 @@
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
-            android:text=""
+            android:text="@string/icon_date"
             android:textColor="#16AD9F" />
 
         <TextView
@@ -66,7 +66,7 @@
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
-            android:text=""
+            android:text="@string/icon_clock"
             android:textColor="#FFA622" />
 
         <TextView
@@ -78,53 +78,67 @@
             android:gravity="center_vertical"
             android:hint="周一    第1 - 2节"
             android:lines="1"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            app:autoSizeMaxTextSize="14sp"
+            app:autoSizeMinTextSize="10sp"
+            app:autoSizeStepGranularity="1sp"
+            app:autoSizeTextType="uniform" />
     </LinearLayout>
 
-    <TextView
-        style="@style/IconTextViewStyle"
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_below="@id/ll_time"
-        android:text=""
-        android:textColor="#1571D5" />
-
-    <EditText
-        android:id="@+id/et_teacher"
+    <LinearLayout
+        android:id="@+id/ll_teacher"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="24dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:hint="授课老师（可不填）"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp" />
+        android:background="?android:attr/selectableItemBackground">
 
-    <TextView
-        style="@style/IconTextViewStyle"
-        android:layout_width="56dp"
-        android:layout_height="64dp"
-        android:layout_below="@id/et_teacher"
-        android:text=""
-        android:textColor="#F63D3E" />
+        <TextView
+            style="@style/IconTextViewStyle"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:text="@string/icon_person"
+            android:textColor="#1571D5" />
 
-    <EditText
-        android:id="@+id/et_room"
+        <TextView
+            android:id="@+id/et_teacher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="授课老师（可不填）"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_room"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:layout_below="@id/et_teacher"
-        android:layout_marginStart="56dp"
-        android:layout_marginEnd="24dp"
-        android:background="@null"
-        android:gravity="center_vertical"
-        android:hint="上课地点（可不填）"
-        android:imeOptions="actionDone"
-        android:lines="1"
-        android:singleLine="true"
-        android:textSize="14sp" />
+        android:layout_below="@id/ll_teacher"
+        android:background="?android:attr/selectableItemBackground">
 
+        <TextView
+            style="@style/IconTextViewStyle"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:text="@string/icon_location"
+            android:textColor="#F63D3E" />
+
+        <TextView
+            android:id="@+id/et_room"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="24dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="上课地点（可不填）"
+            android:lines="1"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

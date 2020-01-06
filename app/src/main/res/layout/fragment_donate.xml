@@ -4,7 +4,6 @@
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:background="@android:color/white"
     android:orientation="vertical"
     tools:context=".schedule.DonateFragment">
 
@@ -31,7 +30,6 @@
         android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="ヾ(=･ω･=)o"
-        android:textColor="@android:color/black"
         android:textStyle="bold" />
 
     <TextView
@@ -49,6 +47,11 @@
         style="@style/DialogButtonStyle"
         android:layout_marginTop="8dp"
         android:text="应用商店五星好评" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_weibo"
+        style="@style/DialogButtonStyle"
+        android:text="微博求关注" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_donate"
