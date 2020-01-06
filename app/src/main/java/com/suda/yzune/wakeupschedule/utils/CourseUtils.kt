@@ -314,9 +314,9 @@ object CourseUtils {
         return strTime
     }
 
-    fun isContainName(list: java.util.ArrayList<CourseBaseBean>, name: String): Int {
+    fun isContainName(list: List<CourseBaseBean>, name: String): Int {
         var flag = -1
-        if (!list.isEmpty()) {
+        if (list.isNotEmpty()) {
             for (bean in list) {
                 if (bean.courseName == name) {
                     flag = bean.id

@@ -34,16 +34,16 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     var nodes = 11
 
     fun judgeType(list: ArrayList<Int>): Int {
-        val odd = list.filter {
+        val oddListCount = list.count {
             it % 2 == 1
         }
         val evenCount = maxWeek / 2
         val oddCount = maxWeek - evenCount
         // 0表示不是全部的单周也不是全部的双周
-        if (oddCount == odd.size && oddCount == list.size) {
+        if (oddCount == oddListCount && oddCount == list.size) {
             return 1
         }
-        if (evenCount == list.size && odd.isEmpty()) {
+        if (evenCount == list.size && oddListCount == 0) {
             return 2
         }
         return 0
