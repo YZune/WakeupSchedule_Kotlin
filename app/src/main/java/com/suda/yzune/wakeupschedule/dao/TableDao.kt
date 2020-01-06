@@ -31,11 +31,17 @@ interface TableDao {
     @Query("select * from tablebean where id = :tableId")
     suspend fun getTableById(tableId: Int): TableBean?
 
+    @Query("select * from tablebean where id = :tableId")
+    fun getTableByIdSync(tableId: Int): TableBean?
+
     @Query("select id from tablebean where type = 1")
     suspend fun getDefaultTableId(): Int
 
     @Query("select * from tablebean where type = 1")
     suspend fun getDefaultTable(): TableBean
+
+    @Query("select * from tablebean where type = 1")
+    fun getDefaultTableSync(): TableBean
 
     @Query("select id, tableName, background, maxWeek, nodes, type from tablebean")
     fun getTableSelectListLiveData(): LiveData<List<TableSelectBean>>

@@ -20,4 +20,7 @@ interface TimeDetailDao {
 
     @Query("select * from timedetailbean where timeTable = :id order by node")
     suspend fun getTimeList(id: Int): List<TimeDetailBean>
+
+    @Query("select * from timedetailbean where timeTable = :id order by node")
+    fun getTimeListSync(id: Int): List<TimeDetailBean>
 }

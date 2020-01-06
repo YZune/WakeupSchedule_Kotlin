@@ -486,7 +486,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return write2DB()
     }
 
-    fun convertHUST(courseHTML: String): String {
+    suspend fun convertHUST(courseHTML: String): String {
         val doc = Jsoup.parse(courseHTML)
 
         val ktlist = doc.getElementById("ktlist")
@@ -842,7 +842,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return courses
     }
 
-    fun parsePeking(html: String): String {
+    suspend fun parsePeking(html: String): String {
         baseList.clear()
         detailList.clear()
         val doc = org.jsoup.Jsoup.parse(html)

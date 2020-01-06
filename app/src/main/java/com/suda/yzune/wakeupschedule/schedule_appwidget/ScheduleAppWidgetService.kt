@@ -9,7 +9,6 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.base_view.BaseRemoteViewsFactory
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
@@ -17,8 +16,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.padding
 import java.text.ParseException
@@ -43,7 +40,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
     }
 
-    private inner class ScheduleRemoteViewsFactory(val tableId: Int = -1, val nextWeek: Boolean = false) : BaseRemoteViewsFactory(), CoroutineScope {
+    private inner class ScheduleRemoteViewsFactory(val tableId: Int = -1, val nextWeek: Boolean = false) : RemoteViewsFactory {
         private lateinit var table: TableBean
         private var week = 0
         private var widgetItemHeight = 0
@@ -57,39 +54,35 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         private val weekDay = CourseUtils.getWeekdayInt()
 
         override fun onCreate() {
-            launch {
-                table = if (tableId == -1) {
-                    tableDao.getDefaultTable()
-                } else {
-                    tableDao.getTableById(tableId) ?: tableDao.getDefaultTable()
-                }
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableSync()
+            } else {
+                tableDao.getTableByIdSync(tableId) ?: tableDao.getDefaultTableSync()
             }
         }
 
         override fun onDataSetChanged() {
-            launch {
-                table = if (tableId == -1) {
-                    tableDao.getDefaultTable()
-                } else {
-                    tableDao.getTableById(tableId) ?: tableDao.getDefaultTable()
-                }
-                widgetItemHeight = dip(table.widgetItemHeight)
-                marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
-                val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
-                alphaStr = if (alphaInt != 0) {
-                    Integer.toHexString(alphaInt)
-                } else {
-                    "00"
-                }
-                if (alphaStr.length < 2) {
-                    alphaStr = "0$alphaStr"
-                }
-                if (table.showTime) {
-                    timeList.clear()
-                    timeList.addAll(timeDao.getTimeList(table.timeTable))
-                } else {
-                    timeList.clear()
-                }
+            table = if (tableId == -1) {
+                tableDao.getDefaultTableSync()
+            } else {
+                tableDao.getTableByIdSync(tableId) ?: tableDao.getDefaultTableSync()
+            }
+            widgetItemHeight = dip(table.widgetItemHeight)
+            marTop = resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
+            val alphaInt = (255 * (table.widgetItemAlpha.toFloat() / 100)).roundToInt()
+            alphaStr = if (alphaInt != 0) {
+                Integer.toHexString(alphaInt)
+            } else {
+                "00"
+            }
+            if (alphaStr.length < 2) {
+                alphaStr = "0$alphaStr"
+            }
+            if (table.showTime) {
+                timeList.clear()
+                timeList.addAll(timeDao.getTimeListSync(table.timeTable))
+            } else {
+                timeList.clear()
             }
         }
 
@@ -103,9 +96,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
-            launch {
-                initData(applicationContext, mRemoteViews)
-            }
+            initData(applicationContext, mRemoteViews)
             return mRemoteViews
         }
 
@@ -161,7 +152,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             }
         }
 
-        suspend fun initData(context: Context, views: RemoteViews) {
+        fun initData(context: Context, views: RemoteViews) {
             try {
                 week = if (nextWeek) countWeek(table.startDate, table.sundayFirst) + 1 else countWeek(table.startDate, table.sundayFirst)
             } catch (e: ParseException) {
@@ -177,7 +168,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
             initView(view, weekPanel0)
 
             for (i in 1..7) {
-                val list = courseDao.getCourseByDayOfTable(i, table.id)
+                val list = courseDao.getCourseByDayOfTableSync(i, table.id)
                 initWeekPanel(weekPanel0, context, view, list, i)
             }
             val scrollView = view.findViewById<ScrollView>(R.id.anko_sv_schedule)

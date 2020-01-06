@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
+import androidx.webkit.WebViewClientCompat
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -100,13 +101,14 @@ class WebViewLoginFragment : BaseFragment() {
             wv_course!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
         wv_course!!.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wv_course!!.webViewClient = object : WebViewClient() {
+        wv_course!!.webViewClient = object : WebViewClientCompat() {
 
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 handler.proceed() //接受所有网站的证书
             }
 
         }
+        // WebCompat
         wv_course!!.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)

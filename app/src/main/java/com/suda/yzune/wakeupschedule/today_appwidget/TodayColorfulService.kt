@@ -52,11 +52,11 @@ class TodayColorfulService : RemoteViewsService() {
         private val courseList = arrayListOf<CourseBean>()
 
         override fun onCreate() {
-            table = tableDao.getDefaultTable()
+            table = tableDao.getDefaultTableSync()
         }
 
         override fun onDataSetChanged() {
-            table = tableDao.getDefaultTable()
+            table = tableDao.getDefaultTableSync()
             try {
                 week = CourseUtils.countWeek(table.startDate, table.sundayFirst, nextDay)
             } catch (e: ParseException) {
@@ -64,12 +64,12 @@ class TodayColorfulService : RemoteViewsService() {
             }
             courseList.clear()
             if (week % 2 == 0) {
-                courseList.addAll(courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
+                courseList.addAll(courseDao.getCourseByDayOfTableSync(CourseUtils.getWeekdayInt(nextDay), week, 2, table.id))
             } else {
-                courseList.addAll(courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
+                courseList.addAll(courseDao.getCourseByDayOfTableSync(CourseUtils.getWeekdayInt(nextDay), week, 1, table.id))
             }
             timeList.clear()
-            timeList.addAll(timeDao.getTimeList(table.timeTable))
+            timeList.addAll(timeDao.getTimeListSync(table.timeTable))
         }
 
         override fun onDestroy() {

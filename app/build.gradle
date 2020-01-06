@@ -122,7 +122,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.material:material:1.1.0-alpha10'
-
+    implementation 'androidx.webkit:webkit:1.1.0'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
@@ -131,18 +131,15 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'org.jsoup:jsoup:1.12.1'
     implementation 'androidx.cardview:cardview:1.0.0'
-    // implementation 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
     implementation 'cn.carbswang.android:NumberPickerView:1.2.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
     implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'com.github.bumptech.glide:glide:4.10.0'
-    // implementation 'com.zhihu.android:matisse:0.5.2'
     implementation 'com.google.code.gson:gson:2.8.6'
-    // implementation 'com.getkeepsafe.taptargetview:taptargetview:1.12.0'
     kapt 'com.github.bumptech.glide:compiler:4.10.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
@@ -165,12 +162,4 @@ dependencies {
     }
     implementation "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion"
     implementation "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
-//    implementation 'org.mnode.ical4j:ical4j:2.0.0'
-//    implementation 'org.threeten:threetenbp:1.3.6'
-//    implementation 'javax.cache:cache-api:1.0.0'
-//    implementation 'org.slf4j:slf4j-log4j12:1.7.25'
-//    implementation 'commons-codec:commons-codec:1.11'
-//    implementation 'org.apache.commons:commons-lang3:3.8.1'
-//    implementation 'org.apache.commons:commons-collections4:4.1'
-//    implementation 'biz.aQute.bnd:bndlib:2.3.0'
 }

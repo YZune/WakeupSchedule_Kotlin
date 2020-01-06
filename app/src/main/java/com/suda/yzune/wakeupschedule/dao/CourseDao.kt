@@ -43,8 +43,14 @@ interface CourseDao {
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
     suspend fun getCourseByDayOfTable(day: Int, tableId: Int): List<CourseBean>
 
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId")
+    fun getCourseByDayOfTableSync(day: Int, tableId: Int): List<CourseBean>
+
     @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId and startWeek <= :week and endWeek >= :week and (type = 0 or type = :type)")
     suspend fun getCourseByDayOfTable(day: Int, week: Int, type: Int, tableId: Int): List<CourseBean>
+
+    @Query("select * from coursebasebean natural join coursedetailbean where day = :day and tableId = :tableId and startWeek <= :week and endWeek >= :week and (type = 0 or type = :type)")
+    fun getCourseByDayOfTableSync(day: Int, week: Int, type: Int, tableId: Int): List<CourseBean>
 
     @Query("select * from coursebasebean where id = :id and tableId = :tableId")
     suspend fun getCourseByIdOfTable(id: Int, tableId: Int): CourseBaseBean
