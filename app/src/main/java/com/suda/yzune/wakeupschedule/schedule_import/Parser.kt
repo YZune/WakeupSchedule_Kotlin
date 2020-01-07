@@ -10,18 +10,19 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-open class Parser {
+abstract class Parser(val source: String) {
 
-    val courseList: ArrayList<Course> = arrayListOf()
-    private val baseList: ArrayList<CourseBaseBean> = arrayListOf()
-    private val detailList: ArrayList<CourseDetailBean> = arrayListOf()
+    private val _baseList: ArrayList<CourseBaseBean> = arrayListOf()
+    private val _detailList: ArrayList<CourseDetailBean> = arrayListOf()
+
+    abstract fun generateCourseList(): List<Course>
 
     private fun convertCourse(context: Context, tableId: Int) {
-        courseList.forEach { course ->
-            var id = CourseUtils.isContainName(baseList, course.name)
+        generateCourseList().forEach { course ->
+            var id = CourseUtils.isContainName(_baseList, course.name)
             if (id == -1) {
-                id = baseList.size
-                baseList.add(
+                id = _baseList.size
+                _baseList.add(
                         CourseBaseBean(
                                 id = id, courseName = course.name,
                                 color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(context, id % 9))}",
@@ -29,7 +30,7 @@ open class Parser {
                         )
                 )
             }
-            detailList.add(CourseDetailBean(
+            _detailList.add(CourseDetailBean(
                     id = id, room = course.room,
                     teacher = course.teacher, day = course.day,
                     step = course.endNode - course.startNode + 1,
@@ -41,15 +42,16 @@ open class Parser {
     }
 
     suspend fun saveCourse(context: Context, tableId: Int, db: AppDatabase): String {
+        convertCourse(context, tableId)
         return withContext(Dispatchers.IO) {
             try {
                 db.tableDao().insertTable(TableBean(id = tableId, tableName = "未命名"))
             } catch (e: Exception) {
                 db.courseDao().removeCourseBaseBeanOfTable(tableId)
             }
-            db.courseDao().insertCourses(baseList, detailList)
+            db.courseDao().insertCourses(_baseList, _detailList)
             // todo: context.getString()
-            "成功导入${baseList.size}门课程"
+            "成功导入${_baseList.size}门课程"
         }
     }
 
