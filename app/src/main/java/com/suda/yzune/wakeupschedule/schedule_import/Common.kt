@@ -2,6 +2,10 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 object Common {
 
+    val nodePattern = Regex(""""\(\d{1,2}[-]*\d*节""")
+    val weekPattern = Regex("""\{第\d{1,2}[-]*\d*周""")
+
+    val ChineseWeekList = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
     val otherHeader = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
@@ -20,6 +24,52 @@ object Common {
             }
         }
         return node
+    }
+
+    fun getWeekFromChinese(chineseWeek: String): Int {
+        for (i in ChineseWeekList.indices) {
+            if (ChineseWeekList[i] == chineseWeek) {
+                return i
+            }
+        }
+        return 0
+    }
+
+    fun countStr(str1: String, str2: String): Int {
+        var times = 0
+        var startIndex = 0
+        var findIndex = str1.indexOf(str2, startIndex)
+        while (findIndex != -1 && findIndex != str1.length - 1) {
+            times += 1
+            startIndex = findIndex + 1
+            findIndex = str1.indexOf(str2, startIndex)
+        }
+        if (findIndex == str1.length - 1) {
+            times += 1
+        }
+        return times
+    }
+
+    fun getNodeStr(node: Int): String {
+        return when (node) {
+            1 -> "一"
+            2 -> "二"
+            3 -> "三"
+            4 -> "四"
+            5 -> "五"
+            6 -> "六"
+            7 -> "七"
+            8 -> "八"
+            9 -> "九"
+            10 -> "十"
+            11 -> "十一"
+            12 -> "十二"
+            13 -> "十三"
+            14 -> "十四"
+            15 -> "十五"
+            16 -> "十六"
+            else -> ""
+        }
     }
 
     private fun getNodeInt(nodeStr: String): Int {
