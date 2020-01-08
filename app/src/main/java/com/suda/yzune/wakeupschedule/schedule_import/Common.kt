@@ -1,5 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
+import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
+
 object Common {
 
     val nodePattern = Regex(""""\(\d{1,2}[-]*\d*节""")
@@ -12,6 +14,13 @@ object Common {
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
 
     private val headerNodePattern = Regex(""""第.*节""")
+
+    fun findExistedCourseId(list: List<CourseBaseBean>, name: String): Int {
+        val result = list.findLast {
+            it.courseName == name
+        }
+        return result?.id ?: -1
+    }
 
     fun parseHeaderNodeString(str: String): Int {
         var node = -1

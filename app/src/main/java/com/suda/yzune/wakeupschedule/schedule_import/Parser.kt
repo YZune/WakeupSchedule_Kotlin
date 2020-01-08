@@ -5,7 +5,6 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +18,7 @@ abstract class Parser(val source: String) {
 
     private fun convertCourse(context: Context, tableId: Int) {
         generateCourseList().forEach { course ->
-            var id = CourseUtils.isContainName(_baseList, course.name)
+            var id = Common.findExistedCourseId(_baseList, course.name)
             if (id == -1) {
                 id = _baseList.size
                 _baseList.add(
