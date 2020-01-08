@@ -7,13 +7,13 @@ object Common {
     val nodePattern = Regex(""""\(\d{1,2}[-]*\d*节""")
     val weekPattern = Regex("""\{第\d{1,2}[-]*\d*周""")
 
-    val ChineseWeekList = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
+    val chineseWeekList = arrayOf("", "周一", "周二", "周三", "周四", "周五", "周六", "周日")
     val otherHeader = arrayOf("时间", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日", "早晨", "上午", "下午", "晚上")
     val courseProperty = arrayOf("任选", "限选", "实践选修", "必修课", "选修课", "必修", "选修", "专基", "专选", "公必", "公选", "义修", "选", "必", "主干", "专限", "公基", "值班", "通选",
             "思政必", "思政选", "自基必", "自基选", "语技必", "语技选", "体育必", "体育选", "专业基础课", "双创必", "双创选", "新生必", "新生选", "学科必修", "学科选修",
             "通识必修", "通识选修", "公共基础", "第二课堂", "学科实践", "专业实践", "专业必修", "辅修", "专业选修", "外语", "方向", "专业必修课", "全选")
 
-    private val headerNodePattern = Regex(""""第.*节""")
+    private val headerNodePattern = Regex("""第.*节""")
 
     fun findExistedCourseId(list: List<CourseBaseBean>, name: String): Int {
         val result = list.findLast {
@@ -36,8 +36,8 @@ object Common {
     }
 
     fun getWeekFromChinese(chineseWeek: String): Int {
-        for (i in ChineseWeekList.indices) {
-            if (ChineseWeekList[i] == chineseWeek) {
+        for (i in chineseWeekList.indices) {
+            if (chineseWeekList[i] == chineseWeek) {
                 return i
             }
         }

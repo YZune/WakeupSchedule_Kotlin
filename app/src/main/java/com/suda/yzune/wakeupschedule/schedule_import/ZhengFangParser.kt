@@ -7,7 +7,7 @@ class ZhengFangParser(source: String, val type: Int) : Parser(source) {
         val table1 = doc.getElementById("Table1")
         val trs = table1.getElementsByTag("tr")
         val importBeanList = ArrayList<ImportBean>()
-        var node: Int
+        var node: Int = -1
         for (tr in trs) {
             val tds = tr.getElementsByTag("td")
             var countFlag = false
@@ -20,13 +20,14 @@ class ZhengFangParser(source: String, val type: Int) : Parser(source) {
                     }
                     continue
                 }
-                node = Common.parseHeaderNodeString(courseSource)
-                if (node != -1) {
-                    countFlag = true
-                    continue
-                }
                 if (Common.otherHeader.contains(courseSource)) {
                     //other list
+                    continue
+                }
+                val result = Common.parseHeaderNodeString(courseSource)
+                if (result != -1) {
+                    node = result
+                    countFlag = true
                     continue
                 }
                 countDay++
@@ -133,7 +134,7 @@ class ZhengFangParser(source: String, val type: Int) : Parser(source) {
         val result = arrayListOf<Course>()
         for (i in importList) {
             val time = parseTime(i, i.timeInfo, i.startNode, source, i.name)
-            val day = if (i.timeInfo.substring(0, 2) in Common.ChineseWeekList) time[0] else i.cDay
+            val day = if (i.timeInfo.substring(0, 2) in Common.chineseWeekList) time[0] else i.cDay
             result.add(
                     Course(
                             name = i.name, day = day, room = i.room ?: "",
