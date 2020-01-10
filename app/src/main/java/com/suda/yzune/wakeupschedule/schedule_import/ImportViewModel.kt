@@ -26,6 +26,7 @@ import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.xmlpull.v1.XmlPullParser
 import retrofit2.Retrofit
+import retrofit2.http.HeaderMap
 import java.io.*
 import java.net.URLEncoder
 import java.util.regex.Pattern
@@ -397,6 +398,213 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return write2DB()
     }
 
+    suspend fun loginNwpu(id: String, pwd: String,semestersyear:String,semestersterm:String): String{
+        baseList.clear()
+        detailList.clear()
+        var semestersid:String = ""
+        var excptiontext = "UNCATCH EXCEPTION"
+        var headers: Map<String, String>? = mapOf("Host" to "us.nwpu.edu.cn","User-Agent" to "Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0")
+        var cookies: Map<String, String>?
+        var ids:String
+
+        Jsoup.connect("http://us.nwpu.edu.cn/eams/login.action").headers(headers)
+                .timeout(5000).method(Connection.Method.GET).execute().let {
+                    cookies = it.cookies()
+                    it.statusCode() in 200..299
+                }
+
+        Jsoup.connect("http://us.nwpu.edu.cn/eams/login.action").headers(headers).cookies(cookies)
+                .data("username",id).data("password",pwd).data("encodedPassword","").data("session_locale","zh_CN")
+                .timeout(5000).method(Connection.Method.POST).execute().let {
+                    if(it.body().contains("欢迎使用西北工业大学教务系统。")){excptiontext = "ok"}
+                    else if(it.body().contains("密码错误")){throw Exception("登录失败，密码错误")}
+                    else if(it.body().contains("账户不存在")){throw Exception("登录失败，账户不存在")}
+                    else if(it.body().contains("验证码不正确")){throw Exception("登录失败，失败尝试过多，请尝试更换网络环境")}
+                }
+
+        Jsoup.connect("http://us.nwpu.edu.cn/eams/courseTableForStd.action").headers(headers).cookies(cookies)
+                .timeout(5000).method(Connection.Method.GET).execute().let {
+                    if (!it.body().contains("addInput(form,\"ids\",")){
+                        throw Exception("ids 获取失败，请尝试更换网络环境")
+                    }
+                    ids = Regex("form,\"ids\",\"\\d+?(?=\")").find(it.body())!!.value.replace("form,\"ids\",\"","")
+                }
+
+        Jsoup.connect("http://us.nwpu.edu.cn/eams/dataQuery.action").headers(headers).cookies(cookies)
+                .data("tagId","semesterBar15920393881Semester").data("dataType","semesterCalendar").data("empty","true")
+                .timeout(5000).method(Connection.Method.POST).execute().let {
+                    var semestersname:String = "秋春夏"
+                    val foundResults = Regex("id:\\d+(?=,)").findAll(it.body())
+                    for (findText in foundResults) {
+                        semestersid = findText.value.replace("id:","")
+
+                        if (it.body().contains(regex = Regex(pattern =
+                        "$semestersid,schoolYear:\"$semestersyear-\\d+\",name:\""
+                                + semestersname[semestersterm.toInt() - 1].toString() + "\""))){
+                            break
+                        }else{semestersid = "NOT_MATCH"}
+                    }
+                    if (semestersid == "NOT_MATCH"){
+                        throw Exception("加载课表统览数据失败，未在 dataQuery.action 中查询到 $semestersyear $semestersterm 所对应的 id")
+                    }
+                }
+
+        var lteacher:String = ""
+        var lclass:String = ""
+        var lroom:String = ""
+        var l01week:String = ""
+        var lstartendweek:MutableList<Int> =  mutableListOf<Int>()//一先一后分别为开始和结束
+        var tstartweek:Int = -1
+
+        var ttday:Int = -1
+        var ttstartNode:Int = -1
+        var ttstep:Int = 0
+        var firstornot:Boolean = true
+
+        Jsoup.connect("http://us.nwpu.edu.cn/eams/courseTableForStd!courseTable.action").headers(headers).cookies(cookies)
+                .data("ignoreHead","1").data("setting.kind","std").data("startWeek","1").data("project.id","1")
+                .data("semester.id",semestersid).data("ids",ids)
+                .timeout(5000).method(Connection.Method.POST).execute().let {
+                    if(!it.body().contains("var activity=null;")){throw Exception("加载课表具体数据失败，未在响应中查询到识别语句")}
+                    var res:String = Regex(pattern = "var activity=null;[\\w\\W]*(?=table0.marshalTable)").find(it.body())!!.value
+                    res = Regex(pattern = "\\n\\s*").replace(res,"\n")
+                    val foundResults = Regex("[^\\n].+?;").findAll(res)
+                    lstartendweek.clear()
+                    for (findText in foundResults) {
+                        val text = findText.value.replace("\r","")
+                        if (text.startsWith("var") or text.startsWith("table0")){
+                            continue
+                        }
+                        else if (text.startsWith("activity")){
+                            firstornot = true
+                            val matcher = Pattern.compile("TaskActivity\\(.+?,\"(.+?)\",.+?,\"(.+?)\",.+?,\"(.+?)\",\"(.+)\"").matcher(text)
+                            matcher.find()
+                            val matchRs = matcher.toMatchResult()
+
+                            if (lclass != matchRs.group(2)){//课程不同
+                                //先添加上一门课程
+                                if (lstartendweek.isNotEmpty()){
+                                    for (index in 1..lstartendweek.count() step 2){
+                                        detailList.add(CourseDetailBean(
+                                                id = baseList.size - 1, day = ttday, room = lroom, teacher = lteacher,
+                                                startWeek = lstartendweek[index-1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                                                step = ttstep,
+                                                type = 0, tableId = importId
+                                        ))
+                                    }
+                                }
+                                lstartendweek.clear()
+
+                                lteacher = matchRs.group(1)
+                                lclass = matchRs.group(2)
+                                lroom = matchRs.group(3)
+                                l01week = matchRs.group(4)
+                                for(i in l01week.indices){
+                                    if (l01week[i] == '0' && tstartweek == -1){
+                                        continue
+                                    }
+                                    else if (l01week[i] == '1' && tstartweek == -1){
+                                        tstartweek = i
+                                        lstartendweek.add(i)
+                                    }
+                                    else if (l01week[i] == '1' && tstartweek != -1){
+                                        continue
+                                    }
+                                    else if (l01week[i] == '0' && tstartweek != -1){
+                                        tstartweek = -1
+                                        lstartendweek.add(i - 1)
+                                    }
+                                }
+                                baseList.add(CourseBaseBean(
+                                        id = baseList.size, courseName = lclass.replace(Regex("\\([a-zA-Z0-9.]+\\).*").find(lclass)!!.value,""),
+                                        color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                                        tableId = importId
+                                ))
+                            }
+                            else if (l01week != matchRs.group(4)){//课程同，上课周不同
+                                //先添加上一门课程（指上课周不同的课程
+                                if (lstartendweek.isNotEmpty()){
+                                    for (index in 1..lstartendweek.count() step 2){
+                                        detailList.add(CourseDetailBean(
+                                                id = baseList.size - 1, day = ttday, room = lroom, teacher = lteacher,
+                                                startWeek = lstartendweek[index-1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                                                step = ttstep,
+                                                type = 0, tableId = importId
+                                        ))
+                                    }
+                                }
+                                lstartendweek.clear()
+
+                                lteacher = matchRs.group(1)
+                                lclass = matchRs.group(2)
+                                lroom = matchRs.group(3)
+                                l01week = matchRs.group(4)
+                                for(i in l01week.indices){
+                                    if (l01week[i] == '0' && tstartweek == -1){
+                                        continue
+                                    }
+                                    else if (l01week[i] == '1' && tstartweek == -1){
+                                        tstartweek = i
+                                        lstartendweek.add(i)
+                                    }
+                                    else if (l01week[i] == '1' && tstartweek != -1){
+                                        continue
+                                    }
+                                    else if (l01week[i] == '0' && tstartweek != -1){
+                                        tstartweek = -1
+                                        lstartendweek.add(i - 1)
+                                    }
+                                }
+                            }
+                            else{//课程和时间都相同（仅周几上课不一样
+                                //添加课程的上一个时间段
+                                if (lstartendweek.isNotEmpty()){
+                                    for (index in 1..lstartendweek.count() step 2){
+                                        detailList.add(CourseDetailBean(
+                                                id = baseList.size - 1, day = ttday, room = lroom, teacher = lteacher,
+                                                startWeek = lstartendweek[index-1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                                                step = ttstep,
+                                                type = 0, tableId = importId
+                                        ))
+                                    }
+                                }
+                            }
+                        }
+                        else if (text.startsWith("index")){
+                            if (firstornot){//第一次遇到index
+                                val matcher = Pattern.compile("=(\\d+)\\*unitCount\\+(\\d+);").matcher(text)
+                                matcher.find()
+                                val matchRs = matcher.toMatchResult()
+                                ttday = matchRs.group(1).toInt() + 1
+                                ttstartNode = matchRs.group(2).toInt() + 1
+                                ttstep = 1
+                                firstornot = false
+                            }else{
+                                ttstep++
+                            }
+                        }
+                    }
+                    if (lstartendweek.isNotEmpty()){
+                        for (index in 1..lstartendweek.count() step 2){
+                            detailList.add(CourseDetailBean(
+                                    id =baseList.size - 1, day = ttday, room = lroom, teacher = lteacher,
+                                    startWeek = lstartendweek[index-1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                                    step = ttstep,
+                                    type = 0, tableId = importId
+                            ))
+                        }
+                        lstartendweek.clear()
+                    }
+                }
+
+        if(excptiontext != "ok"){throw Exception(excptiontext)}
+
+
+        if(write2DB() == "ok"){
+            return "ok"
+        }
+        return "???"
+    }
     suspend fun convertJLU(courseJSON: JSONObject): String {
 
         baseList.clear()
