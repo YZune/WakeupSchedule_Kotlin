@@ -95,45 +95,37 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         baseList.clear()
         detailList.clear()
 
-        val LEARN_PREFIX = "https://learn2018.tsinghua.edu.cn"
-        var cookies: Map<String, String>?
-        val ticket = withContext(Dispatchers.IO) {
-            Jsoup.connect("https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/bb5df85216504820be7bba2b0ae1535b/0?/login.do")
+        withContext(Dispatchers.IO) {
+            val LEARN_PREFIX = "https://learn2018.tsinghua.edu.cn"
+            var cookies: Map<String, String>?
+            val ticket = Jsoup.connect("https://id.tsinghua.edu.cn/do/off/ui/auth/login/post/bb5df85216504820be7bba2b0ae1535b/0?/login.do")
                     .data("i_user", username).data("i_pass", password).data("atOnce", true.toString())
                     .timeout(10000).post()
                     .body().select("a").attr("href").split('=').last()
-        }
-        val loginResponse = withContext(Dispatchers.IO) {
-            Jsoup.connect("$LEARN_PREFIX/b/j_spring_security_thauth_roaming_entry?ticket=$ticket")
-                    .execute()
-        }.let {
-            cookies = it.cookies()
-            it.statusCode() in 200..299
-        }
-        if (!loginResponse) throw PasswordErrorException("Incorrect username or password.")
-        //getSemesterIdList
-        val semesterIdArray = withContext(Dispatchers.IO) {
-            JSONArray(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xktjb_coassb/queryxnxq")
+            val loginResponse = Jsoup.connect("$LEARN_PREFIX/b/j_spring_security_thauth_roaming_entry?ticket=$ticket")
+                    .execute().let {
+                        cookies = it.cookies()
+                        it.statusCode() in 200..299
+                    }
+            if (!loginResponse) throw PasswordErrorException("Incorrect username or password.")
+            //getSemesterIdList
+            val semesterIdArray = JSONArray(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xktjb_coassb/queryxnxq")
                     .cookies(cookies).execute().body())
-        }.let {
-            Array<String>(it.length()) { i: Int -> it.getString(i) }
-        }
-        //getCurrentSemester
-        var currentSemester = withContext(Dispatchers.IO) {
-            JSONObject(Jsoup.connect("$LEARN_PREFIX/b/kc/zhjw_v_code_xnxq/getCurrentAndNextSemester")
+                    .let {
+                        Array<String>(it.length()) { i: Int -> it.getString(i) }
+                    }
+            //getCurrentSemester
+            var currentSemester = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/kc/zhjw_v_code_xnxq/getCurrentAndNextSemester")
                     .cookies(cookies).execute().body())
                     .getJSONObject("result").getString("id")
-        }
-        if (currentSemester.split("-").last() == "3" && semesterIdArray.indexOf(currentSemester) > 0)
-            currentSemester = semesterIdArray[semesterIdArray.indexOf(currentSemester) - 1]
-        //getCourseList
-        val courseList = withContext(Dispatchers.IO) {
-            JSONObject(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xkb_kcb_extend/student/loadCourseBySemesterId/$currentSemester")
+
+            if (currentSemester.split("-").last() == "3" && semesterIdArray.indexOf(currentSemester) > 0)
+                currentSemester = semesterIdArray[semesterIdArray.indexOf(currentSemester) - 1]
+            //getCourseList
+            val courseList = JSONObject(Jsoup.connect("$LEARN_PREFIX/b/wlxt/kc/v_wlkc_xs_xkb_kcb_extend/student/loadCourseBySemesterId/$currentSemester")
                     .cookies(cookies).execute().body())
                     .getJSONArray("resultList")
-        }
-        val courseDetailList = withContext(Dispatchers.IO) {
-            Array<Array<String>>(courseList.length()) { i ->
+            val courseDetailList = Array<Array<String>>(courseList.length()) { i ->
                 JSONArray(Jsoup.connect("$LEARN_PREFIX/b/kc/v_wlkc_xk_sjddb/detail?id=${courseList.getJSONObject(i).getString("wlkcid")}")
                         .cookies(cookies).execute().body()).let {
                     Array(it.length()) { idx ->
@@ -141,36 +133,38 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     }
                 }
             }
-        }
-        for (i in 0 until courseList.length()) {
-            baseList.add(CourseBaseBean(i,
-                    courseName = courseList.getJSONObject(i).getString("kcm"),
-                    color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), i % 9))}",
-                    tableId = importId
-            ))
-            for (element in courseDetailList[i]) {
-                val matcher = Pattern.compile("星期([一二三四五六七日])第([1-6])节\\((.*?)\\)，(.*)")
-                        .matcher(element)
-                if (matcher.find()) {
-                    val matchRs = matcher.toMatchResult()
-
-                    detailList.add(CourseDetailBean(i,
-                            day = "一二三四五六七日".indexOf(matchRs.group(1)) + 1,
-                            room = matchRs.group(4),
-                            teacher = courseList.getJSONObject(i).getString("jsm"),
-                            tableId = importId,
-                            startNode = when (matchRs.group(2).toInt()) {
-                                1 -> 1; 2 -> 3;3 -> 6;4 -> 8;5 -> 10;6 -> 12
-                                else -> 0
-                            },
-                            step = when (matchRs.group(2).toInt()) {
-                                2, 6 -> 3
-                                else -> 2
-                            },
-                            startWeek = if (matchRs.group(3).contains("后")) 9 else 1,
-                            endWeek = if (matchRs.group(3).contains("前")) 8 else 16,
-                            type = 0
+            withContext(Dispatchers.Default) {
+                for (i in 0 until courseList.length()) {
+                    baseList.add(CourseBaseBean(i,
+                            courseName = courseList.getJSONObject(i).getString("kcm"),
+                            color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), i % 9))}",
+                            tableId = importId
                     ))
+                    for (element in courseDetailList[i]) {
+                        val matcher = Pattern.compile("星期([一二三四五六七日])第([1-6])节\\((.*?)\\)，(.*)")
+                                .matcher(element)
+                        if (matcher.find()) {
+                            val matchRs = matcher.toMatchResult()
+
+                            detailList.add(CourseDetailBean(i,
+                                    day = "一二三四五六七日".indexOf(matchRs.group(1)) + 1,
+                                    room = matchRs.group(4),
+                                    teacher = courseList.getJSONObject(i).getString("jsm"),
+                                    tableId = importId,
+                                    startNode = when (matchRs.group(2).toInt()) {
+                                        1 -> 1; 2 -> 3;3 -> 6;4 -> 8;5 -> 10;6 -> 12
+                                        else -> 0
+                                    },
+                                    step = when (matchRs.group(2).toInt()) {
+                                        2, 6 -> 3
+                                        else -> 2
+                                    },
+                                    startWeek = if (matchRs.group(3).contains("后")) 9 else 1,
+                                    endWeek = if (matchRs.group(3).contains("前")) 8 else 16,
+                                    type = 0
+                            ))
+                        }
+                    }
                 }
             }
         }
@@ -295,62 +289,62 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
         var semestersId = ""//请求中的 id 值，必填
         val headers: Map<String, String>? = mapOf("Host" to "us.nwpu.edu.cn", "User-Agent" to "Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0")
-        var cookies: Map<String, String>?
-        var ids: String//ids 值，必填
+        val cookies: Map<String, String>?
+        val ids: String//ids 值，必填
+        var response: String
 
-        withContext(Dispatchers.IO) {
+        cookies = withContext(Dispatchers.IO) {
             Jsoup.connect("http://us.nwpu.edu.cn/eams/login.action").headers(headers)//第一步获取cookies
-                    .timeout(5000).method(Connection.Method.GET).execute()
-        }.let {
-            cookies = it.cookies()
+                    .timeout(5000).method(Connection.Method.GET).execute().cookies()
         }
 
-        withContext(Dispatchers.IO) {
+        response = withContext(Dispatchers.IO) {
             Jsoup.connect("http://us.nwpu.edu.cn/eams/login.action").headers(headers).cookies(cookies)//第二步骤模拟登录
                     .data("username", id).data("password", pwd).data("encodedPassword", "").data("session_locale", "zh_CN")
-                    .timeout(5000).method(Connection.Method.POST).execute()
-        }.let {
-            if (it.body().contains("欢迎使用西北工业大学教务系统。")) {
-                //ok
-            } else if (it.body().contains("密码错误")) {
-                throw PasswordErrorException("密码错误哦")
-            } else if (it.body().contains("账户不存在")) {
-                throw UserNameErrorException("登录失败，账户不存在。")
-            } else if (it.body().contains("验证码不正确")) {
-                throw NetworkErrorException("登录失败，失败尝试过多，请尝试更换网络环境。")
-            }
+                    .timeout(5000).method(Connection.Method.POST).execute().body()
+        }
+        if (response.contains("欢迎使用西北工业大学教务系统。")) {
+            //ok
+        } else if (response.contains("密码错误")) {
+            throw PasswordErrorException("密码错误哦")
+        } else if (response.contains("账户不存在")) {
+            throw UserNameErrorException("登录失败，账户不存在。")
+        } else if (response.contains("验证码不正确")) {
+            throw NetworkErrorException("登录失败，失败尝试过多，请尝试更换网络环境。")
         }
 
-        withContext(Dispatchers.IO) {
+        response = withContext(Dispatchers.IO) {
             Jsoup.connect("http://us.nwpu.edu.cn/eams/courseTableForStd.action").headers(headers).cookies(cookies)//然后获取ids
-                    .timeout(5000).method(Connection.Method.GET).execute()
-        }.let {
-            if (!it.body().contains("addInput(form,\"ids\",")) {
-                throw NetworkErrorException("ids 获取失败，请尝试更换网络环境。")
-            }
-            ids = Regex("form,\"ids\",\"\\d+?(?=\")").find(it.body())!!.value.replace("form,\"ids\",\"", "")
+                    .timeout(5000).method(Connection.Method.GET).execute().body()
         }
 
-        withContext(Dispatchers.IO) {
+        if (!response.contains("addInput(form,\"ids\",")) {
+            throw NetworkErrorException("ids 获取失败，请尝试更换网络环境。")
+        }
+        ids = Regex("form,\"ids\",\"\\d+?(?=\")").find(response)!!.value.replace("form,\"ids\",\"", "")
+
+
+        response = withContext(Dispatchers.IO) {
             Jsoup.connect("http://us.nwpu.edu.cn/eams/dataQuery.action").headers(headers).cookies(cookies)//然后获取学年学期id
                     .data("tagId", "semesterBar15920393881Semester").data("dataType", "semesterCalendar").data("empty", "true")
-                    .timeout(5000).method(Connection.Method.POST).execute()
-        }.let {
-            val semestersname: String = "秋春夏"
-            val foundResults = Regex("(?<=id:)\\d+(?=,)").findAll(it.body())
-            for (findText in foundResults) {
-                semestersId = findText.value
-                if (it.body().contains(regex = Regex(pattern =
-                        "$semestersId,schoolYear:\"$semestersYear-\\d+\",name:\""
-                                + semestersname[semestersTerm.toInt() - 1].toString() + "\""))) {
-                    break
-                } else {
-                    semestersId = "NOT_MATCH"
-                }
+                    .timeout(5000).method(Connection.Method.POST).execute().body()
+        }
+
+        val semestersName = "秋春夏"
+        var foundResults: Sequence<MatchResult>
+        foundResults = Regex("(?<=id:)\\d+(?=,)").findAll(response)
+        for (findText in foundResults) {
+            semestersId = findText.value
+            if (response.contains(regex = Regex(pattern =
+                    "$semestersId,schoolYear:\"$semestersYear-\\d+\",name:\""
+                            + semestersName[semestersTerm.toInt() - 1].toString() + "\""))) {
+                break
+            } else {
+                semestersId = "NOT_MATCH"
             }
-            if (semestersId == "NOT_MATCH") {
-                throw Exception("加载课表统览数据失败，未在 dataQuery.action 中查询到 $semestersYear $semestersTerm 所对应的 id。")
-            }
+        }
+        if (semestersId == "NOT_MATCH") {
+            throw Exception("加载课表统览数据失败，未在 dataQuery.action 中查询到 $semestersYear $semestersTerm 所对应的 id。")
         }
 
         var lteacher = ""//以下为"last"的意思
@@ -366,125 +360,124 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         var firstornot = true
         var skipornot = false//当activity中有 -1 值的时候，可能说明这个课情况特殊（比如说是停课状态），就直接skip
 
-        withContext(Dispatchers.IO) {
+        response = withContext(Dispatchers.IO) {
             Jsoup.connect("http://us.nwpu.edu.cn/eams/courseTableForStd!courseTable.action").headers(headers).cookies(cookies)
                     .data("ignoreHead", "1").data("setting.kind", "std").data("startWeek", "1").data("project.id", "1")
                     .data("semester.id", semestersId).data("ids", ids)
-                    .timeout(5000).method(Connection.Method.POST).execute()
-        }.let {
-            if (!it.body().contains("var activity=null;")) {
-                throw Exception("加载课表具体数据失败，未在响应中查询到识别语句。")
-            }
-            var res: String = Regex(pattern = "var activity=null;[\\w\\W]*(?=table0.marshalTable)").find(it.body())!!.value
-            res = Regex(pattern = "\\n\\s*").replace(res, "\n")
-            val foundResults = Regex("^.+?;\$", RegexOption.MULTILINE).findAll(res)
-            lstartendweek.clear()
-            for (findText in foundResults) {
-                val text = findText.value
-                if (text.startsWith("var") or text.startsWith("table0")) {
-                    continue
-                } else if (text.startsWith("activity")) {
+                    .timeout(5000).method(Connection.Method.POST).execute().body()
+        }
+        if (!response.contains("var activity=null;")) {
+            throw Exception("加载课表具体数据失败，未在响应中查询到识别语句。")
+        }
+        var res: String = Regex(pattern = "var activity=null;[\\w\\W]*(?=table0.marshalTable)").find(response)!!.value
+        res = Regex(pattern = "\\n\\s*").replace(res, "\n")
+        foundResults = Regex("^.+?;\$", RegexOption.MULTILINE).findAll(res)
+        lstartendweek.clear()
+        for (findText in foundResults) {
+            val text = findText.value
+            if (text.startsWith("var") or text.startsWith("table0")) {
+                continue
+            } else if (text.startsWith("activity")) {
 
-                    if (lstartendweek.isNotEmpty()) {//先添加“上”课
-                        for (index in 1..lstartendweek.count() step 2) {
-                            var perfectlroom = Regex(pattern = "\\[教学[东西]楼[A-Za-z]座\\]").replace(lroom, "")
-                            perfectlroom = Regex(pattern = "\\[体育场地\\][A-Za-z]\\d+?").replace(perfectlroom, "")
-                            perfectlroom = perfectlroom.replace("[实验大楼]", "")
-                            detailList.add(CourseDetailBean(
-                                    id = baseList.size - 1, day = ttday, room = perfectlroom, teacher = lteacher,
-                                    startWeek = lstartendweek[index - 1], endWeek = lstartendweek[index], startNode = ttstartNode,
-                                    step = ttstep, type = 0, tableId = importId
-                            ))
+                if (lstartendweek.isNotEmpty()) {//先添加“上”课
+                    for (index in 1..lstartendweek.count() step 2) {
+                        var perfectlroom = Regex(pattern = "\\[教学[东西]楼[A-Za-z]座\\]").replace(lroom, "")
+                        perfectlroom = Regex(pattern = "\\[体育场地\\][A-Za-z]\\d+?").replace(perfectlroom, "")
+                        perfectlroom = perfectlroom.replace("[实验大楼]", "")
+                        detailList.add(CourseDetailBean(
+                                id = baseList.size - 1, day = ttday, room = perfectlroom, teacher = lteacher,
+                                startWeek = lstartendweek[index - 1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                                step = ttstep, type = 0, tableId = importId
+                        ))
+                    }
+                }
+
+                if (text.contains(",\"-1\",")) {//状态可能有问题
+                    skipornot = true
+                    continue
+                } else {
+                    skipornot = false
+                }
+
+                firstornot = true//确保下一行的index是本activity的first
+                val matcher = Pattern.compile("TaskActivity\\(.+?,\"(.+?)\",.+?,\"(.+?)\",.+?,\"(.+?)\",\"(.+)\"").matcher(text)
+                matcher.find()
+                val matchRs = matcher.toMatchResult()
+                if (lclass != matchRs.group(2)) {//课程不同
+                    lstartendweek.clear()
+                    lteacher = matchRs.group(1)
+                    lclass = matchRs.group(2)
+                    lroom = matchRs.group(3)
+                    l01week = matchRs.group(4)
+
+                    for (i in l01week.indices) {//从01状态码转为连续week情景（一前一后为start、endweek）
+                        if (l01week[i] == '0' && tstartweek == -1) {
+                            continue
+                        } else if (l01week[i] == '1' && tstartweek == -1) {
+                            tstartweek = i
+                            lstartendweek.add(i)
+                        } else if (l01week[i] == '1' && tstartweek != -1) {
+                            continue
+                        } else if (l01week[i] == '0' && tstartweek != -1) {
+                            tstartweek = -1
+                            lstartendweek.add(i - 1)
                         }
                     }
 
-                    if (text.contains(",\"-1\",")) {//状态可能有问题
-                        skipornot = true
-                        continue
-                    } else {
-                        skipornot = false
+                    baseList.add(CourseBaseBean(
+                            id = baseList.size, courseName = lclass.replace(Regex("\\([a-zA-Z0-9.]+\\).*").find(lclass)!!.value, ""),
+                            color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
+                            tableId = importId
+                    ))
+                } else {//课程同，但其他的出现了不同，就要写detail
+                    lstartendweek.clear()
+                    lteacher = matchRs.group(1)
+                    lclass = matchRs.group(2)
+                    lroom = matchRs.group(3)
+                    l01week = matchRs.group(4)
+                    for (i in l01week.indices) {
+                        if (l01week[i] == '0' && tstartweek == -1) {
+                            continue
+                        } else if (l01week[i] == '1' && tstartweek == -1) {
+                            tstartweek = i
+                            lstartendweek.add(i)
+                        } else if (l01week[i] == '1' && tstartweek != -1) {
+                            continue
+                        } else if (l01week[i] == '0' && tstartweek != -1) {
+                            tstartweek = -1
+                            lstartendweek.add(i - 1)
+                        }
                     }
-
-                    firstornot = true//确保下一行的index是本activity的first
-                    val matcher = Pattern.compile("TaskActivity\\(.+?,\"(.+?)\",.+?,\"(.+?)\",.+?,\"(.+?)\",\"(.+)\"").matcher(text)
+                }
+            } else if (text.startsWith("index")) {
+                if (skipornot) {
+                    continue
+                }
+                if (firstornot) {//第一次遇到index
+                    val matcher = Pattern.compile("=(\\d+)\\*unitCount\\+(\\d+);").matcher(text)
                     matcher.find()
                     val matchRs = matcher.toMatchResult()
-                    if (lclass != matchRs.group(2)) {//课程不同
-                        lstartendweek.clear()
-                        lteacher = matchRs.group(1)
-                        lclass = matchRs.group(2)
-                        lroom = matchRs.group(3)
-                        l01week = matchRs.group(4)
-
-                        for (i in l01week.indices) {//从01状态码转为连续week情景（一前一后为start、endweek）
-                            if (l01week[i] == '0' && tstartweek == -1) {
-                                continue
-                            } else if (l01week[i] == '1' && tstartweek == -1) {
-                                tstartweek = i
-                                lstartendweek.add(i)
-                            } else if (l01week[i] == '1' && tstartweek != -1) {
-                                continue
-                            } else if (l01week[i] == '0' && tstartweek != -1) {
-                                tstartweek = -1
-                                lstartendweek.add(i - 1)
-                            }
-                        }
-
-                        baseList.add(CourseBaseBean(
-                                id = baseList.size, courseName = lclass.replace(Regex("\\([a-zA-Z0-9.]+\\).*").find(lclass)!!.value, ""),
-                                color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseList.size % 9))}",
-                                tableId = importId
-                        ))
-                    } else {//课程同，但其他的出现了不同，就要写detail
-                        lstartendweek.clear()
-                        lteacher = matchRs.group(1)
-                        lclass = matchRs.group(2)
-                        lroom = matchRs.group(3)
-                        l01week = matchRs.group(4)
-                        for (i in l01week.indices) {
-                            if (l01week[i] == '0' && tstartweek == -1) {
-                                continue
-                            } else if (l01week[i] == '1' && tstartweek == -1) {
-                                tstartweek = i
-                                lstartendweek.add(i)
-                            } else if (l01week[i] == '1' && tstartweek != -1) {
-                                continue
-                            } else if (l01week[i] == '0' && tstartweek != -1) {
-                                tstartweek = -1
-                                lstartendweek.add(i - 1)
-                            }
-                        }
-                    }
-                } else if (text.startsWith("index")) {
-                    if (skipornot) {
-                        continue
-                    }
-                    if (firstornot) {//第一次遇到index
-                        val matcher = Pattern.compile("=(\\d+)\\*unitCount\\+(\\d+);").matcher(text)
-                        matcher.find()
-                        val matchRs = matcher.toMatchResult()
-                        ttday = matchRs.group(1).toInt() + 1
-                        ttstartNode = matchRs.group(2).toInt() + 1
-                        ttstep = 1
-                        firstornot = false
-                    } else {
-                        ttstep++
-                    }
+                    ttday = matchRs.group(1).toInt() + 1
+                    ttstartNode = matchRs.group(2).toInt() + 1
+                    ttstep = 1
+                    firstornot = false
+                } else {
+                    ttstep++
                 }
             }
-            if (lstartendweek.isNotEmpty()) {
-                for (index in 1..lstartendweek.count() step 2) {
-                    var perfectlroom = Regex(pattern = "\\[教学[东西]楼[A-Za-z]座\\]").replace(lroom, "")
-                    perfectlroom = Regex(pattern = "\\[体育场地\\][A-Za-z]\\d+?").replace(perfectlroom, "")
-                    perfectlroom = perfectlroom.replace("[实验大楼]", "")
-                    detailList.add(CourseDetailBean(
-                            id = baseList.size - 1, day = ttday, room = perfectlroom, teacher = lteacher,
-                            startWeek = lstartendweek[index - 1], endWeek = lstartendweek[index], startNode = ttstartNode,
-                            step = ttstep, type = 0, tableId = importId
-                    ))
-                }
-                lstartendweek.clear()
+        }
+        if (lstartendweek.isNotEmpty()) {
+            for (index in 1..lstartendweek.count() step 2) {
+                var perfectlroom = Regex(pattern = "\\[教学[东西]楼[A-Za-z]座\\]").replace(lroom, "")
+                perfectlroom = Regex(pattern = "\\[体育场地\\][A-Za-z]\\d+?").replace(perfectlroom, "")
+                perfectlroom = perfectlroom.replace("[实验大楼]", "")
+                detailList.add(CourseDetailBean(
+                        id = baseList.size - 1, day = ttday, room = perfectlroom, teacher = lteacher,
+                        startWeek = lstartendweek[index - 1], endWeek = lstartendweek[index], startNode = ttstartNode,
+                        step = ttstep, type = 0, tableId = importId
+                ))
             }
+            lstartendweek.clear()
         }
         return write2DB()
     }
