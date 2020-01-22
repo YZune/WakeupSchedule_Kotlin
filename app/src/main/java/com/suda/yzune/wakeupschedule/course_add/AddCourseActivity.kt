@@ -8,7 +8,6 @@ import android.appwidget.AppWidgetManager
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -29,10 +28,8 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
 
@@ -53,9 +50,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             } else {
                 if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
                     launch {
-                        val task = withContext(Dispatchers.IO) {
-                            viewModel.checkSameName()
-                        }
+                        val task = viewModel.checkSameName()
                         if (task == null) {
                             saveData()
                         } else {
@@ -73,14 +68,6 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     private lateinit var viewModel: AddCourseViewModel
     private lateinit var etName: EditText
     private var isExit: Boolean = false
-    private val tExit = object : CountDownTimer(2000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-        }
-
-        override fun onFinish() {
-            isExit = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,16 +84,11 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
             launch {
-                val task1 = async(Dispatchers.IO) {
-                    viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId)
-                }
-                val task2 = async(Dispatchers.IO) {
-                    viewModel.initBaseData(intent.extras!!.getInt("id"))
-                }
-                task1.await().forEach {
+                val detailList = viewModel.initData(intent.extras!!.getInt("id"), viewModel.tableId)
+                detailList.forEach {
                     viewModel.editList.add(CourseUtils.detailBean2EditBean(it))
                 }
-                val courseBaseBean = task2.await()
+                val courseBaseBean = viewModel.initBaseData(intent.extras!!.getInt("id"))
                 viewModel.baseBean.id = courseBaseBean.id
                 viewModel.baseBean.color = courseBaseBean.color
                 viewModel.baseBean.courseName = courseBaseBean.courseName
@@ -310,10 +292,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     private fun saveData() {
         launch {
-            val maxId = withContext(Dispatchers.IO) {
-                viewModel.getLastId()
-            }
-
+            val maxId = viewModel.getLastId()
             if (viewModel.newId == -1) {
                 if (maxId == null) {
                     viewModel.newId = 0
@@ -322,37 +301,20 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 }
             }
 
-            val task = async(Dispatchers.IO) {
-                try {
-                    viewModel.preSaveData()
-                    "ok"
-                } catch (e: Exception) {
-                    e.message
-                }
-            }
-            when (val msg = task.await()) {
-                "ok" -> {
-                    launch {
-                        val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
-                        list.forEach {
-                            when (it.detailType) {
-                                0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
-                                1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
-                            }
-                        }
-                        Toasty.success(applicationContext, "保存成功").show()
-                        finish()
+            try {
+                viewModel.preSaveData()
+                val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
+                val list = viewModel.getScheduleWidgetIds()
+                list.forEach {
+                    when (it.detailType) {
+                        0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
+                        1 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_course)
                     }
                 }
-                "自身重复" -> {
-                    Toasty.error(applicationContext, "此处填写的时间有重复，请仔细检查", Toast.LENGTH_LONG).show()
-                }
-                else -> {
-                    Toasty.error(applicationContext, msg!!, Toast.LENGTH_LONG).show()
-                }
+                Toasty.success(applicationContext, "保存成功").show()
+                finish()
+            } catch (e: Exception) {
+                Toasty.error(applicationContext, e.message ?: "发生异常", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -361,7 +323,10 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         if (!isExit) {
             isExit = true // 准备退出
             mRecyclerView.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。", "退出编辑") { finish() }
-            tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+            launch {
+                delay(2000)
+                isExit = false
+            }
         } else {
             finish()
         }
@@ -369,10 +334,5 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     override fun onBackPressed() {
         exitBy2Click()  //退出应用的操作
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        tExit.cancel()
     }
 }

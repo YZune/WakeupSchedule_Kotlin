@@ -69,10 +69,8 @@ class CourseManageFragment : BaseFragment() {
             when (view.id) {
                 R.id.ib_delete -> {
                     launch {
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.deleteCourse(data[position])
-                            viewModel.getScheduleWidgetIds()
-                        }
+                        viewModel.deleteCourse(data[position])
+                        val list = viewModel.getScheduleWidgetIds()
                         val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
                         list.forEach {
                             when (it.detailType) {

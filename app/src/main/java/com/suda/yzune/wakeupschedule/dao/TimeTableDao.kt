@@ -9,7 +9,7 @@ import com.suda.yzune.wakeupschedule.bean.TimeTableBean
 interface TimeTableDao {
 
     @Transaction
-    fun initTimeTable(timeTableBean: TimeTableBean) {
+    suspend fun initTimeTable(timeTableBean: TimeTableBean) {
         val id = insertTimeTable(timeTableBean).toInt()
         val timeList = ArrayList<TimeDetailBean>().apply {
             add(TimeDetailBean(1, "08:00", "08:50", id))
@@ -47,23 +47,23 @@ interface TimeTableDao {
     }
 
     @Insert
-    fun insertTimeList(list: List<TimeDetailBean>)
+    suspend fun insertTimeList(list: List<TimeDetailBean>)
 
     @Insert
-    fun insertTimeTable(timeTableBean: TimeTableBean): Long
+    suspend fun insertTimeTable(timeTableBean: TimeTableBean): Long
 
     @Query("select * from timetablebean")
     fun getTimeTableList(): LiveData<List<TimeTableBean>>
 
     @Query("select max(id) from timetablebean")
-    fun getMaxIdInThread(): Int
+    suspend fun getMaxId(): Int
 
     @Query("select * from timetablebean where id = :id")
-    fun getTimeTableInThread(id: Int): TimeTableBean?
+    suspend fun getTimeTable(id: Int): TimeTableBean?
 
     @Update
-    fun updateTimeTable(timeTableBean: TimeTableBean)
+    suspend fun updateTimeTable(timeTableBean: TimeTableBean)
 
     @Delete
-    fun deleteTimeTable(timeTableBean: TimeTableBean)
+    suspend fun deleteTimeTable(timeTableBean: TimeTableBean)
 }

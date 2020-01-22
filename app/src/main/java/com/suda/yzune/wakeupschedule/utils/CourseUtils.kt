@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.bean.*
+import com.suda.yzune.wakeupschedule.schedule_import.bean.WeekBean
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -314,9 +315,9 @@ object CourseUtils {
         return strTime
     }
 
-    fun isContainName(list: java.util.ArrayList<CourseBaseBean>, name: String): Int {
+    fun isContainName(list: List<CourseBaseBean>, name: String): Int {
         var flag = -1
-        if (!list.isEmpty()) {
+        if (list.isNotEmpty()) {
             for (bean in list) {
                 if (bean.courseName == name) {
                     flag = bean.id

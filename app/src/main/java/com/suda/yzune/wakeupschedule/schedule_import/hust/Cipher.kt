@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.HUST
+package com.suda.yzune.wakeupschedule.schedule_import.hust
 
 import java.math.BigInteger
 
@@ -10,7 +10,7 @@ class Cipher(private var exponent: BigInteger, private var modulus: BigInteger) 
 
     @kotlin.ExperimentalUnsignedTypes
     fun encrypt(input: String): String {
-        var result = StringBuilder()
+        val result = StringBuilder()
 
         input.padEnd(input.length + input.length % chunkSize, 0.toChar())
 
@@ -29,7 +29,7 @@ class Cipher(private var exponent: BigInteger, private var modulus: BigInteger) 
 
             val crypt = block.modPow(exponent, modulus)
 
-            result.append(crypt.toByteArray().joinToString("") { Integer.toHexString(it.toUByte().toInt()).padStart(2, '0') })
+            result.append(crypt.toByteArray().dropWhile { it.toInt() == 0 }.joinToString("") { Integer.toHexString(it.toUByte().toInt()).padStart(2, '0') })
         }
 
         return result.toString()

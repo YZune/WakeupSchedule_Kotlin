@@ -20,9 +20,7 @@ import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.dip
 import org.jetbrains.anko.find
 import org.jetbrains.anko.setContentView
@@ -52,17 +50,13 @@ class MainActivity : BaseActivity() {
         blurImageView = find(R.id.anko_iv_blur)
 
         launch {
-            viewModel.table = withContext(Dispatchers.IO) {
-                viewModel.getDefaultTable()
-            }
+            viewModel.table = viewModel.getDefaultTable()
 
             initTheme()
 
             initEvent()
 
-            viewModel.timeList = withContext(Dispatchers.IO) {
-                viewModel.getTimeList(viewModel.table.timeTable)
-            }
+            viewModel.timeList = viewModel.getTimeList(viewModel.table.timeTable)
 
             for (i in 1..7) {
                 viewModel.getRawCourseByDay(i, viewModel.table.id).observe(this@MainActivity, Observer { list ->

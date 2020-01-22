@@ -13,22 +13,22 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
 
     private val dataBase = AppDatabase.getDatabase(application)
     private val tableDao = dataBase.tableDao()
-    private val baseDao = dataBase.courseBaseDao()
+    private val courseDao = dataBase.courseDao()
     private val widgetDao = dataBase.appWidgetDao()
 
     val tableSelectList = arrayListOf<TableSelectBean>()
     val courseList = arrayListOf<CourseBaseBean>()
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
-        return tableDao.getTableSelectList()
+        return tableDao.getTableSelectListLiveData()
     }
 
     fun getCourseBaseBeanListByTable(tableId: Int): LiveData<List<CourseBaseBean>> {
-        return baseDao.getCourseBaseBeanOfTable(tableId)
+        return courseDao.getCourseBaseBeanOfTableLiveData(tableId)
     }
 
     suspend fun getTableById(id: Int): TableBean? {
-        return tableDao.getTableByIdInThread(id)
+        return tableDao.getTableById(id)
     }
 
     suspend fun addBlankTable(tableName: String) {
@@ -40,10 +40,10 @@ class ScheduleManageViewModel(application: Application) : AndroidViewModel(appli
     }
 
     suspend fun deleteCourse(course: CourseBaseBean) {
-        baseDao.deleteCourseBaseBeanOfTable(course.id, course.tableId)
+        courseDao.deleteCourseBaseBeanOfTable(course.id, course.tableId)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 }

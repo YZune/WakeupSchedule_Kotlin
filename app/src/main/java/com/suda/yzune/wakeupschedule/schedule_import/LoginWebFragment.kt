@@ -2,7 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Activity.RESULT_OK
 import android.graphics.Color
-import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -16,27 +16,26 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.schedule_import.HUST.MobileHub
-import com.suda.yzune.wakeupschedule.schedule_import.JLU.UIMS
+import com.suda.yzune.wakeupschedule.schedule_import.exception.CheckCodeErrorException
+import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorException
+import com.suda.yzune.wakeupschedule.schedule_import.exception.UserNameErrorException
+import com.suda.yzune.wakeupschedule.schedule_import.hust.MobileHub
+import com.suda.yzune.wakeupschedule.schedule_import.jlu.UIMS
+import com.suda.yzune.wakeupschedule.schedule_import.suda.SudaXK
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import jahirfiquitiva.libs.textdrawable.TextDrawable
 import kotlinx.android.synthetic.main.fragment_login_web.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.dip
-import java.util.*
+import java.io.IOException
 
 class LoginWebFragment : BaseFragment() {
 
-    private var name = ""
     private var year = ""
     private var term = ""
-    private val years = arrayListOf<String>()
-    private var type = "苏州大学"
     private var shanghaiPort = 0
 
     private lateinit var viewModel: ImportViewModel
@@ -44,7 +43,6 @@ class LoginWebFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-        type = arguments!!.getString("type", "苏州大学")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,18 +52,23 @@ class LoginWebFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tv_title.text = type
-        if (type != "苏州大学") {
+        tv_title.text = viewModel.school
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            input_id.setAutofillHints(View.AUTOFILL_HINT_USERNAME)
+            input_pwd.setAutofillHints(View.AUTOFILL_HINT_PASSWORD)
+        }
+        if (viewModel.school != "苏州大学") {
             input_code.visibility = View.INVISIBLE
             rl_code.visibility = View.INVISIBLE
             tv_tip.visibility = View.GONE
         } else {
+            viewModel.sudaXK = SudaXK()
             refreshCode()
             tv_tip.setOnClickListener {
                 CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
             }
         }
-        if (type == "上海大学") {
+        if (viewModel.school == "上海大学") {
             btg_ports.visibility = View.VISIBLE
             tv_thanks.text = "感谢 @Deep Sea\n能导入贵校课程离不开他无私贡献代码"
             btg_ports.addOnButtonCheckedListener { group, checkedId, isChecked ->
@@ -77,15 +80,15 @@ class LoginWebFragment : BaseFragment() {
                 }
             }
         }
-        if (type == "清华大学") {
+        if (viewModel.school == "清华大学") {
             input_id.hint = "用户名"
             tv_thanks.text = "感谢 @RikaSugisawa\n能导入贵校课程离不开他无私贡献代码"
             et_id.inputType = InputType.TYPE_CLASS_TEXT
         }
-        if (type == "吉林大学") {
+        if (viewModel.school == "吉林大学") {
             tv_thanks.text = "感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码"
         }
-        if (type == "华中科技大学") {
+        if (viewModel.school == "华中科技大学") {
             et_id.inputType = InputType.TYPE_CLASS_TEXT
             tv_thanks.text = "感谢 @Lyt99\n能导入贵校课程离不开他无私贡献代码"
         }
@@ -128,8 +131,9 @@ class LoginWebFragment : BaseFragment() {
         }
 
         btn_to_schedule.setOnClickListener {
+            getSchedule(year, term)
             if (type != "西北工业大学") {
-                getSchedule(viewModel, et_id.text.toString(), name, year, term)
+                getSchedule(year, term)
             } else {
                 launch {
                     val task = withContext(Dispatchers.IO) {
@@ -162,266 +166,141 @@ class LoginWebFragment : BaseFragment() {
         }
 
         fab_login.setOnClickListener {
+            if (fab_login.isExpanded) return@setOnClickListener
             when {
                 et_id.text!!.isEmpty() -> input_id.showError("学号不能为空")
                 et_pwd.text!!.isEmpty() -> input_pwd.showError("密码不能为空")
-                et_code.text!!.isEmpty() && type == "苏州大学" -> input_code.showError("验证码不能为空")
-                else -> {
-                    if (type == "苏州大学") {
-                        launch {
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    viewModel.login(et_id.text.toString(),
-                                            et_pwd.text.toString(), et_code.text.toString())
-                                } catch (e: Exception) {
-                                    e.message
-                                }
-                            }
-                            when {
-                                task == null -> {
-                                    Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
-                                }
-                                task == "error" -> {
-                                    Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
-                                }
-                                task.contains("验证码不正确") -> {
-                                    input_code.showError("验证码不正确哦", 5000)
-                                    refreshCode()
-                                }
-                                task.contains("密码错误") -> {
-                                    et_pwd.requestFocus()
-                                    input_pwd.showError("密码错误哦", 5000)
-                                    refreshCode()
-                                }
-                                task.contains("用户名不存在") -> {
-                                    et_id.requestFocus()
-                                    input_id.showError("看看学号是不是输错啦", 5000)
-                                    refreshCode()
-                                }
-                                task.contains("欢迎您：") -> {
-                                    getPrepared(et_id.text.toString())
-                                }
-                                task.contains("同学，你好") -> {
-                                    getPrepared(et_id.text.toString())
-                                }
-                                task.contains("请耐心排队") -> {
-                                    Log.d("登录", task)
-                                    refreshCode()
-                                    Toasty.error(context!!.applicationContext, "选课排队中，稍后再试哦", Toast.LENGTH_LONG).show()
-                                }
-                                else -> {
-                                    refreshCode()
-                                    Toasty.error(context!!.applicationContext, "再试一次看看哦", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
-                    if (type == "清华大学") {
-                        launch {
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    viewModel.loginTsinghua(et_id.text.toString(),
-                                            et_pwd.text.toString())
-                                } catch (e: Exception) {
-                                    e.message
-                                }
-                            }
-                            when (task) {
-                                "ok" -> {
-                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                                    activity!!.setResult(RESULT_OK)
-                                    activity!!.finish()
-                                }
-                                else -> {
-                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
-                    if (type == "上海大学") {
-                        launch {
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    viewModel.loginShanghai(et_id.text.toString(),
-                                            et_pwd.text.toString(), shanghaiPort)
-                                } catch (e: Exception) {
-                                    e.message
-                                }
-                            }
-                            when (task) {
-                                "ok" -> {
-                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                                    activity!!.setResult(RESULT_OK)
-                                    activity!!.finish()
-                                }
-                                else -> {
-                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
-                    if (type == "西北工业大学") {
-
-                        launch {
-                            Toasty.info(activity!!.applicationContext, "年份为学年的起始年，学期[秋、春、夏]分别对应[1、2、3]\n例如[2019-2020春] 选择[2019 2]", Toast.LENGTH_LONG).show()
-                            pb_loading.visibility = View.INVISIBLE
-                            fab_login.isExpanded = !fab_login.isExpanded
-
-                            var list = mutableListOf<String>()
-                            for (index in java.util.Calendar.getInstance().get(Calendar.YEAR) - 7..java.util.Calendar.getInstance().get(Calendar.YEAR)) {
-                                list.add(index.toString())
-                            }
-
-                            cardC2Dialog(list, true)
-                        }
-
-                    }
-                    if (type == "吉林大学") {
-                        launch {
-                            val uims = UIMS(et_id.text.toString(), et_pwd.text.toString())
-                            val task = withContext(Dispatchers.IO) {
-                                try {
-                                    uims.connectToUIMS()
-                                    uims.login()
-                                    uims.getCurrentUserInfo()
-                                    uims.getCourseSchedule()
-                                    viewModel.convertJLU(uims.courseJSON)
-                                } catch (e: Exception) {
-                                    e.message
-                                }
-                            }
-                            when (task) {
-                                "ok" -> {
-                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                                    activity!!.setResult(RESULT_OK)
-                                    activity!!.finish()
-                                }
-                                else -> {
-                                    Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                        }
-                    }
-                    if (type == "华中科技大学") {
-                        launch {
-                            val task = withContext(Dispatchers.IO) {
-                                val hub = MobileHub(et_id.text.toString(), et_pwd.text.toString())
-                                try {
-                                    if (!hub.login()) {
-                                        "no login"
-                                    } else {
-                                        hub.getCourseSchedule()
-                                        viewModel.convertHUST(hub.courseHTML)
-                                    }
-
-                                } catch (e: Exception) {
-                                    e.message
-                                }
-                            }
-                            when (task) {
-                                "ok" -> {
-                                    Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                                    activity!!.setResult(RESULT_OK)
-                                    activity!!.finish()
-                                }
-                                "no login" -> {
-                                    Toasty.error(activity!!.applicationContext, "学号或密码错误，请检查后再输入", Toast.LENGTH_LONG).show()
-                                }
-                                else -> {
-                                    if (task?.contains("failed to connect") == true) {
-                                        Toasty.error(activity!!.applicationContext, "无法访问HUB系统，请检查是否连接校园网", Toast.LENGTH_LONG).show()
-                                    } else {
-                                        Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                et_code.text!!.isEmpty() && viewModel.school == "苏州大学" -> input_code.showError("验证码不能为空")
+                else -> launch { login() }
             }
         }
     }
 
-    private fun getPrepared(id: String) {
-        launch {
-            pb_loading.visibility = View.VISIBLE
-            ll_dialog.visibility = View.INVISIBLE
-            fab_login.isExpanded = !fab_login.isExpanded
-            val task = withContext(Dispatchers.IO) {
+    private suspend fun login() {
+        var exception: Exception? = null
+        var result = 0
+        when (viewModel.school) {
+            "苏州大学" -> {
+                pb_loading.visibility = View.VISIBLE
+                ll_dialog.visibility = View.INVISIBLE
+                fab_login.isExpanded = true
+                viewModel.sudaXK?.id = et_id.text.toString()
+                viewModel.sudaXK?.password = et_pwd.text.toString()
+                viewModel.sudaXK?.code = et_code.text.toString()
                 try {
-                    viewModel.getPrepare(id)
+                    viewModel.sudaXK?.login()
+                    pb_loading.visibility = View.GONE
+                    cardC2Dialog(viewModel.sudaXK?.years!!)
+                } catch (e: IOException) {
+                    Toasty.error(activity!!, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
+                    delay(500)
+                    fab_login.isExpanded = false
                 } catch (e: Exception) {
-                    e.message!!
+                    when (e) {
+                        is UserNameErrorException -> {
+                            et_id.requestFocus()
+                            input_id.showError(e.message ?: "", 5000)
+                            refreshCode()
+                        }
+                        is PasswordErrorException -> {
+                            et_pwd.requestFocus()
+                            input_pwd.showError(e.message ?: "", 5000)
+                            refreshCode()
+                        }
+                        is CheckCodeErrorException -> {
+                            input_code.showError(e.message ?: "", 5000)
+                            refreshCode()
+                        }
+                        else -> Toasty.error(activity!!, e.message
+                                ?: "再试一次看看哦", Toast.LENGTH_LONG).show()
+                    }
+                    delay(500)
+                    fab_login.isExpanded = false
                 }
             }
-
-            if (task != "error") {
-                years.clear()
-                years.addAll(viewModel.parseYears(task)!!)
-                name = viewModel.parseName(task)
+            "清华大学" -> {
+                try {
+                    result = viewModel.loginTsinghua(et_id.text.toString(),
+                            et_pwd.text.toString())
+                } catch (e: Exception) {
+                    exception = e
+                }
             }
-
-            if (years.isEmpty()) {
+            "上海大学" -> {
+                try {
+                    result = viewModel.loginShanghai(et_id.text.toString(),
+                            et_pwd.text.toString(), shanghaiPort)
+                } catch (e: Exception) {
+                    exception = e
+                }
+            }
+            "吉林大学" -> {
+                val uims = UIMS(et_id.text.toString(), et_pwd.text.toString())
+                try {
+                    uims.connectToUIMS()
+                    uims.login()
+                    uims.getCurrentUserInfo()
+                    uims.getCourseSchedule()
+                    result = viewModel.convertJLU(uims.courseJSON)
+                } catch (e: Exception) {
+                    exception = e
+                }
+            }
+            "华中科技大学" -> {
+                val hub = MobileHub(et_id.text.toString(), et_pwd.text.toString())
+                try {
+                    hub.login()
+                    hub.getCourseSchedule()
+                    result = viewModel.convertHUST(hub.courseHTML)
+                } catch (e: Exception) {
+                    exception = e
+                }
+            }
+            "西北工业大学" -> {
+                Toasty.info(activity!!.applicationContext, "年份为学年的起始年，学期[秋、春、夏]分别对应[1、2、3]\n例如[2019-2020春] 选择[2019 2]", Toast.LENGTH_LONG).show()
+                pb_loading.visibility = View.INVISIBLE
                 fab_login.isExpanded = !fab_login.isExpanded
-                Toasty.error(context!!.applicationContext, "获取学期数据失败:(", Toast.LENGTH_LONG).show()
-            } else {
-                pb_loading.visibility = View.GONE
-                cardC2Dialog(years)
+
+                var list = mutableListOf<String>()
+                for (index in java.util.Calendar.getInstance().get(Calendar.YEAR) - 7..java.util.Calendar.getInstance().get(Calendar.YEAR)) {
+                    list.add(index.toString())
+                }
+                cardC2Dialog(list, true)
             }
+        }
+        if (viewModel.school == "苏州大学") return
+        when (exception) {
+            null -> {
+                Toasty.success(activity!!,
+                        "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                activity!!.setResult(RESULT_OK)
+                activity!!.finish()
+            }
+            is UserNameErrorException -> {
+                et_id.requestFocus()
+                input_id.showError(exception.message ?: "", 5000)
+            }
+            is PasswordErrorException -> {
+                et_pwd.requestFocus()
+                input_pwd.showError(exception.message ?: "", 5000)
+            }
+            else -> Toasty.error(activity!!, exception.message
+                    ?: "再试一次看看哦", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun getSchedule(viewModel: ImportViewModel, id: String, name: String, year: String, term: String) {
-        if (year == viewModel.selectedYear && term == viewModel.selectedTerm) {
-            launch {
-                val import = withContext(Dispatchers.IO) {
-                    try {
-                        viewModel.importBean2CourseBean(viewModel.html2ImportBean(viewModel.selectedSchedule), viewModel.selectedSchedule)
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-                when (import) {
-                    "ok" -> {
-                        Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                        activity!!.finish()
-                    }
-                    else -> {
-                        Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
-                    }
-                }
-            }
-        } else {
-            launch {
-                val task = withContext(Dispatchers.IO) {
-                    try {
-                        viewModel.toSchedule(id, name, year, term)
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-
-                if (task == null || task == "error") {
-                    Toasty.error(context!!.applicationContext, "网络错误", Toast.LENGTH_LONG).show()
-                } else if (task.contains("您本学期课所选学分小于 0分")) {
-                    Toasty.error(context!!.applicationContext, "该学期貌似还没有课程").show()
-                } else {
-                    val import = withContext(Dispatchers.IO) {
-                        try {
-                            viewModel.importBean2CourseBean(viewModel.html2ImportBean(task), task)
-                        } catch (e: Exception) {
-                            e.message
-                        }
-                    }
-                    when (import) {
-                        "ok" -> {
-                            Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                            activity!!.setResult(RESULT_OK)
-                            activity!!.finish()
-                        }
-                        else -> Toasty.error(activity!!.applicationContext, "发生异常>_<\n$import", Toast.LENGTH_LONG).show()
-                    }
-                }
+    private fun getSchedule(year: String, term: String) {
+        viewModel.importType = Common.TYPE_ZF
+        launch {
+            try {
+                val result = viewModel.importSchedule(viewModel.sudaXK?.toSchedule(year, term)!!)
+                Toasty.success(activity!!,
+                        "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+                activity!!.setResult(RESULT_OK)
+                activity!!.finish()
+            } catch (e: Exception) {
+                Toasty.error(activity!!,
+                        "导入失败>_<\n${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -432,23 +311,17 @@ class LoginWebFragment : BaseFragment() {
             progress_bar.visibility = View.VISIBLE
             iv_code.visibility = View.INVISIBLE
             iv_error.visibility = View.INVISIBLE
-            val task = withContext(Dispatchers.IO) {
-                try {
-                    viewModel.getCheckCode()
-                } catch (e: Exception) {
-                    null
-                }
-            }
-            if (task != null) {
+            try {
+                val bitmap = viewModel.sudaXK?.getCheckCode()
                 progress_bar.visibility = View.GONE
                 iv_code.visibility = View.VISIBLE
                 iv_error.visibility = View.INVISIBLE
-                iv_code.setImageBitmap(task)
-            } else {
+                iv_code.setImageBitmap(bitmap)
+            } catch (e: Exception) {
                 progress_bar.visibility = View.GONE
                 iv_code.visibility = View.INVISIBLE
                 iv_error.visibility = View.VISIBLE
-                Toasty.error(context!!.applicationContext, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
+                Toasty.error(context!!, "请检查是否连接校园网", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -485,12 +358,4 @@ class LoginWebFragment : BaseFragment() {
         super.onDestroyView()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(type: String) = LoginWebFragment().apply {
-            arguments = Bundle().apply {
-                putString("type", type)
-            }
-        }
-    }
 }

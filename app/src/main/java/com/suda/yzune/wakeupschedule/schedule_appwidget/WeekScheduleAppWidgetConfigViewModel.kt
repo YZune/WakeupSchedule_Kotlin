@@ -13,11 +13,11 @@ class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidVi
     private val widgetDao = dataBase.appWidgetDao()
 
     suspend fun getDefaultTable(): TableBean {
-        return tableDao.getDefaultTableInThread()
+        return tableDao.getDefaultTable()
     }
 
     suspend fun getTableById(id: Int): TableBean? {
-        return tableDao.getTableByIdInThread(id)
+        return tableDao.getTableById(id)
     }
 
     suspend fun insertWeekAppWidgetData(appWidget: AppWidgetBean) {
@@ -25,6 +25,6 @@ class WeekScheduleAppWidgetConfigViewModel(application: Application) : AndroidVi
     }
 
     suspend fun getTableList(): List<TableSelectBean> {
-        return tableDao.getTableSelectListInThread()
+        return tableDao.getTableSelectList()
     }
 }

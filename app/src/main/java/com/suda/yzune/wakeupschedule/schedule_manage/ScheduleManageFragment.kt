@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.support.v4.startActivity
 
 class ScheduleManageFragment : BaseFragment() {
@@ -64,9 +65,7 @@ class ScheduleManageFragment : BaseFragment() {
                 }
                 R.id.ib_edit -> {
                     launch {
-                        val task = withContext(Dispatchers.IO) {
-                            viewModel.getTableById(data[position].id)
-                        }
+                        val task = viewModel.getTableById(data[position].id)
                         if (task != null) {
                             startActivity<ScheduleSettingsActivity>("tableData" to task)
                         } else {
@@ -83,9 +82,7 @@ class ScheduleManageFragment : BaseFragment() {
             when (view.id) {
                 R.id.ib_delete -> {
                     launch {
-                        withContext(Dispatchers.IO) {
-                            viewModel.deleteTable(data[position].id)
-                        }
+                        viewModel.deleteTable(data[position].id)
                     }
                     return@setOnItemChildLongClickListener true
                 }
@@ -114,30 +111,21 @@ class ScheduleManageFragment : BaseFragment() {
                 }
 
                 override fun onFinish(editText: EditText, dialog: Dialog) {
-                    if (!editText.text.toString().isEmpty()) {
+                    if (editText.text.toString().isNotEmpty()) {
                         launch {
-                            val task = async(Dispatchers.IO) {
-                                try {
-                                    viewModel.addBlankTable(editText.text.toString())
-                                    "ok"
-                                } catch (e: Exception) {
-                                    e.toString()
-                                }
-                            }
-                            val result = task.await()
-                            if (result == "ok") {
+                            try {
+                                viewModel.addBlankTable(editText.text.toString())
                                 Toasty.success(activity!!.applicationContext, "新建成功~").show()
-                                dialog.dismiss()
-                            } else {
+                            } catch (e: Exception) {
                                 Toasty.success(activity!!.applicationContext, "操作失败>_<").show()
-                                dialog.dismiss()
                             }
+                            dialog.dismiss()
                         }
                     } else {
                         Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
                     }
                 }
-            }).show(fragmentManager!!, "addTableFragment")
+            }).show(parentFragmentManager, "addTableFragment")
         }
         return view
     }

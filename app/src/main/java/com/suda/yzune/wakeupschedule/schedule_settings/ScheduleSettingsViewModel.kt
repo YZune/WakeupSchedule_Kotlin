@@ -23,6 +23,6 @@ class ScheduleSettingsViewModel(application: Application) : AndroidViewModel(app
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 }

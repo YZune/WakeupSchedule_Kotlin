@@ -23,7 +23,7 @@ data class TableBean(
         var nodes: Int = 11,
         var background: String = "",
         var timeTable: Int = 1,
-        var startDate: String = "2019-09-02",
+        var startDate: String = "2020-02-03",
         var maxWeek: Int = 30,
         var itemHeight: Int = 56,
         var itemAlpha: Int = 60,

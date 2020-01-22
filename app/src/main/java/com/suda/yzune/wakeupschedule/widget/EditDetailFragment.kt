@@ -13,15 +13,15 @@ import org.jetbrains.anko.find
 
 class EditDetailFragment : BaseDialogFragment() {
 
-    private val detailData: ArrayList<String>? by lazy {
+    private val detailData: ArrayList<String>? by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getStringArrayList("data")
     }
 
-    private val title: String by lazy {
+    private val title: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString("title") ?: "编辑"
     }
 
-    private val value: String by lazy {
+    private val value: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString("value") ?: ""
     }
 

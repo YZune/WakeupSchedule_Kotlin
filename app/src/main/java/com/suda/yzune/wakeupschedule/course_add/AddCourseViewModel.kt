@@ -14,7 +14,7 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 class AddCourseViewModel(application: Application) : AndroidViewModel(application) {
 
     val editList = mutableListOf<CourseEditBean>()
-    val baseBean: CourseBaseBean by lazy {
+    val baseBean: CourseBaseBean by lazy(LazyThreadSafetyMode.NONE) {
         CourseBaseBean(-1, "", "", tableId)
     }
 
@@ -22,8 +22,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     var roomList: ArrayList<String>? = null
 
     private val dataBase = AppDatabase.getDatabase(application)
-    private val baseDao = dataBase.courseBaseDao()
-    private val detailDao = dataBase.courseDetailDao()
+    private val courseDao = dataBase.courseDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val saveList = mutableListOf<CourseDetailBean>()
 
@@ -35,16 +34,16 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     var nodes = 11
 
     fun judgeType(list: ArrayList<Int>): Int {
-        val odd = list.filter {
+        val oddListCount = list.count {
             it % 2 == 1
         }
         val evenCount = maxWeek / 2
         val oddCount = maxWeek - evenCount
         // 0表示不是全部的单周也不是全部的双周
-        if (oddCount == odd.size && oddCount == list.size) {
+        if (oddCount == oddListCount && oddCount == list.size) {
             return 1
         }
-        if (evenCount == list.size && odd.isEmpty()) {
+        if (evenCount == list.size && oddListCount == 0) {
             return 2
         }
         return 0
@@ -77,24 +76,20 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         if (selfUnique) {
             saveData()
         } else {
-            throw Exception("自身重复")
+            throw Exception("此处填写的时间有重复，请仔细检查")
         }
     }
 
-    private fun saveData() {
+    private suspend fun saveData() {
         if (updateFlag) {
-            baseDao.updateCourseBaseBean(baseBean)
-            detailDao.deleteByIdOfTable(baseBean.id, baseBean.tableId)
-            detailDao.insertList(saveList)
+            courseDao.updateSingleCourse(baseBean, saveList)
         } else {
-            baseDao.insertCourseBase(baseBean)
-            detailDao.insertList(saveList)
+            courseDao.insertSingleCourse(baseBean, saveList)
         }
-
     }
 
     suspend fun checkSameName(): CourseBaseBean? {
-        return baseDao.checkSameNameInTableInThread(baseBean.courseName, baseBean.tableId)
+        return courseDao.checkSameNameInTable(baseBean.courseName, baseBean.tableId)
     }
 
     fun initData(maxWeek: Int): MutableList<CourseEditBean> {
@@ -111,26 +106,26 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     suspend fun initData(id: Int, tableId: Int): List<CourseDetailBean> {
-        return detailDao.getDetailByIdOfTableInThread(id, tableId)
+        return courseDao.getDetailByIdOfTable(id, tableId)
     }
 
     suspend fun getLastId(): Int? {
-        return baseDao.getLastIdOfTableInThread(tableId)
+        return courseDao.getLastIdOfTable(tableId)
     }
 
     suspend fun initBaseData(id: Int): CourseBaseBean {
-        return baseDao.getCourseByIdOfTableInThread(id, tableId)
+        return courseDao.getCourseByIdOfTable(id, tableId)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     suspend fun getExistedTeachers(): ArrayList<String> {
-        return ArrayList(detailDao.getExistedTeachers(tableId))
+        return ArrayList(courseDao.getExistedTeachers(tableId))
     }
 
     suspend fun getExistedRooms(): ArrayList<String> {
-        return ArrayList(detailDao.getExistedRooms(tableId))
+        return ArrayList(courseDao.getExistedRooms(tableId))
     }
 }

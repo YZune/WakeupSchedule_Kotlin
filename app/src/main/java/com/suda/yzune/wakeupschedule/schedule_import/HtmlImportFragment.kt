@@ -8,7 +8,6 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.chip.Chip
 import com.nbsp.materialfilepicker.MaterialFilePicker
@@ -17,16 +16,11 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_html_import.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.startActivityForResult
 import java.io.File
-import java.nio.charset.Charset
 
 class HtmlImportFragment : BaseFragment() {
 
@@ -166,64 +160,68 @@ class HtmlImportFragment : BaseFragment() {
                 it.longSnackbar("还没有选择文件呢>_<")
                 return@setOnClickListener
             }
-            launch {
-                val task = withContext(Dispatchers.IO) {
-                    try {
-                        val html = File(viewModel.htmlPath).readText(if (cp_utf.isChecked) Charsets.UTF_8 else Charset.forName("gbk"))
-                        when (viewModel.htmlName) {
-                            "北京大学" -> viewModel.parsePeking(html)
-                            "苏州大学" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                            "北京师范大学珠海分校" -> viewModel.parseZFNewer(html)
-                            //"吉林大学" -> viewModel.convertJLU(JSONObject(html))
-                            in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
-                            in viewModel.urpList -> viewModel.parseURP(html)
-                            in viewModel.oldQZList -> viewModel.parseOldQZ(html)
-                            in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
-                            "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                            "新正方教务" -> viewModel.parseNewZF(html)
-                            "强智教务" -> {
-                                when (viewModel.qzType) {
-                                    0 -> viewModel.parseQZ(html, "北京林业大学")
-                                    1 -> viewModel.parseQZ(html, "广东外语外贸大学")
-                                    2 -> viewModel.parseQZ(html, "长春大学")
-                                    3 -> viewModel.parseQZ(html, "青岛农业大学")
-                                    4 -> viewModel.parseQZ(html, "锦州医科大学")
-                                    5 -> viewModel.parseQZ(html, "山东科技大学")
-                                    6 -> viewModel.parseQZ(html, "佛山科学技术学院")
-                                    else -> "没有贵校的信息哦>_<"
-                                }
-                            }
-                            "长春大学" -> viewModel.parseQZ(html, viewModel.htmlName)
-                            "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
-                            in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, viewModel.htmlName)
-                            in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, viewModel.htmlName)
-                            in viewModel.ZFSchoolList -> {
-                                viewModel.zfType = 0
-                                viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                            }
-                            in viewModel.ZFSchoolList1 -> {
-                                viewModel.zfType = 1
-                                viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                            }
-                            in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
-                            in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, viewModel.htmlName)
-                            in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, viewModel.htmlName)
-                            else -> "没有贵校的信息哦>_<"
-                        }
-                    } catch (e: Exception) {
-                        "导入失败>_<\n请尝试更换编码格式\n${e.message}"
-                    }
-                }
-
-                when (task) {
-                    "ok" -> {
-                        Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
-                        activity!!.setResult(RESULT_OK)
-                        activity!!.finish()
-                    }
-                    else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
-                }
-            }
+//            launch {
+//                try {
+//                    val html = File(viewModel.htmlPath).readText(if (cp_utf.isChecked) Charsets.UTF_8 else Charset.forName("gbk"))
+//                    val result = viewModel.importSchedule(html)
+//                    if (result > 0) {
+//                        Toasty.success(activity!!.applicationContext, "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看").show()
+//                    } else {
+//                        Toasty.error(activity!!.applicationContext, "导入数据为空>_<请确保选择正确的教务类型\n以及到达显示课程的页面", Toast.LENGTH_LONG).show()
+//                    }
+//                    when (viewModel.htmlName) {
+//                        "北京大学" -> viewModel.parsePeking(html)
+//                        "苏州大学" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+//                        "北京师范大学珠海分校" -> viewModel.parseZFNewer(html)
+//                        //"吉林大学" -> viewModel.convertJLU(JSONObject(html))
+//                        in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
+//                        in viewModel.urpList -> viewModel.parseURP(html)
+//                        in viewModel.oldQZList -> viewModel.parseOldQZ(html)
+//                        in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
+//                        "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+//                        "新正方教务" -> viewModel.parseNewZF(html)
+//                        "强智教务" -> {
+//                            when (viewModel.qzType) {
+//                                0 -> viewModel.parseQZ(html, "北京林业大学")
+//                                1 -> viewModel.parseQZ(html, "广东外语外贸大学")
+//                                2 -> viewModel.parseQZ(html, "长春大学")
+//                                3 -> viewModel.parseQZ(html, "青岛农业大学")
+//                                4 -> viewModel.parseQZ(html, "锦州医科大学")
+//                                5 -> viewModel.parseQZ(html, "山东科技大学")
+//                                6 -> viewModel.parseQZ(html, "佛山科学技术学院")
+//                                else -> "没有贵校的信息哦>_<"
+//                            }
+//                        }
+//                        "长春大学" -> viewModel.parseQZ(html, viewModel.htmlName)
+//                        "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
+//                        in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, viewModel.htmlName)
+//                        in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, viewModel.htmlName)
+//                        in viewModel.ZFSchoolList -> {
+//                            viewModel.zfType = 0
+//                            viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+//                        }
+//                        in viewModel.ZFSchoolList1 -> {
+//                            viewModel.zfType = 1
+//                            viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
+//                        }
+//                        in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
+//                        in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, viewModel.htmlName)
+//                        in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, viewModel.htmlName)
+//                        else -> "没有贵校的信息哦>_<"
+//                    }
+//                } catch (e: Exception) {
+//                    "导入失败>_<\n请尝试更换编码格式\n${e.message}"
+//                }
+//
+//                when (task) {
+//                    "ok" -> {
+//                        Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
+//                        activity!!.setResult(RESULT_OK)
+//                        activity!!.finish()
+//                    }
+//                    else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
+//                }
+//            }
         }
     }
 

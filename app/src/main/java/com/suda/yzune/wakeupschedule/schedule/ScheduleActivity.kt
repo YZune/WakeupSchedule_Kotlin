@@ -255,16 +255,10 @@ class ScheduleActivity : BaseActivity() {
                 if (data[position].id != viewModel.table.id) {
                     fadeOutAni.start()
                     launch {
-                        withContext(Dispatchers.IO) {
-                            viewModel.changeDefaultTable(data[position].id)
-                        }
+                        viewModel.changeDefaultTable(data[position].id)
                         initView()
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
-                        val table = withContext(Dispatchers.IO) {
-                            viewModel.getDefaultTable()
-                        }
+                        val list = viewModel.getScheduleWidgetIds()
+                        val table = viewModel.getDefaultTable()
                         list.forEach {
                             when (it.detailType) {
                                 // 0 -> AppWidgetUtils.refreshScheduleWidget(applicationContext, appWidgetManager, it.id, table)
@@ -412,21 +406,21 @@ class ScheduleActivity : BaseActivity() {
             }
             2 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "file")
+                    startActivity<LoginWebActivity>("import_type" to "file")
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             3 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "excel", "tableId" to viewModel.table.id)
+                    startActivity<LoginWebActivity>("import_type" to "excel", "tableId" to viewModel.table.id)
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             4 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "html", "tableId" to viewModel.table.id)
+                    startActivity<LoginWebActivity>("import_type" to "html", "tableId" to viewModel.table.id)
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
@@ -473,7 +467,7 @@ class ScheduleActivity : BaseActivity() {
         }
 
         importImageButton.setOnClickListener {
-            ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
+            ImportChooseFragment().show(supportFragmentManager, "importDialog")
         }
 
         weekdayTextView.setOnClickListener {
@@ -522,9 +516,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initView() {
         launch {
-            viewModel.table = withContext(Dispatchers.IO) {
-                viewModel.getDefaultTable()
-            }
+            viewModel.table = viewModel.getDefaultTable()
 
             val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
 
@@ -545,9 +537,7 @@ class ScheduleActivity : BaseActivity() {
 
             initEvent()
 
-            viewModel.timeList = withContext(Dispatchers.IO) {
-                viewModel.getTimeList(viewModel.table.timeTable)
-            }
+            viewModel.timeList = viewModel.getTimeList(viewModel.table.timeTable)
 
             for (i in 1..7) {
                 viewModel.getRawCourseByDay(i, viewModel.table.id).observe(this@ScheduleActivity, Observer { list ->

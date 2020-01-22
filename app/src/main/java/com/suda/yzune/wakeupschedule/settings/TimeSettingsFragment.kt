@@ -42,9 +42,7 @@ class TimeSettingsFragment : BaseFragment() {
             if (it == null) return@Observer
             if (it.isEmpty()) {
                 launch {
-                    withContext(Dispatchers.IO) {
-                        viewModel.initTimeTableData(viewModel.timeTableList[position].id)
-                    }
+                    viewModel.initTimeTableData(viewModel.timeTableList[position].id)
                 }
             } else {
                 viewModel.timeList.clear()

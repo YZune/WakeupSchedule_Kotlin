@@ -24,7 +24,7 @@ object UpdateUtils {
         return packInfo.versionName
     }
 
-    fun tranOldData(context: Context) {
+    suspend fun tranOldData(context: Context) {
         if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false) &&
                 !PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_adjust", false)) {
             val tableData = TableBean(
@@ -135,7 +135,7 @@ object UpdateUtils {
             val tableDao = dataBase.tableDao()
             val timeDao = dataBase.timeDetailDao()
             val timeTableDao = dataBase.timeTableDao()
-            if (timeTableDao.getTimeTableInThread(1) == null) {
+            if (timeTableDao.getTimeTable(1) == null) {
                 timeTableDao.insertTimeTable(TimeTableBean(id = 1, name = "默认"))
             }
             val timeList = ArrayList<TimeDetailBean>().apply {

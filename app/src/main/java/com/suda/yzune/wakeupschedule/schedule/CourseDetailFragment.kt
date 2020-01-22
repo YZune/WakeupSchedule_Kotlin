@@ -20,7 +20,8 @@ import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.design.longSnackbar
 import org.jetbrains.anko.find
@@ -130,20 +131,11 @@ class CourseDetailFragment : BaseDialogFragment() {
                 }
             } else {
                 launch {
-                    val msg = withContext(Dispatchers.IO) {
-                        try {
-                            viewModel.deleteCourseBean(course)
-                            "ok"
-                        } catch (e: Exception) {
-                            "出现异常>_<\n" + e.message
-                        }
-                    }
-                    if (msg == "ok") {
+                    try {
+                        viewModel.deleteCourseBean(course)
                         Toasty.success(context!!.applicationContext, "删除成功").show()
                         val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                        val list = withContext(Dispatchers.IO) {
-                            viewModel.getScheduleWidgetIds()
-                        }
+                        val list = viewModel.getScheduleWidgetIds()
                         list.forEach {
                             when (it.detailType) {
                                 0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
@@ -151,8 +143,8 @@ class CourseDetailFragment : BaseDialogFragment() {
                             }
                         }
                         dismiss()
-                    } else {
-                        Toasty.error(context!!.applicationContext, msg).show()
+                    } catch (e: Exception) {
+                        Toasty.error(context!!.applicationContext, "出现异常>_<\n" + e.message).show()
                     }
                 }
             }
@@ -160,20 +152,11 @@ class CourseDetailFragment : BaseDialogFragment() {
 
         ib_delete_course.setOnLongClickListener {
             launch {
-                val msg = withContext(Dispatchers.IO) {
-                    try {
-                        viewModel.deleteCourseBaseBean(course.id, course.tableId)
-                        "ok"
-                    } catch (e: Exception) {
-                        "出现异常>_<\n" + e.message
-                    }
-                }
-                if (msg == "ok") {
+                try {
+                    viewModel.deleteCourseBaseBean(course.id, course.tableId)
                     Toasty.success(context!!.applicationContext, "删除成功").show()
                     val appWidgetManager = AppWidgetManager.getInstance(activity!!.applicationContext)
-                    val list = async(Dispatchers.IO) {
-                        viewModel.getScheduleWidgetIds()
-                    }.await()
+                    val list = viewModel.getScheduleWidgetIds()
                     list.forEach {
                         when (it.detailType) {
                             0 -> appWidgetManager.notifyAppWidgetViewDataChanged(it.id, R.id.lv_schedule)
@@ -181,8 +164,8 @@ class CourseDetailFragment : BaseDialogFragment() {
                         }
                     }
                     dismiss()
-                } else {
-                    Toasty.error(context!!.applicationContext, msg).show()
+                } catch (e: Exception) {
+                    Toasty.error(context!!.applicationContext, "出现异常>_<\n" + e.message).show()
                 }
             }
             return@setOnLongClickListener true

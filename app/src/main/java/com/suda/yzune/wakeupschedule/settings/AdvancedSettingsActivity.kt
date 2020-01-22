@@ -122,9 +122,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             }
             "开启上课提醒" -> {
                 launch {
-                    val task = async(Dispatchers.IO) {
-                        widgetDao.getWidgetsByTypesInThread(0, 1)
-                    }.await()
+                    val task = widgetDao.getWidgetsByTypes(0, 1)
                     if (task.isEmpty()) {
                         mRecyclerView.longSnackbar("好像还没有设置日视图小部件呢>_<")
                         PreferenceUtils.saveBooleanToSP(applicationContext, "course_reminder", false)

@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
-import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
+import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import kotlinx.android.synthetic.main.fragment_import_choose.*
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.startActivityForResult
@@ -23,7 +23,7 @@ class ImportChooseFragment : BaseDialogFragment() {
         get() = R.layout.fragment_import_choose
 
     private lateinit var viewModel: ScheduleViewModel
-    private lateinit var importSchool: SchoolListBean
+    private lateinit var importSchool: SchoolInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "type" to "file")
+                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "file")
                 dismiss()
             }
         }
@@ -56,7 +56,7 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "type" to "html", "tableId" to viewModel.table.id)
+                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "html", "tableId" to viewModel.table.id)
                 dismiss()
             }
         }
@@ -66,7 +66,7 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 3)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "type" to "excel", "tableId" to viewModel.table.id)
+                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "excel", "tableId" to viewModel.table.id)
                 dismiss()
             }
         }
@@ -76,8 +76,9 @@ class ImportChooseFragment : BaseDialogFragment() {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivityForResult<LoginWebActivity>(
                     32,
-                    "type" to importSchool.name,
+                    "school_name" to importSchool.name,
                     "tableId" to viewModel.table.id,
+                    "import_type" to importSchool.type,
                     "url" to importSchool.url
             )
             dismiss()
@@ -91,13 +92,9 @@ class ImportChooseFragment : BaseDialogFragment() {
 
         tv_feedback.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            activity!!.startActivity<LoginWebActivity>("type" to "apply")
+            activity!!.startActivity<LoginWebActivity>("import_type" to "apply")
             dismiss()
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = ImportChooseFragment()
-    }
 }

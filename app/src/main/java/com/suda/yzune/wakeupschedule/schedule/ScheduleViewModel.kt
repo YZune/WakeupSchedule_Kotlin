@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
 import biweekly.Biweekly
 import biweekly.ICalVersion
 import biweekly.ICalendar
@@ -14,10 +13,13 @@ import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
-import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
+import com.suda.yzune.wakeupschedule.schedule_import.Common
+import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,8 +28,7 @@ import java.util.*
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dataBase = AppDatabase.getDatabase(application)
-    private val baseDao = dataBase.courseBaseDao()
-    private val detailDao = dataBase.courseDetailDao()
+    private val courseDao = dataBase.courseDao()
     private val tableDao = dataBase.tableDao()
     private val widgetDao = dataBase.appWidgetDao()
     private val timeTableDao = dataBase.timeTableDao()
@@ -45,18 +46,18 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
-        return tableDao.getTableSelectList()
+        return tableDao.getTableSelectListLiveData()
     }
 
-    fun getImportSchoolBean(): SchoolListBean {
+    fun getImportSchoolBean(): SchoolInfo {
         val json = PreferenceUtils.getStringFromSP(getApplication(), "import_school", null)
-                ?: return SchoolListBean("S", "苏州大学", "")
+                ?: return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
         val gson = Gson()
-        return try {
-            gson.fromJson<SchoolListBean>(json, object : TypeToken<SchoolListBean>() {}.type)
-        } catch (e: Exception) {
-            SchoolListBean("S", "苏州大学", "")
+        val res = gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
+        if (!res.type.isNullOrEmpty()) {
+            return gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
         }
+        return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
     }
 
     fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {
@@ -66,11 +67,11 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getDefaultTable(): TableBean {
-        return tableDao.getDefaultTableInThread()
+        return tableDao.getDefaultTable()
     }
 
     suspend fun getTimeList(timeTableId: Int): List<TimeDetailBean> {
-        return timeDao.getTimeListInThread(timeTableId)
+        return timeDao.getTimeList(timeTableId)
     }
 
     suspend fun addBlankTableAsync(tableName: String) {
@@ -78,31 +79,30 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun changeDefaultTable(id: Int) {
-        tableDao.resetOldDefaultTable(table.id)
-        tableDao.setNewDefaultTable(id)
+        tableDao.changeDefaultTable(table.id, id)
     }
 
     suspend fun getScheduleWidgetIds(): List<AppWidgetBean> {
-        return widgetDao.getWidgetsByBaseTypeInThread(0)
+        return widgetDao.getWidgetsByBaseType(0)
     }
 
     fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
-        return baseDao.getCourseByDayOfTable(day, tableId)
+        return courseDao.getCourseByDayOfTableLiveData(day, tableId)
     }
 
     suspend fun deleteCourseBean(courseBean: CourseBean) {
-        detailDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
+        courseDao.deleteCourseDetail(CourseUtils.courseBean2DetailBean(courseBean))
     }
 
     suspend fun deleteCourseBaseBean(id: Int, tableId: Int) {
-        baseDao.deleteCourseBaseBeanOfTable(id, tableId)
+        courseDao.deleteCourseBaseBeanOfTable(id, tableId)
     }
 
     suspend fun updateFromOldVer(json: String) {
         val gson = Gson()
         val list = gson.fromJson<List<CourseOldBean>>(json, object : TypeToken<List<CourseOldBean>>() {
         }.type)
-        val lastId = tableDao.getLastIdInThread()
+        val lastId = tableDao.getLastId()
         val tableId = if (lastId != null) {
             lastId + 1
         } else {
@@ -137,8 +137,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
                 ))
             }
         }
-        baseDao.insertList(baseList)
-        detailDao.insertList(detailList)
+        courseDao.insertCourses(baseList, detailList)
         PreferenceUtils.remove(getApplication(), "course")
     }
 
@@ -154,11 +153,11 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         val gson = Gson()
         val strBuilder = StringBuilder()
-        strBuilder.append(gson.toJson(timeTableDao.getTimeTableInThread(table.timeTable)))
+        strBuilder.append(gson.toJson(timeTableDao.getTimeTable(table.timeTable)))
         strBuilder.append("\n${gson.toJson(timeList)}")
         strBuilder.append("\n${gson.toJson(table)}")
-        strBuilder.append("\n${gson.toJson(baseDao.getCourseBaseBeanOfTableInThread(table.id))}")
-        strBuilder.append("\n${gson.toJson(detailDao.getDetailOfTableInThread(table.id))}")
+        strBuilder.append("\n${gson.toJson(courseDao.getCourseBaseBeanOfTable(table.id))}")
+        strBuilder.append("\n${gson.toJson(courseDao.getDetailOfTable(table.id))}")
         val tableName = if (table.tableName == "") {
             "我的课表"
         } else {
@@ -180,21 +179,26 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             dir.mkdir()
         }
         //val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
+        withContext(Dispatchers.Default) {
+
+        }
         val ical = ICalendar()
-        ical.setProductId("-//YZune//WakeUpSchedule//EN")
+        withContext(Dispatchers.Default) {
+            ical.setProductId("-//YZune//WakeUpSchedule//EN")
 //        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
 //        calendar.properties.add(Version.VERSION_2_0)
 //        calendar.properties.add(CalScale.GREGORIAN)
-        val startTimeMap = ICalUtils.getClassTime(timeList, true)
-        val endTimeMap = ICalUtils.getClassTime(timeList, false)
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
-        val date = sdf.parse(table.startDate)
-        allCourseList.forEach {
-            it.value?.forEach { course ->
-                try {
-                    ICalUtils.getClassEvents(ical, startTimeMap, endTimeMap, table.maxWeek, course, date)
-                } catch (ignored: Exception) {
+            val startTimeMap = ICalUtils.getClassTime(timeList, true)
+            val endTimeMap = ICalUtils.getClassTime(timeList, false)
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+            val date = sdf.parse(table.startDate)
+            allCourseList.forEach {
+                it.value?.forEach { course ->
+                    try {
+                        ICalUtils.getClassEvents(ical, startTimeMap, endTimeMap, table.maxWeek, course, date)
+                    } catch (ignored: Exception) {
 
+                    }
                 }
             }
         }
@@ -206,7 +210,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             table.tableName
         }
         val file = File(myDir, "日历-$tableName.ics")
-        Biweekly.write(ical).go(file)
+        withContext(Dispatchers.IO) {
+            Biweekly.write(ical).go(file)
+        }
         return file.path
     }
 }

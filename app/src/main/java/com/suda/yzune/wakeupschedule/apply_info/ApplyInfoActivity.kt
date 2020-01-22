@@ -45,7 +45,7 @@ class ApplyInfoActivity : BaseListActivity() {
                 viewModel.search(s.toString())
                 mRecyclerView.adapter?.notifyDataSetChanged()
                 if (viewModel.filterList.isEmpty()) {
-                    mRecyclerView.longSnackbar("没有找到你的学校哦", "申请适配") { startActivity<LoginWebActivity>("type" to "apply") }
+                    mRecyclerView.longSnackbar("没有找到你的学校哦", "申请适配") { startActivity<LoginWebActivity>("import_type" to "apply") }
                 }
             }
 
