@@ -130,14 +130,14 @@ class LoginWebFragment : BaseFragment() {
         btn_to_schedule.setOnClickListener {
             if (type != "西北工业大学") {
                 getSchedule(viewModel, et_id.text.toString(), name, year, term)
-            }else{
+            } else {
                 launch {
                     val task = withContext(Dispatchers.IO) {
                         try {
-                            if (term.isNullOrEmpty()){
+                            if (term.isNullOrEmpty()) {
                                 term = "1"
                             }
-                            viewModel.loginNwpu(et_id.text.toString(),et_pwd.text.toString(),year,term)
+                            viewModel.loginNwpu(et_id.text.toString(), et_pwd.text.toString(), year, term)
                         } catch (e: Exception) {
                             e.message
                         }
@@ -263,16 +263,16 @@ class LoginWebFragment : BaseFragment() {
                     if (type == "西北工业大学") {
 
                         launch {
-                            Toasty.info(activity!!.applicationContext, "年份为学年的起始年，学期秋、春、夏分别对应1、2、3\n例如2019-2020春 选择 2019 2",Toast.LENGTH_LONG).show()
+                            Toasty.info(activity!!.applicationContext, "年份为学年的起始年，学期[秋、春、夏]分别对应[1、2、3]\n例如[2019-2020春] 选择[2019 2]", Toast.LENGTH_LONG).show()
                             pb_loading.visibility = View.INVISIBLE
                             fab_login.isExpanded = !fab_login.isExpanded
 
                             var list = mutableListOf<String>()
-                            for(index in java.util.Calendar.getInstance().get(Calendar.YEAR)-7 .. java.util.Calendar.getInstance().get(Calendar.YEAR)){
+                            for (index in java.util.Calendar.getInstance().get(Calendar.YEAR) - 7..java.util.Calendar.getInstance().get(Calendar.YEAR)) {
                                 list.add(index.toString())
                             }
 
-                            cardC2Dialog(list,true)
+                            cardC2Dialog(list, true)
                         }
 
                     }
@@ -453,7 +453,7 @@ class LoginWebFragment : BaseFragment() {
         }
     }
 
-    private fun cardC2Dialog(years: List<String>, selectlastyear:Boolean = false) {
+    private fun cardC2Dialog(years: List<String>, selectlastyear: Boolean = false) {
         ll_dialog.visibility = View.VISIBLE
         val terms = arrayOf("1", "2", "3")
         wp_term.displayedValues = terms
@@ -464,7 +464,11 @@ class LoginWebFragment : BaseFragment() {
         wp_years.displayedValues = years.toTypedArray()
         wp_years.minValue = 0
         wp_years.maxValue = years.size - 1
-        if(!selectlastyear){wp_years.value = 0}else{wp_years.value = wp_years.maxValue}
+        if (!selectlastyear) {
+            wp_years.value = 0
+        } else {
+            wp_years.value = wp_years.maxValue
+        }
 
         wp_years.setOnValueChangedListener { _, _, newVal ->
             year = years[newVal]
