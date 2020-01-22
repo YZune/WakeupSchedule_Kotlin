@@ -8,11 +8,12 @@ import android.widget.TextView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter
 import org.jetbrains.anko.find
 
-class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolListBean>) :
-        BaseQuickAdapter<SchoolListBean, BaseViewHolder>(layoutResId, data),
+class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
+        BaseQuickAdapter<SchoolInfo, BaseViewHolder>(layoutResId, data),
         StickyRecyclerHeadersAdapter<androidx.recyclerview.widget.RecyclerView.ViewHolder> {
 
     override fun getHeaderId(position: Int): Long {
@@ -31,7 +32,7 @@ class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolListBean
         myGrad.setColor(getCustomizedColor(position % 9))
     }
 
-    override fun convert(helper: BaseViewHolder, item: SchoolListBean) {
+    override fun convert(helper: BaseViewHolder, item: SchoolInfo) {
         helper.getView<View>(R.id.ll_detail).visibility = View.GONE
         helper.getView<View>(R.id.ll_detail_num).visibility = View.GONE
         helper.getView<View>(R.id.v_line).visibility = View.GONE

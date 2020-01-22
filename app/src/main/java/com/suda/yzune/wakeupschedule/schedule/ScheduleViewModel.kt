@@ -13,7 +13,8 @@ import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
-import com.suda.yzune.wakeupschedule.schedule_import.SchoolListBean
+import com.suda.yzune.wakeupschedule.schedule_import.Common
+import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
@@ -48,15 +49,15 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return tableDao.getTableSelectListLiveData()
     }
 
-    fun getImportSchoolBean(): SchoolListBean {
+    fun getImportSchoolBean(): SchoolInfo {
         val json = PreferenceUtils.getStringFromSP(getApplication(), "import_school", null)
-                ?: return SchoolListBean("S", "苏州大学", "")
+                ?: return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
         val gson = Gson()
-        return try {
-            gson.fromJson<SchoolListBean>(json, object : TypeToken<SchoolListBean>() {}.type)
-        } catch (e: Exception) {
-            SchoolListBean("S", "苏州大学", "")
+        val res = gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
+        if (!res.type.isNullOrEmpty()) {
+            return gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
         }
+        return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
     }
 
     fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {

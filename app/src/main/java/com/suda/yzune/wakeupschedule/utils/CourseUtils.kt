@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.bean.*
+import com.suda.yzune.wakeupschedule.schedule_import.bean.WeekBean
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*

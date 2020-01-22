@@ -1,5 +1,9 @@
-package com.suda.yzune.wakeupschedule.schedule_import.HUST
+package com.suda.yzune.wakeupschedule.schedule_import.hust
 
+import com.suda.yzune.wakeupschedule.schedule_import.exception.NetworkErrorException
+import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.math.BigInteger
 
@@ -39,15 +43,15 @@ class MobileHub(private var user: String, private var password: String) {
         user = user.toUpperCase()
     }
 
-    fun refreshSession() {
+    private suspend fun refreshSession() {
         val request = Request.Builder()
                 .url(loginUrl)
                 .headers(headers)
                 .get()
                 .build()
 
-        val response = httpClient.newCall(request).execute()
-        val bodyString = response.body()!!.string()
+        val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
+        val bodyString = withContext(Dispatchers.IO) { response.body()!!.string() }
 
         var matchResult: MatchResult = regexModulus.find(bodyString) ?: throw Exception("页面加载失败")
         modulus = matchResult.groupValues.last()
@@ -56,7 +60,7 @@ class MobileHub(private var user: String, private var password: String) {
         execution = matchResult.groupValues.last()
     }
 
-    fun login(): Boolean {
+    suspend fun login() {
         refreshSession()
 
         val cipher = Cipher(HUST_RSA_EXPONENT, BigInteger(modulus, 16))
@@ -80,20 +84,26 @@ class MobileHub(private var user: String, private var password: String) {
                 .post(formBody)
                 .build()
 
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
 
-        return !response.request().url().toString().contains("login")
+        if (response.request().url().toString().contains("login")) {
+            throw PasswordErrorException("学号或密码错误，请检查后再输入")
+        }
     }
 
-    fun getCourseSchedule() {
+    suspend fun getCourseSchedule() {
         val request = Request.Builder()
                 .url(getScheduleUrl)
                 .headers(headers)
                 .get()
                 .build()
 
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
 
-        courseHTML = response.body()!!.string()
+        courseHTML = withContext(Dispatchers.IO) { response.body()!!.string() }
+
+        if (courseHTML.contains("failed to connect")) {
+            throw NetworkErrorException("无法访问HUB系统，请检查是否连接校园网")
+        }
     }
 }

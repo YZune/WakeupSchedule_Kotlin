@@ -483,7 +483,7 @@ class MainFragment : BaseFragment() {
         }
 
         importImageButton.setOnClickListener {
-            ImportChooseFragment.newInstance().show(activity!!.supportFragmentManager, "importDialog")
+            ImportChooseFragment().show(activity!!.supportFragmentManager, "importDialog")
         }
     }
 

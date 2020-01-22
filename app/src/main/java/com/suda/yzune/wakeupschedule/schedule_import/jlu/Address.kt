@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.JLU
+package com.suda.yzune.wakeupschedule.schedule_import.jlu
 
 object Address {
 

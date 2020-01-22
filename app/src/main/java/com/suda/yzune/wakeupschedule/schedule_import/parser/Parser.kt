@@ -1,13 +1,11 @@
-package com.suda.yzune.wakeupschedule.schedule_import
+package com.suda.yzune.wakeupschedule.schedule_import.parser
 
 import android.content.Context
-import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
-import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.schedule_import.Common
+import com.suda.yzune.wakeupschedule.schedule_import.bean.Course
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 abstract class Parser(val source: String) {
 
@@ -29,29 +27,25 @@ abstract class Parser(val source: String) {
                         )
                 )
             }
-            _detailList.add(CourseDetailBean(
+            _detailList.add(
+                    CourseDetailBean(
                     id = id, room = course.room,
                     teacher = course.teacher, day = course.day,
                     step = course.endNode - course.startNode + 1,
                     startWeek = course.startWeek, endWeek = course.endWeek,
                     type = course.type, startNode = course.startNode,
                     tableId = tableId
-            ))
+                    )
+            )
         }
     }
 
-    suspend fun saveCourse(context: Context, tableId: Int, db: AppDatabase): String {
+    suspend fun saveCourse(context: Context, tableId: Int, block: suspend (baseList: List<CourseBaseBean>,
+                                                                           detailList: List<CourseDetailBean>) -> Unit): Int {
         convertCourse(context, tableId)
-        return withContext(Dispatchers.IO) {
-            try {
-                db.tableDao().insertTable(TableBean(id = tableId, tableName = "未命名"))
-            } catch (e: Exception) {
-                db.courseDao().removeCourseBaseBeanOfTable(tableId)
-            }
-            db.courseDao().insertCourses(_baseList, _detailList)
-            // todo: context.getString()
-            "成功导入${_baseList.size}门课程"
-        }
+        if (_baseList.isEmpty()) throw Exception("导入数据为空>_<请确保选择正确的教务类型\n以及到达显示课程的页面")
+        block(_baseList, _detailList)
+        return _baseList.size
     }
 
 }

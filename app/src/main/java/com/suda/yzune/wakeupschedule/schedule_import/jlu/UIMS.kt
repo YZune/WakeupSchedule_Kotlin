@@ -1,6 +1,8 @@
-package com.suda.yzune.wakeupschedule.schedule_import.JLU
+package com.suda.yzune.wakeupschedule.schedule_import.jlu
 
 import com.suda.yzune.wakeupschedule.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -39,14 +41,16 @@ class UIMS(private var user: String, private var pass: String) {
     lateinit var builder: MultipartBody.Builder
     private val mediaType = MediaType.parse("application/json; charset=utf-8")
 
-    fun connectToUIMS() {
+    suspend fun connectToUIMS() {
         builder = MultipartBody.Builder().setType(MultipartBody.FORM)
         val request = Request.Builder()
                 .url(Address.hostAddress + "/ntms/")
                 .header("User-Agent", "Mozilla/5.0 (Windows NT 9.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36")
                 .build()
 
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) {
+            httpClient.newCall(request).execute()
+        }
 
         var str = response.headers().get("Set-Cookie")
         str = str!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
@@ -54,7 +58,8 @@ class UIMS(private var user: String, private var pass: String) {
         cookie1 = "loginPage=userLogin.jsp; alu=$user; pwdStrength=1; JSESSIONID=$jssionID"
     }
 
-    fun login() {
+
+    suspend fun login() {
         val formBody = FormBody.Builder()
                 .add("j_username", user)
                 .add("j_password", Utils.getMD5Str("UIMS$user$pass"))
@@ -68,7 +73,9 @@ class UIMS(private var user: String, private var pass: String) {
                 .header("Referer", Address.hostAddress + "/ntms/userLogin.jsp?reason=nologin")
                 .post(formBody)
                 .build()
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) {
+            httpClient.newCall(request).execute()
+        }
         var str = response.headers().get("Set-Cookie")
         str = str!!.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
         jssionID2 = str.split("=".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]
@@ -76,7 +83,8 @@ class UIMS(private var user: String, private var pass: String) {
         cookie4 = "loginPage=userLogin.jsp; alu=$user; JSESSIONID=$jssionID2"
     }
 
-    fun getCurrentUserInfo() {
+
+    suspend fun getCurrentUserInfo() {
         val formBody = FormBody.Builder().build()
         val request = Request.Builder()
                 .url(Address.hostAddress + "/ntms/action/getCurrentUserInfo.do")
@@ -89,15 +97,18 @@ class UIMS(private var user: String, private var pass: String) {
                 .post(formBody)
                 .build()
 
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
 
         val bufferedReader = BufferedReader(
                 InputStreamReader(response.body()?.byteStream(), "UTF-8"), 8 * 1024)
         val entityStringBuilder = StringBuilder()
-        var line = bufferedReader.readLine()
-        while (line != null) {
-            entityStringBuilder.append(line + "\n")
-            line = bufferedReader.readLine()
+
+        withContext(Dispatchers.IO) {
+            var line = bufferedReader.readLine()
+            while (line != null) {
+                entityStringBuilder.append(line + "\n")
+                line = bufferedReader.readLine()
+            }
         }
 
         val obj = JSONObject(entityStringBuilder.toString())
@@ -108,7 +119,7 @@ class UIMS(private var user: String, private var pass: String) {
         adcId = defRes.getString("adcId")
     }
 
-    fun getCourseSchedule() {
+    suspend fun getCourseSchedule() {
         val params = JSONObject()
         params.put("termId", termId)
         params.put("studId", studentId)
@@ -130,14 +141,16 @@ class UIMS(private var user: String, private var pass: String) {
                 .header("Referer", Address.hostAddress + "/ntms/index.do")
                 .post(requestBody)
                 .build()
-        val response = httpClient.newCall(request).execute()
+        val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
         val bufferedReader = BufferedReader(
                 InputStreamReader(response.body()!!.byteStream(), "UTF-8"), 8 * 1024)
         val entityStringBuilder = StringBuilder()
-        var line = bufferedReader.readLine()
-        while (line != null) {
-            entityStringBuilder.append(line + "\n")
-            line = bufferedReader.readLine()
+        withContext(Dispatchers.IO) {
+            var line = bufferedReader.readLine()
+            while (line != null) {
+                entityStringBuilder.append(line + "\n")
+                line = bufferedReader.readLine()
+            }
         }
         courseJSON = JSONObject(entityStringBuilder.toString())
     }

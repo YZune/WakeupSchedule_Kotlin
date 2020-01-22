@@ -1,6 +1,9 @@
-package com.suda.yzune.wakeupschedule.schedule_import
+package com.suda.yzune.wakeupschedule.schedule_import.parser
 
-class ZhengFangParser(source: String, val type: Int) : Parser(source) {
+import com.suda.yzune.wakeupschedule.schedule_import.Common
+import com.suda.yzune.wakeupschedule.schedule_import.bean.Course
+
+class ZhengFangParser(source: String, private val type: Int) : Parser(source) {
 
     override fun generateCourseList(): List<Course> {
         val doc = org.jsoup.Jsoup.parse(source)

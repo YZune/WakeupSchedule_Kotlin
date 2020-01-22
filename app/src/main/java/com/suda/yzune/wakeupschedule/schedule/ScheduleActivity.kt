@@ -406,21 +406,21 @@ class ScheduleActivity : BaseActivity() {
             }
             2 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "file")
+                    startActivity<LoginWebActivity>("import_type" to "file")
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             3 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "excel", "tableId" to viewModel.table.id)
+                    startActivity<LoginWebActivity>("import_type" to "excel", "tableId" to viewModel.table.id)
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             4 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("type" to "html", "tableId" to viewModel.table.id)
+                    startActivity<LoginWebActivity>("import_type" to "html", "tableId" to viewModel.table.id)
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
@@ -467,7 +467,7 @@ class ScheduleActivity : BaseActivity() {
         }
 
         importImageButton.setOnClickListener {
-            ImportChooseFragment.newInstance().show(supportFragmentManager, "importDialog")
+            ImportChooseFragment().show(supportFragmentManager, "importDialog")
         }
 
         weekdayTextView.setOnClickListener {

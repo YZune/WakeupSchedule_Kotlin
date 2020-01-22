@@ -28,6 +28,13 @@ interface CourseDao {
         insertDetailList(courseDetailList)
     }
 
+    @Transaction
+    suspend fun coverImport(courseBaseList: List<CourseBaseBean>, courseDetailList: List<CourseDetailBean>) {
+        removeCourseBaseBeanOfTable(courseBaseList[0].tableId)
+        insertBaseList(courseBaseList)
+        insertDetailList(courseDetailList)
+    }
+
     @Delete
     suspend fun deleteCourseDetail(courseDetailBean: CourseDetailBean)
 

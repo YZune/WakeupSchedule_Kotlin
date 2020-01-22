@@ -6,9 +6,7 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_import_setting.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ImportSettingFragment : BaseDialogFragment() {
     override val layoutId: Int
@@ -24,7 +22,7 @@ class ImportSettingFragment : BaseDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tv_cover.setOnClickListener {
-            viewModel.importId = activity!!.intent.extras!!.getInt("tableId")
+            viewModel.importId = activity!!.intent.extras!!.getInt("tableId", -1)
             viewModel.newFlag = false
             dismiss()
         }

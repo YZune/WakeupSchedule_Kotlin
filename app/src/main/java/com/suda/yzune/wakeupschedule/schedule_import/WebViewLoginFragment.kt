@@ -30,17 +30,14 @@ import org.jetbrains.anko.startActivity
 
 class WebViewLoginFragment : BaseFragment() {
 
-    private val GET_FRAME_CONTENT_STR = "document.getElementById('iframeautoheight').contentWindow.document.body.innerHTML"
-
-    private lateinit var type: String
     private lateinit var url: String
     private lateinit var viewModel: ImportViewModel
     private var isRefer = false
+    private val hostRegex = Regex("""(http|https)://.*?/""")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            type = it.getString("type")!!
             url = it.getString("url")!!
         }
         viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
@@ -69,25 +66,25 @@ class WebViewLoginFragment : BaseFragment() {
             startVisit()
         }
 
-        if (type == "apply") {
+        if (viewModel.importType == "apply") {
             tv_tips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
         }
 
-        if (type == "强智教务") {
+        if (viewModel.school == "强智教务") {
             cg_qz.visibility = View.VISIBLE
             chip_qz1.isChecked = true
         } else {
             cg_qz.visibility = View.GONE
         }
 
-        if (type == "正方教务") {
+        if (viewModel.school == "正方教务") {
             cg_zf.visibility = View.VISIBLE
             chip_zf1.isChecked = true
         } else {
             cg_zf.visibility = View.GONE
         }
 
-        if (type in viewModel.oldQZList1) {
+        if (viewModel.importType == Common.TYPE_HNUST) {
             cg_old_qz.visibility = View.VISIBLE
             chip_old_qz2.isChecked = true
             viewModel.oldQzType = 1
@@ -95,24 +92,25 @@ class WebViewLoginFragment : BaseFragment() {
             cg_old_qz.visibility = View.GONE
         }
 
-        wv_course!!.settings.javaScriptEnabled = true
+        wv_course.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            wv_course!!.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            wv_course.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        wv_course!!.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
-        wv_course!!.webViewClient = object : WebViewClient() {
+        wv_course.addJavascriptInterface(InJavaScriptLocalObj(), "local_obj")
+        wv_course.webViewClient = object : WebViewClient() {
 
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 handler.proceed() //接受所有网站的证书
             }
 
         }
-        wv_course!!.webChromeClient = object : WebChromeClient() {
+        wv_course.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 if (newProgress == 100) {
                     pb_load.progress = newProgress
                     pb_load.visibility = View.GONE
+                    // Toasty.info(activity!!, wv_course.url, Toast.LENGTH_LONG).show()
                 } else {
                     pb_load.progress = newProgress * 5
                     pb_load.visibility = View.VISIBLE
@@ -120,16 +118,16 @@ class WebViewLoginFragment : BaseFragment() {
             }
         }
         // 设置自适应屏幕，两者合用
-        wv_course!!.settings.useWideViewPort = true //将图片调整到适合WebView的大小
-        wv_course!!.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
+        wv_course.settings.useWideViewPort = true //将图片调整到适合WebView的大小
+        wv_course.settings.loadWithOverviewMode = true // 缩放至屏幕的大小
         // 缩放操作
-        wv_course!!.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
-        wv_course!!.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
-        wv_course!!.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
-        wv_course!!.settings.javaScriptCanOpenWindowsAutomatically = true
-        wv_course!!.settings.domStorageEnabled = true
-        wv_course!!.settings.userAgentString = wv_course!!.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
-        wv_course!!.settings.textZoom = 100
+        wv_course.settings.setSupportZoom(true) //支持缩放，默认为true。是下面那个的前提。
+        wv_course.settings.builtInZoomControls = true //设置内置的缩放控件。若为false，则该WebView不可缩放
+        wv_course.settings.displayZoomControls = false //隐藏原生的缩放控件wvCourse.settings
+        wv_course.settings.javaScriptCanOpenWindowsAutomatically = true
+        wv_course.settings.domStorageEnabled = true
+        wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
+        wv_course.settings.textZoom = 100
         initEvent()
     }
 
@@ -236,47 +234,48 @@ class WebViewLoginFragment : BaseFragment() {
                 "window.local_obj.showSource(document.getElementsByTagName('html')[0].innerHTML + iframeContent + frameContent);"
 
         fab_import.setOnClickListener {
-            if (type !in viewModel.oldQZList1 && type !in viewModel.urpList && type !in viewModel.gzChengFangList && !viewModel.isUrp) {
-                wv_course!!.loadUrl(js)
-            }
-            if (type in viewModel.oldQZList1) {
+            if (viewModel.importType == Common.TYPE_HNUST) {
                 if (!isRefer) {
-                    val referUrl = when (type) {
+                    val referUrl = when (viewModel.school) {
                         "湖南科技大学" -> "http://kdjw.hnust.cn/kdjw/tkglAction.do?method=goListKbByXs&istsxx=no"
-                        else -> if (wv_course!!.url.endsWith('/')) wv_course!!.url + "tkglAction.do?method=goListKbByXs&istsxx=no" else wv_course!!.url + "/tkglAction.do?method=goListKbByXs&istsxx=no"
+                        "湖南科技大学潇湘学院" -> "http://xxjw.hnust.cn:8080/xxjw/tkglAction.do?method=goListKbByXs&istsxx=no"
+                        else -> getHostUrl() + "tkglAction.do?method=goListKbByXs&istsxx=no"
                     }
-                    wv_course!!.loadUrl(referUrl)
+                    wv_course.loadUrl(referUrl)
                     it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
-                    wv_course!!.loadUrl(js)
+                    wv_course.loadUrl(js)
                 }
-            }
-            if (type in viewModel.gzChengFangList) {
+            } else if (viewModel.importType == Common.TYPE_CF) {
                 if (!isRefer) {
-                    val referUrl = when (type) {
-                        "广东工业大学" -> "http://jxfw.gdut.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                        "南方医科大学" -> "http://zhjw.smu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                        "五邑大学" -> "http://jxgl.wyu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                        "湖北医药学院" -> "http://jw.hbmu.edu.cn/xsgrkbcx!getXsgrbkList.action"
-                        else -> if (wv_course!!.url.endsWith('/')) wv_course!!.url + "xsgrkbcx!getXsgrbkList.action" else wv_course!!.url + "/xsgrkbcx!getXsgrbkList.action"
-                    }
-                    wv_course!!.loadUrl(referUrl)
+                    val referUrl = getHostUrl() + "xsgrkbcx!getXsgrbkList.action"
+                    wv_course.loadUrl(referUrl)
                     it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
                     isRefer = true
                 } else {
-                    wv_course!!.loadUrl(js)
+                    wv_course.loadUrl(js)
                 }
-            }
-            if (type in viewModel.urpList || viewModel.isUrp) {
+            } else if (viewModel.importType == Common.TYPE_URP) {
                 if (!isRefer) {
-                    val referUrl = if (wv_course!!.url.endsWith('/')) wv_course!!.url.substringBeforeLast('/').substringBeforeLast('/') + "/xkAction.do?actionType=6" else wv_course!!.url.substringBeforeLast('/') + "/xkAction.do?actionType=6"
-                    wv_course!!.loadUrl(referUrl)
+                    val referUrl = getHostUrl() + "xkAction.do?actionType=6"
+                    wv_course.loadUrl(referUrl)
                     it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
-                    wv_course!!.loadUrl(js)
+                    wv_course.loadUrl(js)
                 }
+            } else if (viewModel.importType == Common.TYPE_URP_NEW) {
+                if (!isRefer) {
+                    val referUrl = getHostUrl() + "student/courseSelect/thisSemesterCurriculum/callback"
+                    wv_course.loadUrl(referUrl)
+                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    isRefer = true
+                } else {
+                    wv_course.loadUrl("javascript:window.local_obj.showSource(document.getElementsByTagName('html')[0].innerText);")
+                }
+            } else {
+                wv_course.loadUrl(js)
             }
         }
 
@@ -287,13 +286,21 @@ class WebViewLoginFragment : BaseFragment() {
         }
     }
 
+    private fun getHostUrl(): String {
+        var url = wv_course.url
+        if (!url.endsWith('/')) {
+            url += "/"
+        }
+        return hostRegex.find(wv_course.url)?.value ?: wv_course.url
+    }
+
     private fun startVisit() {
-        wv_course!!.visibility = View.VISIBLE
+        wv_course.visibility = View.VISIBLE
         ll_error.visibility = View.GONE
         val url = if (et_url.text.toString().startsWith("http://") || et_url.text.toString().startsWith("https://"))
             et_url.text.toString() else "http://" + et_url.text.toString()
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
-            wv_course!!.loadUrl(url)
+            wv_course.loadUrl(url)
             PreferenceUtils.saveStringToSP(activity!!.applicationContext, "school_url", url)
         } else {
             Toasty.error(context!!.applicationContext, "请输入正确的网址╭(╯^╰)╮").show()
@@ -304,64 +311,17 @@ class WebViewLoginFragment : BaseFragment() {
         @JavascriptInterface
         fun showSource(html: String) {
             // Log.d("源码", html)
-            if (type != "apply") {
+            if (viewModel.importType != "apply") {
                 launch {
-                    val task = withContext(Dispatchers.IO) {
-                        try {
-                            when (type) {
-                                "北京大学" -> viewModel.parsePeking(html)
-                                "北京师范大学珠海分校" -> viewModel.parseZFNewer(html)
-                                in viewModel.oldQZList1 -> viewModel.parseOldQZ1(html)
-                                in viewModel.urpList -> viewModel.parseURP(html)
-                                in viewModel.oldQZList -> viewModel.parseOldQZ(html)
-                                in viewModel.gzChengFangList -> viewModel.parseGuangGong(html)
-                                "正方教务" -> viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                                "新正方教务" -> viewModel.parseNewZF(html)
-                                "长春大学" -> viewModel.parseQZ(html, type)
-                                "湖南信息职业技术学院" -> viewModel.parseHNIU(html)
-                                "强智教务" -> {
-                                    when (viewModel.qzType) {
-                                        0 -> viewModel.parseQZ(html, "北京林业大学")
-                                        1 -> viewModel.parseQZ(html, "广东外语外贸大学")
-                                        2 -> viewModel.parseQZ(html, "长春大学")
-                                        3 -> viewModel.parseQZ(html, "青岛农业大学")
-                                        4 -> viewModel.parseQZ(html, "锦州医科大学")
-                                        5 -> viewModel.parseQZ(html, "山东科技大学")
-                                        6 -> viewModel.parseQZ(html, "佛山科学技术学院")
-                                        else -> "没有贵校的信息哦>_<"
-                                    }
-                                }
-                                in viewModel.qzAbnormalNodeList -> viewModel.parseQZ(html, type)
-                                in viewModel.qzCrazyList -> {
-                                    viewModel.qzType = 6
-                                    viewModel.parseQZ(html, type)
-                                }
-                                in viewModel.qzGuangwaiList -> viewModel.parseQZ(html, type)
-                                in viewModel.ZFSchoolList -> {
-                                    viewModel.zfType = 0
-                                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                                }
-                                in viewModel.ZFSchoolList1 -> {
-                                    viewModel.zfType = 1
-                                    viewModel.importBean2CourseBean(viewModel.html2ImportBean(html), html)
-                                }
-                                in viewModel.newZFSchoolList -> viewModel.parseNewZF(html)
-                                in viewModel.qzLessNodeSchoolList -> viewModel.parseQZ(html, type)
-                                in viewModel.qzMoreNodeSchoolList -> viewModel.parseQZ(html, type)
-                                else -> "没有贵校的信息哦>_<"
-                            }
-                        } catch (e: Exception) {
-                            "导入失败>_<\n${e.message}"
-                        }
-                    }
-
-                    when (task) {
-                        "ok" -> {
-                            Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看").show()
-                            activity!!.setResult(RESULT_OK)
-                            activity!!.finish()
-                        }
-                        else -> Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
+                    try {
+                        val result = viewModel.importSchedule(html)
+                        Toasty.success(activity!!,
+                                "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看").show()
+                        activity!!.setResult(RESULT_OK)
+                        activity!!.finish()
+                    } catch (e: Exception) {
+                        Toasty.error(activity!!,
+                                "导入失败>_<\n${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             } else {
@@ -405,11 +365,10 @@ class WebViewLoginFragment : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param0: String, param1: String = "") =
+        fun newInstance(url: String = "") =
                 WebViewLoginFragment().apply {
                     arguments = Bundle().apply {
-                        putString("type", param0)
-                        putString("url", param1)
+                        putString("url", url)
                     }
                 }
     }

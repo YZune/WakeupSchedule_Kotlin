@@ -1,10 +1,10 @@
-package com.suda.yzune.wakeupschedule.schedule_import
+package com.suda.yzune.wakeupschedule.schedule_import.suda
 
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
 
-interface ImportService {
+interface SudaLoginService {
     @GET("/CheckCode.aspx")
     fun getCheckCode(): Call<ResponseBody>
 
