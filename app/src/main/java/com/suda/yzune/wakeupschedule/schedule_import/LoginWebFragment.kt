@@ -19,9 +19,9 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.schedule_import.exception.CheckCodeErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.exception.UserNameErrorException
-import com.suda.yzune.wakeupschedule.schedule_import.hust.MobileHub
-import com.suda.yzune.wakeupschedule.schedule_import.jlu.UIMS
-import com.suda.yzune.wakeupschedule.schedule_import.suda.SudaXK
+import com.suda.yzune.wakeupschedule.schedule_import.login_school.hust.MobileHub
+import com.suda.yzune.wakeupschedule.schedule_import.login_school.jlu.UIMS
+import com.suda.yzune.wakeupschedule.schedule_import.login_school.suda.SudaXK
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
 import jahirfiquitiva.libs.textdrawable.TextDrawable
@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.dip
 import java.io.IOException
+import java.util.*
 
 class LoginWebFragment : BaseFragment() {
 
@@ -92,7 +93,7 @@ class LoginWebFragment : BaseFragment() {
             et_id.inputType = InputType.TYPE_CLASS_TEXT
             tv_thanks.text = "感谢 @Lyt99\n能导入贵校课程离不开他无私贡献代码"
         }
-        if (type == "西北工业大学") {
+        if (viewModel.school == "西北工业大学") {
             et_id.inputType = InputType.TYPE_CLASS_TEXT
             tv_thanks.text = "感谢 @ludoux\n能导入贵校课程离不开他无私贡献代码"
         }
@@ -126,37 +127,14 @@ class LoginWebFragment : BaseFragment() {
             refreshCode()
         }
 
-        sheet.setOnClickListener {
-            fab_login.isExpanded = false
-        }
+//        sheet.setOnClickListener {
+//            fab_login.isExpanded = false
+//        }
 
         btn_to_schedule.setOnClickListener {
-            getSchedule(year, term)
-            if (type != "西北工业大学") {
-                getSchedule(year, term)
-            } else {
-                launch {
-                    val task = withContext(Dispatchers.IO) {
-                        try {
-                            if (term.isNullOrEmpty()) {
-                                term = "1"
-                            }
-                            viewModel.loginNwpu(et_id.text.toString(), et_pwd.text.toString(), year, term)
-                        } catch (e: Exception) {
-                            e.message
-                        }
-                    }
-                    when (task) {
-                        "ok" -> {
-                            Toasty.success(activity!!.applicationContext, "导入成功(ﾟ▽ﾟ)/请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                            activity!!.setResult(RESULT_OK)
-                            activity!!.finish()
-                        }
-                        else -> {
-                            Toasty.error(activity!!.applicationContext, "发生异常>_<\n$task", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
+            when (viewModel.school) {
+                "苏州大学" -> getSudaSchedule()
+                "西北工业大学" -> getNWPUSchedule()
             }
         }
 
@@ -166,7 +144,6 @@ class LoginWebFragment : BaseFragment() {
         }
 
         fab_login.setOnClickListener {
-            if (fab_login.isExpanded) return@setOnClickListener
             when {
                 et_id.text!!.isEmpty() -> input_id.showError("学号不能为空")
                 et_pwd.text!!.isEmpty() -> input_pwd.showError("密码不能为空")
@@ -259,22 +236,19 @@ class LoginWebFragment : BaseFragment() {
             "西北工业大学" -> {
                 Toasty.info(activity!!.applicationContext, "年份为学年的起始年，学期[秋、春、夏]分别对应[1、2、3]\n例如[2019-2020春] 选择[2019 2]", Toast.LENGTH_LONG).show()
                 pb_loading.visibility = View.INVISIBLE
-                fab_login.isExpanded = !fab_login.isExpanded
-
-                var list = mutableListOf<String>()
-                for (index in java.util.Calendar.getInstance().get(Calendar.YEAR) - 7..java.util.Calendar.getInstance().get(Calendar.YEAR)) {
+                fab_login.isExpanded = true
+                val year = Calendar.getInstance().get(Calendar.YEAR)
+                val list = mutableListOf<String>()
+                for (index in year - 7..year) {
                     list.add(index.toString())
                 }
                 cardC2Dialog(list, true)
             }
         }
-        if (viewModel.school == "苏州大学") return
+        if (viewModel.school == "苏州大学" || viewModel.school == "西北工业大学") return
         when (exception) {
             null -> {
-                Toasty.success(activity!!,
-                        "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                activity!!.setResult(RESULT_OK)
-                activity!!.finish()
+                showSuccess(result)
             }
             is UserNameErrorException -> {
                 et_id.requestFocus()
@@ -289,15 +263,44 @@ class LoginWebFragment : BaseFragment() {
         }
     }
 
-    private fun getSchedule(year: String, term: String) {
+    private fun getNWPUSchedule() {
+        launch {
+            try {
+                if (term.isEmpty()) {
+                    term = "1"
+                }
+                val result = viewModel.loginNWPU(et_id.text.toString(), et_pwd.text.toString(), year, term)
+                showSuccess(result)
+            } catch (e: Exception) {
+                fab_login.isExpanded = false
+                when (e) {
+                    is UserNameErrorException -> {
+                        et_id.requestFocus()
+                        input_id.showError(e.message ?: "", 5000)
+                        refreshCode()
+                    }
+                    is PasswordErrorException -> {
+                        et_pwd.requestFocus()
+                        input_pwd.showError(e.message ?: "", 5000)
+                        refreshCode()
+                    }
+                    is CheckCodeErrorException -> {
+                        input_code.showError(e.message ?: "", 5000)
+                        refreshCode()
+                    }
+                    else -> Toasty.error(activity!!, e.message
+                            ?: "再试一次看看哦", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun getSudaSchedule() {
         viewModel.importType = Common.TYPE_ZF
         launch {
             try {
                 val result = viewModel.importSchedule(viewModel.sudaXK?.toSchedule(year, term)!!)
-                Toasty.success(activity!!,
-                        "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
-                activity!!.setResult(RESULT_OK)
-                activity!!.finish()
+                showSuccess(result)
             } catch (e: Exception) {
                 Toasty.error(activity!!,
                         "导入失败>_<\n${e.message}", Toast.LENGTH_LONG).show()
@@ -326,7 +329,14 @@ class LoginWebFragment : BaseFragment() {
         }
     }
 
-    private fun cardC2Dialog(years: List<String>, selectlastyear: Boolean = false) {
+    private fun showSuccess(result: Int) {
+        Toasty.success(activity!!,
+                "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看", Toast.LENGTH_LONG).show()
+        activity!!.setResult(RESULT_OK)
+        activity!!.finish()
+    }
+
+    private fun cardC2Dialog(years: List<String>, selectLastYear: Boolean = false) {
         ll_dialog.visibility = View.VISIBLE
         val terms = arrayOf("1", "2", "3")
         wp_term.displayedValues = terms
@@ -337,7 +347,7 @@ class LoginWebFragment : BaseFragment() {
         wp_years.displayedValues = years.toTypedArray()
         wp_years.minValue = 0
         wp_years.maxValue = years.size - 1
-        if (!selectlastyear) {
+        if (!selectLastYear) {
             wp_years.value = 0
         } else {
             wp_years.value = wp_years.maxValue

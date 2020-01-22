@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.jlu
+package com.suda.yzune.wakeupschedule.schedule_import.login_school.jlu
 
 import com.suda.yzune.wakeupschedule.utils.Utils
 import kotlinx.coroutines.Dispatchers

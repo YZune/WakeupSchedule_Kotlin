@@ -371,6 +371,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("X", "徐州医科大学", "http://222.193.95.102/", TYPE_ZF_NEW))
             add(SchoolInfo("X", "徐州幼儿师范高等专科学校", "http://222.187.124.16/", TYPE_ZF))
             add(SchoolInfo("X", "湘潭大学", "http://jwxt.xtu.edu.cn/jsxsd/", TYPE_QZ))
+            add(SchoolInfo("X", "西北工业大学", "", TYPE_LOGIN))
             add(SchoolInfo("X", "西华大学", "http://jwc.xhu.edu.cn/", TYPE_ZF))
             add(SchoolInfo("X", "西南大学", "", TYPE_ZF_NEW))
             add(SchoolInfo("X", "西南政法大学", "http://njwxt.swupl.edu.cn/jwglxt/xtgl", TYPE_ZF_NEW))

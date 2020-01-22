@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.suda
+package com.suda.yzune.wakeupschedule.schedule_import.login_school.suda
 
 import okhttp3.ResponseBody
 import retrofit2.Call

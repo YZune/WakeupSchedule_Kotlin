@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.hust
+package com.suda.yzune.wakeupschedule.schedule_import.login_school.hust
 
 import com.suda.yzune.wakeupschedule.schedule_import.exception.NetworkErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorException

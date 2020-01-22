@@ -1,4 +1,4 @@
-package com.suda.yzune.wakeupschedule.schedule_import.hust
+package com.suda.yzune.wakeupschedule.schedule_import.login_school.hust
 
 import java.math.BigInteger
 
