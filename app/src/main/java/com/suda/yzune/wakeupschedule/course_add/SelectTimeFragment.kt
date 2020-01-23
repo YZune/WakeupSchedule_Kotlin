@@ -41,6 +41,8 @@ class SelectTimeFragment : BaseDialogFragment() {
         day = course.time.value!!.day
         start = if (course.time.value!!.startNode > viewModel.nodes) viewModel.nodes else course.time.value!!.startNode
         end = if (course.time.value!!.endNode > viewModel.nodes) viewModel.nodes else course.time.value!!.endNode
+        if (start < 1) start = 1
+        if (end < 1) end = 1
         initEvent()
     }
 

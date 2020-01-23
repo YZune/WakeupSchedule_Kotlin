@@ -8,16 +8,19 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenStarted
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.configuration
-import kotlin.coroutines.CoroutineContext
 
 
-abstract class BaseActivity : AppCompatActivity(), CoroutineScope {
+abstract class BaseActivity : AppCompatActivity() {
 
-    override val coroutineContext: CoroutineContext
-        get() = lifecycle.coroutineScope.coroutineContext
+    fun launch(block: suspend CoroutineScope.() -> Unit): Job = lifecycleScope.launch {
+        lifecycle.whenStarted(block)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)

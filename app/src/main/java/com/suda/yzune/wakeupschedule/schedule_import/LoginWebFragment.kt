@@ -27,7 +27,6 @@ import es.dmoral.toasty.Toasty
 import jahirfiquitiva.libs.textdrawable.TextDrawable
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.dip
 import java.io.IOException

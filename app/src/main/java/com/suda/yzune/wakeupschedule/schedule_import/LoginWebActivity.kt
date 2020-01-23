@@ -17,7 +17,6 @@ import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_login_web.*
-import kotlinx.coroutines.launch
 
 class LoginWebActivity : BaseActivity() {
 
@@ -65,7 +64,9 @@ class LoginWebActivity : BaseActivity() {
             val transaction = supportFragmentManager.beginTransaction()
             transaction.add(R.id.fl_fragment, frag, viewModel.school)
             transaction.commit()
-            showImportSettingDialog()
+            if (viewModel.importType != "apply") {
+                showImportSettingDialog()
+            }
         }
 
         if (fragment == null && intent.action == Intent.ACTION_VIEW) {
