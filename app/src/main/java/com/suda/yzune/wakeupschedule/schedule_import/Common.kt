@@ -197,7 +197,7 @@ object Common {
         }
     }
 
-    private fun getNodeInt(nodeStr: String): Int {
+    fun getNodeInt(nodeStr: String): Int {
         return when (nodeStr) {
             "一" -> 1
             "二" -> 2

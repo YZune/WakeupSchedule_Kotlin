@@ -9,14 +9,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.support.v4.startActivity
 
 class CourseManageFragment : BaseFragment() {
@@ -47,9 +46,11 @@ class CourseManageFragment : BaseFragment() {
         return view
     }
 
-    private fun initRecyclerView(rvCourseList: androidx.recyclerview.widget.RecyclerView, data: List<CourseBaseBean>) {
-        rvCourseList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+    private fun initRecyclerView(rvCourseList: RecyclerView, data: MutableList<CourseBaseBean>) {
+        rvCourseList.layoutManager = LinearLayoutManager(context)
         val adapter = CourseListAdapter(R.layout.item_course_list, data)
+        adapter.addChildClickViewIds(R.id.ib_edit, R.id.ib_delete)
+        adapter.addChildLongClickViewIds(R.id.ib_delete)
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {

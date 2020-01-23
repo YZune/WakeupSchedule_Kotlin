@@ -18,18 +18,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.google.android.material.button.MaterialButton
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.longSnackbar
 
@@ -109,11 +108,13 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         adapter.setListener(this)
         adapter.addHeaderView(initHeaderView(baseBean))
         adapter.addFooterView(initFooterView(adapter))
-        adapter.onItemChildClickListener = BaseQuickAdapter.OnItemChildClickListener { _, view, position ->
+        adapter.addChildClickViewIds(R.id.ll_time, R.id.ib_delete,
+                R.id.ll_weeks, R.id.ll_teacher, R.id.ll_room)
+        adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ll_time -> {
                     viewModel.editList[position].time.observe(this, Observer {
-                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_time) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_time) as TextView
                         textView.text = "${CourseUtils.getDayStr(it!!.day)}    第${it.startNode} - ${it.endNode}节"
                     })
                     val selectTimeDialog = SelectTimeFragment.newInstance(position)
@@ -137,8 +138,8 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 R.id.ll_weeks -> {
                     viewModel.editList[position].weekList.observe(this, Observer {
                         it!!.sort()
-                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_weeks) as TextView
-                        val text = CourseUtils.intList2WeekBeanList(it).toString()
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_weeks) as TextView
+                        val text = Common.weekIntList2WeekBeanList(it).toString()
                         textView.text = text.substring(1, text.length - 1)
                     })
                     val selectWeekDialog = SelectWeekFragment.newInstance(position)
@@ -147,7 +148,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 }
                 R.id.ll_teacher -> {
                     launch {
-                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_teacher) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_teacher) as TextView
                         if (viewModel.teacherList == null) {
                             viewModel.teacherList = viewModel.getExistedTeachers()
                         }
@@ -172,7 +173,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 }
                 R.id.ll_room -> {
                     launch {
-                        val textView = adapter.getViewByPosition(mRecyclerView, position + 1, R.id.et_room) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_room) as TextView
                         if (viewModel.roomList == null) {
                             viewModel.roomList = viewModel.getExistedRooms()
                         }

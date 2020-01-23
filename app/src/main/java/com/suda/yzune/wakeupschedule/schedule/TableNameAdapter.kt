@@ -3,16 +3,17 @@ package com.suda.yzune.wakeupschedule.schedule
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import org.jetbrains.anko.dip
 
-class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
+class TableNameAdapter(layoutResId: Int, data: MutableList<TableSelectBean>) :
         BaseQuickAdapter<TableSelectBean, BaseViewHolder>(layoutResId, data) {
 
-    override fun convert(helper: BaseViewHolder, item: TableSelectBean) {
+    override fun convert(helper: BaseViewHolder, item: TableSelectBean?) {
+        if (item == null) return
         if (item.type == 1) {
             helper.setVisible(R.id.ll_action, true)
         } else {
@@ -26,21 +27,18 @@ class TableNameAdapter(layoutResId: Int, data: List<TableSelectBean>) :
         }
         val imageView = helper.getView<ImageView>(R.id.iv_table_bg)
         if (item.background != "") {
-            Glide.with(mContext)
+            Glide.with(context)
                     .load(item.background)
                     .override(200, 300)
-                    .transform(RoundedCornersTransformation(mContext.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
+                    .transform(RoundedCornersTransformation(context.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
                     .into(imageView)
         } else {
-            Glide.with(mContext)
+            Glide.with(context)
                     .load(R.drawable.main_background_2019)
                     .override(200, 300)
-                    .transform(RoundedCornersTransformation(mContext.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
+                    .transform(RoundedCornersTransformation(context.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
                     .into(imageView)
         }
-
-        helper.addOnClickListener(R.id.menu_export)
-        helper.addOnClickListener(R.id.menu_setting)
     }
 
 }

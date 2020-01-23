@@ -47,7 +47,6 @@ import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import org.jetbrains.anko.*
@@ -226,7 +225,7 @@ class ScheduleActivity : BaseActivity() {
         viewModel.itemHeight = dip(viewModel.table.itemHeight)
     }
 
-    private fun initTableMenu(data: List<TableSelectBean>) {
+    private fun initTableMenu(data: MutableList<TableSelectBean>) {
         tableNameRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         val fadeOutAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 1f, 0f)
@@ -236,6 +235,7 @@ class ScheduleActivity : BaseActivity() {
             this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip(24))
         })
         adapter.addFooterView(initFooterView())
+        adapter.addChildClickViewIds(R.id.menu_setting, R.id.menu_export)
         adapter.setOnItemChildClickListener { _, view, _ ->
             when (view.id) {
                 R.id.menu_setting -> {

@@ -12,17 +12,14 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.anko.custom.async
 import org.jetbrains.anko.support.v4.startActivity
 
 class ScheduleManageFragment : BaseFragment() {
@@ -51,14 +48,15 @@ class ScheduleManageFragment : BaseFragment() {
         return view
     }
 
-    private fun initTableRecyclerView(fragmentView: View, rvTableList: androidx.recyclerview.widget.RecyclerView, data: List<TableSelectBean>) {
-        rvTableList.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+    private fun initTableRecyclerView(fragmentView: View, rvTableList: RecyclerView, data: MutableList<TableSelectBean>) {
+        rvTableList.layoutManager = LinearLayoutManager(context)
         val adapter = TableListAdapter(R.layout.item_table_list, data)
         adapter.setOnItemClickListener { _, _, position ->
             val bundle = Bundle()
             bundle.putInt("position", position)
             Navigation.findNavController(fragmentView).navigate(R.id.scheduleManageFragment_to_courseManageFragment, bundle)
         }
+        adapter.addChildClickViewIds(R.id.ib_share, R.id.ib_edit, R.id.ib_delete)
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_share -> {
@@ -78,6 +76,7 @@ class ScheduleManageFragment : BaseFragment() {
                 }
             }
         }
+        adapter.addChildLongClickViewIds(R.id.ib_delete)
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {

@@ -11,11 +11,11 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.design.longSnackbar
 
 class TimeTableFragment : BaseFragment() {
@@ -32,7 +32,7 @@ class TimeTableFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val view = inflater.inflate(R.layout.time_table_fragment, container, false)
-        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_time_table)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_time_table)
         initRecyclerView(recyclerView, view)
 
         viewModel.getTimeTableList().observe(this, Observer {
@@ -52,15 +52,16 @@ class TimeTableFragment : BaseFragment() {
         return view
     }
 
-    private fun initRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView, fragmentView: View) {
+    private fun initRecyclerView(recyclerView: RecyclerView, fragmentView: View) {
         val adapter = TimeTableAdapter(R.layout.item_time_table, viewModel.timeTableList, viewModel.selectedId)
-        adapter.bindToRecyclerView(recyclerView)
+        recyclerView.adapter = adapter
         adapter.addFooterView(initFooterView())
         adapter.setOnItemClickListener { _, _, position ->
             adapter.selectedId = viewModel.timeTableList[position].id
             viewModel.selectedId = viewModel.timeTableList[position].id
             adapter.notifyDataSetChanged()
         }
+        adapter.addChildClickViewIds(R.id.ib_edit, R.id.ib_delete)
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {
@@ -74,6 +75,7 @@ class TimeTableFragment : BaseFragment() {
                 }
             }
         }
+        adapter.addChildLongClickViewIds(R.id.ib_delete)
         adapter.setOnItemChildLongClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_delete -> {

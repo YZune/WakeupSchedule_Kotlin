@@ -4,8 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.suda.yzune.wakeupschedule.bean.*
-import com.suda.yzune.wakeupschedule.schedule_import.bean.WeekBean
+import com.suda.yzune.wakeupschedule.bean.CourseBean
+import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
+import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.bean.TimeBean
+import com.suda.yzune.wakeupschedule.schedule_import.Common
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,63 +27,6 @@ object CourseUtils {
         }
     }
 
-    fun getNodeInt(nodeStr: String): Int {
-        return when (nodeStr) {
-            "一" -> 1
-            "二" -> 2
-            "三" -> 3
-            "四" -> 4
-            "五" -> 5
-            "六" -> 6
-            "七" -> 7
-            "日" -> 7
-            "八" -> 8
-            "九" -> 9
-            "十" -> 10
-            "十一" -> 11
-            "十二" -> 12
-            "十三" -> 13
-            "十四" -> 14
-            "十五" -> 15
-            "十六" -> 16
-            "十七" -> 17
-            "十八" -> 18
-            "十九" -> 19
-            "二十" -> 20
-            else -> 0
-        }
-    }
-
-    fun getNodeStr(node: Int): String {
-        return when (node) {
-            1 -> "一"
-            2 -> "二"
-            3 -> "三"
-            4 -> "四"
-            5 -> "五"
-            6 -> "六"
-            7 -> "七"
-            8 -> "八"
-            9 -> "九"
-            else -> ""
-        }
-    }
-
-    fun countStr(str1: String, str2: String): Int {
-        var times = 0
-        var startIndex = 0
-        var findIndex = str1.indexOf(str2, startIndex)
-        while (findIndex != -1 && findIndex != str1.length - 1) {
-            times += 1
-            startIndex = findIndex + 1
-            findIndex = str1.indexOf(str2, startIndex)
-        }
-        if (findIndex == str1.length - 1) {
-            times += 1
-        }
-        return times
-    }
-
     fun courseBean2DetailBean(c: CourseBean): CourseDetailBean {
         return CourseDetailBean(
                 id = c.id, room = c.room, day = c.day, teacher = c.teacher,
@@ -89,16 +35,9 @@ object CourseUtils {
         )
     }
 
-    fun courseBean2BaseBean(c: CourseBean): CourseBaseBean {
-        return CourseBaseBean(
-                id = c.id, courseName = c.courseName,
-                color = c.color, tableId = c.tableId
-        )
-    }
-
     fun editBean2DetailBeanList(editBean: CourseEditBean): MutableList<CourseDetailBean> {
         val result = mutableListOf<CourseDetailBean>()
-        intList2WeekBeanList(editBean.weekList.value!!).forEach {
+        Common.weekIntList2WeekBeanList(editBean.weekList.value!!).forEach {
             result.add(CourseDetailBean(
                     id = editBean.id, room = editBean.room, teacher = editBean.teacher,
                     day = editBean.time.value!!.day, startNode = editBean.time.value!!.startNode,
@@ -136,53 +75,6 @@ object CourseUtils {
                 },
                 tableId = c.tableId
         )
-    }
-
-    fun intList2WeekBeanList(input: ArrayList<Int>): ArrayList<WeekBean> {
-        var reset = 0
-        var temp = WeekBean(0, 0, -1)
-        val list = arrayListOf<WeekBean>()
-        for (i in input.indices) {
-            if (reset == 1) {
-                list.add(temp)
-                temp = WeekBean(0, 0, -1)
-                reset = 0
-            }
-            if (i < input.size - 1) {
-                if (temp.type == 0 && input[i + 1] - input[i] == 1) temp.end = input[i + 1]
-                else if ((temp.type == 1 || temp.type == 2) && input[i + 1] - input[i] == 2)
-                    temp.end = input[i + 1]
-                else if (temp.type != -1) {
-                    reset = 1
-                }
-            }
-            if (i < input.size - 1 && temp.type == -1) {
-                temp.start = input[i]
-                when (input[i + 1] - input[i]) {
-                    1 -> {
-                        temp.type = 0
-                        temp.end = input[i + 1]
-                    }
-                    2 -> {
-                        temp.type = if (input[i] % 2 != 0) 1 else 2
-                        temp.end = input[i + 1]
-                    }
-                    else -> {
-                        temp.end = input[i]
-                        temp.type = 0
-                        reset = 1
-                    }
-                }
-            }
-            if (i == input.size - 1 && temp.type != -1) list.add(temp)
-            if (i == input.size - 1 && temp.type == -1) {
-                temp.start = input[i]
-                temp.end = input[i]
-                temp.type = 0
-                list.add(temp)
-            }
-        }
-        return list
     }
 
     fun checkSelfUnique(list: List<CourseDetailBean>): Boolean {
@@ -313,19 +205,6 @@ object CourseUtils {
             strTime = "$newHour:0$newMin"
         }
         return strTime
-    }
-
-    fun isContainName(list: List<CourseBaseBean>, name: String): Int {
-        var flag = -1
-        if (list.isNotEmpty()) {
-            for (bean in list) {
-                if (bean.courseName == name) {
-                    flag = bean.id
-                    break
-                }
-            }
-        }
-        return flag
     }
 
     fun openUrl(context: Context, url: String) {

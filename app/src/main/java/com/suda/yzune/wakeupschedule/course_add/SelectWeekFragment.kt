@@ -2,11 +2,7 @@ package com.suda.yzune.wakeupschedule.course_add
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
@@ -20,7 +16,6 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
 import org.jetbrains.anko.backgroundResource
 import org.jetbrains.anko.colorAttr
-import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.textColor
 
 class SelectWeekFragment : BaseDialogFragment() {
@@ -80,7 +75,7 @@ class SelectWeekFragment : BaseDialogFragment() {
 
     private fun showWeeks() {
         val adapter = SelectWeekAdapter(R.layout.item_select_week, viewModel.maxWeek, result)
-        adapter.bindToRecyclerView(rv_week)
+        rv_week.adapter = adapter
         rv_week.layoutManager = StaggeredGridLayoutManager(6, StaggeredGridLayoutManager.VERTICAL)
         var prePos = -1
         rv_week.positionChangedListener = object : SelectedRecyclerView.PositionChangedListener {

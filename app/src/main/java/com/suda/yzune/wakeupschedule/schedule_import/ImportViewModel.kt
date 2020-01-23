@@ -16,7 +16,6 @@ import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzBrParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzCrazyParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzWithNodeParser
-import com.suda.yzune.wakeupschedule.utils.CourseUtils.getNodeInt
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
@@ -263,7 +262,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                     tableId = importId
             ))
             for (j in 4 until list.size) {
-                val day = getNodeInt(list[j][0].toString())
+                val day = Common.getNodeInt(list[j][0].toString())
                 val startNode = list[j].substring(1, list[j].indexOf("-")).toInt()
                 val endNode = list[j].substring(list[j].indexOf("-") + 1).toInt()
                 val type = when {

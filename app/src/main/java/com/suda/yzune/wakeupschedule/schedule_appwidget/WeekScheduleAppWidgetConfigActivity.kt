@@ -17,9 +17,6 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jetbrains.anko.design.longSnackbar
 
 class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
@@ -78,7 +75,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                     }
                 }
             }
-            adapter.bindToRecyclerView(rv_table_list)
+            rv_table_list.adapter = adapter
             rv_table_list.layoutManager = LinearLayoutManager(this)
             launch {
                 list.clear()

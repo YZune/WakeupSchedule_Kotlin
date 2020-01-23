@@ -116,7 +116,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         val detailList = arrayListOf<CourseDetailBean>()
         var id = 0
         for (oldBean in list) {
-            val flag = CourseUtils.isContainName(baseList, oldBean.name)
+            val flag = Common.findExistedCourseId(baseList, oldBean.name)
             if (flag == -1) {
                 baseList.add(CourseBaseBean(id, oldBean.name, "", tableId))
                 detailList.add(CourseDetailBean(
