@@ -1,18 +1,15 @@
 package com.suda.yzune.wakeupschedule.suda_life
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
-
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_bath.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BathFragment : BaseFragment() {

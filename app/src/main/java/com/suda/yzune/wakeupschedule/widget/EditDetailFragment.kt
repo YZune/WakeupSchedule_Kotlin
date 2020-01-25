@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.widget
 
-
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
@@ -9,7 +8,6 @@ import androidx.fragment.app.BaseDialogFragment
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_edit_detail.*
-import org.jetbrains.anko.find
 
 class EditDetailFragment : BaseDialogFragment() {
 
@@ -49,7 +47,7 @@ class EditDetailFragment : BaseDialogFragment() {
         }
         cg_details.setOnCheckedChangeListener { group, checkedId ->
             if (checkedId < 0) return@setOnCheckedChangeListener
-            val t = group.find<Chip>(checkedId).text
+            val t = group.findViewById<Chip>(checkedId).text
             et_detail.setText(t)
         }
         tv_save.setOnClickListener {

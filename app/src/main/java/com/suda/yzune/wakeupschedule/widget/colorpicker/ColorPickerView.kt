@@ -9,7 +9,7 @@ import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import com.suda.yzune.wakeupschedule.R
-import org.jetbrains.anko.dip
+import splitties.dimensions.dip
 
 class ColorPickerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle) {
 

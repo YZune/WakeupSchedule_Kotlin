@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -14,8 +15,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import kotlinx.android.synthetic.main.fragment_import_choose.*
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
+import splitties.fragments.start
 
 class ImportChooseFragment : BaseDialogFragment() {
 
@@ -46,7 +46,11 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 2)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "file")
+                activity!!.startActivityForResult(
+                        Intent(activity, LoginWebActivity::class.java).apply {
+                            putExtra("import_type", "file")
+                        },
+                        32)
                 dismiss()
             }
         }
@@ -56,7 +60,12 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 4)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "html", "tableId" to viewModel.table.id)
+                activity!!.startActivityForResult(
+                        Intent(activity, LoginWebActivity::class.java).apply {
+                            putExtra("import_type", "html")
+                            putExtra("tableId", viewModel.table.id)
+                        },
+                        32)
                 dismiss()
             }
         }
@@ -66,7 +75,12 @@ class ImportChooseFragment : BaseDialogFragment() {
                 ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 3)
                 dismiss()
             } else {
-                activity!!.startActivityForResult<LoginWebActivity>(32, "import_type" to "excel", "tableId" to viewModel.table.id)
+                activity!!.startActivityForResult(
+                        Intent(activity, LoginWebActivity::class.java).apply {
+                            putExtra("import_type", "excel")
+                            putExtra("tableId", viewModel.table.id)
+                        },
+                        32)
                 dismiss()
             }
         }
@@ -74,25 +88,30 @@ class ImportChooseFragment : BaseDialogFragment() {
         tv_school.text = "${importSchool.name}导入"
         tv_school.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            activity!!.startActivityForResult<LoginWebActivity>(
-                    32,
-                    "school_name" to importSchool.name,
-                    "tableId" to viewModel.table.id,
-                    "import_type" to importSchool.type,
-                    "url" to importSchool.url
-            )
+            activity!!.startActivityForResult(
+                    Intent(activity, LoginWebActivity::class.java).apply {
+                        putExtra("import_type", importSchool.type)
+                        putExtra("tableId", viewModel.table.id)
+                        putExtra("school_name", importSchool.name)
+                        putExtra("url", importSchool.url)
+                    },
+                    32)
             dismiss()
         }
 
         tv_more.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            activity!!.startActivityForResult<SchoolListActivity>(32)
+            activity!!.startActivityForResult(
+                    Intent(activity, SchoolListActivity::class.java),
+                    32)
             dismiss()
         }
 
         tv_feedback.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            activity!!.startActivity<LoginWebActivity>("import_type" to "apply")
+            start<LoginWebActivity> {
+                putExtra("import_type", "apply")
+            }
             dismiss()
         }
     }

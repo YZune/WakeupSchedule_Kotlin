@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import kotlinx.android.synthetic.main.fragment_add_course_tip.*
-import org.jetbrains.anko.startActivity
+import splitties.fragments.start
 
 class AddCourseTipFragment : BaseDialogFragment() {
     override val layoutId: Int
@@ -19,7 +19,7 @@ class AddCourseTipFragment : BaseDialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            course = it.getParcelable<CourseBaseBean>("course")!!
+            course = it.getParcelable("course")!!
         }
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
     }
@@ -33,13 +33,13 @@ class AddCourseTipFragment : BaseDialogFragment() {
 
         tv_modify.setOnClickListener {
             dismiss()
-            activity!!.startActivity<AddCourseActivity>(
-                    "id" to course.id,
-                    "tableId" to course.tableId,
-                    "maxWeek" to viewModel.maxWeek,
-                    "nodes" to viewModel.nodes,
-                    "showTip" to true
-            )
+            start<AddCourseActivity> {
+                putExtra("id", course.id)
+                putExtra("tableId", course.tableId)
+                putExtra("maxWeek", viewModel.maxWeek)
+                putExtra("nodes", viewModel.nodes)
+                putExtra("showTip", true)
+            }
             activity!!.finish()
         }
 

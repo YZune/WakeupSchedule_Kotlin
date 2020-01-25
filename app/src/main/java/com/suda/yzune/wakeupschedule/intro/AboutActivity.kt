@@ -8,8 +8,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.activity_about.*
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.textColorResource
+import splitties.activities.start
+import splitties.views.textColorResource
 
 class AboutActivity : BaseBlurTitleActivity() {
     override val layoutId: Int
@@ -22,7 +22,7 @@ class AboutActivity : BaseBlurTitleActivity() {
             tvButton.text = "捐赠"
             tvButton.textColorResource = R.color.colorAccent
             tvButton.setOnClickListener {
-                startActivity<DonateActivity>()
+                start<DonateActivity>()
             }
             tvButton
         }

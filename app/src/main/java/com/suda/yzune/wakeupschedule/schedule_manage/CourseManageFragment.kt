@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-
 import android.appwidget.AppWidgetManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.support.v4.startActivity
+import splitties.fragments.start
 
 class CourseManageFragment : BaseFragment() {
 
@@ -54,12 +53,12 @@ class CourseManageFragment : BaseFragment() {
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {
-                    startActivity<AddCourseActivity>(
-                            "id" to data[position].id,
-                            "tableId" to data[position].tableId,
-                            "maxWeek" to viewModel.tableSelectList[tablePosition].maxWeek,
-                            "nodes" to viewModel.tableSelectList[tablePosition].nodes
-                    )
+                    start<AddCourseActivity> {
+                        putExtra("id", data[position].id)
+                        putExtra("tableId", data[position].tableId)
+                        putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
+                        putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
+                    }
                 }
                 R.id.ib_delete -> {
                     Toasty.info(activity!!.applicationContext, "长按删除课程哦~").show()
@@ -97,12 +96,12 @@ class CourseManageFragment : BaseFragment() {
         val tvBtn = view.findViewById<TextView>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
-            startActivity<AddCourseActivity>(
-                    "id" to -1,
-                    "tableId" to viewModel.tableSelectList[tablePosition].id,
-                    "maxWeek" to viewModel.tableSelectList[tablePosition].maxWeek,
-                    "nodes" to viewModel.tableSelectList[tablePosition].nodes
-            )
+            start<AddCourseActivity> {
+                putExtra("id", -1)
+                putExtra("tableId", viewModel.tableSelectList[tablePosition].id)
+                putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
+                putExtra("nodes", viewModel.tableSelectList[tablePosition].nodes)
+            }
         }
         return view
     }

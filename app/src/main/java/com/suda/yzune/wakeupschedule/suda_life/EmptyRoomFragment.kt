@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
@@ -13,10 +14,8 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_empty_room.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
-import org.jetbrains.anko.support.v4.dip
+import splitties.dimensions.dip
 
 class EmptyRoomFragment : BaseFragment() {
 
@@ -34,9 +33,9 @@ class EmptyRoomFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        spinner_campus.dropDownVerticalOffset = dip(48)
-        spinner_building.dropDownVerticalOffset = dip(48)
-        spinner_date.dropDownVerticalOffset = dip(48)
+        spinner_campus.dropDownVerticalOffset = view.dip(48)
+        spinner_building.dropDownVerticalOffset = view.dip(48)
+        spinner_date.dropDownVerticalOffset = view.dip(48)
 
         initData()
         initEvent()
@@ -73,27 +72,46 @@ class EmptyRoomFragment : BaseFragment() {
     }
 
     private fun initEvent() {
-        spinner_campus.onItemSelectedListener {
-            this.onItemSelected { _, v, _, _ ->
+        spinner_campus.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
                 spinner_building.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item,
                         viewModel.buildingData[(v as TextView).text]!!)
                         .apply {
                             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         }
             }
+
         }
 
-        spinner_building.onItemSelectedListener {
-            this.onItemSelected { _, _, _, _ ->
+        spinner_building.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
                 queryRoomData()
             }
+
         }
 
-        spinner_date.onItemSelectedListener {
-            this.onItemSelected { _, _, _, _ ->
+        spinner_date.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
                 queryRoomData()
             }
+
         }
+
     }
 
     private fun queryRoomData() {

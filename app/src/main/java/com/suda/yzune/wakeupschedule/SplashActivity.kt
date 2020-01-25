@@ -6,8 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.suda.yzune.wakeupschedule.schedule.ScheduleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.startActivity
-
+import splitties.activities.start
 
 class SplashActivity : AppCompatActivity() {
 
@@ -15,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
             UpdateUtils.tranOldData(applicationContext)
-            startActivity<ScheduleActivity>()
+            start<ScheduleActivity>()
             //startActivity<SudaLifeActivity>("type" to "澡堂")
             finish()
         }

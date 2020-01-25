@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter

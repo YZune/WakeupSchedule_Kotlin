@@ -10,10 +10,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenStarted
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.configuration
 
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -43,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             }
         }
-        when (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -60,18 +60,11 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     fun resizeStatusBar(view: View) {
-        val layoutParams = view.layoutParams
-        layoutParams.height = getStatusBarHeight()
-        view.layoutParams = layoutParams
+        ViewUtils.resizeStatusBar(this, view)
     }
 
     fun getStatusBarHeight(): Int {
-        var result = 0
-        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId)
-        }
-        return result
+        return ViewUtils.getStatusBarHeight(this)
     }
 
 }

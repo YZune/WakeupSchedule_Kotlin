@@ -6,14 +6,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
+import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
-import org.jetbrains.anko.dip
-
+import splitties.dimensions.dip
+import splitties.dimensions.dp
 
 @SuppressLint("ViewConstructor")
 class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
@@ -27,7 +27,8 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
         }
 
     private val mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = mSize * resources.displayMetrics.scaledDensity
+        // textSize = mSize * resources.displayMetrics.scaledDensity
+        textSize = dp(mSize)
         typeface = Typeface.DEFAULT_BOLD
         color = mColor
     }
@@ -60,18 +61,27 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
     }
 
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (mStaticLayout == null) {
-            mStaticLayout = StaticLayout(
-                    text,
-                    mTextPaint,
-                    width - paddingRight - paddingLeft,
-                    Layout.Alignment.ALIGN_NORMAL,
-                    1.0f,
-                    0f,
-                    false
-            )
+            mStaticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                StaticLayout
+                        .Builder
+                        .obtain(text, 0, text.length, mTextPaint, width - paddingRight - paddingLeft)
+                        .setIncludePad(false)
+                        .build()
+            } else {
+                StaticLayout(
+                        text,
+                        mTextPaint,
+                        width - paddingRight - paddingLeft,
+                        Layout.Alignment.ALIGN_NORMAL,
+                        1.0f,
+                        0f,
+                        false
+                )
+            }
         }
         if (tipVisibility == 1) {
             path.moveTo(width - dip(12).toFloat(), height - dip(6).toFloat()) // 此点为多边形的起点

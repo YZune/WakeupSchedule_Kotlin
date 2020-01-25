@@ -15,11 +15,10 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
-import kotlinx.coroutines.launch
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.textColorResource
+import splitties.views.textColorResource
 
 class TimeSettingsActivity : BaseTitleActivity() {
     override val layoutId: Int
@@ -91,7 +90,7 @@ class TimeSettingsActivity : BaseTitleActivity() {
     private fun exitBy2Click() {
         if (!isExit) {
             isExit = true // 准备退出
-            ll_root.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。")
+            ll_root.longSnack("真的不保存吗？那再按一次退出编辑哦，就不保存啦。")
             tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
         } else {
             when (navController.currentDestination?.id) {

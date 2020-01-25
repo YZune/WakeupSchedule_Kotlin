@@ -8,7 +8,7 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_multi_course.*
-import org.jetbrains.anko.support.v4.dip
+import splitties.dimensions.dip
 
 class MultiCourseFragment : BaseDialogFragment() {
 
@@ -44,7 +44,7 @@ class MultiCourseFragment : BaseDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewpager.pageMargin = dip(32)
+        viewpager.pageMargin = context!!.dip(32)
         viewpager.offscreenPageLimit = 3
         viewpager.adapter = MultiCourseAdapter(childFragmentManager, viewModel.getMultiCourse(week, day, startNode))
     }

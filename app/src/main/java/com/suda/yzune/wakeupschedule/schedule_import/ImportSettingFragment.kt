@@ -6,7 +6,6 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_import_setting.*
-import kotlinx.coroutines.launch
 
 class ImportSettingFragment : BaseDialogFragment() {
     override val layoutId: Int

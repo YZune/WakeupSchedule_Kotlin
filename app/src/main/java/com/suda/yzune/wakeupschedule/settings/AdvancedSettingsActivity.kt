@@ -27,20 +27,16 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.textColorResource
-
+import splitties.activities.start
+import splitties.views.textColorResource
 
 class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
 
     override fun onColorSelected(dialogId: Int, color: Int) {
         PreferenceUtils.saveIntToSP(this, "nav_bar_color", color)
-        mRecyclerView.longSnackbar("重启App后生效哦~")
+        mRecyclerView.longSnack("重启App后生效哦~")
     }
 
     private lateinit var dataBase: AppDatabase
@@ -55,7 +51,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             tvButton.text = "捐赠"
             tvButton.textColorResource = R.color.colorAccent
             tvButton.setOnClickListener {
-                startActivity<DonateActivity>()
+                start<DonateActivity>()
             }
             tvButton
         }
@@ -114,9 +110,9 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             "主界面虚拟键沉浸" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "hide_main_nav_bar", isChecked)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    mRecyclerView.longSnackbar("该设置仅对 Android 4.4 及以上版本有效>_<")
+                    mRecyclerView.longSnack("该设置仅对 Android 4.4 及以上版本有效>_<")
                 } else {
-                    mRecyclerView.longSnackbar("重启App后生效哦~")
+                    mRecyclerView.longSnack("重启App后生效哦~")
                 }
                 item.checked = isChecked
             }
@@ -124,7 +120,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 launch {
                     val task = widgetDao.getWidgetsByTypes(0, 1)
                     if (task.isEmpty()) {
-                        mRecyclerView.longSnackbar("好像还没有设置日视图小部件呢>_<")
+                        mRecyclerView.longSnack("好像还没有设置日视图小部件呢>_<")
                         PreferenceUtils.saveBooleanToSP(applicationContext, "course_reminder", false)
                         item.checked = false
                         mAdapter.notifyDataSetChanged()
@@ -138,7 +134,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             "提醒通知常驻" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "reminder_on_going", isChecked)
                 item.checked = isChecked
-                mRecyclerView.longSnackbar("对下一次提醒通知生效哦")
+                mRecyclerView.longSnack("对下一次提醒通知生效哦")
             }
             "提醒同时将手机静音" -> {
                 val notificationManager = applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager

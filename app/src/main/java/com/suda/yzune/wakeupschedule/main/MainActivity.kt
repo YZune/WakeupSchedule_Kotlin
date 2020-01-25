@@ -20,10 +20,7 @@ import com.suda.yzune.wakeupschedule.schedule.ScheduleViewModel
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import jp.wasabeef.glide.transformations.BlurTransformation
-import kotlinx.coroutines.launch
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.find
-import org.jetbrains.anko.setContentView
+import splitties.dimensions.dip
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -40,14 +37,14 @@ class MainActivity : BaseActivity() {
         viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         super.onCreate(savedInstanceState)
         viewModel.statusBarMargin = getStatusBarHeight() + dip(8)
-        MainActivityUI().setContentView(this)
+        setContentView(MainActivityUI(this).root)
         initView()
     }
 
     private fun initView() {
-        viewPager = find(R.id.anko_vp_schedule)
-        bgImageView = find(R.id.anko_iv_bg)
-        blurImageView = find(R.id.anko_iv_blur)
+        viewPager = findViewById(R.id.anko_vp_schedule)
+        bgImageView = findViewById(R.id.anko_iv_bg)
+        blurImageView = findViewById(R.id.anko_iv_blur)
 
         launch {
             viewModel.table = viewModel.getDefaultTable()

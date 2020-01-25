@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
@@ -16,10 +15,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import kotlinx.android.synthetic.main.fragment_html_import.*
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.find
-import org.jetbrains.anko.support.v4.startActivityForResult
 import java.io.File
 
 class HtmlImportFragment : BaseFragment() {
@@ -46,7 +43,9 @@ class HtmlImportFragment : BaseFragment() {
         }
 
         tv_type.setOnClickListener {
-            startActivityForResult<SchoolListActivity>(4, "fromLocal" to true)
+            startActivityForResult(Intent(activity, SchoolListActivity::class.java).apply {
+                putExtra("fromLocal", true)
+            }, 4)
         }
 
         cp_utf.isChecked = true
@@ -93,7 +92,7 @@ class HtmlImportFragment : BaseFragment() {
                     viewModel.qzType = 6
                 }
                 else -> {
-                    chipGroup.find<Chip>(qzChipId).isChecked = true
+                    chipGroup.findViewById<Chip>(qzChipId).isChecked = true
                 }
             }
         }
@@ -110,7 +109,7 @@ class HtmlImportFragment : BaseFragment() {
                     viewModel.zfType = 1
                 }
                 else -> {
-                    chipGroup.find<Chip>(zfChipId).isChecked = true
+                    chipGroup.findViewById<Chip>(zfChipId).isChecked = true
                 }
             }
         }
@@ -157,7 +156,7 @@ class HtmlImportFragment : BaseFragment() {
 
         fab_import.setOnClickListener {
             if (viewModel.htmlPath.isBlank()) {
-                it.longSnackbar("还没有选择文件呢>_<")
+                it.longSnack("还没有选择文件呢>_<")
                 return@setOnClickListener
             }
 //            launch {
@@ -227,7 +226,7 @@ class HtmlImportFragment : BaseFragment() {
 
     private fun showFilePicker(path: String) {
         if (viewModel.htmlName.isBlank()) {
-            view!!.longSnackbar("请先点击第二个按钮选择类型哦")
+            view!!.longSnack("请先点击第二个按钮选择类型哦")
         } else {
             MaterialFilePicker()
                     .withSupportFragment(this)

@@ -20,7 +20,11 @@ import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import org.jetbrains.anko.*
+import splitties.dimensions.dip
+import splitties.views.bottomPadding
+import splitties.views.dsl.core.*
+import splitties.views.horizontalPadding
+import splitties.views.topPadding
 import java.text.ParseException
 import kotlin.math.roundToInt
 
@@ -89,7 +93,7 @@ class TodayColorfulService : RemoteViewsService() {
             return if (courseList.isNotEmpty()) {
                 val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
                 val view = initView(applicationContext, position)
-                val contentView = view.find<LinearLayout>(R.id.anko_layout)
+                val contentView = view.findViewById<LinearLayout>(R.id.anko_layout)
                 val info = ViewUtils.getScreenInfo(applicationContext)
                 ViewUtils.layoutView(contentView, info[0], info[1])
                 val bitmap = ViewUtils.getViewBitmap(contentView, true, dip(2))
@@ -115,133 +119,139 @@ class TodayColorfulService : RemoteViewsService() {
             if (alphaStr.length < 2) {
                 alphaStr = "0$alphaStr"
             }
-            return context.UI {
+            return verticalLayout(R.id.anko_layout) {
+                val c = courseList[position]
 
-                verticalLayout {
-                    id = R.id.anko_layout
-                    val c = courseList[position]
-                    linearLayout {
-                        topPadding = dip(dp * 4)
-                        bottomPadding = dip(dp * 4)
-                        leftPadding = dip(dp * 4)
-                        rightPadding = dip(dp * 4)
-                        background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg_today)
-                        val myGrad = background as GradientDrawable
+                add(horizontalLayout {
+                    topPadding = dip(dp * 4)
+                    bottomPadding = dip(dp * 4)
+                    horizontalPadding = dip(dp * 4)
+                    background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg_today)
+                    val myGrad = background as GradientDrawable
 //                                myGrad.cornerRadius = dip(dp * 4).toFloat()
-                        myGrad.setStroke(dip(dp), table.widgetStrokeColor)
-                        when {
-                            c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
-                            c.color.isEmpty() -> {
-                                myGrad.setColor(Color.parseColor("#${alphaStr}fa6278"))
-                            }
-                            else -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
+                    myGrad.setStroke(dip(dp), table.widgetStrokeColor)
+                    when {
+                        c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
+                        c.color.isEmpty() -> {
+                            myGrad.setColor(Color.parseColor("#${alphaStr}fa6278"))
                         }
+                        else -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
+                    }
 
-                        verticalLayout {
-                            gravity = Gravity.CENTER
-                            // 开始节
-                            textView(c.startNode.toString()) {
-                                alpha = 0.8f
-                                textColor = table.widgetCourseTextColor
-                                textSize = 12f
-                                typeface = Typeface.DEFAULT_BOLD
-                            }.lparams(wrapContent, wrapContent) {
-                                bottomMargin = dip(dp * 2)
-                            }
-                            // 结束节
-                            textView("${c.startNode + c.step - 1}") {
-                                alpha = 0.8f
-                                textColor = table.widgetCourseTextColor
-                                textSize = 12f
-                                typeface = Typeface.DEFAULT_BOLD
-                            }.lparams(wrapContent, wrapContent) {
-                                topMargin = dip(dp * 2)
-                            }
+                    add(verticalLayout {
+                        gravity = Gravity.CENTER
+                        // 开始节
+                        add(textView {
+                            text = c.startNode.toString()
+                            alpha = 0.8f
+                            setText(table.widgetCourseTextColor)
+                            textSize = 12f
+                            typeface = Typeface.DEFAULT_BOLD
+                        }, lParams(wrapContent, wrapContent) {
+                            bottomMargin = dip(dp * 2)
+                        })
+                        // 结束节
+                        add(textView {
+                            text = "${c.startNode + c.step - 1}"
+                            alpha = 0.8f
+                            setText(table.widgetCourseTextColor)
+                            textSize = 12f
+                            typeface = Typeface.DEFAULT_BOLD
+                        }, lParams(wrapContent, wrapContent) {
+                            topMargin = dip(dp * 2)
+                        })
 
-                        }.lparams(dip(dp * 10), matchParent)
+                    }, lParams(dip(dp * 10), matchParent))
 
-                        verticalLayout {
-                            gravity = Gravity.CENTER
+                    add(verticalLayout {
+                        gravity = Gravity.CENTER
 
-                            textView(timeList[c.startNode - 1].startTime) {
-                                alpha = 0.8f
-                                textColor = table.widgetCourseTextColor
-                                textSize = 12f
-                            }.lparams(wrapContent, wrapContent) {
-                                margin = dip(dp * 2)
-                            }
+                        add(textView {
+                            alpha = 0.8f
+                            text = timeList[c.startNode - 1].startTime
+                            setTextColor(table.widgetCourseTextColor)
+                            textSize = 12f
+                        }, lParams(wrapContent, wrapContent) {
+                            margin = dip(dp * 2)
+                        })
 
-                            textView(timeList[c.startNode + c.step - 2].endTime) {
-                                alpha = 0.8f
-                                textColor = table.widgetCourseTextColor
-                                textSize = 12f
-                            }.lparams(wrapContent, wrapContent) {
-                                margin = dip(dp * 2)
-                            }
+                        add(textView {
+                            text = timeList[c.startNode + c.step - 2].endTime
+                            alpha = 0.8f
+                            setTextColor(table.widgetCourseTextColor)
+                            textSize = 12f
+                        }, lParams(wrapContent, wrapContent) {
+                            margin = dip(dp * 2)
+                        })
 
-                        }.lparams(wrapContent, matchParent)
+                    }, lParams(wrapContent, matchParent))
 
-                        verticalLayout {
-                            gravity = Gravity.CENTER_VERTICAL
+                    add(verticalLayout {
+                        gravity = Gravity.CENTER_VERTICAL
 
-                            textView(c.courseName) {
-                                textColor = table.widgetCourseTextColor
-                                textSize = 14f
-                                typeface = Typeface.DEFAULT_BOLD
-                            }.lparams(matchParent, wrapContent)
+                        add(textView {
+                            text = c.courseName
+                            setTextColor(table.widgetCourseTextColor)
+                            textSize = 14f
+                            typeface = Typeface.DEFAULT_BOLD
+                        }, lParams(matchParent, wrapContent))
 
-                            if (c.room != "" || c.teacher != "") {
-                                linearLayout {
-                                    if (c.room != "") {
-                                        textView("\uE6B2") {
-                                            alpha = 0.8f
-                                            textColor = table.widgetCourseTextColor
-                                            textSize = 12f
-                                            typeface = iconFont
-                                        }.lparams(wrapContent, wrapContent)
+                        if (c.room != "" || c.teacher != "") {
+                            add(horizontalLayout {
+                                if (c.room != "") {
 
-                                        textView(c.room) {
-                                            alpha = 0.8f
-                                            textColor = table.widgetCourseTextColor
-                                            maxLines = 1
-                                            textSize = 12f
-                                        }.lparams(wrapContent, wrapContent) {
-                                            marginStart = dip(dp * 2)
-                                            marginEnd = dip(dp * 8)
-                                        }
-                                    }
-                                    if (c.teacher != "") {
-                                        textView("\uE6EB") {
-                                            alpha = 0.8f
-                                            textColor = table.widgetCourseTextColor
-                                            textSize = 12f
-                                            typeface = iconFont
-                                        }.lparams(wrapContent, wrapContent)
+                                    add(textView {
+                                        text = "\uE6B2"
+                                        alpha = 0.8f
+                                        setTextColor(table.widgetCourseTextColor)
+                                        textSize = 12f
+                                        typeface = iconFont
+                                    }, lParams(wrapContent, wrapContent))
 
-                                        textView(c.teacher) {
-                                            alpha = 0.8f
-                                            textColor = table.widgetCourseTextColor
-                                            maxLines = 1
-                                            ellipsize = TextUtils.TruncateAt.END
-                                            textSize = 12f
-                                        }.lparams(wrapContent, wrapContent) {
-                                            marginStart = dip(dp * 2)
-                                        }
-                                    }
-                                }.lparams(matchParent, wrapContent) {
-                                    topMargin = dip(dp * 4)
+                                    add(textView {
+                                        text = c.room
+                                        alpha = 0.8f
+                                        setTextColor(table.widgetCourseTextColor)
+                                        maxLines = 1
+                                        textSize = 12f
+                                    }, lParams(wrapContent, wrapContent) {
+                                        marginStart = dip(dp * 2)
+                                        marginEnd = dip(dp * 8)
+                                    })
                                 }
-                            }
+                                if (c.teacher != "") {
+                                    add(textView {
+                                        text = "\uE6EB"
+                                        alpha = 0.8f
+                                        setTextColor(table.widgetCourseTextColor)
+                                        textSize = 12f
+                                        typeface = iconFont
+                                    }, lParams(wrapContent, wrapContent))
 
-                        }.lparams(wrapContent, matchParent) {
-                            marginStart = dip(dp)
+                                    add(textView {
+                                        alpha = 0.8f
+                                        text = c.teacher
+                                        setTextColor(table.widgetCourseTextColor)
+                                        maxLines = 1
+                                        ellipsize = TextUtils.TruncateAt.END
+                                        textSize = 12f
+                                    }, lParams(wrapContent, wrapContent) {
+                                        marginStart = dip(dp * 2)
+                                    })
+                                }
+                            }, lParams(matchParent, wrapContent) {
+                                topMargin = dip(dp * 4)
+                            })
                         }
 
-                    }.lparams(matchParent, wrapContent)
+                    }, lParams(wrapContent, matchParent) {
+                        marginStart = dip(dp)
+                    })
 
-                }
+                }, lParams(matchParent, wrapContent))
 
-            }.view
+            }
+
         }
 
         override fun getLoadingView(): RemoteViews? {

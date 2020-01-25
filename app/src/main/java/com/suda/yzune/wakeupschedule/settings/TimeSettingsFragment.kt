@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.settings
 
-
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcel
@@ -14,9 +13,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TimeSettingsFragment : BaseFragment() {
 

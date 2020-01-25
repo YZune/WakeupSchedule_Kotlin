@@ -27,8 +27,7 @@ import es.dmoral.toasty.Toasty
 import jahirfiquitiva.libs.textdrawable.TextDrawable
 import kotlinx.android.synthetic.main.fragment_login_web.*
 import kotlinx.coroutines.delay
-import org.jetbrains.anko.find
-import org.jetbrains.anko.support.v4.dip
+import splitties.dimensions.dip
 import java.io.IOException
 import java.util.*
 
@@ -76,7 +75,7 @@ class LoginWebFragment : BaseFragment() {
                     shanghaiPort = checkedId - R.id.btn_port1
                 }
                 if (!isChecked && shanghaiPort == checkedId - R.id.btn_port1) {
-                    group.find<MaterialButton>(checkedId).isChecked = true
+                    group.findViewById<MaterialButton>(checkedId).isChecked = true
                 }
             }
         }
@@ -112,7 +111,7 @@ class LoginWebFragment : BaseFragment() {
         val textDrawable = TextDrawable
                 .builder()
                 .textColor(Color.WHITE)
-                .fontSize(dip(24))
+                .fontSize(context!!.dip(24))
                 .useFont(ResourcesCompat.getFont(context!!, R.font.iconfont)!!)
                 .buildRect("\uE6DE", Color.TRANSPARENT)
 

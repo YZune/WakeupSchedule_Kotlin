@@ -16,8 +16,8 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.padding
+import splitties.dimensions.dip
+import splitties.views.padding
 import java.text.ParseException
 import kotlin.math.roundToInt
 

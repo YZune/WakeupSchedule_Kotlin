@@ -27,10 +27,13 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
+import com.suda.yzune.wakeupschedule.widget.snackbar.action
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
-import org.jetbrains.anko.*
-import org.jetbrains.anko.design.longSnackbar
+import splitties.dimensions.dip
+import splitties.views.textColorResource
+import splitties.views.topPadding
 
 
 class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener, AddCourseAdapter.OnItemEditTextChangedListener {
@@ -207,8 +210,8 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
-        etName = view.find(R.id.et_name)
-        val rlRoot = view.find<RelativeLayout>(R.id.rl_root)
+        etName = view.findViewById(R.id.et_name)
+        val rlRoot = view.findViewById<RelativeLayout>(R.id.rl_root)
         rlRoot.topPadding = getStatusBarHeight() + dip(48)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
         tvColor = view.findViewById(R.id.tv_color)
@@ -228,9 +231,8 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         tvColor.text = baseBean.color
         if (baseBean.color != "") {
             val colorInt = Color.parseColor(baseBean.color)
-            ivColor.textColor = colorInt
-            tvColor.text = "点此更改颜色"
             tvColor.setTextColor(colorInt)
+            tvColor.text = "点此更改颜色"
         }
         llColor.setOnClickListener {
             ColorPickerFragment.newBuilder()
@@ -241,11 +243,11 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         return view
     }
 
-    override fun onColorSelected(dialogId: Int, colorInt: Int) {
-        ivColor.textColor = colorInt
+    override fun onColorSelected(dialogId: Int, color: Int) {
+        tvColor.setTextColor(color)
         tvColor.text = "点此更改颜色"
-        tvColor.setTextColor(colorInt)
-        viewModel.baseBean.color = "#${Integer.toHexString(colorInt)}"
+        tvColor.setTextColor(color)
+        viewModel.baseBean.color = "#${Integer.toHexString(color)}"
     }
 
     private fun initFooterView(adapter: AddCourseAdapter): View {
@@ -323,7 +325,11 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     private fun exitBy2Click() {
         if (!isExit) {
             isExit = true // 准备退出
-            mRecyclerView.longSnackbar("真的不保存吗？那再按一次退出编辑哦，就不保存啦。", "退出编辑") { finish() }
+            mRecyclerView.longSnack("真的不保存吗？那再按一次退出编辑哦，就不保存啦。") {
+                action("退出编辑") {
+                    finish()
+                }
+            }
             launch {
                 delay(2000)
                 isExit = false

@@ -11,7 +11,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter
-import org.jetbrains.anko.find
 
 class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
         BaseQuickAdapter<SchoolInfo, BaseViewHolder>(layoutResId, data),
@@ -27,7 +26,7 @@ class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
     }
 
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val mHead = holder.itemView.find<TextView>(R.id.mHead)
+        val mHead = holder.itemView.findViewById<TextView>(R.id.mHead)
         mHead.text = getItem(position)!!.sortKey
         val myGrad = mHead.background as GradientDrawable
         myGrad.setColor(getCustomizedColor(position % 9))

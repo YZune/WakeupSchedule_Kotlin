@@ -32,13 +32,9 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.*
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
+import splitties.activities.start
 
 private const val TITLE_COLOR = 1
 private const val COURSE_TEXT_COLOR = 2
@@ -72,7 +68,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             }
         } else {
             tvButton.setOnClickListener {
-                startActivity<DonateActivity>()
+                start<DonateActivity>()
             }
         }
         return tvButton
@@ -105,7 +101,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 }
                 mRecyclerView.adapter?.notifyDataSetChanged()
                 if (showItems.size == 1) {
-                    mRecyclerView.longSnackbar("找不到哦，换个关键词试试看，或者请仔细找找啦，一般都能找到的。")
+                    mRecyclerView.longSnack("找不到哦，换个关键词试试看，或者请仔细找找啦，一般都能找到的。")
                 }
             }
         }
@@ -231,8 +227,9 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 Toasty.success(applicationContext, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
             }
             "上课时间" -> {
-                startActivityForResult<TimeSettingsActivity>(REQUEST_CODE_CHOOSE_TABLE,
-                        "selectedId" to viewModel.table.timeTable)
+                startActivityForResult(Intent(this, TimeSettingsActivity::class.java).apply {
+                    putExtra("selectedId", viewModel.table.timeTable)
+                }, REQUEST_CODE_CHOOSE_TABLE)
             }
         }
     }
@@ -270,10 +267,10 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 buildColorPickerDialogBuilder(viewModel.table.widgetStrokeColor, WIDGET_STROKE_COLOR)
             }
             "解锁高级功能" -> {
-                startActivity<AdvancedSettingsActivity>()
+                start<AdvancedSettingsActivity>()
             }
             "看看都有哪些高级功能" -> {
-                startActivity<AdvancedSettingsActivity>()
+                start<AdvancedSettingsActivity>()
             }
         }
     }

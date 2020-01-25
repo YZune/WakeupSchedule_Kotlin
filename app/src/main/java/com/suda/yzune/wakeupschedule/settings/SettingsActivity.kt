@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
@@ -22,14 +23,10 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.SwitchItemViewBinder
 import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.design.snackbar
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.startActivityForResult
-import org.jetbrains.anko.textColorResource
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
+import com.suda.yzune.wakeupschedule.widget.snackbar.snack
+import splitties.activities.start
+import splitties.views.textColorResource
 
 class SettingsActivity : BaseListActivity() {
 
@@ -45,7 +42,7 @@ class SettingsActivity : BaseListActivity() {
             tvButton.text = "捐赠"
             tvButton.textColorResource = R.color.colorAccent
             tvButton.setOnClickListener {
-                startActivity<DonateActivity>()
+                start<DonateActivity>()
             }
             tvButton
         }
@@ -61,7 +58,7 @@ class SettingsActivity : BaseListActivity() {
         val items = mutableListOf<Any>()
         onItemsCreated(items)
         mAdapter.items = items
-        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
         mRecyclerView.adapter = mAdapter
     }
 
@@ -96,11 +93,11 @@ class SettingsActivity : BaseListActivity() {
             "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
             "显示日视图背景" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "s_colorful_day_widget", isChecked)
-                mRecyclerView.longSnackbar("请点击小部件右上角的「切换按钮」查看效果~")
+                mRecyclerView.longSnack("请点击小部件右上角的「切换按钮」查看效果~")
             }
             "显示侧栏「苏大生活」" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "suda_life", isChecked)
-                mRecyclerView.snackbar("重启App后生效哦")
+                mRecyclerView.snack("重启App后生效哦")
             }
             "使用暗黑模式" -> {
                 PreferenceUtils.saveBooleanToSP(applicationContext, "s_night_mode", isChecked)
@@ -119,7 +116,10 @@ class SettingsActivity : BaseListActivity() {
             "设置当前课表" -> {
                 launch {
                     val table = tableDao.getDefaultTable()
-                    startActivityForResult<ScheduleSettingsActivity>(180, "tableData" to table)
+                    startActivityForResult(
+                            Intent(this@SettingsActivity, ScheduleSettingsActivity::class.java).apply {
+                                putExtra("tableData", table)
+                            }, 180)
                 }
             }
         }
@@ -128,10 +128,10 @@ class SettingsActivity : BaseListActivity() {
     private fun onVerticalItemClick(item: VerticalItem) {
         when (item.title) {
             "解锁高级功能" -> {
-                startActivity<AdvancedSettingsActivity>()
+                start<AdvancedSettingsActivity>()
             }
             "看看都有哪些高级功能" -> {
-                startActivity<AdvancedSettingsActivity>()
+                start<AdvancedSettingsActivity>()
             }
             "截至2018.12.02" -> {
                 CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")

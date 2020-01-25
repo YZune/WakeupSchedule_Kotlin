@@ -13,11 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
+import com.suda.yzune.wakeupschedule.widget.snackbar.action
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.topPadding
+import splitties.activities.start
+import splitties.dimensions.dip
+import splitties.views.topPadding
 
 class ApplyInfoActivity : BaseListActivity() {
 
@@ -45,7 +46,13 @@ class ApplyInfoActivity : BaseListActivity() {
                 viewModel.search(s.toString())
                 mRecyclerView.adapter?.notifyDataSetChanged()
                 if (viewModel.filterList.isEmpty()) {
-                    mRecyclerView.longSnackbar("没有找到你的学校哦", "申请适配") { startActivity<LoginWebActivity>("import_type" to "apply") }
+                    mRecyclerView.longSnack("没有找到你的学校哦") {
+                        action("申请适配") {
+                            start<LoginWebActivity> {
+                                putExtra("import_type", "apply")
+                            }
+                        }
+                    }
                 }
             }
 

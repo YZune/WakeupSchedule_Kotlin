@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-
 import android.appwidget.AppWidgetManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -17,16 +16,14 @@ import com.google.android.material.card.MaterialCardView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.find
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.support.v4.dip
+import splitties.dimensions.dip
+import splitties.fragments.start
+import splitties.views.backgroundColor
 
 class CourseDetailFragment : BaseDialogFragment() {
 
@@ -53,18 +50,18 @@ class CourseDetailFragment : BaseDialogFragment() {
         if (!nested) {
             dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog?.window?.setLayout(dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog?.window?.setLayout(context!!.dip(280), ViewGroup.LayoutParams.WRAP_CONTENT)
             val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
-            val cardView = root.find<MaterialCardView>(R.id.base_card_view)
+            val cardView = root.findViewById<MaterialCardView>(R.id.base_card_view)
             LayoutInflater.from(context).inflate(layoutId, cardView, true)
             return root
         } else {
-            container!!.layoutParams.width = dip(280)
+            container!!.layoutParams.width = context!!.dip(280)
             val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
-            val cardView = root.find<MaterialCardView>(R.id.base_card_view)
+            val cardView = root.findViewById<MaterialCardView>(R.id.base_card_view)
             cardView.backgroundColor = Color.TRANSPARENT
             LayoutInflater.from(context).inflate(layoutId, cardView, true)
-            cardView.find<View>(R.id.include_detail).backgroundColor = Color.TRANSPARENT
+            cardView.findViewById<View>(R.id.include_detail).backgroundColor = Color.TRANSPARENT
             return root
         }
     }
@@ -93,7 +90,7 @@ class CourseDetailFragment : BaseDialogFragment() {
         try {
             et_time.text = "第${course.startNode} - ${course.startNode + course.step - 1}节    ${viewModel.timeList[course.startNode - 1].startTime} - ${viewModel.timeList[course.startNode + course.step - 2].endTime}"
         } catch (e: Exception) {
-            et_time.longSnackbar("该课程似乎有点问题哦>_<请修改一下")
+            et_time.longSnack("该课程似乎有点问题哦>_<请修改一下")
         }
     }
 
@@ -112,12 +109,12 @@ class CourseDetailFragment : BaseDialogFragment() {
 
         ib_edit.setOnClickListener {
             dismiss()
-            activity!!.startActivity<AddCourseActivity>(
-                    "id" to course.id,
-                    "tableId" to course.tableId,
-                    "maxWeek" to viewModel.table.maxWeek,
-                    "nodes" to viewModel.table.nodes
-            )
+            start<AddCourseActivity> {
+                putExtra("id", course.id)
+                putExtra("tableId", course.tableId)
+                putExtra("maxWeek", viewModel.table.maxWeek)
+                putExtra("nodes", viewModel.table.nodes)
+            }
         }
 
         ib_delete_course.setOnClickListener {

@@ -15,9 +15,9 @@ import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
-import org.jetbrains.anko.design.longSnackbar
 
 class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
 
@@ -100,7 +100,7 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
     }
 
     override fun onBackPressed() {
-        ll_root.longSnackbar(
+        ll_root.longSnack(
                 if (isTodayType) {
                     "请阅读文字后点击“我知道啦”"
                 } else {

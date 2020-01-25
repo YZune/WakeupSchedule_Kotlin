@@ -9,7 +9,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.dao.*
 
-
 @Database(entities = [CourseBaseBean::class, CourseDetailBean::class, AppWidgetBean::class, TimeDetailBean::class,
     TimeTableBean::class, TableBean::class],
         version = 8, exportSchema = false)

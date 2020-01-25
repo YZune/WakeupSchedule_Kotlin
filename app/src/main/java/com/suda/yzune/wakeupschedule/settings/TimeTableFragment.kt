@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.design.longSnackbar
 
 class TimeTableFragment : BaseFragment() {
 
@@ -80,14 +80,14 @@ class TimeTableFragment : BaseFragment() {
             when (view.id) {
                 R.id.ib_delete -> {
                     if (viewModel.timeTableList[position].id == viewModel.selectedId) {
-                        view.longSnackbar("不能删除已选中的时间表哦>_<")
+                        view.longSnack("不能删除已选中的时间表哦>_<")
                     } else {
                         launch {
                             try {
                                 viewModel.deleteTimeTable(viewModel.timeTableList[position])
-                                view.longSnackbar("删除成功~")
+                                view.longSnack("删除成功~")
                             } catch (e: Exception) {
-                                view.longSnackbar("该时间表仍被使用中>_<请确保它不被使用再删除哦")
+                                view.longSnack("该时间表仍被使用中>_<请确保它不被使用再删除哦")
                             }
                         }
                     }

@@ -28,7 +28,6 @@ import org.jsoup.select.Elements
 import java.io.File
 import java.util.regex.Pattern
 
-
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
 
     var importId = -1

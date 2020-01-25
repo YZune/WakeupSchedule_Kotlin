@@ -14,9 +14,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_select_week.*
-import org.jetbrains.anko.backgroundResource
-import org.jetbrains.anko.colorAttr
-import org.jetbrains.anko.textColor
+import splitties.resources.styledColor
 
 class SelectWeekFragment : BaseDialogFragment() {
 
@@ -35,7 +33,7 @@ class SelectWeekFragment : BaseDialogFragment() {
             position = it.getInt("position")
         }
         viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
-        colorSurface = context!!.colorAttr(R.attr.colorOnSurface)
+        colorSurface = context!!.styledColor(R.attr.colorOnSurface)
         liveData.observe(this, Observer {
             if (it?.size == viewModel.maxWeek) {
                 tv_all.setTextColor(Color.WHITE)
@@ -84,15 +82,15 @@ class SelectWeekFragment : BaseDialogFragment() {
                     if (pos in 0 until viewModel.maxWeek) {
                         if (!result.contains(pos + 1)) {
                             result.add(pos + 1)
-                            adapter.getViewByPosition(pos, R.id.tv_num)?.backgroundResource =
-                                    R.drawable.week_selected_bg
-                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView).textColor =
-                                    Color.WHITE
+                            adapter.getViewByPosition(pos, R.id.tv_num)
+                                    ?.setBackgroundResource(R.drawable.week_selected_bg)
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView)
+                                    .setTextColor(Color.WHITE)
                         } else {
                             result.remove(pos + 1)
                             adapter.getViewByPosition(pos, R.id.tv_num)?.background = null
-                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView).textColor =
-                                    colorSurface
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView)
+                                    .setTextColor(colorSurface)
                         }
                         liveData.value = result
                     }

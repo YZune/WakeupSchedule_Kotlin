@@ -14,12 +14,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.navigation.NavigationView
@@ -49,18 +50,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
-import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import splitties.activities.start
+import splitties.dimensions.dip
+import splitties.views.onClick
 import java.text.ParseException
 
 class ScheduleActivity : BaseActivity() {
 
-    private lateinit var viewModel: ScheduleViewModel
+    private val viewModel by viewModels<ScheduleViewModel>()
     private var mAdapter: SchedulePagerAdapter? = null
 
-    private lateinit var scheduleViewPager: androidx.viewpager.widget.ViewPager
+    private lateinit var scheduleViewPager: ViewPager
     private lateinit var bgImageView: ImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
     private lateinit var navImageButton: TextView
@@ -77,11 +80,10 @@ class ScheduleActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ScheduleViewModel::class.java)
         if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
-        ScheduleActivityUI().setContentView(this)
+        setContentView(ScheduleActivityUI(this).root)
 
         val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
         if (json != "") {
@@ -102,20 +104,20 @@ class ScheduleActivity : BaseActivity() {
             }
         }
 
-        scheduleViewPager = find(R.id.anko_vp_schedule)
-        bgImageView = find(R.id.anko_iv_bg)
-        scheduleConstraintLayout = find(R.id.anko_cl_schedule)
-        navImageButton = find(R.id.anko_ib_nav)
-        shareImageButton = find(R.id.anko_ib_share)
-        addImageButton = find(R.id.anko_ib_add)
-        importImageButton = find(R.id.anko_ib_import)
-        moreImageButton = find(R.id.anko_ib_more)
-        tableNameRecyclerView = find(R.id.anko_rv_table_name)
-        dateTextView = find(R.id.anko_tv_date)
-        weekTextView = find(R.id.anko_tv_week)
-        weekdayTextView = find(R.id.anko_tv_weekday)
-        navigationView = find(R.id.anko_nv)
-        drawerLayout = find(R.id.anko_drawer_layout)
+        scheduleViewPager = findViewById(R.id.anko_vp_schedule)
+        bgImageView = findViewById(R.id.anko_iv_bg)
+        scheduleConstraintLayout = findViewById(R.id.anko_cl_schedule)
+        navImageButton = findViewById(R.id.anko_ib_nav)
+        shareImageButton = findViewById(R.id.anko_ib_share)
+        addImageButton = findViewById(R.id.anko_ib_add)
+        importImageButton = findViewById(R.id.anko_ib_import)
+        moreImageButton = findViewById(R.id.anko_ib_more)
+        tableNameRecyclerView = findViewById(R.id.anko_rv_table_name)
+        dateTextView = findViewById(R.id.anko_tv_date)
+        weekTextView = findViewById(R.id.anko_tv_week)
+        weekdayTextView = findViewById(R.id.anko_tv_weekday)
+        navigationView = findViewById(R.id.anko_nv)
+        drawerLayout = findViewById(R.id.anko_drawer_layout)
 
         initView()
         initNavView()
@@ -188,7 +190,7 @@ class ScheduleActivity : BaseActivity() {
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .error(R.drawable.main_background_2019)
-                    .into(navigationView.getHeaderView(0).find(R.id.iv_header))
+                    .into(navigationView.getHeaderView(0).findViewById(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
@@ -201,7 +203,7 @@ class ScheduleActivity : BaseActivity() {
                     .load(R.drawable.main_background_2019)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(navigationView.getHeaderView(0).find(R.id.iv_header))
+                    .into(navigationView.getHeaderView(0).findViewById(R.id.iv_header))
         }
 
         for (i in 0 until scheduleConstraintLayout.childCount) {
@@ -239,7 +241,10 @@ class ScheduleActivity : BaseActivity() {
         adapter.setOnItemChildClickListener { _, view, _ ->
             when (view.id) {
                 R.id.menu_setting -> {
-                    startActivityForResult<ScheduleSettingsActivity>(16, "tableData" to viewModel.table)
+                    startActivityForResult(Intent(this,
+                            ScheduleSettingsActivity::class.java).apply {
+                        putExtra("tableData", viewModel.table)
+                    }, 16)
                 }
                 R.id.menu_export -> {
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -311,8 +316,9 @@ class ScheduleActivity : BaseActivity() {
             }).show(supportFragmentManager, "addTableFragment")
         }
         val tableManage = view.findViewById<TextView>(R.id.nav_table_manage)
-        tableManage.setOnClickListener {
-            startActivityForResult<ScheduleManageActivity>(16)
+        tableManage.onClick {
+            startActivityForResult(
+                    Intent(this, ScheduleManageActivity::class.java), 16)
         }
         return view
     }
@@ -332,14 +338,14 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivityForResult<SettingsActivity>(31)
+                        startActivityForResult(Intent(this, SettingsActivity::class.java), 31)
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_explore -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<ApplyInfoActivity>()
+                        start<ApplyInfoActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -353,14 +359,14 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_about -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<AboutActivity>()
+                        start<AboutActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_young -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<IntroYoungActivity>()
+                        start<IntroYoungActivity>()
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -376,14 +382,18 @@ class ScheduleActivity : BaseActivity() {
                 R.id.nav_empty_room -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<SudaLifeActivity>("type" to "空教室")
+                        start<SudaLifeActivity> {
+                            putExtra("type", "空教室")
+                        }
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
                 R.id.nav_bathroom -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivity<SudaLifeActivity>("type" to "澡堂")
+                        start<SudaLifeActivity> {
+                            putExtra("type", "澡堂")
+                        }
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -406,21 +416,29 @@ class ScheduleActivity : BaseActivity() {
             }
             2 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("import_type" to "file")
+                    start<LoginWebActivity> {
+                        putExtra("import_type", "file")
+                    }
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             3 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("import_type" to "excel", "tableId" to viewModel.table.id)
+                    start<LoginWebActivity> {
+                        putExtra("import_type", "excel")
+                        putExtra("tableId", viewModel.table.id)
+                    }
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
             }
             4 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startActivity<LoginWebActivity>("import_type" to "html", "tableId" to viewModel.table.id)
+                    start<LoginWebActivity> {
+                        putExtra("import_type", "html")
+                        putExtra("tableId", viewModel.table.id)
+                    }
                 } else {
                     Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
                 }
@@ -445,11 +463,12 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initEvent() {
         addImageButton.setOnClickListener {
-            startActivity<AddCourseActivity>(
-                    "tableId" to viewModel.table.id,
-                    "maxWeek" to viewModel.table.maxWeek,
-                    "nodes" to viewModel.table.nodes,
-                    "id" to -1)
+            start<AddCourseActivity> {
+                putExtra("tableId", viewModel.table.id)
+                putExtra("maxWeek", viewModel.table.maxWeek)
+                putExtra("nodes", viewModel.table.nodes)
+                putExtra("id", -1)
+            }
         }
 
         moreImageButton.setOnClickListener {

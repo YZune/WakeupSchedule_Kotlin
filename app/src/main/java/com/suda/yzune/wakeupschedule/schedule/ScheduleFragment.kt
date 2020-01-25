@@ -19,9 +19,8 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.padding
-import org.jetbrains.anko.support.v4.dip
-import org.jetbrains.anko.support.v4.find
+import splitties.dimensions.dip
+import splitties.views.padding
 import kotlin.math.roundToInt
 
 private const val weekParam = "week"
@@ -50,47 +49,47 @@ class ScheduleFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (viewModel.table.showSun) {
             if (viewModel.table.sundayFirst) {
-                find<View>(R.id.anko_tv_title7).visibility = View.GONE
-                find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
-                find<View>(R.id.anko_tv_title0_1).visibility = View.VISIBLE
-                find<View>(R.id.anko_ll_week_panel_0).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.anko_tv_title7).visibility = View.GONE
+                view.findViewById<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+                view.findViewById<View>(R.id.anko_tv_title0_1).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.anko_ll_week_panel_0).visibility = View.VISIBLE
             } else {
-                find<View>(R.id.anko_tv_title7).visibility = View.VISIBLE
-                find<View>(R.id.anko_ll_week_panel_7).visibility = View.VISIBLE
-                find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
-                find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
+                view.findViewById<View>(R.id.anko_tv_title7).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.anko_ll_week_panel_7).visibility = View.VISIBLE
+                view.findViewById<View>(R.id.anko_tv_title0_1).visibility = View.GONE
+                view.findViewById<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
             }
         } else {
-            find<View>(R.id.anko_tv_title7).visibility = View.GONE
-            find<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
-            find<View>(R.id.anko_tv_title0_1).visibility = View.GONE
-            find<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_tv_title7).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_ll_week_panel_7).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_tv_title0_1).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_ll_week_panel_0).visibility = View.GONE
         }
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
-        find<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
+        view.findViewById<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
         var textView: TextView
         if (viewModel.table.sundayFirst) {
             for (i in 0..6) {
-                textView = find(R.id.anko_tv_title0_1 + i)
+                textView = view.findViewById(R.id.anko_tv_title0_1 + i)
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[i + 1]}"
             }
         } else {
             for (i in 0..6) {
-                textView = find(R.id.anko_tv_title1 + i)
+                textView = view.findViewById(R.id.anko_tv_title1 + i)
                 textView.text = viewModel.daysArray[i + 1] + "\n${weekDate[i + 1]}"
             }
         }
 
         if (viewModel.table.showSat) {
-            find<View>(R.id.anko_tv_title6).visibility = View.VISIBLE
-            find<View>(R.id.anko_ll_week_panel_6).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.anko_tv_title6).visibility = View.VISIBLE
+            view.findViewById<View>(R.id.anko_ll_week_panel_6).visibility = View.VISIBLE
         } else {
-            find<View>(R.id.anko_tv_title6).visibility = View.GONE
-            find<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_tv_title6).visibility = View.GONE
+            view.findViewById<View>(R.id.anko_ll_week_panel_6).visibility = View.GONE
         }
 
         for (i in 0 until 30) {
-            textView = find(R.id.anko_tv_node1 + i)
+            textView = view.findViewById(R.id.anko_tv_node1 + i)
             val lp = textView.layoutParams
             lp.height = viewModel.itemHeight
             textView.layoutParams = lp
@@ -129,10 +128,10 @@ class ScheduleFragment : BaseFragment() {
     }
 
     private fun initWeekPanel(data: List<CourseBean>?, day: Int, table: TableBean) {
-        val ll = find<LinearLayout>(R.id.anko_ll_week_panel_1 + day - 1)
+        val ll = view!!.findViewById<LinearLayout>(R.id.anko_ll_week_panel_1 + day - 1)
         ll.removeAllViews()
         if (day == 7) {
-            find<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
+            view!!.findViewById<LinearLayout>(R.id.anko_ll_week_panel_0).removeAllViews()
         }
         if (data == null || data.isEmpty()) return
         var isCovered = false
@@ -168,7 +167,7 @@ class ScheduleFragment : BaseFragment() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1))
             if (day == 7 && table.sundayFirst) {
-                if (find<LinearLayout>(R.id.anko_ll_week_panel_0).childCount == 0) {
+                if (view!!.findViewById<LinearLayout>(R.id.anko_ll_week_panel_0).childCount == 0) {
                     lp.setMargins(0, (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
                 } else {
                     lp.setMargins(0, (c.startNode - (pre.startNode + pre.step)) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop, 0, 0)
@@ -184,7 +183,7 @@ class ScheduleFragment : BaseFragment() {
             }
 
             textView.layoutParams = lp
-            textView.padding = dip(4)
+            textView.padding = context!!.dip(4)
 //            textView.textSize = table.itemTextSize.toFloat()
 //            textView.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
 //            textView.setPadding(dip(4), dip(4), dip(4), dip(4))
@@ -192,7 +191,7 @@ class ScheduleFragment : BaseFragment() {
 
             textView.background = ContextCompat.getDrawable(activity!!, R.drawable.course_item_bg)
             val myGrad = textView.background as GradientDrawable
-            myGrad.setStroke(dip(2), table.strokeColor)
+            myGrad.setStroke(context!!.dip(2), table.strokeColor)
 
             if (c.color == "") {
                 c.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(activity!!, c.id % 9))}"
@@ -298,7 +297,7 @@ class ScheduleFragment : BaseFragment() {
 
             if (day == 7) {
                 if (table.sundayFirst) {
-                    find<LinearLayout>(R.id.anko_ll_week_panel_0).addView(textView)
+                    view?.findViewById<LinearLayout>(R.id.anko_ll_week_panel_0)?.addView(textView)
                 } else {
                     ll.addView(textView)
                 }

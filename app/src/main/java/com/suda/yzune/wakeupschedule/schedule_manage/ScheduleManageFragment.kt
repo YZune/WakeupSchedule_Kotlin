@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-
 import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcel
@@ -20,7 +19,7 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import org.jetbrains.anko.support.v4.startActivity
+import splitties.fragments.start
 
 class ScheduleManageFragment : BaseFragment() {
 
@@ -34,7 +33,7 @@ class ScheduleManageFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_schedule_manage, container, false)
-        val rvTableList = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_table_list)
+        val rvTableList = view.findViewById<RecyclerView>(R.id.rv_table_list)
         viewModel.initTableSelectList().observe(this, Observer {
             if (it == null) return@Observer
             viewModel.tableSelectList.clear()
@@ -65,7 +64,9 @@ class ScheduleManageFragment : BaseFragment() {
                     launch {
                         val task = viewModel.getTableById(data[position].id)
                         if (task != null) {
-                            startActivity<ScheduleSettingsActivity>("tableData" to task)
+                            start<ScheduleSettingsActivity> {
+                                putExtra("tableData", task)
+                            }
                         } else {
                             Toasty.error(context!!.applicationContext, "读取课表异常>_<")
                         }

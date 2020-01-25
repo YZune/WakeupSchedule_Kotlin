@@ -13,35 +13,39 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import org.jetbrains.anko.*
+import splitties.dimensions.dip
+import splitties.views.backgroundColor
+import splitties.views.dsl.core.*
+import splitties.views.lines
 
 class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = AnkoContext.create(parent.context).apply {
-            verticalLayout {
-                id = R.id.anko_layout
-                view {
-                    id = R.id.anko_view
-                }.lparams(matchParent, ViewUtils.getStatusBarHeight(context) + dip(48))
+        val view = parent.verticalLayout(R.id.anko_layout) {
 
-                linearLayout {
-                    setPadding(dip(16), dip(2), dip(16), dip(2))
-                    backgroundColor = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
-                    textView {
-                        id = R.id.anko_text_view
-                        textSize = 12f
-                        lines = 1
-                        textColor = Color.WHITE
-                        gravity = Gravity.CENTER_VERTICAL
-                        typeface = Typeface.DEFAULT_BOLD
-                    }.lparams(wrapContent, wrapContent)
+            add(view(::View, R.id.anko_view)
+                    , lParams(matchParent, ViewUtils.getStatusBarHeight(context) + dip(48)))
 
-                }.lparams(wrapContent, wrapContent) {
-                    topMargin = dip(16)
-                }
-            }
-        }.view
+            add(horizontalLayout {
+                setPadding(dip(16), dip(2), dip(16), dip(2))
+                backgroundColor = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
+
+                add(textView {
+                    id = R.id.anko_text_view
+                    textSize = 12f
+                    lines = 1
+                    setTextColor(Color.WHITE)
+                    gravity = Gravity.CENTER_VERTICAL
+                    typeface = Typeface.DEFAULT_BOLD
+                }, lParams(wrapContent, wrapContent))
+
+            }, lParams(wrapContent, wrapContent) {
+                topMargin = dip(16)
+            })
+        }
+        view.layoutParams =
+                ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT)
         return ViewHolder(view)
     }
 
@@ -55,8 +59,8 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        var tvCategory: TextView = itemView.find(R.id.anko_text_view)
-        var vTop: View = itemView.find(R.id.anko_view)
+        var tvCategory: TextView = itemView.findViewById(R.id.anko_text_view)
+        var vTop: View = itemView.findViewById(R.id.anko_view)
     }
 
 }

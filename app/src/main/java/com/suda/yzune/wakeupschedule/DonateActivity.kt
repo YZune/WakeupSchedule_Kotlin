@@ -17,10 +17,10 @@ import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_donate.*
 import okhttp3.ResponseBody
-import org.jetbrains.anko.dip
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import splitties.dimensions.dip
 
 class DonateActivity : BaseBlurTitleActivity() {
 

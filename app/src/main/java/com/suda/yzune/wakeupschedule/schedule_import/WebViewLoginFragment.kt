@@ -18,14 +18,12 @@ import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.anko.design.longSnackbar
-import org.jetbrains.anko.find
-import org.jetbrains.anko.startActivity
+import splitties.fragments.start
 
 
 class WebViewLoginFragment : BaseFragment() {
@@ -51,7 +49,7 @@ class WebViewLoginFragment : BaseFragment() {
     @JavascriptInterface
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.resizeStatusBar(context!!.applicationContext, view.find(R.id.v_status))
+        ViewUtils.resizeStatusBar(context!!.applicationContext, view.findViewById(R.id.v_status))
 
         if (url != "") {
             et_url.setText(url)
@@ -165,7 +163,7 @@ class WebViewLoginFragment : BaseFragment() {
                     viewModel.qzType = 6
                 }
                 else -> {
-                    chipGroup.find<Chip>(qzChipId).isChecked = true
+                    chipGroup.findViewById<Chip>(qzChipId).isChecked = true
                 }
             }
         }
@@ -182,7 +180,7 @@ class WebViewLoginFragment : BaseFragment() {
                     viewModel.zfType = 1
                 }
                 else -> {
-                    chipGroup.find<Chip>(zfChipId).isChecked = true
+                    chipGroup.findViewById<Chip>(zfChipId).isChecked = true
                 }
             }
         }
@@ -199,7 +197,7 @@ class WebViewLoginFragment : BaseFragment() {
                     viewModel.oldQzType = 1
                 }
                 else -> {
-                    chipGroup.find<Chip>(oldQZChipId).isChecked = true
+                    chipGroup.findViewById<Chip>(oldQZChipId).isChecked = true
                 }
             }
         }
@@ -242,7 +240,7 @@ class WebViewLoginFragment : BaseFragment() {
                         else -> getHostUrl() + "tkglAction.do?method=goListKbByXs&istsxx=no"
                     }
                     wv_course.loadUrl(referUrl)
-                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    it.longSnack("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
                     wv_course.loadUrl(js)
@@ -251,7 +249,7 @@ class WebViewLoginFragment : BaseFragment() {
                 if (!isRefer) {
                     val referUrl = getHostUrl() + "xsgrkbcx!getXsgrbkList.action"
                     wv_course.loadUrl(referUrl)
-                    it.longSnackbar("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
+                    it.longSnack("请重新选择一下学期再点按钮导入，要记得选择全部周，记得点查询按钮")
                     isRefer = true
                 } else {
                     wv_course.loadUrl(js)
@@ -260,7 +258,7 @@ class WebViewLoginFragment : BaseFragment() {
                 if (!isRefer) {
                     val referUrl = getHostUrl() + "xkAction.do?actionType=6"
                     wv_course.loadUrl(referUrl)
-                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    it.longSnack("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
                     wv_course.loadUrl(js)
@@ -269,7 +267,7 @@ class WebViewLoginFragment : BaseFragment() {
                 if (!isRefer) {
                     val referUrl = getHostUrl() + "student/courseSelect/thisSemesterCurriculum/callback"
                     wv_course.loadUrl(referUrl)
-                    it.longSnackbar("请在看到网页加载完成后，再点一次右下角按钮")
+                    it.longSnack("请在看到网页加载完成后，再点一次右下角按钮")
                     isRefer = true
                 } else {
                     wv_course.loadUrl("javascript:window.local_obj.showSource(document.getElementsByTagName('html')[0].innerText);")
@@ -341,7 +339,7 @@ class WebViewLoginFragment : BaseFragment() {
                     when (task) {
                         "ok" -> {
                             Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
-                            activity!!.startActivity<ApplyInfoActivity>()
+                            start<ApplyInfoActivity>()
                             activity!!.finish()
                         }
                         else -> {

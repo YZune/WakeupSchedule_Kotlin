@@ -5,11 +5,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.suda.yzune.wakeupschedule.R
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.sp
+import splitties.dimensions.dip
 
 class RoomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle) {
 
@@ -22,7 +22,8 @@ class RoomView @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
         }
 
     init {
-        textPaint.textSize = sp(12).toFloat()
+        textPaint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                12f, resources.displayMetrics)
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.style = Paint.Style.FILL
         textPaint.isAntiAlias = true
