@@ -57,6 +57,7 @@ import splitties.activities.start
 import splitties.dimensions.dip
 import splitties.views.onClick
 import java.text.ParseException
+import kotlin.math.roundToInt
 
 class ScheduleActivity : BaseActivity() {
 
@@ -548,6 +549,8 @@ class ScheduleActivity : BaseActivity() {
             weekdayTextView.text = CourseUtils.getWeekday()
 
             initTheme()
+
+            viewModel.alphaInt = (255 * (viewModel.table.itemAlpha.toFloat() / 100)).roundToInt()
 
             val fadeInAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 0f, 1f)
             fadeInAni.duration = 500

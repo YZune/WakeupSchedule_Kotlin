@@ -2,23 +2,16 @@ package com.suda.yzune.wakeupschedule.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
-import android.graphics.Typeface
+import android.graphics.*
 import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.AttributeSet
 import android.view.View
-import splitties.dimensions.dip
 import splitties.dimensions.dp
 
 @SuppressLint("ViewConstructor")
-class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
-
-    var text: String = ""
+class TipTextView(context: Context) : View(context) {
 
     var tipVisibility = 0
         set(value) {
@@ -26,23 +19,42 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
             invalidate()
         }
 
-    private val mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        // textSize = mSize * resources.displayMetrics.scaledDensity
-        textSize = dp(mSize)
-        typeface = Typeface.DEFAULT_BOLD
-        color = mColor
-    }
-    private val mPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = mColor
-        isDither = true
-        style = Paint.Style.FILL_AND_STROKE
-    }
-    private val path = Path()
+    private var text = ""
     private var mStaticLayout: StaticLayout? = null
+    private lateinit var mTextPaint: TextPaint
+    private lateinit var mPaint: Paint
+    private lateinit var bgPaint: Paint
+    private lateinit var strokePaint: Paint
+    private val path = Path()
+    private val rect = RectF()
+    private val dpUnit = dp(1)
 
-    fun init(attrs: AttributeSet?) {
-        if (attrs != null) {
-            tipVisibility = TIP_INVISIBLE
+    fun init(text: String, txtSize: Int, txtColor: Int, bgColor: Int, bgAlpha: Int, stroke: Int) {
+        this.text = text
+        mTextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+            // textSize = mSize * resources.displayMetrics.scaledDensity
+            textSize = txtSize * dpUnit
+            typeface = Typeface.DEFAULT_BOLD
+            color = txtColor
+        }
+        mPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = txtColor
+            isDither = true
+            style = Paint.Style.FILL_AND_STROKE
+        }
+        bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = bgColor
+            isDither = true
+            style = Paint.Style.FILL
+            alpha = bgAlpha
+        }
+        strokePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = stroke
+            isDither = true
+            style = Paint.Style.STROKE
+            strokeWidth = 2 * dpUnit
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
         }
     }
 
@@ -52,16 +64,16 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
 
         // determine the width
         val width = MeasureSpec.getSize(widthMeasureSpec)
-
         // determine the height
         val height = MeasureSpec.getSize(heightMeasureSpec)
-
+        rect.left = dpUnit
+        rect.right = width.toFloat() - dpUnit
+        rect.top = dpUnit
+        rect.bottom = height.toFloat() - dpUnit
         // Required call: set width and height
         setMeasuredDimension(width, height)
     }
 
-
-    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (mStaticLayout == null) {
@@ -83,10 +95,12 @@ class TipTextView(mColor: Int, mSize: Int, context: Context) : View(context) {
                 )
             }
         }
+        canvas.drawRoundRect(rect, 4 * dpUnit, 4 * dpUnit, bgPaint)
+        canvas.drawRoundRect(rect, 4 * dpUnit, 4 * dpUnit, strokePaint)
         if (tipVisibility == 1) {
-            path.moveTo(width - dip(12).toFloat(), height - dip(6).toFloat()) // 此点为多边形的起点
-            path.lineTo(width - dip(6).toFloat(), height - dip(6).toFloat())
-            path.lineTo(width - dip(6).toFloat(), height - dip(12).toFloat())
+            path.moveTo(width - 12 * dpUnit, height - 6 * dpUnit) // 此点为多边形的起点
+            path.lineTo(width - 6 * dpUnit, height - 6 * dpUnit)
+            path.lineTo(width - 6 * dpUnit, height - 12 * dpUnit)
             path.close() // 使这些点构成封闭的多边形
             canvas.drawPath(path, mPaint)
         }

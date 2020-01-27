@@ -144,7 +144,7 @@ class TodayColorfulService : RemoteViewsService() {
                         add(textView {
                             text = c.startNode.toString()
                             alpha = 0.8f
-                            setText(table.widgetCourseTextColor)
+                            setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
                             typeface = Typeface.DEFAULT_BOLD
                         }, lParams(wrapContent, wrapContent) {
@@ -154,7 +154,7 @@ class TodayColorfulService : RemoteViewsService() {
                         add(textView {
                             text = "${c.startNode + c.step - 1}"
                             alpha = 0.8f
-                            setText(table.widgetCourseTextColor)
+                            setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
                             typeface = Typeface.DEFAULT_BOLD
                         }, lParams(wrapContent, wrapContent) {

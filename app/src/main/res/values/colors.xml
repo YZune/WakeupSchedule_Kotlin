@@ -16,6 +16,7 @@
     <color name="blue">#2979ff</color>
     <color name="green">#1DE9B6</color>
     <color name="yellow">#ffea00</color>
+    <color name="purple">#a375ff</color>
     <color name="orange">#ff9100</color>
     <color name="deepOrange">#ff3d00</color>
     <color name="lightBlue">#2196f3</color>
@@ -26,7 +27,7 @@
         <item>@color/pink</item>
         <item>@color/blue</item>
         <item>@color/green</item>
-        <item>@color/yellow</item>
+        <item>@color/purple</item>
         <item>@color/orange</item>
         <item>@color/deepOrange</item>
         <item>@color/lightBlue</item>

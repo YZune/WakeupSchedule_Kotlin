@@ -81,8 +81,7 @@ object ViewUtils {
                 })
             }
 
-            add(constraintLayout {
-                id = R.id.anko_cl_content_panel
+            add(constraintLayout(R.id.anko_cl_content_panel) {
                 for (i in 1..30) {
                     add(textView(R.id.anko_tv_node1 + i - 1) {
                         text = i.toString()
