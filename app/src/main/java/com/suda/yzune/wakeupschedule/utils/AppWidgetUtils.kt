@@ -16,7 +16,6 @@ import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidget
 import com.suda.yzune.wakeupschedule.schedule_appwidget.ScheduleAppWidgetService
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayColorfulService
 import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidget
-import com.suda.yzune.wakeupschedule.today_appwidget.TodayCourseAppWidgetService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -181,12 +180,7 @@ object AppWidgetUtils {
         } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "还没有开学哦")
         }
-        val lvIntent =
-                if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_colorful_day_widget", false)) {
-                    Intent(context, TodayColorfulService::class.java)
-                } else {
-                    Intent(context, TodayCourseAppWidgetService::class.java)
-                }
+        val lvIntent = Intent(context, TodayColorfulService::class.java)
 
         lvIntent.data = if (nextDay) {
             Uri.fromParts("content", "1", null)

@@ -19,6 +19,7 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
 import splitties.views.bottomPadding
@@ -54,9 +55,10 @@ class TodayColorfulService : RemoteViewsService() {
         private lateinit var table: TableBean
         private val timeList = arrayListOf<TimeDetailBean>()
         private val courseList = arrayListOf<CourseBean>()
+        private var showColor = false
 
         override fun onCreate() {
-            table = tableDao.getDefaultTableSync()
+
         }
 
         override fun onDataSetChanged() {
@@ -74,6 +76,7 @@ class TodayColorfulService : RemoteViewsService() {
             }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListSync(table.timeTable))
+            showColor = PreferenceUtils.getBooleanFromSP(applicationContext, "s_colorful_day_widget", false)
         }
 
         override fun onDestroy() {
@@ -126,16 +129,19 @@ class TodayColorfulService : RemoteViewsService() {
                     topPadding = dip(dp * 4)
                     bottomPadding = dip(dp * 4)
                     horizontalPadding = dip(dp * 4)
-                    background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg_today)
-                    val myGrad = background as GradientDrawable
+
+                    if (showColor) {
+                        background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg_today)
+                        val myGrad = background as GradientDrawable
 //                                myGrad.cornerRadius = dip(dp * 4).toFloat()
-                    myGrad.setStroke(dip(dp), table.widgetStrokeColor)
-                    when {
-                        c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
-                        c.color.isEmpty() -> {
-                            myGrad.setColor(Color.parseColor("#${alphaStr}fa6278"))
+                        myGrad.setStroke(dip(dp), table.widgetStrokeColor)
+                        when {
+                            c.color.length == 7 -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(1, 7)}"))
+                            c.color.isEmpty() -> {
+                                myGrad.setColor(Color.parseColor("#${alphaStr}fa6278"))
+                            }
+                            else -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
                         }
-                        else -> myGrad.setColor(Color.parseColor("#$alphaStr${c.color.substring(3, 9)}"))
                     }
 
                     add(verticalLayout {

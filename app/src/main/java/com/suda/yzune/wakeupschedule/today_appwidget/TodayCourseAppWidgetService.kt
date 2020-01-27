@@ -41,7 +41,7 @@ class TodayCourseAppWidgetService : RemoteViewsService() {
         private val courseList = arrayListOf<CourseBean>()
 
         override fun onCreate() {
-            table = tableDao.getDefaultTableSync()
+
         }
 
         override fun onDataSetChanged() {
