@@ -1,5 +1,6 @@
 package com.suda.yzune.wakeupschedule.base_view
 
+import android.content.Context
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextWatcher
@@ -8,20 +9,20 @@ import android.view.Gravity
 import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
 import splitties.dimensions.dip
 import splitties.resources.styledColor
-import splitties.systemservices.inputMethodManager
-import splitties.views.*
-import splitties.views.dsl.constraintlayout.constraintLayout
-import splitties.views.dsl.constraintlayout.lParams
-import splitties.views.dsl.core.*
-import splitties.views.dsl.recyclerview.recyclerView
 
 abstract class BaseListActivity : BaseActivity() {
 
@@ -37,67 +38,70 @@ abstract class BaseListActivity : BaseActivity() {
         setContentView(createView())
     }
 
-    private fun createView() = constraintLayout {
+    private fun createView() = ConstraintLayout(this).apply {
 
         val outValue = TypedValue()
-        context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
+        theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-        mRecyclerView = recyclerView {
+        mRecyclerView = RecyclerView(context).apply {
             overScrollMode = OVER_SCROLL_NEVER
         }
 
-        mainTitle = textView {
+        mainTitle = TextView(context).apply {
             text = title
             gravity = Gravity.CENTER_VERTICAL
             textSize = 16f
             typeface = Typeface.DEFAULT_BOLD
         }
 
-        searchView = editText {
+        searchView = EditText(context).apply {
             hint = "请输入……"
             textSize = 16f
             background = null
             gravity = Gravity.CENTER_VERTICAL
             visibility = View.GONE
-            lines = 1
+            setLines(1)
             setSingleLine()
             imeOptions = EditorInfo.IME_ACTION_SEARCH
             addTextChangedListener(textWatcher)
         }
 
-        add(mRecyclerView, lParams {
+        addView(mRecyclerView, ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT).apply {
             topToTop = ConstraintSet.PARENT_ID
             bottomToBottom = ConstraintSet.PARENT_ID
             startToStart = ConstraintSet.PARENT_ID
             endToEnd = ConstraintSet.PARENT_ID
         })
 
-        add(horizontalLayout {
+        addView(LinearLayout(context).apply {
             id = R.id.anko_layout
-            topPadding = getStatusBarHeight()
-            backgroundColor = styledColor(R.attr.colorSurface)
+            setPadding(0, getStatusBarHeight(), 0, 0)
+            setBackgroundColor(styledColor(R.attr.colorSurface))
 
-            add(imageButton {
-                imageResource = R.drawable.ic_back
+            addView(ImageButton(context).apply {
+                setImageResource(R.drawable.ic_back)
                 setBackgroundResource(outValue.resourceId)
-                padding = dip(8)
+                setPadding(dip(8))
                 setColorFilter(styledColor(R.attr.colorOnBackground))
                 setOnClickListener {
                     onBackPressed()
                 }
-            }, lParams(wrapContent, dip(48)))
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
 
-            add(mainTitle, lParams(wrapContent, dip(48)) {
-                weight = 1f
-            })
+            addView(mainTitle,
+                    LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+                        weight = 1f
+                    })
 
-            add(searchView, lParams(wrapContent, dip(48)) {
+            addView(searchView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
             if (showSearch) {
                 val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
-                add(textView {
+                addView(TextView(context).apply {
                     textSize = 20f
                     typeface = iconFont
                     text = "\uE6D4"
@@ -108,29 +112,31 @@ abstract class BaseListActivity : BaseActivity() {
                             View.GONE -> {
                                 mainTitle.visibility = View.GONE
                                 searchView.visibility = View.VISIBLE
-                                textColorResource = R.color.colorAccent
+                                setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
                                 searchView.isFocusable = true
                                 searchView.isFocusableInTouchMode = true
                                 searchView.requestFocus()
-                                inputMethodManager.showSoftInput(searchView, 0)
+                                (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                                        .showSoftInput(searchView, 0)
                             }
                         }
                     }
-                }, lParams(wrapContent, dip(48)) {
+                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                     marginEnd = dip(24)
                 })
             }
 
-            onSetupSubButton(textView {
+            onSetupSubButton(TextView(context).apply {
                 gravity = Gravity.CENTER
                 setBackgroundResource(outValue.resourceId)
             })?.let {
-                add(it, lParams(wrapContent, dip(48)) {
+                addView(it, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                     marginEnd = dip(24)
                 })
             }
 
-        }, lParams(matchParent, wrapContent) {
+        }, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
             topToTop = ConstraintSet.PARENT_ID
             startToStart = ConstraintSet.PARENT_ID
             endToEnd = ConstraintSet.PARENT_ID

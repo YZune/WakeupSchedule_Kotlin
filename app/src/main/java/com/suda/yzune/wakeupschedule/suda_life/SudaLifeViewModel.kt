@@ -8,6 +8,8 @@ import com.suda.yzune.wakeupschedule.bean.BathData
 import com.suda.yzune.wakeupschedule.bean.BathResponse
 import com.suda.yzune.wakeupschedule.bean.SudaResult
 import com.suda.yzune.wakeupschedule.bean.SudaRoomData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,7 +27,7 @@ class SudaLifeViewModel(application: Application) : AndroidViewModel(application
     private val bathService = bathRetrofit.create(BathService::class.java)
     private val gson = Gson()
 
-    suspend fun getDateList(): List<String> {
+    fun getDateList(): List<String> {
         val list = mutableListOf<String>()
         val cal = Calendar.getInstance()
         val df = SimpleDateFormat("M月dd日", Locale.CHINA)
@@ -38,13 +40,15 @@ class SudaLifeViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getBathData(male: Boolean): String {
-        val response = if (male) {
-            bathService.getBathInfo("7FC7FBA6EBCC4E5EBCEBB0B45A6EAE51").execute()
-        } else {
-            bathService.getBathInfo("75DED595960A4F2B97E65CAB06325766").execute()
+        val response = withContext(Dispatchers.IO) {
+            if (male) {
+                bathService.getBathInfo("7FC7FBA6EBCC4E5EBCEBB0B45A6EAE51").execute()
+            } else {
+                bathService.getBathInfo("75DED595960A4F2B97E65CAB06325766").execute()
+            }
         }
         if (response.isSuccessful) {
-            val result = response.body()?.string()
+            val result = withContext(Dispatchers.IO) { response.body()?.string() }
             if (result != null) {
                 val info = gson.fromJson<BathResponse>(result,
                         object : TypeToken<BathResponse>() {}.type)
@@ -67,9 +71,9 @@ class SudaLifeViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getBuildingData(): String {
-        val response = roomService.getBuildingInfo().execute()
+        val response = withContext(Dispatchers.IO) { roomService.getBuildingInfo().execute() }
         if (response.isSuccessful) {
-            val result = response.body()?.string()
+            val result = withContext(Dispatchers.IO) { response.body()?.string() }
             if (result != null) {
                 val info = gson.fromJson<SudaResult<Map<String, List<String>>>>(result,
                         object : TypeToken<SudaResult<Map<String, List<String>>>>() {}.type)
@@ -84,9 +88,9 @@ class SudaLifeViewModel(application: Application) : AndroidViewModel(application
     }
 
     suspend fun getRoomData(name: String, date: String): String {
-        val response = roomService.getRoomInfo(name, date).execute()
+        val response = withContext(Dispatchers.IO) { roomService.getRoomInfo(name, date).execute() }
         if (response.isSuccessful) {
-            val result = response.body()?.string()
+            val result = withContext(Dispatchers.IO) { response.body()?.string() }
             if (result != null) {
                 val info = gson.fromJson<SudaResult<List<SudaRoomData>>>(result,
                         object : TypeToken<SudaResult<List<SudaRoomData>>>() {}.type)

@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
+import androidx.activity.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.suda.yzune.wakeupschedule.R
@@ -12,13 +12,11 @@ class ScheduleManageActivity : BaseTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_schedule_manage
 
-    private lateinit var viewModel: ScheduleManageViewModel
+    private val viewModel by viewModels<ScheduleManageViewModel>()
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(ScheduleManageViewModel::class.java)
         super.onCreate(savedInstanceState)
-
         initView()
         setResult(RESULT_OK)
     }

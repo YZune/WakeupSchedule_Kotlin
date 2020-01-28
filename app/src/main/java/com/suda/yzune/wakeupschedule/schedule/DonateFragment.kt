@@ -13,7 +13,7 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_donate.*
-import splitties.fragments.start
+import splitties.activities.start
 import java.util.*
 
 class DonateFragment : BaseDialogFragment() {
@@ -91,7 +91,7 @@ class DonateFragment : BaseDialogFragment() {
         }
 
         tv_donate_list.setOnClickListener {
-            start<DonateActivity>()
+            activity!!.start<DonateActivity>()
         }
     }
 

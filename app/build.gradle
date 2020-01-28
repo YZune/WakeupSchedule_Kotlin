@@ -28,6 +28,10 @@ android {
         }
     }
     compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     flavorDimensions "versionCode"
     defaultConfig {
         //applicationId "com.suda.yzune.wakeupschedule"
@@ -113,41 +117,18 @@ android {
 
 dependencies {
     def lifecycle_version = "2.2.0"
-    def splitties_version = "3.0.0-alpha06"
     def appCenterSdkVersion = "2.5.0"
     def room_version = "2.2.3"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.core:core-ktx:1.1.0'
-    implementation("com.louiscad.splitties:splitties-activities:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-dimensions:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-fragments:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-fragmentargs:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-preferences:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-resources:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-selectable:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-selectable-appcompat:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-systemservices:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-toast:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-appcompat:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl-appcompat:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl-constraintlayout:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl-coordinatorlayout:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl-material:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-dsl-recyclerview:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-material:$splitties_version")
-    implementation("com.louiscad.splitties:splitties-views-recyclerview:$splitties_version")
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'com.google.android.material:material:1.1.0-alpha10'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
-    // implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
@@ -182,7 +163,4 @@ dependencies {
     }
     implementation "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion"
     implementation "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
-
-    debugImplementation 'com.didichuxing.doraemonkit:doraemonkit:2.2.2'
-    releaseImplementation 'com.didichuxing.doraemonkit:doraemonkit-no-op:2.2.2'
 }

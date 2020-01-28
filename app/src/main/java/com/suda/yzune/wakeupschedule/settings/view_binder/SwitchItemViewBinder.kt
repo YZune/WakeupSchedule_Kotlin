@@ -18,28 +18,27 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import splitties.dimensions.dip
-import splitties.views.dsl.core.*
+
 
 class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (SwitchItem, Boolean) -> Unit) : ItemViewBinder<SwitchItem, SwitchItemViewBinder.ViewHolder>() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = parent.horizontalLayout {
+        val view = LinearLayout(parent.context).apply {
             id = R.id.anko_layout
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
             // lparams(matchParent, dip(64))
-            add(textView {
+            addView(TextView(context).apply {
                 id = R.id.anko_text_view
                 textSize = 16f
-            }, lParams(0, wrapContent) {
+            }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 marginStart = dip(16)
                 weight = 1f
             })
-
-            val checkBox = view(::AppCompatCheckBox) {
+            val checkBox = AppCompatCheckBox(context).apply {
                 id = R.id.anko_check_box
                 val color = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
                 val states = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
@@ -47,7 +46,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                 supportButtonTintList = ColorStateList(states, colors)
             }
 
-            add(checkBox, lParams(wrapContent, wrapContent) {
+            addView(checkBox, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 marginEnd = dip(8)
             })

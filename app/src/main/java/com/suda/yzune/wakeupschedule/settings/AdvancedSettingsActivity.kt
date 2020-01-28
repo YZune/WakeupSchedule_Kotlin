@@ -30,7 +30,7 @@ import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
-import splitties.views.textColorResource
+import splitties.resources.color
 
 class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
 
@@ -49,7 +49,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             null
         } else {
             tvButton.text = "捐赠"
-            tvButton.textColorResource = R.color.colorAccent
+            tvButton.setTextColor(color(R.color.colorAccent))
             tvButton.setOnClickListener {
                 start<DonateActivity>()
             }

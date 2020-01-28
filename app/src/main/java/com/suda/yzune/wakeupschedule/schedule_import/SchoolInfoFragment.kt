@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_school_info.*
 
 class SchoolInfoFragment : BaseFragment() {
 
-    private lateinit var viewModel: ImportViewModel
+    private val viewModel by activityViewModels<ImportViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -23,7 +23,6 @@ class SchoolInfoFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
         ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
         initEvent()
     }

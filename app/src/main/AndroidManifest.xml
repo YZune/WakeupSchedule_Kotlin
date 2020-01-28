@@ -27,7 +27,6 @@
             android:name="CHANNEL"
             android:value="${CHANNEL}" />
 
-        <activity android:name=".main.MainActivity" />
         <activity
             android:name=".schedule_import.LoginWebActivity"
             android:screenOrientation="portrait"

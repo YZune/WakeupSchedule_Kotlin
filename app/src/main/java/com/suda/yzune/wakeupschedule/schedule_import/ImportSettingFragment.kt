@@ -3,7 +3,7 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_import_setting.*
 
@@ -11,12 +11,7 @@ class ImportSettingFragment : BaseDialogFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_import_setting
 
-    private lateinit var viewModel: ImportViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-    }
+    private val viewModel by activityViewModels<ImportViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

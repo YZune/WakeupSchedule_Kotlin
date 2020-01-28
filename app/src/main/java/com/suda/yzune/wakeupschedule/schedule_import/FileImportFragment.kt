@@ -5,7 +5,7 @@ import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.nbsp.materialfilepicker.MaterialFilePicker
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
@@ -16,12 +16,7 @@ import java.util.regex.Pattern
 
 class FileImportFragment : BaseFragment() {
 
-    private lateinit var viewModel: ImportViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
-    }
+    private val viewModel by activityViewModels<ImportViewModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

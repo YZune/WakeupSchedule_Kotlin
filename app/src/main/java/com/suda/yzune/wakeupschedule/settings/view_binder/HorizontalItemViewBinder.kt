@@ -12,36 +12,34 @@ import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.HorizontalItem
 import splitties.dimensions.dip
-import splitties.views.dsl.core.*
-import splitties.views.lines
 
 class HorizontalItemViewBinder constructor(private val onHorizontalItemClickListener: (HorizontalItem) -> Unit) : ItemViewBinder<HorizontalItem, HorizontalItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = parent.horizontalLayout(R.id.anko_layout) {
-
+        val view = LinearLayout(parent.context).apply {
+            id = R.id.anko_layout
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
 
             gravity = Gravity.CENTER_VERTICAL
 
-            add(textView {
+            addView(TextView(context).apply {
                 id = R.id.anko_text_view
                 textSize = 16f
                 gravity = Gravity.CENTER_VERTICAL
-                lines = 1
-            }, lParams(0, wrapContent) {
+                setLines(1)
+            }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginStart = dip(16)
                 marginEnd = dip(16)
                 weight = 1f
             })
 
-            add(textView {
+            addView(TextView(context).apply {
                 id = R.id.anko_tv_value
                 gravity = Gravity.CENTER_VERTICAL
                 textSize = 12f
-            }, lParams(wrapContent, wrapContent) {
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginStart = dip(16)
                 marginEnd = dip(16)
             })

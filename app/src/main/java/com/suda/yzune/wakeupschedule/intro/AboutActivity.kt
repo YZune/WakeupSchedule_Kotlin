@@ -9,7 +9,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils
 import kotlinx.android.synthetic.main.activity_about.*
 import splitties.activities.start
-import splitties.views.textColorResource
+import splitties.resources.color
 
 class AboutActivity : BaseBlurTitleActivity() {
     override val layoutId: Int
@@ -20,7 +20,7 @@ class AboutActivity : BaseBlurTitleActivity() {
             null
         } else {
             tvButton.text = "捐赠"
-            tvButton.textColorResource = R.color.colorAccent
+            tvButton.setTextColor(color(R.color.colorAccent))
             tvButton.setOnClickListener {
                 start<DonateActivity>()
             }

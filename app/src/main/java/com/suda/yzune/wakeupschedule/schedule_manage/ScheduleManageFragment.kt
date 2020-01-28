@@ -19,7 +19,7 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import splitties.fragments.start
+import splitties.activities.start
 
 class ScheduleManageFragment : BaseFragment() {
 
@@ -64,7 +64,7 @@ class ScheduleManageFragment : BaseFragment() {
                     launch {
                         val task = viewModel.getTableById(data[position].id)
                         if (task != null) {
-                            start<ScheduleSettingsActivity> {
+                            activity!!.start<ScheduleSettingsActivity> {
                                 putExtra("tableData", task)
                             }
                         } else {

@@ -4,14 +4,14 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.core.view.setPadding
 import com.suda.yzune.wakeupschedule.R
 import splitties.dimensions.dip
 import splitties.resources.styledColor
-import splitties.views.*
-import splitties.views.dsl.core.*
 
 abstract class BaseTitleActivity : BaseActivity() {
 
@@ -30,40 +30,39 @@ abstract class BaseTitleActivity : BaseActivity() {
         findViewById<LinearLayout>(R.id.ll_root).addView(createTitleBar(), 0)
     }
 
-    open fun createTitleBar() = horizontalLayout {
-        backgroundColor = styledColor(R.attr.colorSurface)
-        topPadding = getStatusBarHeight()
-        // backgroundColor = styledColor(R.attr.colorSurface)
+    open fun createTitleBar() = LinearLayout(this).apply {
+        setBackgroundColor(styledColor(R.attr.colorSurface))
+        setPadding(0, getStatusBarHeight(), 0, 0)
         val outValue = TypedValue()
-        context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
+        theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-        add(imageButton {
-            imageResource = R.drawable.ic_back
+        addView(ImageButton(context).apply {
+            setImageResource(R.drawable.ic_back)
             setBackgroundResource(outValue.resourceId)
-            padding = dip(8)
+            setPadding(dip(8))
             setColorFilter(styledColor(R.attr.colorOnBackground))
-            onClick {
+            setOnClickListener {
                 onBackPressed()
             }
-        }, lParams(wrapContent, dip(48)))
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
 
-        mainTitle = textView {
+        mainTitle = TextView(context).apply {
             text = title
             gravity = Gravity.CENTER_VERTICAL
             textSize = 16f
             typeface = Typeface.DEFAULT_BOLD
         }
 
-        add(mainTitle, lParams(wrapContent, dip(48)) {
+        addView(mainTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
             weight = 1f
         })
 
-        onSetupSubButton(textView {
+        onSetupSubButton(TextView(context).apply {
             gravity = Gravity.CENTER_VERTICAL
             setBackgroundResource(outValue.resourceId)
-            horizontalPadding = dip(24)
+            setPadding(dip(24), 0, dip(24), 0)
         })?.let {
-            add(it, lParams(wrapContent, dip(48)))
+            addView(it, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
         }
 
     }

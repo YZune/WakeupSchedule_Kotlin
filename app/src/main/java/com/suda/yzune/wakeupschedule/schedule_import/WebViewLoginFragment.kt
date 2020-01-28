@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
-
 import android.app.Activity.RESULT_OK
 import android.net.http.SslError
 import android.os.Build
@@ -23,8 +22,7 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import splitties.fragments.start
-
+import splitties.activities.start
 
 class WebViewLoginFragment : BaseFragment() {
 
@@ -339,7 +337,7 @@ class WebViewLoginFragment : BaseFragment() {
                     when (task) {
                         "ok" -> {
                             Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
-                            start<ApplyInfoActivity>()
+                            activity!!.start<ApplyInfoActivity>()
                             activity!!.finish()
                         }
                         else -> {

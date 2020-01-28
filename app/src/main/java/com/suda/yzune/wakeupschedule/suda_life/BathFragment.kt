@@ -9,8 +9,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_bath.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class BathFragment : BaseFragment() {
 
@@ -40,14 +38,8 @@ class BathFragment : BaseFragment() {
 
     private fun refreshData(refresh: Boolean = false) {
         launch {
-            val task = withContext(Dispatchers.IO) {
-                try {
-                    viewModel.getBathData(true)
-                } catch (e: Exception) {
-                    e.message
-                }
-            }
-            if (task == "ok") {
+            try {
+                viewModel.getBathData(true)
                 val count = if (viewModel.maleBathData.inNum > viewModel.maleBathData.outNum) {
                     viewModel.maleBathData.inNum - viewModel.maleBathData.outNum
                 } else {
@@ -58,20 +50,14 @@ class BathFragment : BaseFragment() {
                 if (refresh) {
                     Toasty.success(activity!!, "刷新成功").show()
                 }
-            } else {
-                Toasty.error(activity!!, "发生异常>_<$task").show()
+            } catch (e: Exception) {
+                Toasty.error(activity!!, "发生异常>_<${e.message}").show()
             }
         }
 
         launch {
-            val task = withContext(Dispatchers.IO) {
-                try {
-                    viewModel.getBathData(false)
-                } catch (e: Exception) {
-                    e.message
-                }
-            }
-            if (task == "ok") {
+            try {
+                viewModel.getBathData(false)
                 val count = if (viewModel.femaleBathData.inNum > viewModel.femaleBathData.outNum) {
                     viewModel.femaleBathData.inNum - viewModel.femaleBathData.outNum
                 } else {
@@ -79,8 +65,8 @@ class BathFragment : BaseFragment() {
                 }
                 tv_female_stay.text = count.toString()
                 tv_female_rate.text = "拥挤度：${(count / 90f) * 100}%"
-            } else {
-                Toasty.error(activity!!, "发生异常>_<$task").show()
+            } catch (e: Exception) {
+                Toasty.error(activity!!, "发生异常>_<${e.message}").show()
             }
         }
     }

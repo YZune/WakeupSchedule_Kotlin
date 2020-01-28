@@ -9,7 +9,6 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import java.util.*
 
-
 object ICalUtils {
 
     fun getClassEvents(ical: ICalendar, startTimeMap: ArrayList<Calendar>,

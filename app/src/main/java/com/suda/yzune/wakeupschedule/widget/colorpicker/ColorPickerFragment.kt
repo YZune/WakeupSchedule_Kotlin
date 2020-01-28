@@ -1,6 +1,5 @@
 package com.suda.yzune.wakeupschedule.widget.colorpicker
 
-
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -16,7 +15,6 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_color_picker.*
-import splitties.views.backgroundColor
 
 class ColorPickerFragment : BaseDialogFragment(), ColorPickerView.OnColorChangedListener, TextWatcher {
 
@@ -65,7 +63,7 @@ class ColorPickerFragment : BaseDialogFragment(), ColorPickerView.OnColorChanged
         }
 
         setHex(color)
-        v_color.backgroundColor = color
+        v_color.setBackgroundColor(color)
 
         et_color.addTextChangedListener(this)
 
@@ -109,7 +107,7 @@ class ColorPickerFragment : BaseDialogFragment(), ColorPickerView.OnColorChanged
             }
         }
         fromEditText = false
-        v_color.backgroundColor = newColor
+        v_color.setBackgroundColor(newColor)
     }
 
     override fun afterTextChanged(s: Editable?) {

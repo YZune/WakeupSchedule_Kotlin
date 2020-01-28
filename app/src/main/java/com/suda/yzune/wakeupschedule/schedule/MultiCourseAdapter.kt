@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 
-
 class MultiCourseAdapter(manager: FragmentManager, val data: List<CourseBean>) : FragmentStatePagerAdapter(manager) {
 
     override fun getItem(position: Int): Fragment {

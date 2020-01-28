@@ -5,17 +5,18 @@ import android.graphics.Typeface
 import android.os.Build
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.base_view.Ui
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
 import splitties.dimensions.dp
-import splitties.views.dsl.constraintlayout.constraintLayout
-import splitties.views.dsl.constraintlayout.lParams
-import splitties.views.dsl.constraintlayout.parentId
-import splitties.views.dsl.core.*
 
 class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
 
@@ -51,14 +52,16 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
         }
     }
 
-    val content = constraintLayout(R.id.anko_cl_content_panel) {
+    val content = ConstraintLayout(ctx).apply {
+        id = R.id.anko_cl_content_panel
         for (i in 1..table.nodes) {
-            add(textView(R.id.anko_tv_node1 + i - 1) {
+            addView(TextView(context).apply {
+                id = R.id.anko_tv_node1 + i - 1
                 text = i.toString()
                 textSize = 12f
                 gravity = Gravity.CENTER
                 setTextColor(table.textColor)
-            }, lParams(0, dip(table.itemHeight)) {
+            }, ConstraintLayout.LayoutParams(0, dip(table.itemHeight)).apply {
                 topMargin = dip(2)
                 endToStart = R.id.anko_ll_week_panel_0
                 horizontalWeight = 0.5f
@@ -88,10 +91,12 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
             dip(48)
         }
 
-        val navBar = view(::View, R.id.anko_navigation_bar_view)
+        val navBar = View(context).apply {
+            id = R.id.anko_navigation_bar_view
+        }
 
         if (PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 19) {
-            add(navBar, lParams(matchParent, barHeight) {
+            addView(navBar, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, barHeight).apply {
                 topToBottom = R.id.anko_tv_node1 + table.nodes - 1
                 bottomToBottom = ConstraintSet.PARENT_ID
                 startToStart = ConstraintSet.PARENT_ID
@@ -100,7 +105,8 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
         }
 
         for (i in 0 until col - 1) {
-            add(frameLayout(R.id.anko_ll_week_panel_0 + i), lParams(0, wrapContent) {
+            addView(FrameLayout(context).apply { id = R.id.anko_ll_week_panel_0 + i }, ConstraintLayout.LayoutParams(0,
+                    ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginStart = dip(1)
                 marginEnd = dip(1)
                 horizontalWeight = 1f
@@ -122,14 +128,17 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
         }
     }
 
-    val scrollView = content.wrapInScrollView(R.id.anko_sv_schedule) {
+    val scrollView = ScrollView(ctx).apply {
+        id = R.id.anko_sv_schedule
         overScrollMode = View.OVER_SCROLL_NEVER
         isVerticalScrollBarEnabled = false
+        addView(content)
     }
 
-    override val root = constraintLayout {
+    override val root = ConstraintLayout(ctx).apply {
         for (i in 0 until col) {
-            add(textView(R.id.anko_tv_title0 + i) {
+            addView(TextView(context).apply {
+                id = R.id.anko_tv_title0 + i
                 setPadding(0, dip(8), 0, dip(8))
                 textSize = 12f
                 gravity = Gravity.CENTER
@@ -141,7 +150,7 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
                 } else {
                     alpha = 0.32f
                 }
-            }, lParams(0, wrapContent) {
+            }, ConstraintLayout.LayoutParams(0, ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
                 when (i) {
                     0 -> {
                         horizontalWeight = 0.5f
@@ -165,11 +174,13 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
             })
         }
 
-        add(scrollView, lParams {
+        addView(scrollView, ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT).apply {
             bottomToBottom = ConstraintSet.PARENT_ID
             topToBottom = R.id.anko_tv_title0
-            startToStart = parentId
-            endToEnd = parentId
+            startToStart = ConstraintSet.PARENT_ID
+            endToEnd = ConstraintSet.PARENT_ID
         })
     }
 }

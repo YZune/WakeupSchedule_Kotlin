@@ -6,14 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
-import splitties.views.bottomPadding
-import splitties.views.dsl.core.*
-import splitties.views.topPadding
 
 class VerticalItemViewBinder constructor(
         private val onVerticalItemClickListener: (VerticalItem) -> Unit,
@@ -21,27 +19,26 @@ class VerticalItemViewBinder constructor(
 ) : ItemViewBinder<VerticalItem, VerticalItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = parent.verticalLayout(R.id.anko_layout) {
-
+        val view = LinearLayout(parent.context).apply {
+            id = R.id.anko_layout
+            orientation = LinearLayout.VERTICAL
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
-            topPadding = dip(16)
-            bottomPadding = dip(16)
+            setPadding(0, dip(16), 0, dip(16))
 
-            // lparams(matchParent, wrapContent)
-            add(textView {
+            addView(AppCompatTextView(context).apply {
                 id = R.id.anko_text_view
                 textSize = 16f
-            }, lParams(wrapContent, wrapContent) {
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 marginStart = dip(16)
                 marginEnd = dip(16)
             })
 
-            add(textView {
+            addView(AppCompatTextView(context).apply {
                 id = R.id.anko_tv_description
                 textSize = 12f
-            }, lParams(wrapContent, wrapContent) {
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 topMargin = dip(4)
                 marginStart = dip(16)
                 marginEnd = dip(16)

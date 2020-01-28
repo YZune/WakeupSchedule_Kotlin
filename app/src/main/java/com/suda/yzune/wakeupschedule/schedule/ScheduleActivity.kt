@@ -19,13 +19,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -48,14 +49,12 @@ import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import splitties.activities.start
 import splitties.dimensions.dip
-import splitties.views.onClick
 import java.text.ParseException
 import kotlin.math.roundToInt
 
@@ -72,12 +71,12 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var addImageButton: TextView
     private lateinit var importImageButton: TextView
     private lateinit var moreImageButton: TextView
-    private lateinit var tableNameRecyclerView: androidx.recyclerview.widget.RecyclerView
+    private lateinit var tableNameRecyclerView: RecyclerView
     private lateinit var dateTextView: TextView
     private lateinit var weekTextView: TextView
     private lateinit var weekdayTextView: TextView
     private lateinit var navigationView: NavigationView
-    private lateinit var drawerLayout: androidx.drawerlayout.widget.DrawerLayout
+    private lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,18 +88,11 @@ class ScheduleActivity : BaseActivity() {
         val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
         if (json != "") {
             launch {
-                val task = withContext(Dispatchers.IO) {
-                    try {
-                        viewModel.updateFromOldVer(json)
-                        "ok"
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-                if (task == "ok") {
+                try {
+                    viewModel.updateFromOldVer(json)
                     Toasty.success(applicationContext, "升级成功~").show()
-                } else {
-                    Toasty.error(applicationContext, "出现异常>_<\n$task").show()
+                } catch (e: Exception) {
+                    Toasty.error(applicationContext, "出现异常>_<\n${e.message}").show()
                 }
             }
         }
@@ -145,8 +137,7 @@ class ScheduleActivity : BaseActivity() {
                     if (response!!.body() != null) {
                         val gson = Gson()
                         try {
-                            val updateInfo = gson.fromJson<UpdateInfoBean>(response.body()!!.string(), object : TypeToken<UpdateInfoBean>() {
-                            }.type)
+                            val updateInfo = gson.fromJson<UpdateInfoBean>(response.body()!!.string(), UpdateInfoBean::class.java)
                             if (updateInfo.id > getVersionCode(this@ScheduleActivity.applicationContext)) {
                                 UpdateFragment.newInstance(updateInfo).show(supportFragmentManager, "updateDialog")
                             }
@@ -317,7 +308,7 @@ class ScheduleActivity : BaseActivity() {
             }).show(supportFragmentManager, "addTableFragment")
         }
         val tableManage = view.findViewById<TextView>(R.id.nav_table_manage)
-        tableManage.onClick {
+        tableManage.setOnClickListener {
             startActivityForResult(
                     Intent(this, ScheduleManageActivity::class.java), 16)
         }

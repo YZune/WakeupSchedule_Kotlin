@@ -1,12 +1,10 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
-import androidx.core.app.ShareCompat
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import es.dmoral.toasty.Toasty
@@ -14,7 +12,6 @@ import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
 import gdut.bsx.share2.ShareContentType
 import kotlinx.android.synthetic.main.fragment_export_settings.*
-import kotlinx.coroutines.launch
 import java.io.File
 
 class ExportSettingsFragment : BaseDialogFragment() {
@@ -22,12 +19,7 @@ class ExportSettingsFragment : BaseDialogFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_export_settings
 
-    private lateinit var viewModel: ScheduleViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-    }
+    private val viewModel by activityViewModels<ScheduleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -3,17 +3,17 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import kotlinx.android.synthetic.main.fragment_add_course_tip.*
-import splitties.fragments.start
+import splitties.activities.start
 
 class AddCourseTipFragment : BaseDialogFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_add_course_tip
 
-    private lateinit var viewModel: AddCourseViewModel
+    private val viewModel by activityViewModels<AddCourseViewModel>()
     private lateinit var course: CourseBaseBean
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +21,6 @@ class AddCourseTipFragment : BaseDialogFragment() {
         arguments?.let {
             course = it.getParcelable("course")!!
         }
-        viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +32,7 @@ class AddCourseTipFragment : BaseDialogFragment() {
 
         tv_modify.setOnClickListener {
             dismiss()
-            start<AddCourseActivity> {
+            activity!!.start<AddCourseActivity> {
                 putExtra("id", course.id)
                 putExtra("tableId", course.tableId)
                 putExtra("maxWeek", viewModel.maxWeek)

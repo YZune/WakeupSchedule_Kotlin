@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.view.setPadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.suda.yzune.wakeupschedule.R
@@ -19,11 +21,6 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
 import splitties.dimensions.dip
-import splitties.toast.longToast
-import splitties.views.dsl.core.add
-import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.matchParent
-import splitties.views.padding
 
 private const val weekParam = "week"
 
@@ -34,6 +31,7 @@ class ScheduleFragment : BaseFragment() {
     private lateinit var weekDate: List<String>
     private val viewModel by activityViewModels<ScheduleViewModel>()
     private lateinit var ui: ScheduleUI
+    private var isLoaded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +59,18 @@ class ScheduleFragment : BaseFragment() {
             } else {
                 textView.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
             }
-            viewModel.allCourseList[i - 1].observe(this, Observer {
-                initWeekPanel(it, i, viewModel.table)
-            })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isLoaded) {
+            for (i in 1..7) {
+                viewModel.allCourseList[i - 1].observe(this, Observer {
+                    initWeekPanel(it, i, viewModel.table)
+                })
+            }
+            isLoaded = true
         }
     }
 
@@ -99,19 +106,19 @@ class ScheduleFragment : BaseFragment() {
             val strBuilder = StringBuilder()
             if (c.step <= 0) {
                 c.step = 1
-                splitties.toast.toast(R.string.error_course_data)
+                Toasty.info(context!!, R.string.error_course_data, Toast.LENGTH_LONG).show()
             }
             if (c.startNode <= 0) {
                 c.startNode = 1
-                longToast(R.string.error_course_data)
+                Toasty.info(context!!, R.string.error_course_data, Toast.LENGTH_LONG).show()
             }
             if (c.startNode > table.nodes) {
                 c.startNode = table.nodes
-                longToast(R.string.error_course_node)
+                Toasty.info(context!!, R.string.error_course_node, Toast.LENGTH_LONG).show()
             }
             if (c.startNode + c.step - 1 > table.nodes) {
                 c.step = table.nodes - c.startNode + 1
-                longToast(R.string.error_course_node)
+                Toasty.info(context!!, R.string.error_course_node, Toast.LENGTH_LONG).show()
             }
 
             val textView = TipTextView(context!!)
@@ -120,7 +127,7 @@ class ScheduleFragment : BaseFragment() {
                 isCovered = (pre.startNode == c.startNode)
             }
 
-            textView.padding = context!!.dip(4)
+            textView.setPadding(context!!.dip(4))
 
             if (c.color.isEmpty()) {
                 c.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(activity!!, c.id % 9))}"
@@ -193,14 +200,19 @@ class ScheduleFragment : BaseFragment() {
                 }
             }
 
-            ll.add(textView, ll.lParams(ll.matchParent,
-                    viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1)) {
+            ll.addView(textView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                    viewModel.itemHeight * c.step + viewModel.marTop * (c.step - 1)).apply {
                 gravity = Gravity.TOP
                 topMargin = (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop
             })
 
             pre = c
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        isLoaded = false
     }
 
 }

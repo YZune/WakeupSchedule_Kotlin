@@ -5,7 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_multi_course.*
 import splitties.dimensions.dip
@@ -18,7 +18,7 @@ class MultiCourseFragment : BaseDialogFragment() {
     private var week = 0
     private var day = 0
     private var startNode = 0
-    private lateinit var viewModel: ScheduleViewModel
+    private val viewModel by activityViewModels<ScheduleViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +27,6 @@ class MultiCourseFragment : BaseDialogFragment() {
             day = it.getInt("day")
             startNode = it.getInt("startNode")
         }
-        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

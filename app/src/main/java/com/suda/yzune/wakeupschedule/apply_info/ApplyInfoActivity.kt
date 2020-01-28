@@ -18,7 +18,6 @@ import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
 import splitties.dimensions.dip
-import splitties.views.topPadding
 
 class ApplyInfoActivity : BaseListActivity() {
 
@@ -79,7 +78,7 @@ class ApplyInfoActivity : BaseListActivity() {
 
     private fun initHeaderView(): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_apply_info_header, null)
-        view.topPadding = getStatusBarHeight() + dip(48)
+        view.setPadding(0, getStatusBarHeight() + dip(48), 0, 0)
         return view
     }
 }

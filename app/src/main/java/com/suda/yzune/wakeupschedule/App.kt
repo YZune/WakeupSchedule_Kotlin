@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDex
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.answers.Answers
-import com.didichuxing.doraemonkit.DoraemonKit
 import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
@@ -29,7 +28,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DoraemonKit.install(this)
         Toasty.Config.getInstance()
                 .setToastTypeface(Typeface.DEFAULT_BOLD)
                 .setTextSize(12)

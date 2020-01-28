@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.drakeet.multitype.ItemViewBinder
@@ -14,32 +15,31 @@ import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
-import splitties.views.backgroundColor
-import splitties.views.dsl.core.*
-import splitties.views.lines
 
 class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = parent.verticalLayout(R.id.anko_layout) {
+        val view = LinearLayout(parent.context).apply {
+            id = R.id.anko_layout
+            orientation = LinearLayout.VERTICAL
+            addView(View(context).apply {
+                id = R.id.anko_view
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewUtils.getStatusBarHeight(context) + dip(48)))
 
-            add(view(::View, R.id.anko_view)
-                    , lParams(matchParent, ViewUtils.getStatusBarHeight(context) + dip(48)))
-
-            add(horizontalLayout {
+            addView(LinearLayout(context).apply {
                 setPadding(dip(16), dip(2), dip(16), dip(2))
-                backgroundColor = PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent))
+                setBackgroundColor(PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent)))
 
-                add(textView {
+                addView(TextView(context).apply {
                     id = R.id.anko_text_view
                     textSize = 12f
-                    lines = 1
+                    setLines(1)
                     setTextColor(Color.WHITE)
                     gravity = Gravity.CENTER_VERTICAL
                     typeface = Typeface.DEFAULT_BOLD
-                }, lParams(wrapContent, wrapContent))
+                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
-            }, lParams(wrapContent, wrapContent) {
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                 topMargin = dip(16)
             })
         }

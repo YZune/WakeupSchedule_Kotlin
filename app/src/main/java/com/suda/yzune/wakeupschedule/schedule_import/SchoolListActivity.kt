@@ -12,8 +12,11 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bigkoo.quicksidebar.listener.OnQuickSideBarTouchListener
@@ -46,9 +49,8 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_school_list.*
 import splitties.activities.start
 import splitties.dimensions.dip
+import splitties.resources.color
 import splitties.resources.styledColor
-import splitties.views.*
-import splitties.views.dsl.core.*
 
 class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
@@ -72,42 +74,43 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         return tvButton
     }
 
-    override fun createTitleBar() = verticalLayout {
-        backgroundColor = styledColor(R.attr.colorSurface)
-        add(horizontalLayout {
-            topPadding = getStatusBarHeight()
-            backgroundColor = styledColor(R.attr.colorSurface)
+    override fun createTitleBar() = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        setBackgroundColor(styledColor(R.attr.colorSurface))
+        addView(LinearLayout(context).apply {
+            setPadding(0, getStatusBarHeight(), 0, 0)
+            setBackgroundColor(styledColor(R.attr.colorSurface))
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-            add(imageButton {
-                imageResource = R.drawable.ic_back
+            addView(ImageButton(context).apply {
+                setImageResource(R.drawable.ic_back)
                 setBackgroundResource(outValue.resourceId)
-                padding = dip(8)
+                setPadding(dip(8))
                 setColorFilter(styledColor(R.attr.colorOnBackground))
-                onClick {
+                setOnClickListener {
                     onBackPressed()
                 }
-            }, lParams(wrapContent, dip(48)))
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
 
-            mainTitle = textView {
+            mainTitle = TextView(context).apply {
                 text = title
                 gravity = Gravity.CENTER_VERTICAL
                 textSize = 16f
                 typeface = Typeface.DEFAULT_BOLD
             }
 
-            add(mainTitle, lParams(wrapContent, dip(48)) {
+            addView(mainTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
-            searchView = editText {
+            searchView = EditText(context).apply {
                 hint = "请输入……"
                 textSize = 16f
                 background = null
                 gravity = Gravity.CENTER_VERTICAL
                 visibility = View.GONE
-                lines = 1
+                setLines(1)
                 setSingleLine()
                 imeOptions = EditorInfo.IME_ACTION_SEARCH
                 addTextChangedListener(object : TextWatcher {
@@ -139,23 +142,23 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                 })
             }
 
-            add(searchView, lParams(wrapContent, dip(48)) {
+            addView(searchView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
             val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
-            add(textView {
+            addView(TextView(context).apply {
                 textSize = 20f
                 typeface = iconFont
                 text = "\uE6D4"
                 gravity = Gravity.CENTER
                 setBackgroundResource(outValue.resourceId)
-                onClick {
+                setOnClickListener {
                     when (searchView.visibility) {
                         View.GONE -> {
                             mainTitle.visibility = View.GONE
                             searchView.visibility = View.VISIBLE
-                            textColorResource = R.color.colorAccent
+                            setTextColor(color(R.color.colorAccent))
                             searchView.isFocusable = true
                             searchView.isFocusableInTouchMode = true
                             searchView.requestFocus()
@@ -164,10 +167,10 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                         }
                     }
                 }
-            }, lParams(wrapContent, dip(48)) {
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 marginEnd = dip(24)
             })
-        }, lParams(matchParent, wrapContent))
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

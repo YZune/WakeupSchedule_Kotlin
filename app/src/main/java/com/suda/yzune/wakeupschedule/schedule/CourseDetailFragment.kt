@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.card.MaterialCardView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -21,9 +21,8 @@ import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.delay
+import splitties.activities.start
 import splitties.dimensions.dip
-import splitties.fragments.start
-import splitties.views.backgroundColor
 
 class CourseDetailFragment : BaseDialogFragment() {
 
@@ -32,7 +31,7 @@ class CourseDetailFragment : BaseDialogFragment() {
 
     private lateinit var course: CourseBean
     private var nested: Boolean = false
-    private lateinit var viewModel: ScheduleViewModel
+    private val viewModel by activityViewModels<ScheduleViewModel>()
 
     private var makeSure = 0
 
@@ -42,7 +41,6 @@ class CourseDetailFragment : BaseDialogFragment() {
             course = it.getParcelable<CourseBean>("course") as CourseBean
             nested = it.getBoolean("nested")
         }
-        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -59,9 +57,9 @@ class CourseDetailFragment : BaseDialogFragment() {
             container!!.layoutParams.width = context!!.dip(280)
             val root = inflater.inflate(R.layout.fragment_base_dialog, container, false)
             val cardView = root.findViewById<MaterialCardView>(R.id.base_card_view)
-            cardView.backgroundColor = Color.TRANSPARENT
+            cardView.setBackgroundColor(Color.TRANSPARENT)
             LayoutInflater.from(context).inflate(layoutId, cardView, true)
-            cardView.findViewById<View>(R.id.include_detail).backgroundColor = Color.TRANSPARENT
+            cardView.findViewById<View>(R.id.include_detail).setBackgroundColor(Color.TRANSPARENT)
             return root
         }
     }
@@ -109,7 +107,7 @@ class CourseDetailFragment : BaseDialogFragment() {
 
         ib_edit.setOnClickListener {
             dismiss()
-            start<AddCourseActivity> {
+            activity!!.start<AddCourseActivity> {
                 putExtra("id", course.id)
                 putExtra("tableId", course.tableId)
                 putExtra("maxWeek", viewModel.table.maxWeek)

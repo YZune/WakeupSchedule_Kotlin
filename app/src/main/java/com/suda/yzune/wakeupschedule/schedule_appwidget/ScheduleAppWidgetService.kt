@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import androidx.core.view.setPadding
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -18,10 +19,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import splitties.dimensions.dip
-import splitties.views.dsl.core.add
-import splitties.views.dsl.core.lParams
-import splitties.views.dsl.core.matchParent
-import splitties.views.padding
 import java.text.ParseException
 import kotlin.math.roundToInt
 
@@ -176,7 +173,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     isCovered = (pre.startNode == c.startNode)
                 }
 
-                textView.padding = dip(4)
+                textView.setPadding(dip(4))
 
                 if (c.color.isEmpty()) {
                     c.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(applicationContext, c.id % 9))}"
@@ -236,8 +233,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                         stroke = table.strokeColor
                 )
 
-                ll.add(textView, ll.lParams(ll.matchParent,
-                        widgetItemHeight * c.step + marTop * (c.step - 1)) {
+                ll.addView(textView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
+                        widgetItemHeight * c.step + marTop * (c.step - 1)).apply {
                     gravity = Gravity.TOP
                     topMargin = (c.startNode - 1) * (widgetItemHeight + marTop) + marTop
                 })

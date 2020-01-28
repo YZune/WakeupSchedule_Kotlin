@@ -11,8 +11,11 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.setMargins
+import androidx.core.view.setPadding
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
@@ -22,10 +25,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
-import splitties.views.bottomPadding
-import splitties.views.dsl.core.*
-import splitties.views.horizontalPadding
-import splitties.views.topPadding
 import java.text.ParseException
 import kotlin.math.roundToInt
 
@@ -122,13 +121,13 @@ class TodayColorfulService : RemoteViewsService() {
             if (alphaStr.length < 2) {
                 alphaStr = "0$alphaStr"
             }
-            return verticalLayout(R.id.anko_layout) {
+            return LinearLayout(context).apply {
+                id = R.id.anko_layout
+                orientation = LinearLayout.VERTICAL
                 val c = courseList[position]
 
-                add(horizontalLayout {
-                    topPadding = dip(dp * 4)
-                    bottomPadding = dip(dp * 4)
-                    horizontalPadding = dip(dp * 4)
+                addView(LinearLayout(context).apply {
+                    setPadding(dip(dp * 4))
 
                     if (showColor) {
                         background = ContextCompat.getDrawable(context.applicationContext, R.drawable.course_item_bg_today)
@@ -144,117 +143,120 @@ class TodayColorfulService : RemoteViewsService() {
                         }
                     }
 
-                    add(verticalLayout {
+                    addView(LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
                         gravity = Gravity.CENTER
                         // 开始节
-                        add(textView {
+                        addView(TextView(context).apply {
                             text = c.startNode.toString()
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
                             typeface = Typeface.DEFAULT_BOLD
-                        }, lParams(wrapContent, wrapContent) {
+                        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             bottomMargin = dip(dp * 2)
                         })
                         // 结束节
-                        add(textView {
+                        addView(TextView(context).apply {
                             text = "${c.startNode + c.step - 1}"
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
                             typeface = Typeface.DEFAULT_BOLD
-                        }, lParams(wrapContent, wrapContent) {
+                        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             topMargin = dip(dp * 2)
                         })
 
-                    }, lParams(dip(dp * 10), matchParent))
+                    }, LinearLayout.LayoutParams(dip(dp * 10), LinearLayout.LayoutParams.MATCH_PARENT))
 
-                    add(verticalLayout {
+                    addView(LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
                         gravity = Gravity.CENTER
 
-                        add(textView {
+                        addView(TextView(context).apply {
                             alpha = 0.8f
                             text = timeList[c.startNode - 1].startTime
                             setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
-                        }, lParams(wrapContent, wrapContent) {
-                            margin = dip(dp * 2)
+                        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                            setMargins(dip(dp * 2))
                         })
 
-                        add(textView {
+                        addView(TextView(context).apply {
                             text = timeList[c.startNode + c.step - 2].endTime
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
                             textSize = 12f
-                        }, lParams(wrapContent, wrapContent) {
-                            margin = dip(dp * 2)
+                        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                            setMargins(dip(dp * 2))
                         })
 
-                    }, lParams(wrapContent, matchParent))
+                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT))
 
-                    add(verticalLayout {
+                    addView(LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
                         gravity = Gravity.CENTER_VERTICAL
 
-                        add(textView {
+                        addView(TextView(context).apply {
                             text = c.courseName
                             setTextColor(table.widgetCourseTextColor)
                             textSize = 14f
                             typeface = Typeface.DEFAULT_BOLD
-                        }, lParams(matchParent, wrapContent))
+                        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
                         if (c.room != "" || c.teacher != "") {
-                            add(horizontalLayout {
+                            addView(LinearLayout(context).apply {
                                 if (c.room != "") {
 
-                                    add(textView {
+                                    addView(TextView(context).apply {
                                         text = "\uE6B2"
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
                                         textSize = 12f
                                         typeface = iconFont
-                                    }, lParams(wrapContent, wrapContent))
+                                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
-                                    add(textView {
+                                    addView(TextView(context).apply {
                                         text = c.room
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
                                         maxLines = 1
                                         textSize = 12f
-                                    }, lParams(wrapContent, wrapContent) {
+                                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                                         marginStart = dip(dp * 2)
                                         marginEnd = dip(dp * 8)
                                     })
                                 }
                                 if (c.teacher != "") {
-                                    add(textView {
+                                    addView(TextView(context).apply {
                                         text = "\uE6EB"
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
                                         textSize = 12f
                                         typeface = iconFont
-                                    }, lParams(wrapContent, wrapContent))
+                                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
-                                    add(textView {
+                                    addView(TextView(context).apply {
                                         alpha = 0.8f
                                         text = c.teacher
                                         setTextColor(table.widgetCourseTextColor)
                                         maxLines = 1
                                         ellipsize = TextUtils.TruncateAt.END
                                         textSize = 12f
-                                    }, lParams(wrapContent, wrapContent) {
+                                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                                         marginStart = dip(dp * 2)
                                     })
                                 }
-                            }, lParams(matchParent, wrapContent) {
+                            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                                 topMargin = dip(dp * 4)
                             })
                         }
 
-                    }, lParams(wrapContent, matchParent) {
+                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT).apply {
                         marginStart = dip(dp)
                     })
 
-                }, lParams(matchParent, wrapContent))
+                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
             }
 

@@ -13,10 +13,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.suda.yzune.wakeupschedule.R
@@ -32,9 +32,7 @@ import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
 import splitties.dimensions.dip
-import splitties.views.textColorResource
-import splitties.views.topPadding
-
+import splitties.resources.color
 
 class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener, AddCourseAdapter.OnItemEditTextChangedListener {
 
@@ -45,7 +43,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
         tvButton.typeface = Typeface.DEFAULT_BOLD
-        tvButton.textColorResource = R.color.colorAccent
+        tvButton.setTextColor(color(R.color.colorAccent))
         tvButton.setOnClickListener {
             if (viewModel.baseBean.courseName == "") {
                 Toasty.error(this.applicationContext, "请填写课程名称").show()
@@ -67,14 +65,12 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         return tvButton
     }
 
-    private lateinit var viewModel: AddCourseViewModel
+    private val viewModel by viewModels<AddCourseViewModel>()
     private lateinit var etName: EditText
     private var isExit: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this).get(AddCourseViewModel::class.java)
         showTip = intent.extras!!.getBoolean("showTip", false)
         if (intent.extras!!.getInt("id") == -1) {
             viewModel.tableId = intent.extras!!.getInt("tableId")
@@ -212,7 +208,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_base, null)
         etName = view.findViewById(R.id.et_name)
         val rlRoot = view.findViewById<RelativeLayout>(R.id.rl_root)
-        rlRoot.topPadding = getStatusBarHeight() + dip(48)
+        rlRoot.setPadding(0, getStatusBarHeight() + dip(48), 0, 0)
         val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
         tvColor = view.findViewById(R.id.tv_color)
         ivColor = view.findViewById(R.id.iv_color)

@@ -15,7 +15,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import es.dmoral.toasty.Toasty
-import splitties.fragments.start
+import splitties.activities.start
 
 class CourseManageFragment : BaseFragment() {
 
@@ -53,7 +53,7 @@ class CourseManageFragment : BaseFragment() {
         adapter.setOnItemChildClickListener { _, view, position ->
             when (view.id) {
                 R.id.ib_edit -> {
-                    start<AddCourseActivity> {
+                    activity!!.start<AddCourseActivity> {
                         putExtra("id", data[position].id)
                         putExtra("tableId", data[position].tableId)
                         putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)
@@ -96,7 +96,7 @@ class CourseManageFragment : BaseFragment() {
         val tvBtn = view.findViewById<TextView>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
-            start<AddCourseActivity> {
+            activity!!.start<AddCourseActivity> {
                 putExtra("id", -1)
                 putExtra("tableId", viewModel.tableSelectList[tablePosition].id)
                 putExtra("maxWeek", viewModel.tableSelectList[tablePosition].maxWeek)

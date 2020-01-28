@@ -18,7 +18,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
-import splitties.views.textColorResource
+import splitties.resources.color
 
 class TimeSettingsActivity : BaseTitleActivity() {
     override val layoutId: Int
@@ -27,7 +27,7 @@ class TimeSettingsActivity : BaseTitleActivity() {
     override fun onSetupSubButton(tvButton: TextView): TextView? {
         tvButton.text = "保存"
         tvButton.typeface = Typeface.DEFAULT_BOLD
-        tvButton.textColorResource = R.color.colorAccent
+        tvButton.setTextColor(color(R.color.colorAccent))
         tvButton.setOnClickListener {
             when (navController.currentDestination?.id) {
                 R.id.timeTableFragment -> {

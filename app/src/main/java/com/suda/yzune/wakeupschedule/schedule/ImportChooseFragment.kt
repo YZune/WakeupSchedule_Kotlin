@@ -15,7 +15,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import kotlinx.android.synthetic.main.fragment_import_choose.*
-import splitties.fragments.start
+import splitties.activities.start
 
 class ImportChooseFragment : BaseDialogFragment() {
 
@@ -109,7 +109,7 @@ class ImportChooseFragment : BaseDialogFragment() {
 
         tv_feedback.setOnClickListener {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            start<LoginWebActivity> {
+            activity!!.start<LoginWebActivity> {
                 putExtra("import_type", "apply")
             }
             dismiss()

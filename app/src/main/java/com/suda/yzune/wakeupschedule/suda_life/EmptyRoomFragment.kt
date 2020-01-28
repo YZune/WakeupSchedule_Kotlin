@@ -13,8 +13,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_empty_room.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import splitties.dimensions.dip
 
 class EmptyRoomFragment : BaseFragment() {
@@ -46,20 +44,14 @@ class EmptyRoomFragment : BaseFragment() {
 
     private fun initData() {
         launch {
-            val task = withContext(Dispatchers.IO) {
-                try {
-                    viewModel.getBuildingData()
-                } catch (e: Exception) {
-                    e.message
-                }
-            }
-            if (task == "ok") {
+            try {
+                viewModel.getBuildingData()
                 spinner_campus.adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, viewModel.buildingData.keys.toList())
                         .apply {
                             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         }
-            } else {
-                Toasty.error(activity!!, "发生异常>_<$task").show()
+            } catch (e: Exception) {
+                Toasty.error(activity!!, "发生异常>_<${e.message}").show()
             }
         }
 
@@ -119,17 +111,11 @@ class EmptyRoomFragment : BaseFragment() {
         val date = spinner_date.selectedItem as String?
         if (building != null && date != null) {
             launch {
-                val task = withContext(Dispatchers.IO) {
-                    try {
-                        viewModel.getRoomData(building, date)
-                    } catch (e: Exception) {
-                        e.message
-                    }
-                }
-                if (task == "ok") {
+                try {
+                    viewModel.getRoomData(building, date)
                     rv_room.adapter?.notifyDataSetChanged()
-                } else {
-                    Toasty.error(activity!!, "发生异常>_<$task").show()
+                } catch (e: Exception) {
+                    Toasty.error(activity!!, "发生异常>_<${e.message}").show()
                 }
             }
         }

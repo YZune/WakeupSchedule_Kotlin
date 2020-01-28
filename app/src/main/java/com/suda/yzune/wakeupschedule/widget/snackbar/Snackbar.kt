@@ -9,7 +9,6 @@ package com.suda.yzune.wakeupschedule.widget.snackbar
 import android.view.View
 import androidx.annotation.StringRes
 import com.google.android.material.snackbar.Snackbar
-import splitties.resources.txt
 
 /**
  * Shows a [Snackbar].
@@ -35,7 +34,7 @@ inline fun View.snack(
         @StringRes msgResId: Int,
         duration: Int = Snackbar.LENGTH_SHORT,
         actionSetup: Snackbar.() -> Unit = {}
-) = snack(txt(msgResId), duration, actionSetup)
+) = snack(context.getString(msgResId), duration, actionSetup)
 
 /**
  * Alias for calling [snack] with [Snackbar.LENGTH_LONG] as a duration parameter.
@@ -51,7 +50,7 @@ inline fun View.longSnack(
 inline fun View.longSnack(
         @StringRes msgResId: Int,
         actionSetup: Snackbar.() -> Unit = {}
-) = longSnack(txt(msgResId), actionSetup)
+) = longSnack(context.getString(msgResId), actionSetup)
 
 /**
  * Alias for calling [snack] with [Snackbar.LENGTH_INDEFINITE] as a duration parameter.
@@ -91,4 +90,4 @@ inline fun View.snackForever(
 inline fun View.snackForever(
         @StringRes msgResId: Int,
         actionSetup: Snackbar.() -> Unit = {}
-) = snackForever(txt(msgResId), actionSetup)
+) = snackForever(context.getString(msgResId), actionSetup)

@@ -7,10 +7,10 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
@@ -20,14 +20,13 @@ import kotlinx.android.synthetic.main.fragment_login_web.*
 
 class LoginWebActivity : BaseActivity() {
 
-    private lateinit var viewModel: ImportViewModel
+    private val viewModel by viewModels<ImportViewModel>()
     private var importPath = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_web)
 
-        viewModel = ViewModelProviders.of(this).get(ImportViewModel::class.java)
         intent.extras?.getString("import_type")?.let {
             viewModel.importType = it
         }
