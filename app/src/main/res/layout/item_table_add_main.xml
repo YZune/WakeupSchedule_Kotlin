@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="96dp"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/nav_table_add"
         style="@style/ButtonBackground"
         android:layout_width="32dp"
@@ -18,13 +18,13 @@
         android:text="@string/icon_add"
         android:textSize="20sp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="新建"
         android:textSize="10sp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/nav_table_manage"
         style="@style/ButtonBackground"
         android:layout_width="32dp"
@@ -37,11 +37,11 @@
         android:text="@string/icon_setting"
         android:textSize="20sp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="72dp"
         android:text="管理"
         android:textSize="10sp" />
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

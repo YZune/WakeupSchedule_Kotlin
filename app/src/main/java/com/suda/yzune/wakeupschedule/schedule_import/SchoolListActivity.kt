@@ -11,10 +11,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,8 +42,6 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_1
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_NEW
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.widget.snackbar.action
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_school_list.*
@@ -51,19 +49,21 @@ import splitties.activities.start
 import splitties.dimensions.dip
 import splitties.resources.color
 import splitties.resources.styledColor
+import splitties.snackbar.action
+import splitties.snackbar.longSnack
 
 class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
 
     private val letters = HashMap<String, Int>()
     private val showList = arrayListOf<SchoolInfo>()
     private val schools = arrayListOf<SchoolInfo>()
-    private lateinit var searchView: EditText
+    private lateinit var searchView: AppCompatEditText
     private var fromLocal = false
 
     override val layoutId: Int
         get() = R.layout.activity_school_list
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         tvButton.text = "申请适配"
         tvButton.setOnClickListener {
             start<LoginWebActivity> {
@@ -74,16 +74,16 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         return tvButton
     }
 
-    override fun createTitleBar() = LinearLayout(this).apply {
-        orientation = LinearLayout.VERTICAL
+    override fun createTitleBar() = LinearLayoutCompat(this).apply {
+        orientation = LinearLayoutCompat.VERTICAL
         setBackgroundColor(styledColor(R.attr.colorSurface))
-        addView(LinearLayout(context).apply {
+        addView(LinearLayoutCompat(context).apply {
             setPadding(0, getStatusBarHeight(), 0, 0)
             setBackgroundColor(styledColor(R.attr.colorSurface))
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-            addView(ImageButton(context).apply {
+            addView(AppCompatImageButton(context).apply {
                 setImageResource(R.drawable.ic_back)
                 setBackgroundResource(outValue.resourceId)
                 setPadding(dip(8))
@@ -91,20 +91,20 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                 setOnClickListener {
                     onBackPressed()
                 }
-            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
+            }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)))
 
-            mainTitle = TextView(context).apply {
+            mainTitle = AppCompatTextView(context).apply {
                 text = title
                 gravity = Gravity.CENTER_VERTICAL
                 textSize = 16f
                 typeface = Typeface.DEFAULT_BOLD
             }
 
-            addView(mainTitle, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+            addView(mainTitle, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
-            searchView = EditText(context).apply {
+            searchView = AppCompatEditText(context).apply {
                 hint = "请输入……"
                 textSize = 16f
                 background = null
@@ -142,12 +142,12 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                 })
             }
 
-            addView(searchView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+            addView(searchView, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
             val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
-            addView(TextView(context).apply {
+            addView(AppCompatTextView(context).apply {
                 textSize = 20f
                 typeface = iconFont
                 text = "\uE6D4"
@@ -167,10 +167,10 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                         }
                     }
                 }
-            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+            }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 marginEnd = dip(24)
             })
-        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

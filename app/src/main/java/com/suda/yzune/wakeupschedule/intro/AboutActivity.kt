@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.intro
 
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -15,7 +15,7 @@ class AboutActivity : BaseBlurTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_about
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             null
         } else {

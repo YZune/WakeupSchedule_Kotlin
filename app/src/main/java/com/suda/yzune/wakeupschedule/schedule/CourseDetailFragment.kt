@@ -16,13 +16,13 @@ import com.google.android.material.card.MaterialCardView
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_course_detail.*
 import kotlinx.android.synthetic.main.item_add_course_detail.*
 import kotlinx.coroutines.delay
 import splitties.activities.start
 import splitties.dimensions.dip
+import splitties.snackbar.longSnack
 
 class CourseDetailFragment : BaseDialogFragment() {
 

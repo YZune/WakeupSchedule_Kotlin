@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-
 abstract class BaseActivity : AppCompatActivity() {
 
     fun launch(block: suspend CoroutineScope.() -> Unit): Job = lifecycleScope.launch {

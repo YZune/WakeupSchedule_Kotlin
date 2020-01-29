@@ -13,8 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -64,17 +69,17 @@ class ScheduleActivity : BaseActivity() {
     private var mAdapter: SchedulePagerAdapter? = null
 
     private lateinit var scheduleViewPager: ViewPager
-    private lateinit var bgImageView: ImageView
+    private lateinit var bgImageView: AppCompatImageView
     private lateinit var scheduleConstraintLayout: ConstraintLayout
-    private lateinit var navImageButton: TextView
-    private lateinit var shareImageButton: TextView
-    private lateinit var addImageButton: TextView
-    private lateinit var importImageButton: TextView
-    private lateinit var moreImageButton: TextView
+    private lateinit var navImageButton: AppCompatTextView
+    private lateinit var shareImageButton: AppCompatTextView
+    private lateinit var addImageButton: AppCompatTextView
+    private lateinit var importImageButton: AppCompatTextView
+    private lateinit var moreImageButton: AppCompatTextView
     private lateinit var tableNameRecyclerView: RecyclerView
-    private lateinit var dateTextView: TextView
-    private lateinit var weekTextView: TextView
-    private lateinit var weekdayTextView: TextView
+    private lateinit var dateTextView: AppCompatTextView
+    private lateinit var weekTextView: AppCompatTextView
+    private lateinit var weekdayTextView: AppCompatTextView
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
 
@@ -201,8 +206,8 @@ class ScheduleActivity : BaseActivity() {
         for (i in 0 until scheduleConstraintLayout.childCount) {
             val view = scheduleConstraintLayout.getChildAt(i)
             when (view) {
-                is TextView -> view.setTextColor(viewModel.table.textColor)
-                is ImageButton -> view.setColorFilter(viewModel.table.textColor)
+                is AppCompatTextView -> view.setTextColor(viewModel.table.textColor)
+                is AppCompatImageButton -> view.setColorFilter(viewModel.table.textColor)
             }
         }
 
@@ -271,7 +276,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initFooterView(): View {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, tableNameRecyclerView, false)
-        val tableAdd = view.findViewById<TextView>(R.id.nav_table_add)
+        val tableAdd = view.findViewById<AppCompatTextView>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
                 override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -281,7 +286,7 @@ class ScheduleActivity : BaseActivity() {
                     return 0
                 }
 
-                override fun onFinish(editText: EditText, dialog: Dialog) {
+                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
                     if (editText.text.toString().isNotEmpty()) {
                         launch {
                             val task = async(Dispatchers.IO) {
@@ -307,7 +312,7 @@ class ScheduleActivity : BaseActivity() {
                 }
             }).show(supportFragmentManager, "addTableFragment")
         }
-        val tableManage = view.findViewById<TextView>(R.id.nav_table_manage)
+        val tableManage = view.findViewById<AppCompatTextView>(R.id.nav_table_manage)
         tableManage.setOnClickListener {
             startActivityForResult(
                     Intent(this, ScheduleManageActivity::class.java), 16)

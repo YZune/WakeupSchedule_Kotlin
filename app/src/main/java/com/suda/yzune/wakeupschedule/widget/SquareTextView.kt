@@ -2,10 +2,10 @@ package com.suda.yzune.wakeupschedule.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 
 class SquareTextView(context: Context, attributeSet: AttributeSet?) :
-        TextView(context, attributeSet) {
+        AppCompatTextView(context, attributeSet) {
 
     constructor(context: Context) : this(context, null)
 

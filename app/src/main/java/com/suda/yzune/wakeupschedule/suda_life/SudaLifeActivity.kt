@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.suda_life
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 
@@ -10,10 +9,7 @@ class SudaLifeActivity : BaseTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_suda_life
 
-    private lateinit var viewModel: SudaLifeViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProviders.of(this).get(SudaLifeViewModel::class.java)
         super.onCreate(savedInstanceState)
         when {
             intent.getStringExtra("type") == "空教室" -> {

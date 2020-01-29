@@ -3,7 +3,7 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseEditBean
 import com.suda.yzune.wakeupschedule.bean.TimeBean
@@ -17,7 +17,7 @@ class SelectTimeFragment : BaseDialogFragment() {
     var position = -1
     private val dayList = arrayOf("周一", "周二", "周三", "周四", "周五", "周六", "周日")
     private val nodeList = arrayOfNulls<String>(30)
-    private lateinit var viewModel: AddCourseViewModel
+    private val viewModel by activityViewModels<AddCourseViewModel>()
     private lateinit var course: CourseEditBean
     var day = 1
     var start = 1
@@ -28,7 +28,6 @@ class SelectTimeFragment : BaseDialogFragment() {
         arguments?.let {
             position = it.getInt("position")
         }
-        viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

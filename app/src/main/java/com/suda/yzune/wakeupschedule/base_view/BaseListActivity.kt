@@ -10,10 +10,10 @@ import android.view.View
 import android.view.View.OVER_SCROLL_NEVER
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatImageButton
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -26,9 +26,9 @@ import splitties.resources.styledColor
 
 abstract class BaseListActivity : BaseActivity() {
 
-    abstract fun onSetupSubButton(tvButton: TextView): TextView?
-    lateinit var mainTitle: TextView
-    lateinit var searchView: EditText
+    abstract fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView?
+    lateinit var mainTitle: AppCompatTextView
+    lateinit var searchView: AppCompatEditText
     protected var showSearch = false
     protected var textWatcher: TextWatcher? = null
     protected lateinit var mRecyclerView: RecyclerView
@@ -47,14 +47,14 @@ abstract class BaseListActivity : BaseActivity() {
             overScrollMode = OVER_SCROLL_NEVER
         }
 
-        mainTitle = TextView(context).apply {
+        mainTitle = AppCompatTextView(context).apply {
             text = title
             gravity = Gravity.CENTER_VERTICAL
             textSize = 16f
             typeface = Typeface.DEFAULT_BOLD
         }
 
-        searchView = EditText(context).apply {
+        searchView = AppCompatEditText(context).apply {
             hint = "请输入……"
             textSize = 16f
             background = null
@@ -75,12 +75,12 @@ abstract class BaseListActivity : BaseActivity() {
             endToEnd = ConstraintSet.PARENT_ID
         })
 
-        addView(LinearLayout(context).apply {
+        addView(LinearLayoutCompat(context).apply {
             id = R.id.anko_layout
             setPadding(0, getStatusBarHeight(), 0, 0)
             setBackgroundColor(styledColor(R.attr.colorSurface))
 
-            addView(ImageButton(context).apply {
+            addView(AppCompatImageButton(context).apply {
                 setImageResource(R.drawable.ic_back)
                 setBackgroundResource(outValue.resourceId)
                 setPadding(dip(8))
@@ -88,20 +88,20 @@ abstract class BaseListActivity : BaseActivity() {
                 setOnClickListener {
                     onBackPressed()
                 }
-            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)))
+            }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)))
 
             addView(mainTitle,
-                    LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+                    LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                         weight = 1f
                     })
 
-            addView(searchView, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+            addView(searchView, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                 weight = 1f
             })
 
             if (showSearch) {
                 val iconFont = ResourcesCompat.getFont(context, R.font.iconfont)
-                addView(TextView(context).apply {
+                addView(AppCompatTextView(context).apply {
                     textSize = 20f
                     typeface = iconFont
                     text = "\uE6D4"
@@ -121,16 +121,16 @@ abstract class BaseListActivity : BaseActivity() {
                             }
                         }
                     }
-                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+                }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                     marginEnd = dip(24)
                 })
             }
 
-            onSetupSubButton(TextView(context).apply {
+            onSetupSubButton(AppCompatTextView(context).apply {
                 gravity = Gravity.CENTER
                 setBackgroundResource(outValue.resourceId)
             })?.let {
-                addView(it, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(48)).apply {
+                addView(it, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(48)).apply {
                     marginEnd = dip(24)
                 })
             }

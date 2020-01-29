@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_import.SchoolListActivity
@@ -22,13 +22,8 @@ class ImportChooseFragment : BaseDialogFragment() {
     override val layoutId: Int
         get() = R.layout.fragment_import_choose
 
-    private lateinit var viewModel: ScheduleViewModel
+    private val viewModel by activityViewModels<ScheduleViewModel>()
     private lateinit var importSchool: SchoolInfo
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ScheduleViewModel::class.java)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -3,12 +3,12 @@ package com.suda.yzune.wakeupschedule.course_add
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.widget.SelectedRecyclerView
@@ -22,7 +22,7 @@ class SelectWeekFragment : BaseDialogFragment() {
         get() = R.layout.fragment_select_week
 
     var position = -1
-    private lateinit var viewModel: AddCourseViewModel
+    private val viewModel by activityViewModels<AddCourseViewModel>()
     private val liveData = MutableLiveData<ArrayList<Int>>()
     private val result = ArrayList<Int>()
     private var colorSurface: Int = Color.BLACK
@@ -32,7 +32,6 @@ class SelectWeekFragment : BaseDialogFragment() {
         arguments?.let {
             position = it.getInt("position")
         }
-        viewModel = ViewModelProviders.of(activity!!).get(AddCourseViewModel::class.java)
         colorSurface = context!!.styledColor(R.attr.colorOnSurface)
         liveData.observe(this, Observer {
             if (it?.size == viewModel.maxWeek) {
@@ -84,12 +83,12 @@ class SelectWeekFragment : BaseDialogFragment() {
                             result.add(pos + 1)
                             adapter.getViewByPosition(pos, R.id.tv_num)
                                     ?.setBackgroundResource(R.drawable.week_selected_bg)
-                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView)
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as AppCompatTextView)
                                     .setTextColor(Color.WHITE)
                         } else {
                             result.remove(pos + 1)
                             adapter.getViewByPosition(pos, R.id.tv_num)?.background = null
-                            (adapter.getViewByPosition(pos, R.id.tv_num) as TextView)
+                            (adapter.getViewByPosition(pos, R.id.tv_num) as AppCompatTextView)
                                     .setTextColor(colorSurface)
                         }
                         liveData.value = result

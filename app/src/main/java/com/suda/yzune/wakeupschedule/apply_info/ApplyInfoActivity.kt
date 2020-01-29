@@ -5,23 +5,23 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
-import com.suda.yzune.wakeupschedule.widget.snackbar.action
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
 import splitties.dimensions.dip
+import splitties.snackbar.action
+import splitties.snackbar.longSnack
 
 class ApplyInfoActivity : BaseListActivity() {
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
         tvButton.typeface = iconFont
         tvButton.textSize = 20f
@@ -32,7 +32,7 @@ class ApplyInfoActivity : BaseListActivity() {
         return tvButton
     }
 
-    private lateinit var viewModel: ApplyInfoViewModel
+    private val viewModel by viewModels<ApplyInfoViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSearch = true
@@ -57,7 +57,6 @@ class ApplyInfoActivity : BaseListActivity() {
 
         }
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ApplyInfoViewModel::class.java)
         mRecyclerView.adapter = ApplyInfoAdapter(R.layout.item_apply_info, viewModel.filterList).apply {
             this.setHeaderView(initHeaderView())
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".schedule_appwidget.WeekScheduleAppWidgetConfigActivity">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
@@ -31,7 +31,7 @@
         android:textSize="12sp"
         android:textStyle="bold" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,4 +51,4 @@
             tools:listitem="@layout/item_table_list" />
     </RelativeLayout>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

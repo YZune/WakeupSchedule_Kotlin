@@ -5,9 +5,9 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
+import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.navigation.NavArgument
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -15,16 +15,16 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
 import splitties.resources.color
+import splitties.snackbar.longSnack
 
 class TimeSettingsActivity : BaseTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_time_settings
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         tvButton.text = "保存"
         tvButton.typeface = Typeface.DEFAULT_BOLD
         tvButton.setTextColor(color(R.color.colorAccent))
@@ -51,7 +51,7 @@ class TimeSettingsActivity : BaseTitleActivity() {
         return tvButton
     }
 
-    private lateinit var viewModel: TimeSettingsViewModel
+    private val viewModel by viewModels<TimeSettingsViewModel>()
     private lateinit var navController: NavController
     private var isExit: Boolean = false
     private val tExit = object : CountDownTimer(2000, 1000) {
@@ -65,9 +65,6 @@ class TimeSettingsActivity : BaseTitleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this).get(TimeSettingsViewModel::class.java)
-
         initView()
     }
 

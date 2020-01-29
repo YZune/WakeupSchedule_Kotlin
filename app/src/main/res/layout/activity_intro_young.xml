@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,13 +7,13 @@
     android:orientation="vertical"
     tools:context=".intro.IntroYoungActivity">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_logo"
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_marginTop="24dp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -37,4 +37,4 @@
         android:textStyle="bold"
         android:textSize="12sp" />
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

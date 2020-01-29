@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".suda_life.EmptyRoomFragment">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:textAlignment="center" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_date"
@@ -38,7 +38,7 @@
         android:background="@color/transparent"
         android:textAlignment="center" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-8dp"
@@ -55,4 +55,4 @@
         android:overScrollMode="never"
         tools:listitem="@layout/item_suda_room" />
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

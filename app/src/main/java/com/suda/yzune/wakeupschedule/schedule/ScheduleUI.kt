@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ScrollView
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.suda.yzune.wakeupschedule.R
@@ -55,7 +55,7 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
     val content = ConstraintLayout(ctx).apply {
         id = R.id.anko_cl_content_panel
         for (i in 1..table.nodes) {
-            addView(TextView(context).apply {
+            addView(AppCompatTextView(context).apply {
                 id = R.id.anko_tv_node1 + i - 1
                 text = i.toString()
                 textSize = 12f
@@ -137,7 +137,7 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
 
     override val root = ConstraintLayout(ctx).apply {
         for (i in 0 until col) {
-            addView(TextView(context).apply {
+            addView(AppCompatTextView(context).apply {
                 id = R.id.anko_tv_title0 + i
                 setPadding(0, dip(8), 0, dip(8))
                 textSize = 12f

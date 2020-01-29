@@ -2,8 +2,8 @@ package com.suda.yzune.wakeupschedule.settings
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -23,10 +23,10 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.SwitchItemViewBinder
 import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
-import com.suda.yzune.wakeupschedule.widget.snackbar.snack
 import splitties.activities.start
 import splitties.resources.color
+import splitties.snackbar.longSnack
+import splitties.snackbar.snack
 
 class SettingsActivity : BaseListActivity() {
 
@@ -35,7 +35,7 @@ class SettingsActivity : BaseListActivity() {
 
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             null
         } else {

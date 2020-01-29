@@ -3,7 +3,7 @@ package com.suda.yzune.wakeupschedule.settings
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.BaseDialogFragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import kotlinx.android.synthetic.main.fragment_select_time_detail.*
@@ -14,7 +14,7 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
 
     var position = -1
     var tablePosition = 0
-    private lateinit var viewModel: TimeSettingsViewModel
+    private val viewModel by activityViewModels<TimeSettingsViewModel>()
     private var mListener: DialogResultListener? = null
 
     fun setListener(listener: DialogResultListener) {
@@ -31,7 +31,6 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
             position = it.getInt("position")
             tablePosition = it.getInt("tablePosition")
         }
-        viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

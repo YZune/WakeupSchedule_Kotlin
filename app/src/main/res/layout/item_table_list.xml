@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_table_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_pic" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_pic"
             android:layout_width="0dp"
             android:layout_height="96dp"
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:visibility="gone"
             android:id="@+id/ib_share"
             style="@style/ButtonBackground"
@@ -56,7 +56,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_table_name"
             app:layout_constraintTop_toBottomOf="@id/iv_pic" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ib_edit"
             style="@style/ButtonBackground"
             android:layout_width="0dp"
@@ -73,7 +73,7 @@
             app:layout_constraintStart_toEndOf="@id/ib_share"
             app:layout_constraintTop_toBottomOf="@id/iv_pic" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/ib_delete"
             style="@style/ButtonBackground"
             android:layout_width="0dp"

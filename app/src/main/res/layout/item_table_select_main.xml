@@ -13,7 +13,7 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_table_bg"
         android:layout_width="64dp"
         android:layout_height="96dp"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_action"
         android:layout_width="64dp"
         android:layout_height="96dp"
@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="@id/iv_table_bg"
         app:layout_constraintTop_toTopOf="@id/iv_table_bg">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_export"
             style="@style/IconTextViewStyle"
             android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             android:text=""
             android:textColor="@android:color/white" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_setting"
             style="@style/IconTextViewStyle"
             android:layout_width="match_parent"
@@ -54,9 +54,9 @@
             android:text=""
             android:textColor="@android:color/white" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_table_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

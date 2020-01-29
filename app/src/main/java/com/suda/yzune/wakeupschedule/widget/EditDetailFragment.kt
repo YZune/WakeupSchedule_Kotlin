@@ -3,7 +3,7 @@ package com.suda.yzune.wakeupschedule.widget
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.BaseDialogFragment
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
@@ -56,7 +56,7 @@ class EditDetailFragment : BaseDialogFragment() {
     }
 
     interface OnSaveClickedListener {
-        fun save(editText: EditText, dialog: Dialog)
+        fun save(editText: AppCompatEditText, dialog: Dialog)
     }
 
     override fun onDetach() {

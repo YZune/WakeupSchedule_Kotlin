@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -27,10 +27,10 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.DonateUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
 import splitties.resources.color
+import splitties.snackbar.longSnack
 
 class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
 
@@ -44,7 +44,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
 
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             null
         } else {

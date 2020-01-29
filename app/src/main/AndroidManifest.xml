@@ -72,11 +72,6 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name=".today_appwidget.TodayCourseAppWidgetService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
-        <service
             android:name=".today_appwidget.TodayColorfulService"
             android:enabled="true"
             android:exported="false"

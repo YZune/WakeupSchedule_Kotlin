@@ -17,12 +17,12 @@ import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import splitties.activities.start
+import splitties.snackbar.longSnack
 
 class WebViewLoginFragment : BaseFragment() {
 

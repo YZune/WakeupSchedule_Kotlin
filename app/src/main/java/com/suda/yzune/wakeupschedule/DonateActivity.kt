@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
@@ -27,7 +27,7 @@ class DonateActivity : BaseBlurTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_donate
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return null
     }
 
@@ -65,8 +65,8 @@ class DonateActivity : BaseBlurTitleActivity() {
     }
 
     private fun displayError() {
-        val textView = TextView(this)
-        val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        val textView = AppCompatTextView(this)
+        val textParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         textParams.setMargins(0, 0, 0, dip(8))
         textView.layoutParams = textParams
         textView.text = "加载失败:(\n\n点击此处重试"
@@ -84,8 +84,8 @@ class DonateActivity : BaseBlurTitleActivity() {
         ll_left.removeAllViews()
         ll_middle.removeAllViews()
         for (item in list) {
-            val textView = TextView(this)
-            val textParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val textView = AppCompatTextView(this)
+            val textParams = LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             textParams.setMargins(0, 0, 0, dip(8))
             textView.layoutParams = textParams
             textView.text = item.name

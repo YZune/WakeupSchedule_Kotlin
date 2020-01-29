@@ -5,8 +5,8 @@ import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import androidx.lifecycle.ViewModelProviders
+import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -15,27 +15,25 @@ import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
 import com.suda.yzune.wakeupschedule.bean.AppWidgetBean
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_week_schedule_app_widget_config.*
+import splitties.snackbar.longSnack
 
 class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
 
     override val layoutId: Int
         get() = R.layout.activity_week_schedule_app_widget_config
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return null
     }
 
-    private lateinit var viewModel: WeekScheduleAppWidgetConfigViewModel
+    private val viewModel by viewModels<WeekScheduleAppWidgetConfigViewModel>()
     private var mAppWidgetId = 0
     private var isTodayType = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProviders.of(this).get(WeekScheduleAppWidgetConfigViewModel::class.java)
 
         val extras = intent.extras
         if (extras != null) {

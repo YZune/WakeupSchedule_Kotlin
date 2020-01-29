@@ -4,7 +4,7 @@
 
 @file:Suppress("NOTHING_TO_INLINE")
 
-package com.suda.yzune.wakeupschedule.widget.snackbar
+package splitties.snackbar
 
 import android.view.View
 import androidx.annotation.StringRes

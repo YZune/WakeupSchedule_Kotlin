@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         android:text="时间段"
         android:textSize="12sp" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ib_delete"
         style="@style/ButtonBackground"
         android:layout_width="32dp"
@@ -29,21 +29,21 @@
         android:text="@string/icon_close"
         android:textSize="20sp" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_weeks"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/tv_item"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="@string/icon_date"
             android:textColor="#16AD9F" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/et_weeks"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -53,23 +53,23 @@
             android:hint="周数"
             android:lines="1"
             android:textSize="14sp" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_time"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_weeks"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="@string/icon_clock"
             android:textColor="#FFA622" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/et_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -83,23 +83,23 @@
             app:autoSizeMinTextSize="10sp"
             app:autoSizeStepGranularity="1sp"
             app:autoSizeTextType="uniform" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_teacher"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_time"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="@string/icon_person"
             android:textColor="#1571D5" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/et_teacher"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -111,23 +111,23 @@
             android:singleLine="true"
             android:textSize="14sp" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_room"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/ll_teacher"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="@string/icon_location"
             android:textColor="#F63D3E" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/et_room"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -139,6 +139,6 @@
             android:singleLine="true"
             android:textSize="14sp" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

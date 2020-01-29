@@ -6,8 +6,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
@@ -19,27 +19,27 @@ import splitties.dimensions.dip
 class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBinder.ViewHolder>() {
 
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = LinearLayout(parent.context).apply {
+        val view = LinearLayoutCompat(parent.context).apply {
             id = R.id.anko_layout
-            orientation = LinearLayout.VERTICAL
+            orientation = LinearLayoutCompat.VERTICAL
             addView(View(context).apply {
                 id = R.id.anko_view
-            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewUtils.getStatusBarHeight(context) + dip(48)))
+            }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, ViewUtils.getStatusBarHeight(context) + dip(48)))
 
-            addView(LinearLayout(context).apply {
+            addView(LinearLayoutCompat(context).apply {
                 setPadding(dip(16), dip(2), dip(16), dip(2))
                 setBackgroundColor(PreferenceUtils.getIntFromSP(context, "nav_bar_color", ContextCompat.getColor(context, R.color.colorAccent)))
 
-                addView(TextView(context).apply {
+                addView(AppCompatTextView(context).apply {
                     id = R.id.anko_text_view
                     textSize = 12f
                     setLines(1)
                     setTextColor(Color.WHITE)
                     gravity = Gravity.CENTER_VERTICAL
                     typeface = Typeface.DEFAULT_BOLD
-                }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+                }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT))
 
-            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT).apply {
                 topMargin = dip(16)
             })
         }
@@ -59,7 +59,7 @@ class CategoryItemViewBinder : ItemViewBinder<CategoryItem, CategoryItemViewBind
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        var tvCategory: TextView = itemView.findViewById(R.id.anko_text_view)
+        var tvCategory: AppCompatTextView = itemView.findViewById(R.id.anko_text_view)
         var vTop: View = itemView.findViewById(R.id.anko_view)
     }
 

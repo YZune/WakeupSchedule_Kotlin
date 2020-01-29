@@ -6,9 +6,10 @@ import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.SeekBar
+import androidx.appcompat.widget.*
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
@@ -17,13 +18,12 @@ import es.dmoral.toasty.Toasty
 class TimeSettingsFragment : BaseFragment() {
 
     var position = 0
-    private lateinit var viewModel: TimeSettingsViewModel
+    private val viewModel by activityViewModels<TimeSettingsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val arguments = arguments
         position = arguments!!.getInt("position")
-        viewModel = ViewModelProviders.of(activity!!).get(TimeSettingsViewModel::class.java)
         if (viewModel.timeSelectList.isEmpty()) {
             viewModel.initTimeSelectList()
         }
@@ -68,8 +68,8 @@ class TimeSettingsFragment : BaseFragment() {
 
     private fun initHeaderView(adapter: TimeSettingsAdapter): View {
         val view = LayoutInflater.from(activity).inflate(R.layout.item_time_detail_header, null)
-        val llLength = view.findViewById<LinearLayout>(R.id.ll_set_length)
-        val switch = view.findViewById<Switch>(R.id.s_time_same)
+        val llLength = view.findViewById<LinearLayoutCompat>(R.id.ll_set_length)
+        val switch = view.findViewById<SwitchCompat>(R.id.s_time_same)
         if (viewModel.timeTableList[position].sameLen) {
             llLength.visibility = View.VISIBLE
         } else {
@@ -85,8 +85,8 @@ class TimeSettingsFragment : BaseFragment() {
             }
         }
 
-        val tvTimeLen = view.findViewById<TextView>(R.id.tv_time_length)
-        val seekBar = view.findViewById<SeekBar>(R.id.sb_time_length)
+        val tvTimeLen = view.findViewById<AppCompatTextView>(R.id.tv_time_length)
+        val seekBar = view.findViewById<AppCompatSeekBar>(R.id.sb_time_length)
         seekBar.progress = viewModel.timeTableList[position].courseLen - 30
         tvTimeLen.text = viewModel.timeTableList[position].courseLen.toString()
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -105,8 +105,8 @@ class TimeSettingsFragment : BaseFragment() {
 
         })
 
-        val tvName = view.findViewById<TextView>(R.id.tv_table_name)
-        val llName = view.findViewById<LinearLayout>(R.id.ll_table_name)
+        val tvName = view.findViewById<AppCompatTextView>(R.id.tv_table_name)
+        val llName = view.findViewById<LinearLayoutCompat>(R.id.ll_table_name)
         tvName.text = viewModel.timeTableList[position].name
         llName.setOnClickListener {
             if (viewModel.timeTableList[position].id == 1) {
@@ -122,7 +122,7 @@ class TimeSettingsFragment : BaseFragment() {
                     return 0
                 }
 
-                override fun onFinish(editText: EditText, dialog: Dialog) {
+                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
                     if (!editText.text.toString().isEmpty()) {
                         tvName.text = editText.text.toString()
                         viewModel.timeTableList[position].name = editText.text.toString()

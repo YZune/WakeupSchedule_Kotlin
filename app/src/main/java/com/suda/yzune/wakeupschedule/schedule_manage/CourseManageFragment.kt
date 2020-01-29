@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.suda.yzune.wakeupschedule.R
@@ -19,13 +19,8 @@ import splitties.activities.start
 
 class CourseManageFragment : BaseFragment() {
 
-    private lateinit var viewModel: ScheduleManageViewModel
+    private val viewModel by activityViewModels<ScheduleManageViewModel>()
     private var tablePosition = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(activity!!).get(ScheduleManageViewModel::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -93,7 +88,7 @@ class CourseManageFragment : BaseFragment() {
 
     private fun initFooterView(): View {
         val view = LayoutInflater.from(context).inflate(R.layout.item_add_course_btn, null)
-        val tvBtn = view.findViewById<TextView>(R.id.tv_add)
+        val tvBtn = view.findViewById<AppCompatTextView>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
             activity!!.start<AddCourseActivity> {

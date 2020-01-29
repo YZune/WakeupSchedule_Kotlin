@@ -6,7 +6,7 @@
     android:layout_height="64dp"
     android:foreground="?attr/selectableItemBackground">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_course_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ib_edit"
         style="@style/ButtonBackground"
         android:layout_width="56dp"
@@ -39,7 +39,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_course_name"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ib_delete"
         style="@style/ButtonBackground"
         android:layout_width="56dp"

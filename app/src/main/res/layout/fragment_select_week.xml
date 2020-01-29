@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="com.suda.yzune.wakeupschedule.course_add.SelectWeekFragment">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
@@ -22,13 +22,13 @@
         android:layout_margin="8dp"
         android:orientation="vertical" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="8dp"
         android:paddingEnd="8dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_all"
             android:layout_width="0dp"
             android:layout_height="24dp"
@@ -37,7 +37,7 @@
             android:gravity="center"
             android:text="全周" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_type1"
             android:layout_width="0dp"
             android:layout_height="24dp"
@@ -46,7 +46,7 @@
             android:gravity="center"
             android:text="单周" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_type2"
             android:layout_width="0dp"
             android:layout_height="24dp"
@@ -54,9 +54,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="双周" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -75,6 +75,6 @@
             android:text="保存"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

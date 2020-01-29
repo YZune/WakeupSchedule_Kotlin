@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".DonateActivity">
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -23,7 +22,7 @@
             android:text="点这里支付宝随意捐赠"
             android:textSize="12sp" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -33,14 +32,14 @@
             android:text="\t已经捐赠过的就不要再捐一次啦，心意已经收到，再说真的怪不好意思(*////▽////*)\n\t新版本不知道有没有达到大家的预期呢，感谢大家的反馈，希望你们能在使用过程中看到自己的建议被采纳了哦~然后继续欢迎新老用户的建议或者吐槽哦。\n\t然后是捐赠，真的好感动，也有点受宠若惊，真的是非常感谢啦。看着捐赠的名单，里面不乏熟悉面孔，就有点怪不好意思的哈。有的小伙伴会在支付宝给我留言，有的是激励的话，有的是建议，如果是提建议可以直接在侧栏的反馈中联系到我哦。无聊跟我聊聊也行，一般都会回复的~\n\t下面是捐赠的名单，再次表达我的谢意，其实你们能用上我就很开心啦嘻嘻。名单如果有疏漏那真的很抱歉哦，也可以联系我加上去~名单一部分是支付宝昵称，带*号的应该是真实姓名的名。顺序是按时间先后顺序啦。"
             android:textSize="12sp" />
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="64dp"
             android:baselineAligned="false">
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_left"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -51,9 +50,9 @@
                 android:paddingEnd="16dp">
 
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_middle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -63,9 +62,9 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_right"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -75,12 +74,12 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp">
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
-        </LinearLayout>
-
-
-    </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-</LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

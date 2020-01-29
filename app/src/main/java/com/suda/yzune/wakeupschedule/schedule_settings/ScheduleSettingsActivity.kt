@@ -11,13 +11,13 @@ import android.os.Bundle
 import android.os.Parcel
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProviders
 import com.drakeet.multitype.MultiTypeAdapter
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -32,9 +32,9 @@ import com.suda.yzune.wakeupschedule.settings.view_binder.*
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
+import splitties.snackbar.longSnack
 
 private const val TITLE_COLOR = 1
 private const val COURSE_TEXT_COLOR = 2
@@ -56,7 +56,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         }
     }
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         val iconFont = ResourcesCompat.getFont(this, R.font.iconfont)
         tvButton.typeface = iconFont
         tvButton.textSize = 20f
@@ -74,7 +74,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         return tvButton
     }
 
-    private lateinit var viewModel: ScheduleSettingsViewModel
+    private val viewModel by viewModels<ScheduleSettingsViewModel>()
     private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
@@ -106,7 +106,6 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             }
         }
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ScheduleSettingsViewModel::class.java)
         viewModel.table = intent.extras!!.getParcelable<TableBean>("tableData") as TableBean
 
         onAdapterCreated(mAdapter)
@@ -209,7 +208,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                         return 0
                     }
 
-                    override fun onFinish(editText: EditText, dialog: Dialog) {
+                    override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
                         if (editText.text.toString().isNotEmpty()) {
                             viewModel.table.tableName = editText.text.toString()
                             item.value = editText.text.toString()

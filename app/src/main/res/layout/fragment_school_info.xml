@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="24dp" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="48dp">
 
-        <ImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/ib_back"
             style="@style/ButtonBackground"
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:src="@drawable/ic_back"
             android:tint="?attr/colorOnBackground" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -34,18 +34,18 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -54,7 +54,7 @@
                 android:text="前言"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -64,7 +64,7 @@
                 android:text="本来，只是想写个本校使用的课程表。\n后来，发现可以顺便适配方正教务。\n但是，单是方正也有很多细节上的差异。所以按照教务来适配，有一定的局限性。于是决定，还是回到按学校来适配吧。\n侧栏 - 探索，点击可以查看目前申请适配的学校名单，我将每周末查看一次，优先适配有效数多的学校。"
                 android:textSize="12sp" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -73,7 +73,7 @@
                 android:text="使用须知"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -83,7 +83,7 @@
                 android:text="1. 学校名称必须填写全称，否则视作无效\n2. 本人还是学生，也需顾及学业，请勿催促"
                 android:textSize="12sp" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_school"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
@@ -106,12 +106,12 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <EditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_type"
                     android:layout_width="0dp"
                     android:layout_height="64dp"
@@ -135,7 +135,7 @@
                     android:textColor="@android:color/white"
                     app:chipBackgroundColor="@color/colorAccent" />
 
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
                 android:layout_width="match_parent"
@@ -145,7 +145,7 @@
                 android:alpha="0.5"
                 android:background="@color/grey" />
 
-            <EditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_qq"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
@@ -170,8 +170,8 @@
                 android:text="下一步"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>
 
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

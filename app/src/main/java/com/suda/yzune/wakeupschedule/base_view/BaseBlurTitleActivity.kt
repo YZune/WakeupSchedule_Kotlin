@@ -9,8 +9,8 @@ import android.view.View.inflate
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
-import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.setPadding
@@ -23,9 +23,9 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
     @get:LayoutRes
     protected abstract val layoutId: Int
 
-    abstract fun onSetupSubButton(tvButton: TextView): TextView?
+    abstract fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView?
 
-    lateinit var mainTitle: TextView
+    lateinit var mainTitle: AppCompatTextView
     lateinit var llContent: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +43,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
             inflate(this@BaseBlurTitleActivity, layoutId, this)
         }
 
-        mainTitle = TextView(this).apply {
+        mainTitle = AppCompatTextView(this).apply {
             text = title
             gravity = Gravity.CENTER_VERTICAL
             textSize = 16f
@@ -84,7 +84,7 @@ abstract class BaseBlurTitleActivity : BaseActivity() {
                             weight = 1f
                         })
 
-                onSetupSubButton(TextView(context).apply {
+                onSetupSubButton(AppCompatTextView(context).apply {
                     gravity = Gravity.CENTER_VERTICAL
                     setBackgroundResource(outValue.resourceId)
                     setPadding(dip(24), 0, dip(24), 0)

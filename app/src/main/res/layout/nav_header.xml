@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="200dp">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

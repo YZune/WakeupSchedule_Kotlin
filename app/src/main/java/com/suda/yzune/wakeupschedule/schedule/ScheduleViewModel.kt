@@ -24,7 +24,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class ScheduleViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dataBase = AppDatabase.getDatabase(application)

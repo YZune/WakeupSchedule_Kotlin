@@ -96,6 +96,6 @@ class SeekBarItemViewBinder constructor(private val onSeekValueChange: (SeekBarI
         val tvTitle: TextView = itemView.findViewById(R.id.anko_text_view)
         val tvUnit: TextView = itemView.findViewById(R.id.anko_tv_unit)
         val tvValue: TextView = itemView.findViewById(R.id.anko_tv_value)
-        val seekBar: SeekBar = itemView.findViewById(R.id.anko_seek_bar)
+        val seekBar: AppCompatSeekBar = itemView.findViewById(R.id.anko_seek_bar)
     }
 }

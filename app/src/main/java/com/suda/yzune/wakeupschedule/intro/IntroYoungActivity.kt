@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.intro
 
 import android.os.Bundle
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.suda.yzune.wakeupschedule.R
@@ -13,7 +13,7 @@ class IntroYoungActivity : BaseBlurTitleActivity() {
     override val layoutId: Int
         get() = R.layout.activity_intro_young
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return null
     }
 

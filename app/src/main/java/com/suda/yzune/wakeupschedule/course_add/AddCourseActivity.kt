@@ -12,8 +12,12 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -27,20 +31,20 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.widget.EditDetailFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
-import com.suda.yzune.wakeupschedule.widget.snackbar.action
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import es.dmoral.toasty.Toasty
 import kotlinx.coroutines.delay
 import splitties.dimensions.dip
 import splitties.resources.color
+import splitties.snackbar.action
+import splitties.snackbar.longSnack
 
 class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener, AddCourseAdapter.OnItemEditTextChangedListener {
 
-    private lateinit var tvColor: TextView
-    private lateinit var ivColor: TextView
+    private lateinit var tvColor: AppCompatTextView
+    private lateinit var ivColor: AppCompatTextView
     private var showTip = false
 
-    override fun onSetupSubButton(tvButton: TextView): TextView? {
+    override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         tvButton.text = "保存"
         tvButton.typeface = Typeface.DEFAULT_BOLD
         tvButton.setTextColor(color(R.color.colorAccent))
@@ -66,7 +70,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     }
 
     private val viewModel by viewModels<AddCourseViewModel>()
-    private lateinit var etName: EditText
+    private lateinit var etName: AppCompatEditText
     private var isExit: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,7 +117,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             when (view.id) {
                 R.id.ll_time -> {
                     viewModel.editList[position].time.observe(this, Observer {
-                        val textView = adapter.getViewByPosition(position + 1, R.id.et_time) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_time) as AppCompatTextView
                         textView.text = "${CourseUtils.getDayStr(it!!.day)}    第${it.startNode} - ${it.endNode}节"
                     })
                     val selectTimeDialog = SelectTimeFragment.newInstance(position)
@@ -137,7 +141,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 R.id.ll_weeks -> {
                     viewModel.editList[position].weekList.observe(this, Observer {
                         it!!.sort()
-                        val textView = adapter.getViewByPosition(position + 1, R.id.et_weeks) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_weeks) as AppCompatTextView
                         val text = Common.weekIntList2WeekBeanList(it).toString()
                         textView.text = text.substring(1, text.length - 1)
                     })
@@ -147,14 +151,14 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 }
                 R.id.ll_teacher -> {
                     launch {
-                        val textView = adapter.getViewByPosition(position + 1, R.id.et_teacher) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_teacher) as AppCompatTextView
                         if (viewModel.teacherList == null) {
                             viewModel.teacherList = viewModel.getExistedTeachers()
                         }
                         EditDetailFragment.newInstance("授课老师", viewModel.teacherList!!, viewModel.editList[position].teacher
                                 ?: "").apply {
                             listener = object : EditDetailFragment.OnSaveClickedListener {
-                                override fun save(editText: EditText, dialog: Dialog) {
+                                override fun save(editText: AppCompatEditText, dialog: Dialog) {
                                     val teacher = editText.text.toString()
                                     textView.text = teacher
                                     viewModel.editList[position].teacher = teacher
@@ -172,14 +176,14 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 }
                 R.id.ll_room -> {
                     launch {
-                        val textView = adapter.getViewByPosition(position + 1, R.id.et_room) as TextView
+                        val textView = adapter.getViewByPosition(position + 1, R.id.et_room) as AppCompatTextView
                         if (viewModel.roomList == null) {
                             viewModel.roomList = viewModel.getExistedRooms()
                         }
                         EditDetailFragment.newInstance("上课地点", viewModel.roomList!!, viewModel.editList[position].room
                                 ?: "").apply {
                             listener = object : EditDetailFragment.OnSaveClickedListener {
-                                override fun save(editText: EditText, dialog: Dialog) {
+                                override fun save(editText: AppCompatEditText, dialog: Dialog) {
                                     val room = editText.text.toString()
                                     textView.text = room
                                     viewModel.editList[position].room = room
@@ -209,7 +213,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         etName = view.findViewById(R.id.et_name)
         val rlRoot = view.findViewById<RelativeLayout>(R.id.rl_root)
         rlRoot.setPadding(0, getStatusBarHeight() + dip(48), 0, 0)
-        val llColor = view.findViewById<LinearLayout>(R.id.ll_color)
+        val llColor = view.findViewById<LinearLayoutCompat>(R.id.ll_color)
         tvColor = view.findViewById(R.id.tv_color)
         ivColor = view.findViewById(R.id.iv_color)
         etName.setText(baseBean.courseName)

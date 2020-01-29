@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_time_name"
         android:layout_width="0dp"
         android:layout_height="64dp"
@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toStartOf="@id/ib_edit"
         app:layout_constraintStart_toEndOf="@id/v_selected" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ib_edit"
         style="@style/ButtonBackground"
         android:layout_width="40dp"
@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toStartOf="@id/ib_delete"
         app:layout_constraintStart_toEndOf="@id/tv_time_name" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/ib_delete"
         style="@style/ButtonBackground"
         android:layout_width="40dp"

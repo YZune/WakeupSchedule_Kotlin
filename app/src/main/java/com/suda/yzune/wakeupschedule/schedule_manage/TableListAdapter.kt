@@ -1,7 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
 import android.view.View
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -24,7 +24,7 @@ class TableListAdapter(layoutResId: Int, data: MutableList<TableSelectBean>) :
         } else {
             helper.setText(R.id.tv_table_name, "我的课表")
         }
-        val imageView = helper.getView<ImageView>(R.id.iv_pic)
+        val imageView = helper.getView<AppCompatImageView>(R.id.iv_pic)
         if (item.background != "") {
             Glide.with(context)
                     .load(item.background)

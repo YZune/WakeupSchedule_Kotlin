@@ -12,7 +12,7 @@
         android:paddingStart="24dp"
         android:paddingEnd="24dp">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 android:layout_height="32dp"
                 android:layout_centerInParent="true" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/iv_error"
                 style="@style/IconTextViewStyle"
                 android:layout_width="32dp"
@@ -108,7 +108,7 @@
                 android:text=""
                 android:textColor="@color/orange" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_code"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
@@ -116,7 +116,7 @@
 
         </RelativeLayout>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_mask"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -125,7 +125,7 @@
             android:src="#96ffffff"
             android:visibility="gone" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -169,7 +169,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_thanks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
         android:textSize="12sp"
         tools:text="感谢 @颩欥殘膤\n能导入贵校课程离不开他无私贡献代码" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -220,7 +220,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_dialog_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

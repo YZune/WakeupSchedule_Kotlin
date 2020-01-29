@@ -8,7 +8,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet.PARENT_ID
 import androidx.core.content.res.ResourcesCompat
@@ -36,7 +37,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
             id = R.id.anko_drawer_layout
             addView(ConstraintLayout(ctx).apply {
                 id = R.id.anko_cl_schedule
-                addView(ImageView(ctx).apply {
+                addView(AppCompatImageView(ctx).apply {
                     id = R.id.anko_iv_bg
                     scaleType = ImageView.ScaleType.CENTER_CROP
                 }, ConstraintLayout.LayoutParams(
@@ -48,7 +49,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                     bottomToBottom = PARENT_ID
                 })
 
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_tv_date
                     gravity = Gravity.CENTER
                     setTextColor(Color.BLACK)
@@ -64,7 +65,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                     topMargin = statusBarMargin
                 })
 
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_tv_week
                     setTextColor(Color.BLACK)
                 }, ConstraintLayout.LayoutParams(
@@ -75,7 +76,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                     topMargin = dip(4)
                 })
 
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_tv_weekday
                     setTextColor(Color.BLACK)
                 }, ConstraintLayout.LayoutParams(
@@ -88,7 +89,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                 })
 
                 //导航按钮
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_ib_nav
                     text = "\uE6A7"
                     setBackgroundResource(outValue.resourceId)
@@ -103,7 +104,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                 })
 
                 //添加按钮
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_ib_add
                     text = "\uE6DC"
                     setBackgroundResource(outValue.resourceId)
@@ -118,7 +119,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                 })
 
                 //导入按钮
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_ib_import
                     text = "\uE6E2"
                     setBackgroundResource(outValue.resourceId)
@@ -133,7 +134,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                 })
 
                 //分享按钮
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_ib_share
                     text = "\uE6BA"
                     setBackgroundResource(outValue.resourceId)
@@ -147,7 +148,7 @@ class ScheduleActivityUI(override val ctx: Context) : Ui {
                     topToTop = PARENT_ID
                 })
 
-                addView(TextView(ctx).apply {
+                addView(AppCompatTextView(ctx).apply {
                     id = R.id.anko_ib_more
                     text = "\uE6BF"
                     setBackgroundResource(outValue.resourceId)

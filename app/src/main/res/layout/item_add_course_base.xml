@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/IconTextViewStyle"
         android:layout_width="56dp"
         android:layout_height="64dp"
         android:text=""
         android:textColor="#16AEA0" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_name"
         android:layout_width="match_parent"
         android:layout_height="64dp"
@@ -24,21 +24,21 @@
         android:singleLine="true"
         android:textSize="14sp" />
 
-    <LinearLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/ll_color"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_below="@id/et_name"
         android:background="?android:attr/selectableItemBackground">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/iv_color"
             style="@style/IconTextViewStyle"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -51,7 +51,7 @@
             android:lines="1"
             android:singleLine="true"
             android:textSize="14sp" />
-    </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <View
         android:layout_width="match_parent"

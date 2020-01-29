@@ -8,10 +8,9 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import com.drakeet.multitype.ItemViewBinder
 import com.suda.yzune.wakeupschedule.R
@@ -19,21 +18,20 @@ import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
 import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import splitties.dimensions.dip
 
-
 class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (SwitchItem, Boolean) -> Unit) : ItemViewBinder<SwitchItem, SwitchItemViewBinder.ViewHolder>() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
-        val view = LinearLayout(parent.context).apply {
+        val view = LinearLayoutCompat(parent.context).apply {
             id = R.id.anko_layout
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
             // lparams(matchParent, dip(64))
-            addView(TextView(context).apply {
+            addView(AppCompatTextView(context).apply {
                 id = R.id.anko_text_view
                 textSize = 16f
-            }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            }, LinearLayoutCompat.LayoutParams(0, LinearLayoutCompat.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 marginStart = dip(16)
                 weight = 1f
@@ -46,7 +44,7 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
                 supportButtonTintList = ColorStateList(states, colors)
             }
 
-            addView(checkBox, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            addView(checkBox, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER_VERTICAL
                 marginEnd = dip(8)
             })
@@ -68,8 +66,8 @@ class SwitchItemViewBinder constructor(private val onCheckItemCheckChange: (Swit
     }
 
     class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.findViewById(R.id.anko_text_view)
-        val checkbox: CheckBox = itemView.findViewById(R.id.anko_check_box)
-        val layout: LinearLayout = itemView.findViewById(R.id.anko_layout)
+        val tvTitle: AppCompatTextView = itemView.findViewById(R.id.anko_text_view)
+        val checkbox: AppCompatCheckBox = itemView.findViewById(R.id.anko_check_box)
+        val layout: LinearLayoutCompat = itemView.findViewById(R.id.anko_layout)
     }
 }

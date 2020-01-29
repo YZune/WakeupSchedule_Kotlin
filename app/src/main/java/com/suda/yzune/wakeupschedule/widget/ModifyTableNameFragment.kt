@@ -4,7 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import android.widget.EditText
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.BaseDialogFragment
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_modify_table_name.*
@@ -50,7 +50,7 @@ class ModifyTableNameFragment : BaseDialogFragment() {
     }
 
     interface TableNameChangeListener : Parcelable {
-        fun onFinish(editText: EditText, dialog: Dialog)
+        fun onFinish(editText: AppCompatEditText, dialog: Dialog)
     }
 
     companion object {

@@ -15,8 +15,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
-import com.suda.yzune.wakeupschedule.widget.snackbar.longSnack
 import kotlinx.android.synthetic.main.fragment_html_import.*
+import splitties.snackbar.longSnack
 import java.io.File
 
 class HtmlImportFragment : BaseFragment() {

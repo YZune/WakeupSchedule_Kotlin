@@ -4,7 +4,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -26,7 +26,7 @@ class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
     }
 
     override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val mHead = holder.itemView.findViewById<TextView>(R.id.mHead)
+        val mHead = holder.itemView.findViewById<AppCompatTextView>(R.id.mHead)
         mHead.text = getItem(position)!!.sortKey
         val myGrad = mHead.background as GradientDrawable
         myGrad.setColor(getCustomizedColor(position % 9))

@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.view.setPadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -49,8 +49,8 @@ class ScheduleFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
-        view.findViewById<TextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
-        var textView: TextView
+        view.findViewById<AppCompatTextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
+        var textView: AppCompatTextView
         for (i in 1..7) {
             if (ui.dayMap[i] == -1) continue
             textView = view.findViewById(R.id.anko_tv_title0 + ui.dayMap[i])
