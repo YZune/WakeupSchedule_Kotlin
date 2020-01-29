@@ -231,12 +231,13 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         tvColor.text = baseBean.color
         if (baseBean.color != "") {
             val colorInt = Color.parseColor(baseBean.color)
+            ivColor.setTextColor(colorInt)
             tvColor.setTextColor(colorInt)
             tvColor.text = "点此更改颜色"
         }
         llColor.setOnClickListener {
             ColorPickerFragment.newBuilder()
-                    .setColor(if (baseBean.color != "") tvColor.textColors.defaultColor else ContextCompat.getColor(applicationContext, R.color.red))
+                    .setColor(if (baseBean.color != "") tvColor.textColors.defaultColor else color(R.color.red))
                     .setShowAlphaSlider(false)
                     .show(this)
         }
@@ -246,7 +247,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     override fun onColorSelected(dialogId: Int, color: Int) {
         tvColor.setTextColor(color)
         tvColor.text = "点此更改颜色"
-        tvColor.setTextColor(color)
+        ivColor.setTextColor(color)
         viewModel.baseBean.color = "#${Integer.toHexString(color)}"
     }
 

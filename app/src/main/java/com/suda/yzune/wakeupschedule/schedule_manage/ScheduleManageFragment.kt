@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
@@ -93,7 +93,7 @@ class ScheduleManageFragment : BaseFragment() {
 
     private fun initFooterView(): View {
         val view = LayoutInflater.from(context).inflate(R.layout.item_add_course_btn, null)
-        val tvBtn = view.findViewById<AppCompatTextView>(R.id.tv_add)
+        val tvBtn = view.findViewById<MaterialButton>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
             ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
