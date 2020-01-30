@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
@@ -54,7 +53,7 @@ class LoginWebActivity : BaseActivity() {
                 if (viewModel.importType.isNullOrEmpty() || viewModel.school.isNullOrEmpty()) {
                     null
                 } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                     WebViewLoginFragment.newInstance(intent.getStringExtra("url"))
                 }
             }

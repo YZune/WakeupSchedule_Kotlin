@@ -123,7 +123,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         fun initData(views: RemoteViews) {
-            val ui = ScheduleUI(applicationContext, table, weekDay)
+            val ui = ScheduleUI(applicationContext, table, weekDay, true)
             for (i in 1..7) {
                 initWeekPanel(ui, allCourseList[i - 1], i)
             }
@@ -135,7 +135,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         private fun initWeekPanel(ui: ScheduleUI, data: List<CourseBean>?, day: Int) {
-            val ll = ui.content.findViewById<FrameLayout>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+            val ll = ui.content.findViewById<FrameLayout?>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+                    ?: return
             ll.removeAllViews()
             if (data == null || data.isEmpty()) return
             var isCovered = false
@@ -153,18 +154,24 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 if (!table.showOtherWeekCourse && isOtherWeek) continue
 
+                var isError = false
+
                 val strBuilder = StringBuilder()
                 if (c.step <= 0) {
                     c.step = 1
+                    isError = true
                 }
                 if (c.startNode <= 0) {
                     c.startNode = 1
+                    isError = true
                 }
                 if (c.startNode > table.nodes) {
                     c.startNode = table.nodes
+                    isError = true
                 }
                 if (c.startNode + c.step - 1 > table.nodes) {
                     c.step = table.nodes - c.startNode + 1
+                    isError = true
                 }
 
                 val textView = TipTextView(applicationContext)
@@ -192,7 +199,6 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                     }
                     strBuilder.append("[非本周]")
                     textView.visibility = View.VISIBLE
-                    textView.alpha = 0.2f
                 } else {
                     when (c.type) {
                         1 -> strBuilder.append("\n单周")
@@ -201,9 +207,10 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 }
 
                 if (isCovered) {
-                    if (ll.getChildAt(ll.childCount - 1) != null) {
-                        if (ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
-                            ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
+                    val tv = ll.getChildAt(ll.childCount - 1) as TipTextView?
+                    if (tv != null) {
+                        if (tv.tipVisibility == TipTextView.TIP_OTHER_WEEK) {
+                            tv.visibility = View.INVISIBLE
                         }
                     }
                 }
@@ -211,13 +218,21 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 val tv = ll.findViewWithTag<TipTextView?>(c.startNode)
                 if (tv != null) {
                     textView.visibility = View.INVISIBLE
-                    if (tv.tipVisibility == TipTextView.TIP_INVISIBLE && !isOtherWeek) {
-                        tv.tipVisibility = TipTextView.TIP_VISIBLE
+                    if (tv.tipVisibility != TipTextView.TIP_VISIBLE && !isOtherWeek) {
+                        if (tv.tipVisibility != TipTextView.TIP_ERROR) {
+                            tv.tipVisibility = TipTextView.TIP_VISIBLE
+                        }
                     }
+                }
+
+                if (isError) {
+                    textView.tipVisibility = TipTextView.TIP_ERROR
                 }
 
                 if (!isOtherWeek) {
                     textView.tag = c.startNode
+                } else {
+                    textView.tipVisibility = TipTextView.TIP_OTHER_WEEK
                 }
 
                 if (table.showTime && timeList.isNotEmpty()) {
@@ -226,11 +241,11 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
                 textView.init(
                         text = strBuilder.toString(),
-                        txtSize = table.itemTextSize,
-                        txtColor = table.courseTextColor,
+                        txtSize = table.widgetItemTextSize,
+                        txtColor = table.widgetCourseTextColor,
                         bgColor = Color.parseColor(c.color),
                         bgAlpha = alphaInt,
-                        stroke = table.strokeColor
+                        stroke = table.widgetStrokeColor
                 )
 
                 ll.addView(textView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,

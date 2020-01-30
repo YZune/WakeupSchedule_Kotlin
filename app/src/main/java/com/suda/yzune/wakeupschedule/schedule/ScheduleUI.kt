@@ -10,6 +10,7 @@ import android.widget.ScrollView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.graphics.ColorUtils
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.Ui
 import com.suda.yzune.wakeupschedule.bean.TableBean
@@ -18,11 +19,13 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
 import splitties.dimensions.dp
 
-class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
+class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidget: Boolean = false) : Ui {
 
     private var col = 6
 
     val dayMap = IntArray(8)
+    val itemHeight = ctx.dip(if (forWidget) table.widgetItemHeight else table.itemHeight)
+    val textColor = if (forWidget) table.widgetTextColor else table.textColor
 
     init {
         for (i in 1..7) {
@@ -60,8 +63,8 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
                 text = i.toString()
                 textSize = 12f
                 gravity = Gravity.CENTER
-                setTextColor(table.textColor)
-            }, ConstraintLayout.LayoutParams(0, dip(table.itemHeight)).apply {
+                setTextColor(textColor)
+            }, ConstraintLayout.LayoutParams(0, itemHeight).apply {
                 topMargin = dip(2)
                 endToStart = R.id.anko_ll_week_panel_0
                 horizontalWeight = 0.5f
@@ -136,19 +139,19 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int) : Ui {
     }
 
     override val root = ConstraintLayout(ctx).apply {
+        val textAlphaColor = ColorUtils.setAlphaComponent(textColor, (0.32 * (textColor shr 24 and 0xff)).toInt())
         for (i in 0 until col) {
             addView(AppCompatTextView(context).apply {
                 id = R.id.anko_tv_title0 + i
                 setPadding(0, dip(8), 0, dip(8))
                 textSize = 12f
                 gravity = Gravity.CENTER
-                setTextColor(table.textColor)
                 setLineSpacing(dp(2), 1f)
                 if (i == 0 || i == dayMap[day]) {
                     typeface = Typeface.DEFAULT_BOLD
-                    alpha = 1f
+                    setTextColor(textColor)
                 } else {
-                    alpha = 0.32f
+                    setTextColor(textAlphaColor)
                 }
             }, ConstraintLayout.LayoutParams(0, ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
                 when (i) {

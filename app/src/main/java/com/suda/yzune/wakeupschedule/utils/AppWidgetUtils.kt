@@ -116,7 +116,6 @@ object AppWidgetUtils {
                     mRemoteViews.setTextColor(R.id.tv_title0_1 + i, (tableBean.widgetTextColor and 0x00ffffff) + 0x33000000)
                 }
                 mRemoteViews.setTextViewTextSize(R.id.tv_title0_1 + i, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
-                mRemoteViews.setTextColor(R.id.tv_title0_1 + i, tableBean.widgetTextColor)
                 mRemoteViews.setTextViewText(R.id.tv_title0_1 + i, daysArray[i] + "\n${weekDate[i + 1]}")
             }
         } else {

@@ -1,7 +1,6 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.Manifest
-import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
@@ -52,8 +51,6 @@ import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -227,8 +224,6 @@ class ScheduleActivity : BaseActivity() {
     private fun initTableMenu(data: MutableList<TableSelectBean>) {
         tableNameRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
-        val fadeOutAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 1f, 0f)
-        fadeOutAni.duration = 500
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addHeaderView(FrameLayout(this).apply {
             this.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dip(24))
@@ -255,7 +250,6 @@ class ScheduleActivity : BaseActivity() {
         adapter.setOnItemClickListener { _, _, position ->
             if (position < data.size) {
                 if (data[position].id != viewModel.table.id) {
-                    fadeOutAni.start()
                     launch {
                         viewModel.changeDefaultTable(data[position].id)
                         initView()
@@ -289,19 +283,11 @@ class ScheduleActivity : BaseActivity() {
                 override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
                     if (editText.text.toString().isNotEmpty()) {
                         launch {
-                            val task = async(Dispatchers.IO) {
-                                try {
-                                    viewModel.addBlankTableAsync(editText.text.toString())
-                                    "ok"
-                                } catch (e: Exception) {
-                                    e.toString()
-                                }
-                            }
-                            val result = task.await()
-                            if (result == "ok") {
+                            try {
+                                viewModel.addBlankTable(editText.text.toString())
                                 Toasty.success(applicationContext, "新建成功~").show()
                                 dialog.dismiss()
-                            } else {
+                            } catch (e: Exception) {
                                 Toasty.error(applicationContext, "操作失败>_<").show()
                                 dialog.dismiss()
                             }
@@ -548,10 +534,7 @@ class ScheduleActivity : BaseActivity() {
 
             viewModel.alphaInt = (255 * (viewModel.table.itemAlpha.toFloat() / 100)).roundToInt()
 
-            val fadeInAni = ObjectAnimator.ofFloat(scheduleViewPager, "alpha", 0f, 1f)
-            fadeInAni.duration = 500
             initViewPage(viewModel.table.maxWeek, viewModel.table)
-            fadeInAni.start()
 
             initEvent()
 

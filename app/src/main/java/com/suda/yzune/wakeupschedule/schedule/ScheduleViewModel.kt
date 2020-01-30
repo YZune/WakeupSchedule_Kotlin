@@ -73,7 +73,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         return timeDao.getTimeList(timeTableId)
     }
 
-    suspend fun addBlankTableAsync(tableName: String) {
+    suspend fun addBlankTable(tableName: String) {
         tableDao.insertTable(TableBean(id = 0, tableName = tableName))
     }
 

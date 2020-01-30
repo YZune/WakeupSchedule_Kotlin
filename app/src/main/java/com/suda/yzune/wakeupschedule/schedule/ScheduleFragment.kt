@@ -50,14 +50,16 @@ class ScheduleFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
         view.findViewById<AppCompatTextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
-        var textView: AppCompatTextView
+        var textView: AppCompatTextView?
         for (i in 1..7) {
             if (ui.dayMap[i] == -1) continue
             textView = view.findViewById(R.id.anko_tv_title0 + ui.dayMap[i])
             if (i == 7 && !viewModel.table.showSat && !viewModel.table.sundayFirst) {
-                textView.text = viewModel.daysArray[i] + "\n${weekDate[7]}"
+                textView?.text = viewModel.daysArray[i] + "\n${weekDate[7]}"
+            } else if (!viewModel.table.showSun && viewModel.table.sundayFirst && i != 7) {
+                textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i] + 1]}"
             } else {
-                textView.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
+                textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
             }
         }
     }
@@ -85,7 +87,8 @@ class ScheduleFragment : BaseFragment() {
     }
 
     private fun initWeekPanel(data: List<CourseBean>?, day: Int, table: TableBean) {
-        val ll = ui.content.findViewById<FrameLayout>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+        val ll = ui.content.findViewById<FrameLayout?>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+                ?: return
         ll.removeAllViews()
         if (data == null || data.isEmpty()) return
         var isCovered = false
@@ -103,21 +106,27 @@ class ScheduleFragment : BaseFragment() {
 
             if (!table.showOtherWeekCourse && isOtherWeek) continue
 
+            var isError = false
+
             val strBuilder = StringBuilder()
             if (c.step <= 0) {
                 c.step = 1
+                isError = true
                 Toasty.info(context!!, R.string.error_course_data, Toast.LENGTH_LONG).show()
             }
             if (c.startNode <= 0) {
                 c.startNode = 1
+                isError = true
                 Toasty.info(context!!, R.string.error_course_data, Toast.LENGTH_LONG).show()
             }
             if (c.startNode > table.nodes) {
                 c.startNode = table.nodes
+                isError = true
                 Toasty.info(context!!, R.string.error_course_node, Toast.LENGTH_LONG).show()
             }
             if (c.startNode + c.step - 1 > table.nodes) {
                 c.step = table.nodes - c.startNode + 1
+                isError = true
                 Toasty.info(context!!, R.string.error_course_node, Toast.LENGTH_LONG).show()
             }
 
@@ -146,7 +155,6 @@ class ScheduleFragment : BaseFragment() {
                 }
                 strBuilder.append("[非本周]")
                 textView.visibility = View.VISIBLE
-                textView.alpha = 0.2f
             } else {
                 when (c.type) {
                     1 -> strBuilder.append("\n单周")
@@ -155,9 +163,10 @@ class ScheduleFragment : BaseFragment() {
             }
 
             if (isCovered) {
-                if (ll.getChildAt(ll.childCount - 1) != null) {
-                    if (ll.getChildAt(ll.childCount - 1).alpha < 0.8f) {
-                        ll.getChildAt(ll.childCount - 1).visibility = View.INVISIBLE
+                val tv = ll.getChildAt(ll.childCount - 1) as TipTextView?
+                if (tv != null) {
+                    if (tv.tipVisibility == TipTextView.TIP_OTHER_WEEK) {
+                        tv.visibility = View.INVISIBLE
                     }
                 }
             }
@@ -165,16 +174,24 @@ class ScheduleFragment : BaseFragment() {
             val tv = ll.findViewWithTag<TipTextView?>(c.startNode)
             if (tv != null) {
                 textView.visibility = View.INVISIBLE
-                if (tv.tipVisibility == TipTextView.TIP_INVISIBLE && !isOtherWeek) {
-                    tv.tipVisibility = TipTextView.TIP_VISIBLE
+                if (tv.tipVisibility != TipTextView.TIP_VISIBLE && !isOtherWeek) {
+                    if (tv.tipVisibility != TipTextView.TIP_ERROR) {
+                        tv.tipVisibility = TipTextView.TIP_VISIBLE
+                    }
                     tv.setOnClickListener {
                         MultiCourseFragment.newInstance(week, c.day, c.startNode).show(parentFragmentManager, "multi")
                     }
                 }
             }
 
+            if (isError) {
+                textView.tipVisibility = TipTextView.TIP_ERROR
+            }
+
             if (!isOtherWeek) {
                 textView.tag = c.startNode
+            } else {
+                textView.tipVisibility = TipTextView.TIP_OTHER_WEEK
             }
 
             if (table.showTime && viewModel.timeList.isNotEmpty()) {

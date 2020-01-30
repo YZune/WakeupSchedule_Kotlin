@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
@@ -82,7 +81,7 @@ class ImportChooseFragment : BaseDialogFragment() {
 
         tv_school.text = "${importSchool.name}导入"
         tv_school.setOnClickListener {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivityForResult(
                     Intent(activity, LoginWebActivity::class.java).apply {
                         putExtra("import_type", importSchool.type)
@@ -95,7 +94,7 @@ class ImportChooseFragment : BaseDialogFragment() {
         }
 
         tv_more.setOnClickListener {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.startActivityForResult(
                     Intent(activity, SchoolListActivity::class.java),
                     32)
@@ -103,7 +102,7 @@ class ImportChooseFragment : BaseDialogFragment() {
         }
 
         tv_feedback.setOnClickListener {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             activity!!.start<LoginWebActivity> {
                 putExtra("import_type", "apply")
             }

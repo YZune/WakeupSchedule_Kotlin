@@ -28,6 +28,9 @@ class TipTextView(context: Context) : View(context) {
     private val path = Path()
     private val rect = RectF()
     private val dpUnit = dp(1)
+    private var otherWeekTextAlpha = 255
+    private var otherWeekBgAlpha = 255
+    private var otherWeekStrokeAlpha = 255
 
     fun init(text: String, txtSize: Int, txtColor: Int, bgColor: Int, bgAlpha: Int, stroke: Int) {
         this.text = text
@@ -41,6 +44,9 @@ class TipTextView(context: Context) : View(context) {
             color = txtColor
             isDither = true
             style = Paint.Style.FILL_AND_STROKE
+            strokeWidth = 2 * dpUnit
+            strokeCap = Paint.Cap.ROUND
+            strokeJoin = Paint.Join.ROUND
         }
         bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = bgColor
@@ -56,6 +62,9 @@ class TipTextView(context: Context) : View(context) {
             strokeCap = Paint.Cap.ROUND
             strokeJoin = Paint.Join.ROUND
         }
+        otherWeekTextAlpha = (mTextPaint.alpha * 0.3).toInt()
+        otherWeekBgAlpha = (bgPaint.alpha * 0.3).toInt()
+        otherWeekStrokeAlpha = (strokePaint.alpha * 0.3).toInt()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -76,6 +85,12 @@ class TipTextView(context: Context) : View(context) {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        if (tipVisibility == TIP_OTHER_WEEK) {
+            mTextPaint.alpha = otherWeekTextAlpha
+            mPaint.alpha = otherWeekTextAlpha
+            strokePaint.alpha = otherWeekStrokeAlpha
+            bgPaint.alpha = otherWeekBgAlpha
+        }
         if (mStaticLayout == null) {
             mStaticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 StaticLayout
@@ -97,21 +112,33 @@ class TipTextView(context: Context) : View(context) {
         }
         canvas.drawRoundRect(rect, 4 * dpUnit, 4 * dpUnit, bgPaint)
         canvas.drawRoundRect(rect, 4 * dpUnit, 4 * dpUnit, strokePaint)
+        canvas.clipRect(rect)
+        canvas.save()
+        canvas.translate(paddingLeft.toFloat(), paddingTop.toFloat())
+        mStaticLayout!!.draw(canvas)
+        canvas.restore()
         if (tipVisibility == 1) {
             path.moveTo(width - 12 * dpUnit, height - 6 * dpUnit) // 此点为多边形的起点
             path.lineTo(width - 6 * dpUnit, height - 6 * dpUnit)
             path.lineTo(width - 6 * dpUnit, height - 12 * dpUnit)
             path.close() // 使这些点构成封闭的多边形
             canvas.drawPath(path, mPaint)
+        } else if (tipVisibility == -1) {
+            canvas.drawLine(width - 12 * dpUnit,
+                    height - 6 * dpUnit,
+                    width - 6 * dpUnit,
+                    height - 12 * dpUnit, mPaint)
+            canvas.drawLine(width - 6 * dpUnit,
+                    height - 6 * dpUnit,
+                    width - 12 * dpUnit,
+                    height - 12 * dpUnit, mPaint)
         }
-        canvas.save()
-        canvas.translate(paddingLeft.toFloat(), paddingTop.toFloat())
-        mStaticLayout!!.draw(canvas)
-        canvas.restore()
     }
 
     companion object {
         const val TIP_INVISIBLE = 0
         const val TIP_VISIBLE = 1
+        const val TIP_ERROR = -1
+        const val TIP_OTHER_WEEK = 2
     }
 }
