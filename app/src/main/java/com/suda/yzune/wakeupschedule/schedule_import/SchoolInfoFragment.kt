@@ -41,18 +41,15 @@ class SchoolInfoFragment : BaseFragment() {
                 viewModel.schoolInfo[0] = et_school.text.toString()
                 viewModel.schoolInfo[1] = et_type.text.toString()
                 viewModel.schoolInfo[2] = et_qq.text.toString()
-                val fragment = WebViewLoginFragment.newInstance("apply")
-                val transaction = activity!!.supportFragmentManager.beginTransaction()
+                val fragment = WebViewLoginFragment.newInstance()
+                val transaction = parentFragmentManager.beginTransaction()
+                transaction.hide(this)
                 transaction.add(R.id.fl_fragment, fragment, "webLogin")
                 transaction.commit()
             } else {
-                Toasty.error(activity!!.applicationContext, "请填写学校全称").show()
+                Toasty.error(activity!!, "请填写学校全称").show()
             }
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance() = SchoolInfoFragment()
-    }
 }

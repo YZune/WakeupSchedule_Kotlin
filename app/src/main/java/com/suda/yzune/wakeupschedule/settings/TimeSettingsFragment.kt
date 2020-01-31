@@ -10,6 +10,7 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.*
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
@@ -59,11 +60,11 @@ class TimeSettingsFragment : BaseFragment() {
                 }
             })
             selectTimeDialog.isCancelable = false
-            selectTimeDialog.show(fragmentManager!!, "selectTimeDetail")
+            selectTimeDialog.show(parentFragmentManager, "selectTimeDetail")
         }
         adapter.setHeaderView(initHeaderView(adapter))
         recyclerView.adapter = adapter
-        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+        recyclerView.layoutManager = LinearLayoutManager(activity)
     }
 
     private fun initHeaderView(adapter: TimeSettingsAdapter): View {

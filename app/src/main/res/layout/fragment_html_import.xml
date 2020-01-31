@@ -261,33 +261,6 @@
                             android:textColor="?attr/colorSurface"
                             app:chipBackgroundColor="@color/orange" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz5"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 5"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/blue" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz6"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 6"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/ruri" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz7"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 7"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/orange" />
-
                     </com.google.android.material.chip.ChipGroup>
 
                     <com.google.android.material.chip.ChipGroup

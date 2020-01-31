@@ -2,7 +2,6 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.content.Context
 import android.graphics.Typeface
-import android.os.Build
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -14,8 +13,6 @@ import androidx.core.graphics.ColorUtils
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.Ui
 import com.suda.yzune.wakeupschedule.bean.TableBean
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
 import splitties.dimensions.dp
 
@@ -88,18 +85,8 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
             })
         }
 
-        val barHeight = if (ViewUtils.getVirtualBarHeight(context) in 1..48) {
-            ViewUtils.getVirtualBarHeight(context)
-        } else {
-            dip(48)
-        }
-
-        val navBar = View(context).apply {
-            id = R.id.anko_navigation_bar_view
-        }
-
-        if (PreferenceUtils.getBooleanFromSP(context, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= 19) {
-            addView(navBar, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, barHeight).apply {
+        if (!forWidget) {
+            addView(View(context), ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, itemHeight * 4).apply {
                 topToBottom = R.id.anko_tv_node1 + table.nodes - 1
                 bottomToBottom = ConstraintSet.PARENT_ID
                 startToStart = ConstraintSet.PARENT_ID

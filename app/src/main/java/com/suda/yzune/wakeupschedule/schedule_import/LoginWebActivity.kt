@@ -38,7 +38,7 @@ class LoginWebActivity : BaseActivity() {
                 LoginWebFragment()
             }
             "apply" -> {
-                SchoolInfoFragment.newInstance()
+                SchoolInfoFragment()
             }
             "file" -> {
                 FileImportFragment()

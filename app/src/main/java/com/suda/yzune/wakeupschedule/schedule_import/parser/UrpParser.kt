@@ -153,7 +153,7 @@ class UrpParser(source: String) : Parser(source) {
             try {
                 nodeE.text().trim().substringAfter('第').substringBefore('大').substringBefore('小').toInt()
             } catch (e: Exception) {
-                Common.getWeekFromChinese(
+                Common.getNodeInt(
                         nodeE.text().trim().substringAfter('第').substringBefore('大').substringBefore(
                                 '小'
                         )
@@ -166,7 +166,7 @@ class UrpParser(source: String) : Parser(source) {
         return try {
             str.toInt()
         } catch (e: Exception) {
-            Common.getWeekFromChinese(str)
+            Common.getNodeInt(str)
         }
     }
 

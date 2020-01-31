@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
@@ -19,15 +19,13 @@ import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import splitties.activities.start
 import splitties.snackbar.longSnack
 
 class WebViewLoginFragment : BaseFragment() {
 
     private lateinit var url: String
-    private lateinit var viewModel: ImportViewModel
+    private val viewModel by activityViewModels<ImportViewModel>()
     private var isRefer = false
     private val hostRegex = Regex("""(http|https)://.*?/""")
 
@@ -36,7 +34,6 @@ class WebViewLoginFragment : BaseFragment() {
         arguments?.let {
             url = it.getString("url")!!
         }
-        viewModel = ViewModelProviders.of(activity!!).get(ImportViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -148,18 +145,6 @@ class WebViewLoginFragment : BaseFragment() {
                     qzChipId = id
                     viewModel.qzType = 3
                 }
-                R.id.chip_qz5 -> {
-                    qzChipId = id
-                    viewModel.qzType = 4
-                }
-                R.id.chip_qz6 -> {
-                    qzChipId = id
-                    viewModel.qzType = 5
-                }
-                R.id.chip_qz7 -> {
-                    qzChipId = id
-                    viewModel.qzType = 6
-                }
                 else -> {
                     chipGroup.findViewById<Chip>(qzChipId).isChecked = true
                 }
@@ -252,7 +237,7 @@ class WebViewLoginFragment : BaseFragment() {
                 } else {
                     wv_course.loadUrl(js)
                 }
-            } else if (viewModel.importType == Common.TYPE_URP) {
+            } else if (viewModel.importType == Common.TYPE_URP || viewModel.isUrp) {
                 if (!isRefer) {
                     val referUrl = getHostUrl() + "xkAction.do?actionType=6"
                     wv_course.loadUrl(referUrl)
@@ -322,27 +307,17 @@ class WebViewLoginFragment : BaseFragment() {
                 }
             } else {
                 launch {
-                    val task = withContext(Dispatchers.IO) {
-                        try {
-                            viewModel.postHtml(
-                                    school = viewModel.schoolInfo[0],
-                                    type = if (viewModel.isUrp) "URP" else viewModel.schoolInfo[1],
-                                    qq = viewModel.schoolInfo[2],
-                                    html = html)
-                        } catch (e: Exception) {
-                            "上传失败>_<\n" + e.message
-                        }
-                    }
-
-                    when (task) {
-                        "ok" -> {
-                            Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
-                            activity!!.start<ApplyInfoActivity>()
-                            activity!!.finish()
-                        }
-                        else -> {
-                            Toasty.error(activity!!.applicationContext, task, Toast.LENGTH_LONG).show()
-                        }
+                    try {
+                        viewModel.postHtml(
+                                school = viewModel.schoolInfo[0],
+                                type = if (viewModel.isUrp) "URP" else viewModel.schoolInfo[1],
+                                qq = viewModel.schoolInfo[2],
+                                html = html)
+                        Toasty.success(activity!!.applicationContext, "上传源码成功~请等待适配哦", Toast.LENGTH_LONG).show()
+                        activity!!.start<ApplyInfoActivity>()
+                        activity!!.finish()
+                    } catch (e: Exception) {
+                        Toasty.error(activity!!.applicationContext, "上传失败>_<\n" + e.message, Toast.LENGTH_LONG).show()
                     }
                 }
             }

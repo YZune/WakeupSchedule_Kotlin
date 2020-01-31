@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatTextView
@@ -17,6 +16,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_time_settings.*
+import kotlinx.coroutines.delay
 import splitties.resources.color
 import splitties.snackbar.longSnack
 
@@ -54,14 +54,6 @@ class TimeSettingsActivity : BaseTitleActivity() {
     private val viewModel by viewModels<TimeSettingsViewModel>()
     private lateinit var navController: NavController
     private var isExit: Boolean = false
-    private val tExit = object : CountDownTimer(2000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-        }
-
-        override fun onFinish() {
-            isExit = false
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +80,10 @@ class TimeSettingsActivity : BaseTitleActivity() {
         if (!isExit) {
             isExit = true // 准备退出
             ll_root.longSnack("真的不保存吗？那再按一次退出编辑哦，就不保存啦。")
-            tExit.start() // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+            launch {
+                delay(2000)
+                isExit = false
+            }
         } else {
             when (navController.currentDestination?.id) {
                 R.id.timeTableFragment -> {
@@ -105,8 +100,4 @@ class TimeSettingsActivity : BaseTitleActivity() {
         exitBy2Click()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        tExit.cancel()
-    }
 }

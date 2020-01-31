@@ -57,12 +57,19 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
 
     suspend fun importSchedule(source: String): Int {
         val parser = when (importType) {
-            Common.TYPE_ZF -> ZhengFangParser(source, 0)
+            Common.TYPE_ZF -> ZhengFangParser(source, zfType)
             Common.TYPE_ZF_1 -> ZhengFangParser(source, 1)
             Common.TYPE_ZF_NEW -> NewZFParser(source)
             Common.TYPE_URP -> UrpParser(source)
             Common.TYPE_URP_NEW -> NewUrpParser(source)
-            Common.TYPE_QZ -> QzParser(source)
+            Common.TYPE_QZ -> {
+                when (qzType) {
+                    0 -> QzParser(source)
+                    1 -> QzBrParser(source)
+                    2 -> QzWithNodeParser(source)
+                    else -> QzCrazyParser(source)
+                }
+            }
             Common.TYPE_QZ_OLD -> OldQzParser(source)
             Common.TYPE_QZ_CRAZY -> QzCrazyParser(source)
             Common.TYPE_QZ_BR -> QzBrParser(source)
@@ -678,17 +685,11 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return value
     }
 
-    suspend fun postHtml(school: String, type: String, html: String, qq: String): String {
-        val response = MyRetrofitUtils.instance.getService().postHtml(school, type, html, qq).execute()
-        if (response.isSuccessful) {
-            if (response.body()?.string() == "OK") {
-                return "ok"
-            } else {
-                throw Exception(response.message())
-            }
-        } else {
-            throw Exception(response.message())
+    suspend fun postHtml(school: String, type: String, html: String, qq: String) {
+        val response = withContext(Dispatchers.IO) {
+            MyRetrofitUtils.instance.getService().postHtml(school, type, html, qq).execute()
         }
+        if (!response.isSuccessful) throw Exception(response.message())
     }
 
     suspend fun importFromFile(path: String): String {
