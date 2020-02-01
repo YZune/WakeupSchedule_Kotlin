@@ -81,4 +81,5 @@
     <item name="anko_check_box" type="id" />
     <item name="anko_seek_bar" type="id" />
     <item name="anko_quick_side_bar" type="id" />
+    <item name="anko_empty_view" type="id" />
 </resources>

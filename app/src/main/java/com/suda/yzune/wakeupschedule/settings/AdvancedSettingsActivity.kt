@@ -5,27 +5,23 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
-import com.drakeet.multitype.MultiTypeAdapter
+import androidx.core.content.edit
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
-import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
-import com.suda.yzune.wakeupschedule.settings.bean.SeekBarItem
-import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
-import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
-import com.suda.yzune.wakeupschedule.settings.view_binder.CategoryItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.SeekBarItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.SwitchItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.DonateUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.settings.items.*
+import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
@@ -35,14 +31,16 @@ import splitties.snackbar.longSnack
 class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDialogListener {
 
     override fun onColorSelected(dialogId: Int, color: Int) {
-        PreferenceUtils.saveIntToSP(this, "nav_bar_color", color)
+        getPrefer().edit {
+            putInt(PreferenceKeys.THEME_COLOR, color)
+        }
         mRecyclerView.longSnack("重启App后生效哦~")
     }
 
     private lateinit var dataBase: AppDatabase
     private lateinit var widgetDao: AppWidgetDao
 
-    private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
+    private val mAdapter = SettingItemAdapter()
 
     override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
@@ -63,17 +61,29 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         dataBase = AppDatabase.getDatabase(application)
         widgetDao = dataBase.appWidgetDao()
 
-        onAdapterCreated(mAdapter)
-        val items = mutableListOf<Any>()
+        val items = mutableListOf<BaseSettingItem>()
         onItemsCreated(items)
-        mAdapter.items = items
-        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        mAdapter.data = items
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.itemAnimator?.changeDuration = 250
         mRecyclerView.adapter = mAdapter
+        mAdapter.addChildClickViewIds(R.id.anko_check_box)
+        mAdapter.setOnItemChildClickListener { _, view, position ->
+            when (val item = items[position]) {
+                is SwitchItem -> onSwitchItemCheckChange(item, view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).isChecked)
+            }
+        }
+        mAdapter.setOnItemClickListener { _, view, position ->
+            when (val item = items[position]) {
+                is VerticalItem -> onVerticalItemClick(item)
+                is SwitchItem -> view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).performClick()
+                is SeekBarItem -> onSeekBarItemClick(item, position)
+            }
+        }
     }
 
-    private fun onItemsCreated(items: MutableList<Any>) {
-        val colorStr = PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color",
-                ContextCompat.getColor(applicationContext, R.color.colorAccent))
+    private fun onItemsCreated(items: MutableList<BaseSettingItem>) {
+        val colorStr = getPrefer().getInt(PreferenceKeys.THEME_COLOR, color(R.color.colorAccent))
                 .toString(16)
         if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
             items.add(CategoryItem("外观", true))
@@ -85,30 +95,25 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         }
 
         items.add(VerticalItem("主题颜色", "调整大部分标签和虚拟键的颜色。\n以下关于虚拟键的设置，只对有虚拟键的手机有效哦，是为了有更好的沉浸效果~\n有实体按键或全面屏手势的手机本身就很棒啦~"))
-        items.add(SwitchItem("主界面虚拟键沉浸", PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false)))
+        items.add(SwitchItem("主界面虚拟键沉浸", getPrefer().getBoolean(PreferenceKeys.HIDE_NAV_BAR, false)))
 
         items.add(CategoryItem("上课提醒", false))
         items.add(VerticalItem("功能说明", "本功能处于<b><font color='#$colorStr'>试验性阶段</font></b>。由于国产手机对系统的定制不尽相同，本功能可能会在某些手机上失效。<b><font color='#$colorStr'>开启前提：设置好课程时间 + 往桌面添加一个日视图小部件 + 允许App后台运行</font></b>。<br>理论上<b><font color='#$colorStr'>每次设置之后</font></b>需要半天以上的时间才会正常工作，理论上不会很耗电。", true))
-        items.add(SwitchItem("开启上课提醒", PreferenceUtils.getBooleanFromSP(applicationContext, "course_reminder", false)))
-        items.add(SwitchItem("提醒通知常驻", PreferenceUtils.getBooleanFromSP(applicationContext, "reminder_on_going", false)))
-        items.add(SeekBarItem("提前几分钟提醒", PreferenceUtils.getIntFromSP(applicationContext, "reminder_min", 20), 0, 90, "分钟"))
+        items.add(SwitchItem("开启上课提醒", getPrefer().getBoolean(PreferenceKeys.COURSE_REMIND, false)))
+        items.add(SwitchItem("提醒通知常驻", getPrefer().getBoolean(PreferenceKeys.REMINDER_ON_GOING, false)))
+        items.add(SeekBarItem("提前几分钟提醒", getPrefer().getInt(PreferenceKeys.REMINDER_TIME, 20), 0, 90, "分钟"))
         //items.add(SwitchItem("提醒同时将手机静音", PreferenceUtils.getBooleanFromSP(applicationContext, "silence_reminder", false)))
 
         items.add(CategoryItem("开发情况", false))
         items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
-    private fun onAdapterCreated(adapter: MultiTypeAdapter) {
-        adapter.register(CategoryItem::class, CategoryItemViewBinder())
-        adapter.register(SeekBarItem::class, SeekBarItemViewBinder { item, value -> onSeekBarValueChange(item, value) })
-        adapter.register(VerticalItem::class, VerticalItemViewBinder({ onVerticalItemClick(it) }, { false }))
-        adapter.register(SwitchItem::class, SwitchItemViewBinder { item, isCheck -> onSwitchItemCheckChange(item, isCheck) })
-    }
-
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
         when (item.title) {
             "主界面虚拟键沉浸" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "hide_main_nav_bar", isChecked)
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.HIDE_NAV_BAR, isChecked)
+                }
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     mRecyclerView.longSnack("该设置仅对 Android 4.4 及以上版本有效>_<")
                 } else {
@@ -121,18 +126,24 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     val task = widgetDao.getWidgetsByTypes(0, 1)
                     if (task.isEmpty()) {
                         mRecyclerView.longSnack("好像还没有设置日视图小部件呢>_<")
-                        PreferenceUtils.saveBooleanToSP(applicationContext, "course_reminder", false)
+                        getPrefer().edit {
+                            putBoolean(PreferenceKeys.COURSE_REMIND, false)
+                        }
                         item.checked = false
                         mAdapter.notifyDataSetChanged()
                     } else {
-                        PreferenceUtils.saveBooleanToSP(applicationContext, "course_reminder", isChecked)
+                        getPrefer().edit {
+                            putBoolean(PreferenceKeys.COURSE_REMIND, isChecked)
+                        }
                         AppWidgetUtils.updateWidget(applicationContext)
                         item.checked = isChecked
                     }
                 }
             }
             "提醒通知常驻" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "reminder_on_going", isChecked)
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.REMINDER_ON_GOING, isChecked)
+                }
                 item.checked = isChecked
                 mRecyclerView.longSnack("对下一次提醒通知生效哦")
             }
@@ -143,7 +154,9 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     startActivity(intent)
                     item.checked = false
                 } else {
-                    PreferenceUtils.saveBooleanToSP(applicationContext, "silence_reminder", isChecked)
+                    getPrefer().edit {
+                        putBoolean(PreferenceKeys.SILENCE_REMINDER, isChecked)
+                    }
                     AppWidgetUtils.updateWidget(applicationContext)
                     item.checked = isChecked
                 }
@@ -169,7 +182,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             "主题颜色" -> {
                 ColorPickerFragment.newBuilder()
                         .setShowAlphaSlider(true)
-                        .setColor(PreferenceUtils.getIntFromSP(applicationContext, "nav_bar_color", ContextCompat.getColor(applicationContext, R.color.colorAccent)))
+                        .setColor(getPrefer().getInt(PreferenceKeys.THEME_COLOR, color(R.color.colorAccent)))
                         .show(this)
             }
             "截至2018.12.02" -> {
@@ -178,14 +191,50 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         }
     }
 
-    private fun onSeekBarValueChange(item: SeekBarItem, value: Int) {
-        when (item.title) {
-            "提前几分钟提醒" -> {
-                PreferenceUtils.saveIntToSP(applicationContext, "reminder_min", value + item.min)
-                AppWidgetUtils.updateWidget(applicationContext)
+    private fun onSeekBarItemClick(item: SeekBarItem, position: Int) {
+        val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle(item.title)
+                .setView(R.layout.dialog_edit_text)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.sure, null)
+                .create()
+        dialog.show()
+        val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+        val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+        inputLayout?.helperText = "范围 ${item.min} ~ ${item.max}"
+        inputLayout?.suffixText = item.unit
+        editText?.inputType = InputType.TYPE_CLASS_NUMBER
+        val valueStr = item.valueInt.toString()
+        editText?.setText(valueStr)
+        editText?.setSelection(valueStr.length)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val value = editText?.text
+            if (value.isNullOrBlank()) {
+                inputLayout?.error = "数值不能为空哦>_<"
+                return@setOnClickListener
             }
+            val valueInt = try {
+                value.toString().toInt()
+            } catch (e: Exception) {
+                inputLayout?.error = "输入异常>_<"
+                return@setOnClickListener
+            }
+            if (valueInt < item.min || valueInt > item.max) {
+                inputLayout?.error = "注意范围 ${item.min} ~ ${item.max}"
+                return@setOnClickListener
+            }
+            when (item.title) {
+                "提前几分钟提醒" -> {
+                    getPrefer().edit {
+                        putInt(PreferenceKeys.REMINDER_TIME, valueInt)
+                    }
+                    AppWidgetUtils.updateWidget(applicationContext)
+                }
+            }
+            item.valueInt = valueInt
+            mAdapter.notifyItemChanged(position)
+            dialog.dismiss()
         }
-        item.valueInt = value + item.min
     }
 
     override fun onDestroy() {

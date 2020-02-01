@@ -62,7 +62,7 @@ class LoginWebActivity : BaseActivity() {
             val transaction = supportFragmentManager.beginTransaction()
             transaction.add(R.id.fl_fragment, frag, viewModel.school)
             transaction.commit()
-            if (viewModel.importType != "apply") {
+            if (viewModel.importType != "apply" || viewModel.importType != "file") {
                 showImportSettingDialog()
             }
         }

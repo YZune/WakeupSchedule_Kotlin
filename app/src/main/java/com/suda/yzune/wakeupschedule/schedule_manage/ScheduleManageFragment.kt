@@ -1,23 +1,23 @@
 package com.suda.yzune.wakeupschedule.schedule_manage
 
-import android.app.Dialog
 import android.os.Bundle
-import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
-import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
 
@@ -96,31 +96,31 @@ class ScheduleManageFragment : BaseFragment() {
         val tvBtn = view.findViewById<MaterialButton>(R.id.tv_add)
         tvBtn.text = "添加"
         tvBtn.setOnClickListener {
-            ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
-                override fun writeToParcel(dest: Parcel?, flags: Int) {
-
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
-                    if (editText.text.toString().isNotEmpty()) {
-                        launch {
-                            try {
-                                viewModel.addBlankTable(editText.text.toString())
-                                Toasty.success(activity!!.applicationContext, "新建成功~").show()
-                            } catch (e: Exception) {
-                                Toasty.success(activity!!.applicationContext, "操作失败>_<").show()
-                            }
-                            dialog.dismiss()
+            val dialog = MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.setting_schedule_name)
+                    .setView(R.layout.dialog_edit_text)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.sure, null)
+                    .create()
+            dialog.show()
+            val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+            val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val value = editText?.text
+                if (value.isNullOrBlank()) {
+                    inputLayout?.error = "名称不能为空哦>_<"
+                } else {
+                    launch {
+                        try {
+                            viewModel.addBlankTable(editText.text.toString())
+                            Toasty.success(context!!, "新建成功~").show()
+                        } catch (e: Exception) {
+                            Toasty.error(context!!, "操作失败>_<").show()
                         }
-                    } else {
-                        Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
+                        dialog.dismiss()
                     }
                 }
-            }).show(parentFragmentManager, "addTableFragment")
+            }
         }
         return view
     }

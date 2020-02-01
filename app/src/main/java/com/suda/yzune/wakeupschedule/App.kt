@@ -18,7 +18,8 @@ import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
 import io.fabric.sdk.android.Fabric
 
@@ -39,7 +40,6 @@ class App : Application() {
         if (!BuildConfig.DEBUG && !Fabric.isInitialized()) {
             Fabric.with(this, Crashlytics(), Answers())
         }
-        PreferenceUtils.init(applicationContext)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             var channelId = "schedule_reminder"
             var channelName = "课程提醒"
@@ -50,8 +50,16 @@ class App : Application() {
             importance = NotificationManager.IMPORTANCE_LOW
             createNotificationChannel(this, channelId, channelName, importance)
         }
-        if (PreferenceUtils.getBooleanFromSP(applicationContext, "s_night_mode", false)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        when (getPrefer().getInt(PreferenceKeys.DAY_NIGHT_THEME, 2)) {
+            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            2 -> {
+                if (Build.VERSION.SDK_INT >= 29) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                }
+            }
         }
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityPaused(activity: Activity?) {
@@ -95,4 +103,5 @@ class App : Application() {
         super.attachBaseContext(base)
         MultiDex.install(this)
     }
+
 }

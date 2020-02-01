@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.app.Application
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import biweekly.ICalVersion
 import biweekly.ICalendar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.suda.yzune.wakeupschedule.App
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
@@ -17,7 +19,8 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -49,7 +52,7 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun getImportSchoolBean(): SchoolInfo {
-        val json = PreferenceUtils.getStringFromSP(getApplication(), "import_school", null)
+        val json = getApplication<App>().getPrefer().getString(PreferenceKeys.IMPORT_SCHOOL, null)
                 ?: return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
         val gson = Gson()
         val res = gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
@@ -87,6 +90,14 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
 
     fun getRawCourseByDay(day: Int, tableId: Int): LiveData<List<CourseBean>> {
         return courseDao.getCourseByDayOfTableLiveData(day, tableId)
+    }
+
+    fun getShowCourseNumber(week: Int): LiveData<Int> {
+        return if (table.showOtherWeekCourse) {
+            courseDao.getShowCourseNumberWithOtherWeek(table.id, week)
+        } else {
+            courseDao.getShowCourseNumber(table.id, week)
+        }
     }
 
     suspend fun deleteCourseBean(courseBean: CourseBean) {
@@ -137,7 +148,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
             }
         }
         courseDao.insertCourses(baseList, detailList)
-        PreferenceUtils.remove(getApplication(), "course")
+        getApplication<App>().getPrefer().edit {
+            remove(PreferenceKeys.OLD_VERSION_COURSE)
+        }
     }
 
     suspend fun exportData(currentDir: String): String {

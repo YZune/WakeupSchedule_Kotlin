@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.utils
 
 import android.content.Context
+import androidx.core.content.edit
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
@@ -25,37 +26,37 @@ object UpdateUtils {
     }
 
     suspend fun tranOldData(context: Context) {
-        if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false) &&
-                !PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_adjust", false)) {
+        if (context.getPrefer().getBoolean("has_intro", false) &&
+                !context.getPrefer().getBoolean("has_adjust", false)) {
             val tableData = TableBean(
                     tableName = "",
-                    itemHeight = PreferenceUtils.getIntFromSP(context.applicationContext, "item_height", 56),
-                    maxWeek = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_weeks", 30),
-                    itemTextSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_text_size", 12),
-                    showOtherWeekCourse = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show", false),
-                    showTime = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_time_detail", false),
-                    showSat = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_sat", true),
-                    showSun = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_show_weekend", true),
-                    sundayFirst = PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_sunday_first", false),
-                    nodes = PreferenceUtils.getIntFromSP(context.applicationContext, "classNum", 11),
-                    itemAlpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_alpha", 60),
-                    background = PreferenceUtils.getStringFromSP(context.applicationContext, "pic_uri", "")!!,
-                    startDate = PreferenceUtils.getStringFromSP(context.applicationContext, "termStart", "2019-02-25")!!,
-                    widgetItemAlpha = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_alpha", 60),
-                    widgetItemHeight = PreferenceUtils.getIntFromSP(context.applicationContext, "widget_item_height", 56),
-                    widgetItemTextSize = PreferenceUtils.getIntFromSP(context.applicationContext, "sb_widget_text_size", 12),
+                    itemHeight = context.getPrefer().getInt("item_height", 56),
+                    maxWeek = context.getPrefer().getInt("sb_weeks", 30),
+                    itemTextSize = context.getPrefer().getInt("sb_text_size", 12),
+                    showOtherWeekCourse = context.getPrefer().getBoolean("s_show", false),
+                    showTime = context.getPrefer().getBoolean("s_show_time_detail", false),
+                    showSat = context.getPrefer().getBoolean("s_show_sat", true),
+                    showSun = context.getPrefer().getBoolean("s_show_weekend", true),
+                    sundayFirst = context.getPrefer().getBoolean("s_sunday_first", false),
+                    nodes = context.getPrefer().getInt("classNum", 11),
+                    itemAlpha = context.getPrefer().getInt("sb_alpha", 60),
+                    background = context.getPrefer().getString(PreferenceKeys.OLD_VERSION_BG_URI, "")!!,
+                    startDate = context.getPrefer().getString(PreferenceKeys.OLD_VERSION_TERM_START, "2019-02-25")!!,
+                    widgetItemAlpha = context.getPrefer().getInt("sb_widget_alpha", 60),
+                    widgetItemHeight = context.getPrefer().getInt("widget_item_height", 56),
+                    widgetItemTextSize = context.getPrefer().getInt("sb_widget_text_size", 12),
                     type = 1,
                     id = 1)
 
-            if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_stroke", true)) {
+            if (!context.getPrefer().getBoolean("s_stroke", true)) {
                 tableData.strokeColor = 0x00ffffff
             }
 
-            if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_color", false)) {
+            if (context.getPrefer().getBoolean("s_color", false)) {
                 tableData.textColor = 0xff000000.toInt()
             }
 
-            if (PreferenceUtils.getBooleanFromSP(context.applicationContext, "s_widget_color", false)) {
+            if (context.getPrefer().getBoolean("s_widget_color", false)) {
                 tableData.widgetTextColor = 0xff000000.toInt()
             }
 
@@ -67,7 +68,7 @@ object UpdateUtils {
             try {
                 tableDao.updateTable(tableData)
                 widgetDao.updateFromOldVer()
-                if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "isInitTimeTable", false)) {
+                if (!context.getPrefer().getBoolean("isInitTimeTable", false)) {
                     val timeList = ArrayList<TimeDetailBean>().apply {
                         add(TimeDetailBean(1, "08:00", "08:50", 1))
                         add(TimeDetailBean(2, "09:00", "09:50", 1))
@@ -103,33 +104,38 @@ object UpdateUtils {
                     timeDao.insertTimeList(timeList)
                 }
 
-                PreferenceUtils.remove(context.applicationContext, "termStart")
-                PreferenceUtils.remove(context.applicationContext, "item_height")
-                PreferenceUtils.remove(context.applicationContext, "sb_weeks")
-                PreferenceUtils.remove(context.applicationContext, "sb_text_size")
-                PreferenceUtils.remove(context.applicationContext, "s_show")
-                PreferenceUtils.remove(context.applicationContext, "s_show_time_detail")
-                PreferenceUtils.remove(context.applicationContext, "s_show_sat")
-                PreferenceUtils.remove(context.applicationContext, "s_show_weekend")
-                PreferenceUtils.remove(context.applicationContext, "s_sunday_first")
-                PreferenceUtils.remove(context.applicationContext, "classNum")
-                PreferenceUtils.remove(context.applicationContext, "sb_alpha")
-                PreferenceUtils.remove(context.applicationContext, "pic_uri")
-                PreferenceUtils.remove(context.applicationContext, "sb_widget_alpha")
-                PreferenceUtils.remove(context.applicationContext, "widget_item_height")
-                PreferenceUtils.remove(context.applicationContext, "sb_widget_text_size")
-                PreferenceUtils.remove(context.applicationContext, "s_stroke")
-                PreferenceUtils.remove(context.applicationContext, "s_color")
-                PreferenceUtils.remove(context.applicationContext, "s_widget_color")
-                PreferenceUtils.saveBooleanToSP(context.applicationContext, "has_adjust", true)
+                context.getPrefer().edit {
+                    remove("termStart")
+                    remove("item_height")
+                    remove("sb_weeks")
+                    remove("sb_text_size")
+                    remove("s_show")
+                    remove("s_show_time_detail")
+                    remove("s_show_sat")
+                    remove("s_show_weekend")
+                    remove("s_sunday_first")
+                    remove("classNum")
+                    remove("sb_alpha")
+                    remove("pic_uri")
+                    remove("sb_widget_alpha")
+                    remove("widget_item_height")
+                    remove("sb_widget_text_size")
+                    remove("s_stroke")
+                    remove("s_color")
+                    remove("s_widget_color")
+                }
+
+                context.getPrefer().edit {
+                    putBoolean(PreferenceKeys.HAS_ADJUST, true)
+                }
             } catch (e: Exception) {
 
             }
 
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_intro", false) &&
-                !PreferenceUtils.getBooleanFromSP(context.applicationContext, "has_adjust", false)) {
+        if (!context.getPrefer().getBoolean("has_intro", false) &&
+                !context.getPrefer().getBoolean("has_adjust", false)) {
             val tableData = TableBean(type = 1, id = 1, tableName = "")
             val dataBase = AppDatabase.getDatabase(context)
             val tableDao = dataBase.tableDao()
@@ -176,7 +182,9 @@ object UpdateUtils {
             } catch (e: Exception) {
 
             }
-            PreferenceUtils.saveBooleanToSP(context.applicationContext, "has_adjust", true)
+            context.getPrefer().edit {
+                putBoolean(PreferenceKeys.HAS_ADJUST, true)
+            }
         }
     }
 }

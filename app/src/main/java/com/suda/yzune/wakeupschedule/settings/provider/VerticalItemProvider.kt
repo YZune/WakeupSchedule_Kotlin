@@ -1,23 +1,28 @@
-package com.suda.yzune.wakeupschedule.settings.view_binder
+package com.suda.yzune.wakeupschedule.settings.provider
 
 import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import com.drakeet.multitype.ItemViewBinder
+import com.chad.library.adapter.base.provider.BaseItemProvider
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
+import com.suda.yzune.wakeupschedule.settings.items.BaseSettingItem
+import com.suda.yzune.wakeupschedule.settings.items.SettingType
+import com.suda.yzune.wakeupschedule.settings.items.VerticalItem
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import splitties.dimensions.dip
 
-class VerticalItemViewBinder constructor(
-        private val onVerticalItemClickListener: (VerticalItem) -> Unit,
-        private val onVerticalItemLongClickListener: (VerticalItem) -> Boolean
-) : ItemViewBinder<VerticalItem, VerticalItemViewBinder.ViewHolder>() {
+class VerticalItemProvider : BaseItemProvider<BaseSettingItem>() {
 
-    override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
+    override val itemViewType: Int
+        get() = SettingType.VERTICAL
+
+    override val layoutId: Int
+        get() = 0
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val view = LinearLayoutCompat(parent.context).apply {
             id = R.id.anko_layout
             orientation = LinearLayoutCompat.VERTICAL
@@ -46,29 +51,24 @@ class VerticalItemViewBinder constructor(
         view.layoutParams =
                 ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT)
-        return ViewHolder(view)
+        return BaseViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, item: VerticalItem) {
-        holder.tvTitle.text = item.title
-        holder.llVerticalItem.setOnClickListener { onVerticalItemClickListener.invoke(item) }
-        holder.llVerticalItem.setOnLongClickListener { onVerticalItemLongClickListener.invoke(item) }
+    override fun convert(helper: BaseViewHolder, data: BaseSettingItem?) {
+        if (data == null) return
+        val item = data as VerticalItem
+        helper.setText(R.id.anko_text_view, item.title)
+        val desc = helper.getView<AppCompatTextView>(R.id.anko_tv_description)
         if (item.description.isEmpty()) {
-            holder.tvDescription.visibility = View.GONE
+            desc.visibility = View.GONE
         } else {
-            holder.tvDescription.visibility = View.VISIBLE
+            desc.visibility = View.VISIBLE
             if (item.isSpanned) {
-                holder.tvDescription.text = ViewUtils.getHtmlSpannedString(item.description)
+                desc.text = ViewUtils.getHtmlSpannedString(item.description)
             } else {
-                holder.tvDescription.text = item.description
+                desc.text = item.description
             }
         }
-    }
-
-    class ViewHolder(itemView: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
-        val tvTitle: AppCompatTextView = itemView.findViewById(R.id.anko_text_view)
-        val tvDescription: AppCompatTextView = itemView.findViewById(R.id.anko_tv_description)
-        val llVerticalItem: LinearLayoutCompat = itemView.findViewById(R.id.anko_layout)
     }
 
 }

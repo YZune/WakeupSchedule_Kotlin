@@ -22,8 +22,9 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.dimensions.dip
 import java.text.ParseException
 import kotlin.math.roundToInt
@@ -75,7 +76,7 @@ class TodayColorfulService : RemoteViewsService() {
             }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListSync(table.timeTable))
-            showColor = PreferenceUtils.getBooleanFromSP(applicationContext, "s_colorful_day_widget", false)
+            showColor = getPrefer().getBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, false)
         }
 
         override fun onDestroy() {

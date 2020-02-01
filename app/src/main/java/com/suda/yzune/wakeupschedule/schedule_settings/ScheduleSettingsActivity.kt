@@ -2,23 +2,26 @@ package com.suda.yzune.wakeupschedule.schedule_settings
 
 import android.Manifest
 import android.app.DatePickerDialog
-import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Parcel
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import com.drakeet.multitype.MultiTypeAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
@@ -26,11 +29,10 @@ import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.schedule.DonateFragment
 import com.suda.yzune.wakeupschedule.settings.AdvancedSettingsActivity
+import com.suda.yzune.wakeupschedule.settings.SettingItemAdapter
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
-import com.suda.yzune.wakeupschedule.settings.bean.*
-import com.suda.yzune.wakeupschedule.settings.view_binder.*
+import com.suda.yzune.wakeupschedule.settings.items.*
 import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
@@ -75,11 +77,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     }
 
     private val viewModel by viewModels<ScheduleSettingsViewModel>()
-    private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
+    private val mAdapter = SettingItemAdapter()
     private val REQUEST_CODE_CHOOSE_BG = 23
     private val REQUEST_CODE_CHOOSE_TABLE = 21
-    private val allItems = mutableListOf<Any>()
-    private val showItems = mutableListOf<Any>()
+    private val allItems = mutableListOf<BaseSettingItem>()
+    private val showItems = mutableListOf<BaseSettingItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         showSearch = true
@@ -95,7 +97,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 } else {
                     showItems.add(CategoryItem("搜索结果", true))
                     showItems.addAll(allItems.filter {
-                        val k = (it as BaseItem).keyWords
+                        val k = it.keyWords
                         k?.contains(s.toString()) ?: false
                     })
                 }
@@ -108,32 +110,41 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         super.onCreate(savedInstanceState)
         viewModel.table = intent.extras!!.getParcelable<TableBean>("tableData") as TableBean
 
-        onAdapterCreated(mAdapter)
+        //onAdapterCreated(mAdapter)
 
         onItemsCreated(allItems)
         showItems.addAll(allItems)
-        mAdapter.items = showItems
-        mRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        mAdapter.data = showItems
+        mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.itemAnimator?.changeDuration = 250
         mRecyclerView.adapter = mAdapter
-
+        mAdapter.addChildClickViewIds(R.id.anko_check_box)
+        mAdapter.setOnItemChildClickListener { _, view, position ->
+            when (val item = showItems[position]) {
+                is SwitchItem -> onSwitchItemCheckChange(item, view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).isChecked)
+            }
+        }
+        mAdapter.setOnItemClickListener { _, view, position ->
+            when (val item = showItems[position]) {
+                is HorizontalItem -> onHorizontalItemClick(item, position)
+                is VerticalItem -> onVerticalItemClick(item)
+                is SwitchItem -> view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).performClick()
+                is SeekBarItem -> onSeekBarItemClick(item, position)
+            }
+        }
+        mAdapter.setOnItemLongClickListener { _, _, position ->
+            when (val item = showItems[position]) {
+                is VerticalItem -> onVerticalItemLongClick(item)
+            }
+            false
+        }
         viewModel.termStartList = viewModel.table.startDate.split("-")
         viewModel.mYear = Integer.parseInt(viewModel.termStartList[0])
         viewModel.mMonth = Integer.parseInt(viewModel.termStartList[1])
         viewModel.mDay = Integer.parseInt(viewModel.termStartList[2])
     }
 
-    private fun onAdapterCreated(adapter: MultiTypeAdapter) {
-        adapter.register(CategoryItem::class, CategoryItemViewBinder())
-        adapter.register(SeekBarItem::class, SeekBarItemViewBinder { item, value -> onSeekBarValueChange(item, value) })
-        adapter.register(HorizontalItem::class, HorizontalItemViewBinder { onHorizontalItemClick(it) })
-        adapter.register(VerticalItem::class, VerticalItemViewBinder(
-                { onVerticalItemClick(it) },
-                { onVerticalItemLongClick(it) }
-        ))
-        adapter.register(SwitchItem::class, SwitchItemViewBinder { item, isCheck -> onSwitchItemCheckChange(item, isCheck) })
-    }
-
-    private fun onItemsCreated(items: MutableList<Any>) {
+    private fun onItemsCreated(items: MutableList<BaseSettingItem>) {
         items.add(CategoryItem("课程数据", true))
         items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
         items.add(HorizontalItem("上课时间", "点击此处更改", listOf("时间")))
@@ -182,48 +193,91 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         item.checked = isChecked
     }
 
-    private fun onSeekBarValueChange(item: SeekBarItem, value: Int) {
-        when (item.title) {
-            "一天课程节数" -> viewModel.table.nodes = value + item.min
-            "学期周数" -> viewModel.table.maxWeek = value + item.min
-            "课程格子高度" -> viewModel.table.itemHeight = value + item.min
-            "课程格子不透明度" -> viewModel.table.itemAlpha = value + item.min
-            "课程显示文字大小" -> viewModel.table.itemTextSize = value + item.min
-            "小部件格子高度" -> viewModel.table.widgetItemHeight = value + item.min
-            "小部件格子不透明度" -> viewModel.table.widgetItemAlpha = value + item.min
-            "小部件显示文字大小" -> viewModel.table.widgetItemTextSize = value + item.min
+    private fun onSeekBarItemClick(item: SeekBarItem, position: Int) {
+        val dialog = MaterialAlertDialogBuilder(this)
+                .setTitle(item.title)
+                .setView(R.layout.dialog_edit_text)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.sure, null)
+                .create()
+        dialog.show()
+        val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+        val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+        inputLayout?.helperText = "范围 ${item.min} ~ ${item.max}"
+        inputLayout?.suffixText = item.unit
+        editText?.inputType = InputType.TYPE_CLASS_NUMBER
+        val valueStr = item.valueInt.toString()
+        editText?.setText(valueStr)
+        editText?.setSelection(valueStr.length)
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val value = editText?.text
+            if (value.isNullOrBlank()) {
+                inputLayout?.error = "数值不能为空哦>_<"
+                return@setOnClickListener
+            }
+            val valueInt = try {
+                value.toString().toInt()
+            } catch (e: Exception) {
+                inputLayout?.error = "输入异常>_<"
+                return@setOnClickListener
+            }
+            if (valueInt < item.min || valueInt > item.max) {
+                inputLayout?.error = "注意范围 ${item.min} ~ ${item.max}"
+                return@setOnClickListener
+            }
+            when (item.title) {
+                "一天课程节数" -> viewModel.table.nodes = valueInt
+                "学期周数" -> viewModel.table.maxWeek = valueInt
+                "课程格子高度" -> viewModel.table.itemHeight = valueInt
+                "课程格子不透明度" -> viewModel.table.itemAlpha = valueInt
+                "课程显示文字大小" -> viewModel.table.itemTextSize = valueInt
+                "小部件格子高度" -> viewModel.table.widgetItemHeight = valueInt
+                "小部件格子不透明度" -> viewModel.table.widgetItemAlpha = valueInt
+                "小部件显示文字大小" -> viewModel.table.widgetItemTextSize = valueInt
+            }
+            item.valueInt = valueInt
+            mAdapter.notifyItemChanged(position)
+            dialog.dismiss()
         }
-        item.valueInt = value + item.min
     }
 
-    private fun onHorizontalItemClick(item: HorizontalItem) {
+    private fun onHorizontalItemClick(item: HorizontalItem, position: Int) {
         when (item.title) {
             "课表名称" -> {
-                ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
-                    override fun writeToParcel(dest: Parcel?, flags: Int) {
-
+                val dialog = MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.setting_schedule_name)
+                        .setView(R.layout.dialog_edit_text)
+                        .setNegativeButton(R.string.cancel, null)
+                        .setPositiveButton(R.string.sure, null)
+                        .create()
+                dialog.show()
+                val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+                val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+                editText?.setText(item.value)
+                editText?.setSelection(item.value.length)
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                    val value = editText?.text
+                    if (value.isNullOrBlank()) {
+                        inputLayout?.error = "名称不能为空哦>_<"
+                        return@setOnClickListener
                     }
-
-                    override fun describeContents(): Int {
-                        return 0
-                    }
-
-                    override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
-                        if (editText.text.toString().isNotEmpty()) {
-                            viewModel.table.tableName = editText.text.toString()
-                            item.value = editText.text.toString()
-                            mRecyclerView.itemAnimator?.changeDuration = 250
-                            mAdapter.notifyItemChanged(1)
-                            dialog.dismiss()
-                        } else {
-                            Toasty.error(applicationContext, "名称不能为空哦>_<").show()
-                        }
-                    }
-                }, viewModel.table.tableName).show(supportFragmentManager, "addTableFragment")
+                    viewModel.table.tableName = value.toString()
+                    item.value = value.toString()
+                    mAdapter.notifyItemChanged(position)
+                    dialog.dismiss()
+                }
             }
             "学期开始日期" -> {
-                DatePickerDialog(this, mDateListener, viewModel.mYear, viewModel.mMonth - 1, viewModel.mDay).show()
-                Toasty.success(applicationContext, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
+                DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                    viewModel.mYear = year
+                    viewModel.mMonth = monthOfYear + 1
+                    viewModel.mDay = dayOfMonth
+                    val mDate = "${viewModel.mYear}-${viewModel.mMonth}-${viewModel.mDay}"
+                    item.value = mDate
+                    viewModel.table.startDate = mDate
+                    mAdapter.notifyItemChanged(position)
+                }, viewModel.mYear, viewModel.mMonth - 1, viewModel.mDay).show()
+                Toasty.success(this, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
             }
             "上课时间" -> {
                 startActivityForResult(Intent(this, TimeSettingsActivity::class.java).apply {
@@ -291,17 +345,6 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 .setColor(color)
                 .setDialogId(id)
                 .show(this)
-    }
-
-    private val mDateListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-        viewModel.mYear = year
-        viewModel.mMonth = monthOfYear + 1
-        viewModel.mDay = dayOfMonth
-        val mDate = "${viewModel.mYear}-${viewModel.mMonth}-${viewModel.mDay}"
-        (mAdapter.items[2] as HorizontalItem).value = mDate
-        mRecyclerView.itemAnimator?.changeDuration = 250
-        mAdapter.notifyItemChanged(2)
-        viewModel.table.startDate = mDate
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

@@ -692,7 +692,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         if (!response.isSuccessful) throw Exception(response.message())
     }
 
-    suspend fun importFromFile(path: String): String {
+    suspend fun importFromFile(path: String) {
         val gson = Gson()
         val file = File(path)
         val list = file.readLines()
@@ -722,7 +722,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         timeDetailDao.insertTimeList(timeDetails)
         tableDao.insertTable(table)
         courseDao.insertCourses(courseBaseList, courseDetailList)
-        return "ok"
     }
 
     private suspend fun write2DB(): Int {

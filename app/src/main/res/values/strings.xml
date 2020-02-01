@@ -30,29 +30,7 @@
     <string name="hint_check_code">验证码</string>
     <string name="toast_check_code_get_error">获取验证码失败</string>
     <string name="text_login">登录</string>
-    <string name="text_setting_schedule_data">课程数据</string>
-    <string name="text_setting_start_date">学期开始日期</string>
-    <string name="text_setting_node">一天课程节数</string>
-    <string name="text_setting_weeks">学期周数</string>
-    <string name="text_setting_course_time">上课时间</string>
-    <string name="text_setting_sunday_first">周日为每周第一天</string>
-    <string name="text_setting_show_sat">显示周六</string>
-    <string name="text_setting_show_sun">显示周日</string>
-    <string name="text_setting_main_appearance">外观</string>
-    <string name="text_setting_schedule_background">课程表背景</string>
-    <string name="text_setting_content_to_default">长按可以恢复默认哦~</string>
-    <string name="text_setting_main_text_color">界面文字颜色</string>
-    <string name="text_setting_course_text_color">课程文字颜色</string>
-    <string name="text_setting_stroke_color">格子边框颜色</string>
-    <string name="text_setting_course_item_height">课程格子高度</string>
-    <string name="text_setting_course_item_alpha">课程格子不透明度</string>
-    <string name="text_setting_course_text_size">格子显示文字大小</string>
-    <string name="text_setting_show_other_week_course">显示非本周课程</string>
-    <string name="text_setting_show_time_in_item">在格子内显示上课时间</string>
-    <string name="text_setting_week_appwidget">周视图桌面小部件</string>
-    <string name="text_setting_appwidget_tip">按返回键退出此界面后，才能使此项中的更改生效</string>
-    <string name="text_setting_color_tip">还可以调颜色的透明度哦(´^ω^`)</string>
-    <string name="text_setting_stroke_color_tip">将不透明度调到最低就可以隐藏边框了哦~</string>
+
     <string name="text_node">节</string>
     <string name="text_week">周</string>
     <string name="appwidget_text">EXAMPLE</string>
@@ -73,5 +51,45 @@
 
     <string name="error_course_data">检测到课程数据有误，请仔细核对</string>
     <string name="error_course_node">有课程的节数大于课表的最大节数</string>
+
+    <string name="setting_schedule_name">课表名称</string>
+    <string name="setting_class_time">上课时间</string>
+    <string name="setting_term_start_date">学期开始日期</string>
+    <string name="setting_nodes">一天课程节数</string>
+    <string name="setting_weeks">学期周数</string>
+    <string name="setting_sunday_first">周日为每周第一天</string>
+    <string name="setting_show_sat">显示周六</string>
+    <string name="setting_show_sun">显示周日</string>
+    <string name="setting_show_time">在格子内显示上课时间</string>
+    <string name="setting_background">课程表背景</string>
+    <string name="setting_header_color">界面文字颜色</string>
+    <string name="setting_course_text_color">课程文字颜色</string>
+    <string name="setting_stroke_color">格子边框颜色</string>
+    <string name="setting_item_height">课程格子高度</string>
+    <string name="setting_item_alpha">课程格子不透明度</string>
+    <string name="setting_course_text_size">课程显示文字大小</string>
+    <string name="setting_show_other_week">显示非本周课程</string>
+
+    <string name="setting_widget_item_height">小部件格子高度</string>
+    <string name="setting_widget_item_alpha">小部件格子不透明度</string>
+    <string name="setting_widget_text_size">小部件显示文字大小</string>
+    <string name="setting_widget_header_color">小部件标题颜色</string>
+    <string name="setting_widget_course_text_color">小部件课程颜色</string>
+    <string name="setting_widget_stroke_color">小部件格子边框颜色</string>
+
+    <string name="setting_auto_check_update">自动检查更新</string>
+    <string name="setting_show_day_widget_bg">显示日视图背景</string>
+    <string name="setting_show_suda_life">显示侧栏「苏大生活」</string>
+    <string name="setting_setup_schedule">设置当前课表</string>
+    <string name="setting_day_night_theme">显示主题</string>
+
+    <string name="sure">确定</string>
+    <string name="cancel">取消</string>
+
+    <string-array name="day_night_setting">
+        <item>浅色模式</item>
+        <item>深色模式</item>
+        <item>跟随系统</item>
+    </string-array>
 
 </resources>

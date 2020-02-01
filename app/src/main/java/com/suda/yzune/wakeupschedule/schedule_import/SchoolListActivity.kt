@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.edit
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -41,7 +42,8 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_1
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_NEW
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.activity_school_list.*
@@ -442,7 +444,9 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                         Toasty.info(this@SchoolListActivity, "处于维护中哦").show()
                         return@launch
                     }
-                    PreferenceUtils.saveStringToSP(applicationContext, "import_school", gson.toJson(showList[position]))
+                    getPrefer().edit {
+                        putString(PreferenceKeys.IMPORT_SCHOOL, gson.toJson(showList[position]))
+                    }
                     val tableId = tableDao.getDefaultTableId()
                     start<LoginWebActivity> {
                         putExtra("school_name", showList[position].name)

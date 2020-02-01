@@ -1,20 +1,20 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import android.app.Dialog
 import android.os.Bundle
-import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import splitties.snackbar.longSnack
 
@@ -106,33 +106,31 @@ class TimeTableFragment : BaseFragment() {
         val tvBtn = view.findViewById<MaterialButton>(R.id.tv_add)
         tvBtn.text = "新建时间表"
         tvBtn.setOnClickListener {
-            ModifyTableNameFragment.newInstance(changeListener = object : ModifyTableNameFragment.TableNameChangeListener {
-                override fun writeToParcel(dest: Parcel?, flags: Int) {
-
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
-                    if (editText.text.toString().isNotEmpty()) {
-                        launch {
-                            try {
-                                viewModel.addNewTimeTable(editText.text.toString())
-                                Toasty.success(activity!!.applicationContext, "新建成功~").show()
-                                dialog.dismiss()
-                            } catch (e: Exception) {
-                                Toasty.error(activity!!.applicationContext, "发生异常>_<${e.message}").show()
-                            }
+            val dialog = MaterialAlertDialogBuilder(context!!)
+                    .setTitle("时间表名字")
+                    .setView(R.layout.dialog_edit_text)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.sure, null)
+                    .create()
+            dialog.show()
+            val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+            val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val value = editText?.text
+                if (value.isNullOrBlank()) {
+                    inputLayout?.error = "名称不能为空哦>_<"
+                } else {
+                    launch {
+                        try {
+                            viewModel.addNewTimeTable(editText.text.toString())
+                            Toasty.success(activity!!.applicationContext, "新建成功~").show()
+                        } catch (e: Exception) {
+                            Toasty.error(activity!!.applicationContext, "发生异常>_<${e.message}").show()
                         }
-                    } else {
-                        Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
+                        dialog.dismiss()
                     }
                 }
-
-            },
-                    titleStr = "时间表名字").show(fragmentManager!!, "timeTableNameDialog")
+            }
         }
         return view
     }

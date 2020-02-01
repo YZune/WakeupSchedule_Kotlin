@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.utils
 
 import android.content.Context
+import androidx.core.content.edit
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -18,7 +19,9 @@ class MyRetrofitUtils private constructor() {
     fun addCount(context: Context) {
         myService.addCount().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-                PreferenceUtils.saveBooleanToSP(context, "has_count", true)
+                context.getPrefer().edit {
+                    putBoolean(PreferenceKeys.HAS_COUNT, true)
+                }
             }
 
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}

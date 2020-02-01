@@ -1,11 +1,14 @@
 package com.suda.yzune.wakeupschedule.settings
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.edit
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.drakeet.multitype.MultiTypeAdapter
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.DonateActivity
@@ -13,16 +16,10 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.dao.TableDao
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
-import com.suda.yzune.wakeupschedule.settings.bean.CategoryItem
-import com.suda.yzune.wakeupschedule.settings.bean.HorizontalItem
-import com.suda.yzune.wakeupschedule.settings.bean.SwitchItem
-import com.suda.yzune.wakeupschedule.settings.bean.VerticalItem
-import com.suda.yzune.wakeupschedule.settings.view_binder.CategoryItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.HorizontalItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.SwitchItemViewBinder
-import com.suda.yzune.wakeupschedule.settings.view_binder.VerticalItemViewBinder
+import com.suda.yzune.wakeupschedule.settings.items.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.activities.start
 import splitties.resources.color
 import splitties.snackbar.longSnack
@@ -32,8 +29,12 @@ class SettingsActivity : BaseListActivity() {
 
     private lateinit var dataBase: AppDatabase
     private lateinit var tableDao: TableDao
+    private val dayNightTheme by lazy(LazyThreadSafetyMode.NONE) {
+        resources.getStringArray(R.array.day_night_setting)
+    }
+    private var dayNightIndex = 2
 
-    private val mAdapter: MultiTypeAdapter = MultiTypeAdapter()
+    private val mAdapter = SettingItemAdapter()
 
     override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         return if (BuildConfig.CHANNEL == "google" || BuildConfig.CHANNEL == "huawei") {
@@ -53,22 +54,36 @@ class SettingsActivity : BaseListActivity() {
 
         dataBase = AppDatabase.getDatabase(application)
         tableDao = dataBase.tableDao()
+        dayNightIndex = getPrefer().getInt(PreferenceKeys.DAY_NIGHT_THEME, 2)
 
-        onAdapterCreated(mAdapter)
-        val items = mutableListOf<Any>()
+        val items = mutableListOf<BaseSettingItem>()
         onItemsCreated(items)
-        mAdapter.items = items
+        mAdapter.data = items
         mRecyclerView.layoutManager = LinearLayoutManager(this)
+        mRecyclerView.itemAnimator?.changeDuration = 250
         mRecyclerView.adapter = mAdapter
+        mAdapter.addChildClickViewIds(R.id.anko_check_box)
+        mAdapter.setOnItemChildClickListener { _, view, position ->
+            when (val item = items[position]) {
+                is SwitchItem -> onSwitchItemCheckChange(item, view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).isChecked)
+            }
+        }
+        mAdapter.setOnItemClickListener { _, view, position ->
+            when (val item = items[position]) {
+                is HorizontalItem -> onHorizontalItemClick(item, position)
+                is VerticalItem -> onVerticalItemClick(item)
+                is SwitchItem -> view.findViewById<AppCompatCheckBox>(R.id.anko_check_box).performClick()
+            }
+        }
     }
 
-    private fun onItemsCreated(items: MutableList<Any>) {
+    private fun onItemsCreated(items: MutableList<BaseSettingItem>) {
         items.add(CategoryItem("常规", true))
-        items.add(SwitchItem("自动检查更新", PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)))
-        items.add(SwitchItem("显示日视图背景", PreferenceUtils.getBooleanFromSP(applicationContext, "s_colorful_day_widget", false)))
-        items.add(SwitchItem("显示侧栏「苏大生活」", PreferenceUtils.getBooleanFromSP(applicationContext, "suda_life", true)))
+        items.add(SwitchItem("自动检查更新", getPrefer().getBoolean(PreferenceKeys.CHECK_UPDATE, true)))
+        items.add(SwitchItem("显示日视图背景", getPrefer().getBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, false)))
+        items.add(SwitchItem("显示侧栏「苏大生活」", getPrefer().getBoolean(PreferenceKeys.SHOW_SUDA_LIFE, true)))
         items.add(HorizontalItem("设置当前课表", ""))
-        items.add(SwitchItem("使用暗黑模式", PreferenceUtils.getBooleanFromSP(applicationContext, "s_night_mode", false)))
+        items.add(HorizontalItem("显示主题", dayNightTheme[dayNightIndex]))
 
         items.add(CategoryItem("高级", false))
         when (BuildConfig.CHANNEL) {
@@ -81,37 +96,30 @@ class SettingsActivity : BaseListActivity() {
         items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
-    private fun onAdapterCreated(adapter: MultiTypeAdapter) {
-        adapter.register(CategoryItem::class, CategoryItemViewBinder())
-        adapter.register(HorizontalItem::class, HorizontalItemViewBinder { onHorizontalItemClick(it) })
-        adapter.register(VerticalItem::class, VerticalItemViewBinder({ onVerticalItemClick(it) }, { false }))
-        adapter.register(SwitchItem::class, SwitchItemViewBinder { item, isCheck -> onSwitchItemCheckChange(item, isCheck) })
-    }
-
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
         when (item.title) {
-            "自动检查更新" -> PreferenceUtils.saveBooleanToSP(applicationContext, "s_update", isChecked)
+            "自动检查更新" -> {
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.CHECK_UPDATE, isChecked)
+                }
+            }
             "显示日视图背景" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "s_colorful_day_widget", isChecked)
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, isChecked)
+                }
                 mRecyclerView.longSnack("请点击小部件右上角的「切换按钮」查看效果~")
             }
             "显示侧栏「苏大生活」" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "suda_life", isChecked)
-                mRecyclerView.snack("重启App后生效哦")
-            }
-            "使用暗黑模式" -> {
-                PreferenceUtils.saveBooleanToSP(applicationContext, "s_night_mode", isChecked)
-                if (isChecked) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.SHOW_SUDA_LIFE, isChecked)
                 }
+                mRecyclerView.snack("重启App后生效哦")
             }
         }
         item.checked = isChecked
     }
 
-    private fun onHorizontalItemClick(item: HorizontalItem) {
+    private fun onHorizontalItemClick(item: HorizontalItem, position: Int) {
         when (item.title) {
             "设置当前课表" -> {
                 launch {
@@ -121,6 +129,32 @@ class SettingsActivity : BaseListActivity() {
                                 putExtra("tableData", table)
                             }, 180)
                 }
+            }
+            "显示主题" -> {
+                MaterialAlertDialogBuilder(this)
+                        .setTitle("显示主题")
+                        .setPositiveButton("确定") { _, _ ->
+                            getPrefer().edit {
+                                putInt(PreferenceKeys.DAY_NIGHT_THEME, dayNightIndex)
+                            }
+                            item.value = dayNightTheme[dayNightIndex]
+                            mAdapter.notifyItemChanged(position)
+                            when (dayNightIndex) {
+                                0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                                1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                                2 -> {
+                                    if (Build.VERSION.SDK_INT >= 29) {
+                                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                                    } else {
+                                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                                    }
+                                }
+                            }
+                        }
+                        .setSingleChoiceItems(dayNightTheme, dayNightIndex) { _, which ->
+                            dayNightIndex = which
+                        }
+                        .show()
             }
         }
     }

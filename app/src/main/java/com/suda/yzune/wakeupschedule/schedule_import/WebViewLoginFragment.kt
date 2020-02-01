@@ -10,13 +10,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
+import androidx.core.content.edit
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_web_view_login.*
 import splitties.activities.start
@@ -50,7 +52,7 @@ class WebViewLoginFragment : BaseFragment() {
             et_url.setText(url)
             startVisit()
         } else {
-            val url = PreferenceUtils.getStringFromSP(activity!!.applicationContext, "school_url", "")
+            val url = context!!.getPrefer().getString(PreferenceKeys.SCHOOL_URL, "")
             if (url != "") {
                 et_url.setText(url)
             } else {
@@ -282,9 +284,11 @@ class WebViewLoginFragment : BaseFragment() {
             et_url.text.toString() else "http://" + et_url.text.toString()
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
             wv_course.loadUrl(url)
-            PreferenceUtils.saveStringToSP(activity!!.applicationContext, "school_url", url)
+            context!!.getPrefer().edit {
+                putString(PreferenceKeys.SCHOOL_URL, url)
+            }
         } else {
-            Toasty.error(context!!.applicationContext, "请输入正确的网址╭(╯^╰)╮").show()
+            Toasty.error(context!!, "请输入正确的网址╭(╯^╰)╮").show()
         }
     }
 

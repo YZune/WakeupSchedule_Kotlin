@@ -89,6 +89,12 @@ interface CourseDao {
     @Query("select distinct room from coursedetailbean where tableId = :tableId order by length(room)")
     suspend fun getExistedRooms(tableId: Int): List<String>
 
+    @Query("SELECT COUNT(*) FROM coursedetailbean WHERE tableId=:tableId AND ((startWeek<=:week AND endWeek>=:week) AND (type=0 OR (:week % 2=0 AND type=2) OR (:week % 2=1 AND type=1)))")
+    fun getShowCourseNumber(tableId: Int, week: Int): LiveData<Int>
+
+    @Query("SELECT COUNT(*) FROM coursedetailbean WHERE tableId=:tableId AND endWeek>=:week")
+    fun getShowCourseNumberWithOtherWeek(tableId: Int, week: Int): LiveData<Int>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBaseList(courseBaseList: List<CourseBaseBean>)
 

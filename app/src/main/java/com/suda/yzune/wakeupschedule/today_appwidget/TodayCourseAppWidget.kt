@@ -16,10 +16,7 @@ import androidx.core.app.NotificationCompat
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
-import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceUtils
-import com.suda.yzune.wakeupschedule.utils.goAsync
+import com.suda.yzune.wakeupschedule.utils.*
 import java.util.*
 
 
@@ -33,7 +30,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
     @SuppressLint("NewApi")
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "WAKEUP_REMIND_COURSE") {
-            if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
+            if (context.getPrefer().getBoolean(PreferenceKeys.COURSE_REMIND, false)) {
                 val courseName = intent.getStringExtra("courseName")
                 var room = intent.getStringExtra("room")
                 val time = intent.getStringExtra("time")
@@ -63,7 +60,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher))
                         .setSmallIcon(R.drawable.wakeup)
                         .setAutoCancel(false)
-                        .setOngoing(PreferenceUtils.getBooleanFromSP(context, "reminder_on_going", false))
+                        .setOngoing(context.getPrefer().getBoolean(PreferenceKeys.REMINDER_ON_GOING, false))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                         .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
@@ -113,11 +110,11 @@ class TodayCourseAppWidget : AppWidgetProvider() {
 
         goAsync {
             val table = tableDao.getDefaultTable()
-            if (PreferenceUtils.getBooleanFromSP(context, "course_reminder", false)) {
+            if (context.getPrefer().getBoolean(PreferenceKeys.COURSE_REMIND, false)) {
                 val week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
                 if (week >= 0) {
                     val weekDay = CourseUtils.getWeekday()
-                    val before = PreferenceUtils.getIntFromSP(context, "reminder_min", 20)
+                    val before = context.getPrefer().getInt(PreferenceKeys.REMINDER_TIME, 20)
                     val type = if (week % 2 == 0) 2 else 1
                     val courseList = courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(), week, type, table.id)
 

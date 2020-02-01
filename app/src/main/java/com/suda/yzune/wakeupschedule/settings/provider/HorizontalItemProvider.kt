@@ -1,21 +1,27 @@
-package com.suda.yzune.wakeupschedule.settings.view_binder
+package com.suda.yzune.wakeupschedule.settings.provider
 
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.recyclerview.widget.RecyclerView
-import com.drakeet.multitype.ItemViewBinder
+import com.chad.library.adapter.base.provider.BaseItemProvider
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.settings.bean.HorizontalItem
+import com.suda.yzune.wakeupschedule.settings.items.BaseSettingItem
+import com.suda.yzune.wakeupschedule.settings.items.HorizontalItem
+import com.suda.yzune.wakeupschedule.settings.items.SettingType
 import splitties.dimensions.dip
 
-class HorizontalItemViewBinder constructor(private val onHorizontalItemClickListener: (HorizontalItem) -> Unit) : ItemViewBinder<HorizontalItem, HorizontalItemViewBinder.ViewHolder>() {
+class HorizontalItemProvider : BaseItemProvider<BaseSettingItem>() {
 
-    override fun onCreateViewHolder(inflater: LayoutInflater, parent: ViewGroup): ViewHolder {
+    override val itemViewType: Int
+        get() = SettingType.HORIZON
+
+    override val layoutId: Int
+        get() = 0
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
         val view = LinearLayoutCompat(parent.context).apply {
             id = R.id.anko_layout
             val outValue = TypedValue()
@@ -45,19 +51,15 @@ class HorizontalItemViewBinder constructor(private val onHorizontalItemClickList
             })
         }
         view.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, view.dip(64))
-        return ViewHolder(view)
+        return BaseViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, item: HorizontalItem) {
-        holder.tvTitle.text = item.title
-        holder.tvValue.text = item.value
-        holder.llItem.setOnClickListener { onHorizontalItemClickListener.invoke(item) }
+    override fun convert(helper: BaseViewHolder, data: BaseSettingItem?) {
+        if (data == null) return
+        val item = data as HorizontalItem
+        helper.setText(R.id.anko_text_view, item.title)
+        helper.setText(R.id.anko_tv_value, item.value)
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvTitle: AppCompatTextView = itemView.findViewById(R.id.anko_text_view)
-        val tvValue: AppCompatTextView = itemView.findViewById(R.id.anko_tv_value)
-        val llItem: LinearLayoutCompat = itemView.findViewById(R.id.anko_layout)
-    }
 
 }

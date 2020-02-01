@@ -1,13 +1,11 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.Manifest
-import android.app.Dialog
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +13,14 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
@@ -29,7 +28,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.UpdateFragment
@@ -49,7 +51,6 @@ import com.suda.yzune.wakeupschedule.suda_life.SudaLifeActivity
 import com.suda.yzune.wakeupschedule.utils.*
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
-import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -82,13 +83,13 @@ class ScheduleActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (PreferenceUtils.getBooleanFromSP(applicationContext, "hide_main_nav_bar", false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (getPrefer().getBoolean(PreferenceKeys.HIDE_NAV_BAR, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
         setContentView(ScheduleActivityUI(this).root)
 
-        val json = PreferenceUtils.getStringFromSP(application, "course", "")!!
-        if (json != "") {
+        val json = getPrefer().getString(PreferenceKeys.OLD_VERSION_COURSE, "")
+        if (!json.isNullOrEmpty()) {
             launch {
                 try {
                     viewModel.updateFromOldVer(json)
@@ -117,21 +118,25 @@ class ScheduleActivity : BaseActivity() {
         initView()
         initNavView()
 
-        val openTimes = PreferenceUtils.getIntFromSP(applicationContext, "open_times", 0)
+        val openTimes = getPrefer().getInt(PreferenceKeys.OPEN_TIMES, 0)
         if (openTimes < 10) {
-            PreferenceUtils.saveIntToSP(applicationContext, "open_times", openTimes + 1)
+            getPrefer().edit {
+                putInt(PreferenceKeys.OPEN_TIMES, openTimes + 1)
+            }
         } else if (openTimes == 10) {
             val dialog = DonateFragment.newInstance()
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "donateDialog")
-            PreferenceUtils.saveIntToSP(applicationContext, "open_times", openTimes + 1)
+            getPrefer().edit {
+                putInt(PreferenceKeys.OPEN_TIMES, openTimes + 1)
+            }
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_count", false)) {
+        if (!getPrefer().getBoolean(PreferenceKeys.HAS_COUNT, false)) {
             MyRetrofitUtils.instance.addCount(applicationContext)
         }
 
-        if (PreferenceUtils.getBooleanFromSP(applicationContext, "s_update", true)) {
+        if (getPrefer().getBoolean(PreferenceKeys.CHECK_UPDATE, true)) {
             MyRetrofitUtils.instance.getService().getUpdateInfo().enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}
 
@@ -151,7 +156,7 @@ class ScheduleActivity : BaseActivity() {
             })
         }
 
-        if (!PreferenceUtils.getBooleanFromSP(applicationContext, "has_intro", false)) {
+        if (!getPrefer().getBoolean(PreferenceKeys.HAS_INTRO, false)) {
             initIntro()
         }
 
@@ -272,31 +277,31 @@ class ScheduleActivity : BaseActivity() {
         val view = LayoutInflater.from(this).inflate(R.layout.item_table_add_main, tableNameRecyclerView, false)
         val tableAdd = view.findViewById<AppCompatTextView>(R.id.nav_table_add)
         tableAdd.setOnClickListener {
-            ModifyTableNameFragment.newInstance(object : ModifyTableNameFragment.TableNameChangeListener {
-                override fun writeToParcel(dest: Parcel?, flags: Int) {
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
-                    if (editText.text.toString().isNotEmpty()) {
-                        launch {
-                            try {
-                                viewModel.addBlankTable(editText.text.toString())
-                                Toasty.success(applicationContext, "新建成功~").show()
-                                dialog.dismiss()
-                            } catch (e: Exception) {
-                                Toasty.error(applicationContext, "操作失败>_<").show()
-                                dialog.dismiss()
-                            }
+            val dialog = MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.setting_schedule_name)
+                    .setView(R.layout.dialog_edit_text)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.sure, null)
+                    .create()
+            dialog.show()
+            val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+            val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val value = editText?.text
+                if (value.isNullOrBlank()) {
+                    inputLayout?.error = "名称不能为空哦>_<"
+                } else {
+                    launch {
+                        try {
+                            viewModel.addBlankTable(editText.text.toString())
+                            Toasty.success(this@ScheduleActivity, "新建成功~").show()
+                        } catch (e: Exception) {
+                            Toasty.error(this@ScheduleActivity, "操作失败>_<").show()
                         }
-                    } else {
-                        Toasty.error(applicationContext, "名称不能为空哦>_<").show()
+                        dialog.dismiss()
                     }
                 }
-            }).show(supportFragmentManager, "addTableFragment")
+            }
         }
         val tableManage = view.findViewById<AppCompatTextView>(R.id.nav_table_manage)
         tableManage.setOnClickListener {
@@ -315,7 +320,7 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initNavView() {
-        navigationView.menu.findItem(R.id.nav_suda).isVisible = PreferenceUtils.getBooleanFromSP(this, "suda_life", true)
+        navigationView.menu.findItem(R.id.nav_suda).isVisible = getPrefer().getBoolean(PreferenceKeys.SHOW_SUDA_LIFE, true)
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_setting -> {

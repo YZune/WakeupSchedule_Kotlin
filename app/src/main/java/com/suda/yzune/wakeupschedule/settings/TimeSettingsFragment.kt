@@ -1,19 +1,23 @@
 package com.suda.yzune.wakeupschedule.settings
 
-import android.app.Dialog
 import android.os.Bundle
-import android.os.Parcel
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.appcompat.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.widget.ModifyTableNameFragment
 import es.dmoral.toasty.Toasty
 
 class TimeSettingsFragment : BaseFragment() {
@@ -111,31 +115,30 @@ class TimeSettingsFragment : BaseFragment() {
         tvName.text = viewModel.timeTableList[position].name
         llName.setOnClickListener {
             if (viewModel.timeTableList[position].id == 1) {
-                Toasty.error(activity!!.applicationContext, "默认时间表不能改名呢>_<").show()
+                Toasty.error(activity!!, "默认时间表不能改名呢>_<").show()
                 return@setOnClickListener
             }
-            ModifyTableNameFragment.newInstance(changeListener = object : ModifyTableNameFragment.TableNameChangeListener {
-                override fun writeToParcel(dest: Parcel?, flags: Int) {
-
+            val dialog = MaterialAlertDialogBuilder(context)
+                    .setTitle("时间表名字")
+                    .setView(R.layout.dialog_edit_text)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.sure, null)
+                    .create()
+            dialog.show()
+            val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+            val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+            editText?.setText(viewModel.timeTableList[position].name)
+            editText?.setSelection(viewModel.timeTableList[position].name.length)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val value = editText?.text
+                if (value.isNullOrBlank()) {
+                    inputLayout?.error = "名称不能为空哦>_<"
+                } else {
+                    tvName.text = editText.text.toString()
+                    viewModel.timeTableList[position].name = editText.text.toString()
+                    dialog.dismiss()
                 }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                override fun onFinish(editText: AppCompatEditText, dialog: Dialog) {
-                    if (!editText.text.toString().isEmpty()) {
-                        tvName.text = editText.text.toString()
-                        viewModel.timeTableList[position].name = editText.text.toString()
-                        dialog.dismiss()
-                    } else {
-                        Toasty.error(activity!!.applicationContext, "名称不能为空哦>_<").show()
-                    }
-                }
-
-            },
-                    titleStr = "时间表名字",
-                    string = viewModel.timeTableList[position].name).show(fragmentManager!!, "timeTableNameDialog")
+            }
         }
         return view
     }
