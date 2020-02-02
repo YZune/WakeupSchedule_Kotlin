@@ -16,7 +16,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.setPadding
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
@@ -38,8 +37,6 @@ class ScheduleFragment : BaseFragment() {
     private val viewModel by activityViewModels<ScheduleViewModel>()
     private lateinit var ui: ScheduleUI
     private var isLoaded = false
-    private val loadFlag = MutableLiveData<Int>()
-    private var isEmpty = true
     private lateinit var showCourseNumber: LiveData<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +71,7 @@ class ScheduleFragment : BaseFragment() {
         }
         showCourseNumber.observe(this, Observer {
             if (it == 0) {
+                ui.content.visibility = View.GONE
                 if (ui.root.findViewById<View?>(R.id.anko_empty_view) != null) {
                     return@Observer
                 }
@@ -85,13 +83,15 @@ class ScheduleFragment : BaseFragment() {
                     orientation = LinearLayoutCompat.VERTICAL
                     addView(img, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(240))
                     addView(AppCompatTextView(context).apply {
-                        text = "本周没有课程了哦"
+                        text = "本周没有课程哦"
                         setTextColor(viewModel.table.textColor)
                         gravity = Gravity.CENTER
-                    }, LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT)
+                    }, LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT).apply {
+                        topMargin = dip(16)
+                    })
                 }, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
                         ConstraintLayout.LayoutParams.WRAP_CONTENT).apply {
-                    startToEnd = R.id.anko_tv_title0
+                    startToStart = ConstraintSet.PARENT_ID
                     endToEnd = ConstraintSet.PARENT_ID
                     topToBottom = R.id.anko_tv_title0
                     bottomToBottom = ConstraintSet.PARENT_ID
@@ -99,34 +99,19 @@ class ScheduleFragment : BaseFragment() {
                     marginEnd = context!!.dip(32)
                 })
             } else {
+                ui.content.visibility = View.VISIBLE
                 ui.root.findViewById<View?>(R.id.anko_empty_view)?.let {
                     ui.root.removeView(it)
                 }
             }
         })
-//        loadFlag.observe(this, Observer {
-//            if (it == 7 && isEmpty) {
-//                ui.root.addView(AppCompatImageView(context!!).apply {
-//                    id = R.id.anko_empty_view
-//                    setImageResource(R.drawable.ic_schedule_empty)
-//                }, ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-//                        ConstraintLayout.LayoutParams.MATCH_CONSTRAINT).apply {
-//                    startToEnd = R.id.anko_tv_title0
-//                    endToEnd = ConstraintSet.PARENT_ID
-//                    topToBottom = R.id.anko_tv_title0
-//                    bottomToBottom = ConstraintSet.PARENT_ID
-//                })
-//            }
-//        })
     }
 
     override fun onResume() {
         super.onResume()
         if (!isLoaded) {
-            loadFlag.value = 0
             for (i in 1..7) {
                 viewModel.allCourseList[i - 1].observe(this, Observer {
-                    loadFlag.value = loadFlag.value!! + 1
                     initWeekPanel(it, i, viewModel.table)
                 })
             }
@@ -280,8 +265,6 @@ class ScheduleFragment : BaseFragment() {
                 gravity = Gravity.TOP
                 topMargin = (c.startNode - 1) * (viewModel.itemHeight + viewModel.marTop) + viewModel.marTop
             })
-
-            isEmpty = false
 
             pre = c
         }

@@ -136,7 +136,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             when (val item = showItems[position]) {
                 is VerticalItem -> onVerticalItemLongClick(item)
             }
-            false
+            true
         }
         viewModel.termStartList = viewModel.table.startDate.split("-")
         viewModel.mYear = Integer.parseInt(viewModel.termStartList[0])

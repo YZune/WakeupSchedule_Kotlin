@@ -2,18 +2,17 @@ package com.suda.yzune.wakeupschedule.today_appwidget
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.RemoteViews
-import android.widget.RemoteViewsService
-import android.widget.TextView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.drawToBitmap
 import androidx.core.view.setMargins
 import androidx.core.view.setPadding
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -93,21 +92,42 @@ class TodayColorfulService : RemoteViewsService() {
         }
 
         override fun getViewAt(position: Int): RemoteViews {
-            return if (courseList.isNotEmpty()) {
-                val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
+            val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
+            if (courseList.isNotEmpty()) {
                 val view = initView(applicationContext, position)
                 val contentView = view.findViewById<LinearLayout>(R.id.anko_layout)
                 val info = ViewUtils.getScreenInfo(applicationContext)
                 ViewUtils.layoutView(contentView, info[0], info[1])
                 val bitmap = ViewUtils.getViewBitmap(contentView, true, dip(2))
-                mRemoteViews.setBitmap(R.id.iv_schedule, "setImageBitmap", bitmap)
+                mRemoteViews.setImageViewBitmap(R.id.iv_schedule, bitmap)
                 contentView.removeAllViews()
-                mRemoteViews
             } else {
-                val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_today_course_empty)
-                mRemoteViews.setTextColor(R.id.tv_empty, table.widgetTextColor)
-                mRemoteViews
+                val img = ImageView(applicationContext).apply {
+                    setImageResource(R.drawable.ic_schedule_empty)
+                }
+                val view = LinearLayout(applicationContext).apply {
+                    id = R.id.anko_empty_view
+                    orientation = LinearLayout.VERTICAL
+                    addView(img, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(180)).apply {
+                        topMargin = dip(16)
+                    })
+                    addView(TextView(context).apply {
+                        text = if (nextDay) {
+                            "明天没有课哦"
+                        } else {
+                            "今天没有课哦"
+                        }
+                        setTextColor(table.widgetTextColor)
+                        gravity = Gravity.CENTER
+                    }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+                        topMargin = dip(16)
+                    })
+                }
+                val info = ViewUtils.getScreenInfo(applicationContext)
+                ViewUtils.layoutView(view, info[0], info[1])
+                mRemoteViews.setImageViewBitmap(R.id.iv_schedule, view.drawToBitmap(Bitmap.Config.ARGB_4444))
             }
+            return mRemoteViews
         }
 
         private fun initView(context: Context, position: Int): View {
