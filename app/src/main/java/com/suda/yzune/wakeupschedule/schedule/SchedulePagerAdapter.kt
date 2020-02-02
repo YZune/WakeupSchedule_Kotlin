@@ -5,10 +5,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 
-class SchedulePagerAdapter(var maxWeek: Int, manager: FragmentManager) : FragmentStatePagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class SchedulePagerAdapter(var maxWeek: Int, private val preLoad: Boolean, manager: FragmentManager) : FragmentStatePagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): ScheduleFragment {
-        return ScheduleFragment.newInstance(position + 1)
+        return ScheduleFragment.newInstance(position + 1, preLoad)
     }
 
     override fun getCount(): Int {

@@ -27,11 +27,10 @@ import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
 import splitties.dimensions.dip
 
-private const val weekParam = "week"
-
 class ScheduleFragment : BaseFragment() {
 
     private var week = 0
+    private var preLoad = true
     private var weekDay = 1
     private lateinit var weekDate: List<String>
     private val viewModel by activityViewModels<ScheduleViewModel>()
@@ -42,7 +41,8 @@ class ScheduleFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            week = it.getInt(weekParam)
+            week = it.getInt("week")
+            preLoad = it.getBoolean("preLoad")
         }
     }
 
@@ -67,6 +67,13 @@ class ScheduleFragment : BaseFragment() {
                 textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i] + 1]}"
             } else {
                 textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
+            }
+        }
+        if (preLoad) {
+            for (i in 1..7) {
+                viewModel.allCourseList[i - 1].observe(this, Observer {
+                    initWeekPanel(it, i, viewModel.table)
+                })
             }
         }
         showCourseNumber.observe(this, Observer {
@@ -109,6 +116,7 @@ class ScheduleFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        if (preLoad) return
         if (!isLoaded) {
             for (i in 1..7) {
                 viewModel.allCourseList[i - 1].observe(this, Observer {
@@ -121,10 +129,11 @@ class ScheduleFragment : BaseFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(arg0: Int) =
+        fun newInstance(week: Int, preLoad: Boolean) =
                 ScheduleFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(weekParam, arg0)
+                        putInt("week", week)
+                        putBoolean("preLoad", preLoad)
                     }
                 }
     }

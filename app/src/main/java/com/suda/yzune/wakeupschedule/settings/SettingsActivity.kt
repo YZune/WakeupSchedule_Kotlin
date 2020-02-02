@@ -80,6 +80,7 @@ class SettingsActivity : BaseListActivity() {
     private fun onItemsCreated(items: MutableList<BaseSettingItem>) {
         items.add(CategoryItem("常规", true))
         items.add(SwitchItem("自动检查更新", getPrefer().getBoolean(PreferenceKeys.CHECK_UPDATE, true)))
+        items.add(SwitchItem("页面预加载", getPrefer().getBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, true), "开启后，滑动界面后会马上显示课表。关闭后，滑动界面后需要短暂的时间加载课表，不过理论上内存占用会更小，App启动速度也会更快。"))
         items.add(SwitchItem("显示日视图背景", getPrefer().getBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, false)))
         items.add(SwitchItem("显示侧栏「苏大生活」", getPrefer().getBoolean(PreferenceKeys.SHOW_SUDA_LIFE, true)))
         items.add(HorizontalItem("设置当前课表", ""))
@@ -102,6 +103,12 @@ class SettingsActivity : BaseListActivity() {
                 getPrefer().edit {
                     putBoolean(PreferenceKeys.CHECK_UPDATE, isChecked)
                 }
+            }
+            "页面预加载" -> {
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, isChecked)
+                }
+                mRecyclerView.snack("重启App后生效哦")
             }
             "显示日视图背景" -> {
                 getPrefer().edit {

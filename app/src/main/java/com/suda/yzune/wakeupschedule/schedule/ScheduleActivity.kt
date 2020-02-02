@@ -80,6 +80,9 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var weekdayTextView: AppCompatTextView
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
+    private val preLoad by lazy(LazyThreadSafetyMode.NONE) {
+        getPrefer().getBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, true)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -436,7 +439,7 @@ class ScheduleActivity : BaseActivity() {
 
     private fun initViewPage(maxWeek: Int, table: TableBean) {
         if (mAdapter == null) {
-            mAdapter = SchedulePagerAdapter(maxWeek, supportFragmentManager)
+            mAdapter = SchedulePagerAdapter(maxWeek, preLoad, supportFragmentManager)
             scheduleViewPager.adapter = mAdapter
             scheduleViewPager.offscreenPageLimit = 1
         }

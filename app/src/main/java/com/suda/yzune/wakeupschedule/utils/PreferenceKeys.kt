@@ -28,5 +28,6 @@ object PreferenceKeys {
     const val REMINDER_TIME = "reminder_min"
     const val OPEN_TIMES = "open_times"
     const val HAS_INTRO = "has_intro"
+    const val SCHEDULE_PRE_LOAD = "schedule_pre_load"
 
 }
