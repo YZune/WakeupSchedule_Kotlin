@@ -490,7 +490,7 @@ class ScheduleActivity : BaseActivity() {
             }
         }
 
-        scheduleViewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+        scheduleViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1

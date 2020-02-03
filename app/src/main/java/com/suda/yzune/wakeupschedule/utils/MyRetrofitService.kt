@@ -8,19 +8,19 @@ import retrofit2.http.GET
 import retrofit2.http.HTTP
 
 interface MyRetrofitService {
-    @GET("/school/count")
+    @GET("count")
     fun addCount(): Call<ResponseBody>
 
-    @GET("/school/get_donate")
+    @GET("get_donate")
     fun getDonateList(): Call<ResponseBody>
 
-    @GET("/school/getupdate")
+    @GET("getupdate")
     fun getUpdateInfo(): Call<ResponseBody>
 
-    @GET("/school/count_html")
+    @GET("count_html")
     fun getHtmlCount(): Call<ResponseBody>
 
-    @HTTP(method = "POST", path = "/school/apply_html", hasBody = true)
+    @HTTP(method = "POST", path = "apply_html", hasBody = true)
     @FormUrlEncoded
     fun postHtml(@Field("school") school: String,
                  @Field("type") type: String,

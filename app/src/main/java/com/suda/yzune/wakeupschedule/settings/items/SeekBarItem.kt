@@ -4,8 +4,9 @@ data class SeekBarItem(
         val title: String,
         var valueInt: Int,
         val min: Int,
-        val max: Int,
+        var max: Int,
         val unit: String,
+        val prefix: String = "",
         val keys: List<String>? = null) : BaseSettingItem(keys) {
     override fun getType(): Int {
         return SettingType.SEEKBAR

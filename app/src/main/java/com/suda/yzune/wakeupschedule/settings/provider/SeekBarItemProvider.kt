@@ -26,14 +26,22 @@ class SeekBarItemProvider : BaseItemProvider<BaseSettingItem>() {
             val outValue = TypedValue()
             context.theme.resolveAttribute(R.attr.selectableItemBackground, outValue, true)
             setBackgroundResource(outValue.resourceId)
+            setPadding(dip(16), 0, dip(16), 0)
             addView(TextView(context).apply {
                 id = R.id.anko_text_view
                 textSize = 16f
                 gravity = Gravity.CENTER_VERTICAL
             }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT).apply {
-                marginStart = dip(16)
                 marginEnd = dip(16)
                 weight = 1f
+            })
+
+            addView(TextView(context).apply {
+                id = R.id.anko_tv_prefix
+                textSize = 12f
+                gravity = Gravity.CENTER_VERTICAL
+            }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT).apply {
+                marginEnd = dip(4)
             })
 
             addView(TextView(context).apply {
@@ -47,8 +55,7 @@ class SeekBarItemProvider : BaseItemProvider<BaseSettingItem>() {
                 textSize = 12f
                 gravity = Gravity.CENTER_VERTICAL
             }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT).apply {
-                marginStart = dip(8)
-                marginEnd = dip(16)
+                marginStart = dip(4)
             })
 
         }
@@ -62,8 +69,23 @@ class SeekBarItemProvider : BaseItemProvider<BaseSettingItem>() {
         if (data == null) return
         val item = data as SeekBarItem
         helper.setText(R.id.anko_text_view, item.title)
+        if (item.valueInt > item.max || item.valueInt < item.min) {
+            helper.setText(R.id.anko_tv_value, "无效值")
+            helper.setGone(R.id.anko_tv_unit, true)
+            helper.setGone(R.id.anko_tv_prefix, true)
+            return
+        } else {
+            helper.setText(R.id.anko_tv_value, "${item.valueInt}")
+            helper.setGone(R.id.anko_tv_unit, false)
+            helper.setGone(R.id.anko_tv_prefix, false)
+        }
         helper.setText(R.id.anko_tv_unit, item.unit)
-        helper.setText(R.id.anko_tv_value, "${item.valueInt}")
+        if (data.prefix.isNotEmpty()) {
+            helper.setGone(R.id.anko_tv_prefix, false)
+            helper.setText(R.id.anko_tv_prefix, data.prefix)
+        } else {
+            helper.setGone(R.id.anko_tv_prefix, true)
+        }
     }
 
 }

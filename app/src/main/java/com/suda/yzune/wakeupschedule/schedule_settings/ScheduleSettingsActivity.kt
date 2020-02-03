@@ -83,6 +83,10 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
     private val allItems = mutableListOf<BaseSettingItem>()
     private val showItems = mutableListOf<BaseSettingItem>()
 
+    private val currentWeekItem by lazy(LazyThreadSafetyMode.NONE) {
+        SeekBarItem("当前周", viewModel.getCurrentWeek(), 1, viewModel.table.maxWeek, "周", "第", keys = listOf("学期", "周", "日期", "开学", "开始", "时间"))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         showSearch = true
         textWatcher = object : TextWatcher {
@@ -149,8 +153,9 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         items.add(HorizontalItem("课表名称", viewModel.table.tableName, listOf("名称", "名字", "名", "课表")))
         items.add(HorizontalItem("上课时间", "点击此处更改", listOf("时间")))
         items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))
-        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 1, 30, "节", listOf("节数", "数量", "数")))
-        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 1, 30, "周", listOf("学期", "周", "时间")))
+        items.add(currentWeekItem)
+        items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 1, 30, "节", keys = listOf("节数", "数量", "数")))
+        items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 1, 30, "周", keys = listOf("学期", "周", "时间")))
         items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst, keys = listOf("周日", "第一天", "起始", "星期天", "天")))
         items.add(SwitchItem("显示周六", viewModel.table.showSat, keys = listOf("周六", "显示", "星期六", "六")))
         items.add(SwitchItem("显示周日", viewModel.table.showSun, keys = listOf("周日", "显示", "星期日", "日", "星期天", "周天")))
@@ -161,15 +166,15 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         items.add(VerticalItem("界面文字颜色", "指标题等字体的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色")))
         items.add(VerticalItem("课程文字颜色", "指课程格子内的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色")))
         items.add(VerticalItem("格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边")))
-        items.add(SeekBarItem("课程格子高度", viewModel.table.itemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示")))
-        items.add(SeekBarItem("课程格子不透明度", viewModel.table.itemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示")))
-        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 8, 16, "sp", listOf("文字", "大小", "文字大小")))
+        items.add(SeekBarItem("课程格子高度", viewModel.table.itemHeight, 32, 96, "dp", keys = listOf("格子", "高度", "格子高度", "显示")))
+        items.add(SeekBarItem("课程格子不透明度", viewModel.table.itemAlpha, 0, 100, "%", keys = listOf("格子", "透明", "格子高度", "显示")))
+        items.add(SeekBarItem("课程显示文字大小", viewModel.table.itemTextSize, 8, 16, "sp", keys = listOf("文字", "大小", "文字大小")))
         items.add(SwitchItem("显示非本周课程", viewModel.table.showOtherWeekCourse, keys = listOf("非本周")))
 
         items.add(CategoryItem("桌面小部件外观", false))
-        items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp", listOf("格子", "高度", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
-        items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%", listOf("格子", "透明", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
-        items.add(SeekBarItem("小部件显示文字大小", viewModel.table.widgetItemTextSize, 8, 16, "sp", listOf("文字", "大小", "文字大小", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件格子高度", viewModel.table.widgetItemHeight, 32, 96, "dp", keys = listOf("格子", "高度", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件格子不透明度", viewModel.table.widgetItemAlpha, 0, 100, "%", keys = listOf("格子", "透明", "格子高度", "显示", "小部件", "小", "插件", "桌面")))
+        items.add(SeekBarItem("小部件显示文字大小", viewModel.table.widgetItemTextSize, 8, 16, "sp", keys = listOf("文字", "大小", "文字大小", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件标题颜色", "指标题等字体的颜色\n对于日视图则是全部文字的颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件课程颜色", "指课程格子内的文字颜色\n还可以调颜色的透明度哦 (●ﾟωﾟ●)", keys = listOf("颜色", "显示", "文字", "文字颜色", "小部件", "小", "插件", "桌面")))
         items.add(VerticalItem("小部件格子边框颜色", "将不透明度调到最低就可以隐藏边框了哦~", keys = listOf("边框", "显示", "边框颜色", "格子", "边", "小部件", "小", "插件", "桌面")))
@@ -204,8 +209,17 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
         val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
         inputLayout?.helperText = "范围 ${item.min} ~ ${item.max}"
+        if (item.prefix.isNotEmpty()) {
+            inputLayout?.prefixText = item.prefix
+        }
         inputLayout?.suffixText = item.unit
         editText?.inputType = InputType.TYPE_CLASS_NUMBER
+        if (item.valueInt < item.min) {
+            item.valueInt = item.min
+        }
+        if (item.valueInt > item.max) {
+            item.valueInt = item.max
+        }
         val valueStr = item.valueInt.toString()
         editText?.setText(valueStr)
         editText?.setSelection(valueStr.length)
@@ -227,7 +241,18 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             }
             when (item.title) {
                 "一天课程节数" -> viewModel.table.nodes = valueInt
-                "学期周数" -> viewModel.table.maxWeek = valueInt
+                "学期周数" -> {
+                    currentWeekItem.max = valueInt
+                    viewModel.table.maxWeek = valueInt
+                }
+                "当前周" -> {
+                    viewModel.setCurrentWeek(valueInt)
+                    item.valueInt = valueInt
+                    (mAdapter.data[position - 1] as HorizontalItem).value = viewModel.table.startDate
+                    mAdapter.notifyItemChanged(position - 1)
+                    mAdapter.notifyItemChanged(position)
+                    dialog.dismiss()
+                }
                 "课程格子高度" -> viewModel.table.itemHeight = valueInt
                 "课程格子不透明度" -> viewModel.table.itemAlpha = valueInt
                 "课程显示文字大小" -> viewModel.table.itemTextSize = valueInt
@@ -275,7 +300,9 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     val mDate = "${viewModel.mYear}-${viewModel.mMonth}-${viewModel.mDay}"
                     item.value = mDate
                     viewModel.table.startDate = mDate
+                    currentWeekItem.valueInt = viewModel.getCurrentWeek()
                     mAdapter.notifyItemChanged(position)
+                    mAdapter.notifyItemChanged(position + 1)
                 }, viewModel.mYear, viewModel.mMonth - 1, viewModel.mDay).show()
                 Toasty.success(this, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
             }
