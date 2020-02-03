@@ -724,6 +724,21 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         courseDao.insertCourses(courseBaseList, courseDetailList)
     }
 
+    suspend fun importFromExcel(path: String): Int {
+        val source = withContext(Dispatchers.IO) {
+            File(path).readText()
+        }
+        val parser = CSVParser(source)
+        return parser.saveCourse(getApplication(), importId) { baseList, detailList ->
+            if (!newFlag) {
+                courseDao.coverImport(baseList, detailList)
+            } else {
+                tableDao.insertTable(TableBean(id = importId, tableName = "未命名"))
+                courseDao.insertCourses(baseList, detailList)
+            }
+        }
+    }
+
     private suspend fun write2DB(): Int {
         if (baseList.isEmpty()) {
             throw Exception("解析错误>_<请确保选择了正确的教务类型，并在显示了课程的页面")

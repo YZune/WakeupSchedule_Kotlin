@@ -12,6 +12,7 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_excel_import.*
+import java.io.File
 import java.util.regex.Pattern
 
 class ExcelImportFragment : BaseFragment() {
@@ -25,7 +26,7 @@ class ExcelImportFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
+        ViewUtils.resizeStatusBar(context!!, v_status)
 
         val basePath = Environment.getExternalStorageDirectory().absolutePath
 
@@ -33,18 +34,58 @@ class ExcelImportFragment : BaseFragment() {
             CourseUtils.openUrl(activity!!, "https://pan.baidu.com/s/1m9gZ-grvQV6S9isu7NeMVQ")
         }
 
-        tv_import.setOnClickListener {
+        val qqPath = if (basePath.endsWith(File.separator)) {
+            "${basePath}tencent/QQfile_recv/"
+        } else {
+            "$basePath/tencent/QQfile_recv/"
+        }
+
+        val timPath = if (basePath.endsWith(File.separator)) {
+            "${basePath}tencent/TIMfile_recv/"
+        } else {
+            "$basePath/tencent/TIMfile_recv/"
+        }
+
+        val wechatPath = if (basePath.endsWith(File.separator)) {
+            "${basePath}tencent/micromsg/Download/"
+        } else {
+            "$basePath/tencent/micromsg/Download/"
+        }
+
+        tv_qq.setOnClickListener {
+            MaterialFilePicker()
+                    .withActivity(activity)
+                    .withRequestCode(2)
+                    .withPath(qqPath)
+                    .withFilter(Pattern.compile(".*\\.csv$")) // Filtering files and directories by file name using regexp
+                    .start()
+        }
+
+        tv_tim.setOnClickListener {
+            MaterialFilePicker()
+                    .withActivity(activity)
+                    .withRequestCode(2)
+                    .withPath(timPath)
+                    .withFilter(Pattern.compile(".*\\.csv$")) // Filtering files and directories by file name using regexp
+                    .start()
+        }
+
+        tv_wechat.setOnClickListener {
+            MaterialFilePicker()
+                    .withActivity(activity)
+                    .withRequestCode(2)
+                    .withPath(wechatPath)
+                    .withFilter(Pattern.compile(".*\\.csv$")) // Filtering files and directories by file name using regexp
+                    .start()
+        }
+
+        tv_self.setOnClickListener {
             MaterialFilePicker()
                     .withActivity(activity)
                     .withRequestCode(2)
                     .withPath(basePath)
-                    .withFilter(Pattern.compile(".*\\.xlsx$")) // Filtering files and directories by file name using regexp
+                    .withFilter(Pattern.compile(".*\\.csv$")) // Filtering files and directories by file name using regexp
                     .start()
-//            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-//                addCategory(Intent.CATEGORY_OPENABLE)
-//                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-//            }
-//            startActivityForResult(intent, 2)
         }
 
         ib_back.setOnClickListener {
