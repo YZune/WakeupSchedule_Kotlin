@@ -16,8 +16,8 @@ class MobileHub(private var user: String, private var password: String) {
             .add("Origin", "pass.hust.edu.cn")
             .add("Upgrade-Insecure-Requests", "1")
             .build()
-    private val regexModulus = "\"10001\",\"\",\"(.+?)\"".toRegex()
     private val regexExecution = "name=\"execution\" value=\"(.+?)\"".toRegex()
+    private val regexLt = "name=\"lt\" value=\"(.+?)\"".toRegex()
     private val cookieStore = HashMap<String, List<Cookie>>()
 
     private var httpClient = OkHttpClient.Builder()
@@ -36,6 +36,7 @@ class MobileHub(private var user: String, private var password: String) {
             .build()
     private lateinit var modulus: String
     private lateinit var execution: String
+    private lateinit var lt : String
 
     lateinit var courseHTML: String
 
@@ -53,8 +54,8 @@ class MobileHub(private var user: String, private var password: String) {
         val response = withContext(Dispatchers.IO) { httpClient.newCall(request).execute() }
         val bodyString = withContext(Dispatchers.IO) { response.body()!!.string() }
 
-        var matchResult: MatchResult = regexModulus.find(bodyString) ?: throw Exception("页面加载失败")
-        modulus = matchResult.groupValues.last()
+        var matchResult = regexLt.find(bodyString) ?: throw Exception("页面加载失败")
+        lt = matchResult.groupValues.last()
 
         matchResult = regexExecution.find(bodyString) ?: throw Exception("页面加载失败")
         execution = matchResult.groupValues.last()
@@ -63,16 +64,18 @@ class MobileHub(private var user: String, private var password: String) {
     suspend fun login() {
         refreshSession()
 
-        val cipher = Cipher(HUST_RSA_EXPONENT, BigInteger(modulus, 16))
-        val encryptedUsername = cipher.encrypt(user)
-        val encryptedPassword = cipher.encrypt(password)
+        val cipher = Cipher()
+
+        // 明明是des为啥叫rsa
+        val rsa = cipher.encrypt(user + password + lt)
 
         val formBody = FormBody.Builder()
-                .add("username", encryptedUsername)
-                .add("password", encryptedPassword)
+                .add("rsa", rsa)
+                .add("ul", user.length.toString())
+                .add("pl", password.length.toString())
                 .add("execution", execution)
                 .add("code", "code")
-                .add("lt", "LT-NeusoftAlwaysValidTicket")
+                .add("lt", lt)
                 .add("_eventId", "submit")
                 .build()
 
