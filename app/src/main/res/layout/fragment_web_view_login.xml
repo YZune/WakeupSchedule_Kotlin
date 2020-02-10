@@ -280,6 +280,7 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_back"
+            android:tint="?attr/colorOnSurface"
             style="@style/ButtonBackground"
             android:layout_width="48dp"
             android:layout_height="48dp"

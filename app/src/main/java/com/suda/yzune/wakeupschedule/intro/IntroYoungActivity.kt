@@ -6,7 +6,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseBlurTitleActivity
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.Utils
 import kotlinx.android.synthetic.main.activity_intro_young.*
 
 class IntroYoungActivity : BaseBlurTitleActivity() {
@@ -26,7 +26,7 @@ class IntroYoungActivity : BaseBlurTitleActivity() {
                 .into(iv_logo)
 
         tv_download.setOnClickListener {
-            CourseUtils.openUrl(this, "https://www.coolapk.com/apk/com.suda.yzune.youngcommemoration")
+            Utils.openUrl(this, "https://www.coolapk.com/apk/com.suda.yzune.youngcommemoration")
         }
     }
 }

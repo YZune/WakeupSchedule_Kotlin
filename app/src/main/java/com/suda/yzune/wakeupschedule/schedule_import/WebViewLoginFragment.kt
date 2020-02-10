@@ -13,6 +13,8 @@ import android.widget.Toast
 import androidx.core.content.edit
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
@@ -95,7 +97,20 @@ class WebViewLoginFragment : BaseFragment() {
         wv_course.webViewClient = object : WebViewClient() {
 
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
-                handler.proceed() //接受所有网站的证书
+                if (BuildConfig.CHANNEL != "google") {
+                    handler.proceed() //接受所有网站的证书
+                    return
+                }
+                MaterialAlertDialogBuilder(activity)
+                        .setMessage("SSL证书验证失败")
+                        .setPositiveButton("继续浏览") { _, _ ->
+                            handler.proceed()
+                        }
+                        .setNegativeButton("取消") { _, _ ->
+                            handler.cancel()
+                        }
+                        .setCancelable(false)
+                        .show()
             }
 
         }

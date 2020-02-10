@@ -11,9 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.multidex.MultiDex
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
 import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
@@ -21,7 +18,6 @@ import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
-import io.fabric.sdk.android.Fabric
 
 class App : Application() {
 
@@ -37,9 +33,6 @@ class App : Application() {
             AppCenter.start(this, "74cb13b8-bd94-40ce-99b3-c102cbadf772",
                     Analytics::class.java, Crashes::class.java)
         }
-        if (!BuildConfig.DEBUG && !Fabric.isInitialized()) {
-            Fabric.with(this, Crashlytics(), Answers())
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             var channelId = "schedule_reminder"
             var channelName = "课程提醒"
@@ -54,10 +47,16 @@ class App : Application() {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             2 -> {
-                if (Build.VERSION.SDK_INT >= 29) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                when {
+                    Build.VERSION.SDK_INT >= 29 -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    }
+                    Build.VERSION.SDK_INT >= 23 -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                    }
+                    else -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
                 }
             }
         }
@@ -97,11 +96,6 @@ class App : Application() {
         channel.setShowBadge(true)
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
     }
 
 }

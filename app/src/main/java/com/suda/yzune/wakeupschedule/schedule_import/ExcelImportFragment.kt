@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import com.nbsp.materialfilepicker.MaterialFilePicker
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.Utils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.android.synthetic.main.fragment_excel_import.*
 import java.io.File
@@ -31,7 +31,7 @@ class ExcelImportFragment : BaseFragment() {
         val basePath = Environment.getExternalStorageDirectory().absolutePath
 
         tv_template.setOnClickListener {
-            CourseUtils.openUrl(activity!!, "https://pan.baidu.com/s/1m9gZ-grvQV6S9isu7NeMVQ")
+            Utils.openUrl(activity!!, "https://pan.baidu.com/s/1m9gZ-grvQV6S9isu7NeMVQ")
         }
 
         val qqPath = if (basePath.endsWith(File.separator)) {

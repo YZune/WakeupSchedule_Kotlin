@@ -1,9 +1,20 @@
 package com.suda.yzune.wakeupschedule.utils
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import java.security.MessageDigest
 
 
 object Utils {
+
+    fun openUrl(context: Context, url: String) {
+        val intent = Intent()
+        intent.action = "android.intent.action.VIEW"
+        val contentUrl = Uri.parse(url)
+        intent.data = contentUrl
+        context.startActivity(intent)
+    }
 
     fun getMD5Str(str: String): String {
         val md5StrBuff = StringBuffer()

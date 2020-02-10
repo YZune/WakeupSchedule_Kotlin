@@ -39,7 +39,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     var zfType = 0
     var qzType = 0
     var oldQzType = 0
-    var htmlName = ""
     var htmlPath = ""
 
     var sudaXK: SudaXK? = null

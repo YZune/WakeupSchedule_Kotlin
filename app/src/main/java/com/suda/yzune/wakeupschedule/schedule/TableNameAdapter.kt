@@ -34,7 +34,7 @@ class TableNameAdapter(layoutResId: Int, data: MutableList<TableSelectBean>) :
                     .into(imageView)
         } else {
             Glide.with(context)
-                    .load(R.drawable.main_background_2019)
+                    .load(R.drawable.main_background_2020_1)
                     .override(200, 300)
                     .transform(RoundedCornersTransformation(context.dip(4), 0, RoundedCornersTransformation.CornerType.ALL))
                     .into(imageView)

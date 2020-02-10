@@ -186,7 +186,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                         .show(this)
             }
             "截至2018.12.02" -> {
-                CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
+                Utils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }
     }

@@ -304,7 +304,11 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     mAdapter.notifyItemChanged(position)
                     mAdapter.notifyItemChanged(position + 1)
                 }, viewModel.mYear, viewModel.mMonth - 1, viewModel.mDay).show()
-                Toasty.success(this, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
+                if (viewModel.table.sundayFirst) {
+                    Toasty.success(this, "为了周数计算准确，建议选择周日哦", Toast.LENGTH_LONG).show()
+                } else {
+                    Toasty.success(this, "为了周数计算准确，建议选择周一哦", Toast.LENGTH_LONG).show()
+                }
             }
             "上课时间" -> {
                 startActivityForResult(Intent(this, TimeSettingsActivity::class.java).apply {

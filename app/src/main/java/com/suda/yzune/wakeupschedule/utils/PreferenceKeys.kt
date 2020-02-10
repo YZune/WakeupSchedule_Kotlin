@@ -23,6 +23,7 @@ object PreferenceKeys {
     const val HAS_COUNT = "has_count"
     const val CHECK_UPDATE = "s_update"
     const val SHOW_DAY_WIDGET_COLOR = "s_colorful_day_widget"
+    const val SHOW_EMPTY_VIEW = "show_empty_view"
     const val SHOW_SUDA_LIFE = "suda_life"
     const val THEME_COLOR = "nav_bar_color"
     const val REMINDER_TIME = "reminder_min"

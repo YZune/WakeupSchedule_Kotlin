@@ -6,8 +6,6 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
-apply plugin: 'io.fabric'
-
 apply plugin: "androidx.navigation.safeargs.kotlin"
 
 configurations {
@@ -34,14 +32,12 @@ android {
     }
     flavorDimensions "versionCode"
     defaultConfig {
-        //applicationId "com.suda.yzune.wakeupschedule"
-        multiDexEnabled true
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 80
-        versionName "3.60-alpha01"
+        versionCode 85
+        versionName "3.612"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // vectorDrawables.useSupportLibrary = true
+        vectorDrawables.useSupportLibrary = true
         packagingOptions {
             exclude 'META-INF/library_release.kotlin_module'
 
@@ -121,7 +117,7 @@ dependencies {
     def room_version = "2.2.3"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
     implementation "androidx.appcompat:appcompat:1.2.0-alpha02"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
@@ -133,7 +129,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
-    implementation 'com.squareup.retrofit2:retrofit:2.6.4'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
     implementation 'org.jsoup:jsoup:1.12.1'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -150,16 +146,12 @@ dependencies {
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.7.3'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
     implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.2'
     implementation 'com.bigkoo:quicksidebar:1.0.3'
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
     implementation('net.sf.biweekly:biweekly:0.6.3') {
         exclude module: 'jackson-core'
         exclude group: 'com.fasterxml.jackson.core'

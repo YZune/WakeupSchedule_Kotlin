@@ -32,7 +32,7 @@ class TableListAdapter(layoutResId: Int, data: MutableList<TableSelectBean>) :
                     .into(imageView)
         } else {
             Glide.with(context)
-                    .load(R.drawable.main_background_2019)
+                    .load(R.drawable.main_background_2020_1)
                     .override(400, 600)
                     .into(imageView)
         }

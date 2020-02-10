@@ -22,7 +22,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.exception.UserNameErrorExce
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.hust.MobileHub
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.jlu.UIMS
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.suda.SudaXK
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.Utils
 import es.dmoral.toasty.Toasty
 import jahirfiquitiva.libs.textdrawable.TextDrawable
 import kotlinx.android.synthetic.main.fragment_login_web.*
@@ -59,7 +59,7 @@ class LoginWebFragment : BaseFragment() {
             viewModel.sudaXK = SudaXK()
             refreshCode()
             tv_tip.setOnClickListener {
-                CourseUtils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
+                Utils.openUrl(context!!, "https://yzune.github.io/2018/08/13/%E4%BD%BF%E7%94%A8FortiClient%E8%BF%9E%E6%8E%A5%E6%A0%A1%E5%9B%AD%E7%BD%91/")
             }
         }
         if (viewModel.school == "上海大学") {

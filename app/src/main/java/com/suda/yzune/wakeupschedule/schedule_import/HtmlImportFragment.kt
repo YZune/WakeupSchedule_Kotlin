@@ -14,7 +14,9 @@ import com.nbsp.materialfilepicker.MaterialFilePicker
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_QZ
+import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF
+import com.suda.yzune.wakeupschedule.utils.Utils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_html_import.*
@@ -37,7 +39,7 @@ class HtmlImportFragment : BaseFragment() {
         ViewUtils.resizeStatusBar(context!!.applicationContext, v_status)
 
         tv_way.setOnClickListener {
-            CourseUtils.openUrl(activity!!, "https://www.jianshu.com/p/4cd071697fed")
+            Utils.openUrl(activity!!, "https://www.jianshu.com/p/4cd071697fed")
         }
 
         tv_type.setOnClickListener {
@@ -162,7 +164,7 @@ class HtmlImportFragment : BaseFragment() {
     }
 
     private fun showFilePicker(path: String) {
-        if (viewModel.htmlName.isBlank()) {
+        if (viewModel.importType.isNullOrBlank()) {
             view!!.longSnack("请先点击第二个按钮选择类型哦")
         } else {
             MaterialFilePicker()
@@ -178,14 +180,14 @@ class HtmlImportFragment : BaseFragment() {
             viewModel.htmlPath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
         }
         if (requestCode == 4 && resultCode == RESULT_OK) {
-            viewModel.htmlName = data!!.getStringExtra("name")
-            when (viewModel.htmlName) {
-                "正方教务" -> {
+            viewModel.importType = data!!.getStringExtra("type")
+            when (viewModel.importType) {
+                TYPE_ZF -> {
                     chip_zf1.isChecked = true
                     cg_qz.visibility = View.GONE
                     cg_zf.visibility = View.VISIBLE
                 }
-                "强智教务" -> {
+                TYPE_QZ -> {
                     chip_qz1.isChecked = true
                     cg_qz.visibility = View.VISIBLE
                     cg_zf.visibility = View.GONE

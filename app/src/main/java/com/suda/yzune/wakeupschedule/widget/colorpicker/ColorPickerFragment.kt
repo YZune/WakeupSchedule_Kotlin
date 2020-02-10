@@ -15,6 +15,7 @@ import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.FragmentActivity
 import com.suda.yzune.wakeupschedule.R
 import kotlinx.android.synthetic.main.fragment_color_picker.*
+import splitties.resources.color
 
 class ColorPickerFragment : BaseDialogFragment(), ColorPickerView.OnColorChangedListener, TextWatcher {
 
@@ -112,7 +113,11 @@ class ColorPickerFragment : BaseDialogFragment(), ColorPickerView.OnColorChanged
 
     override fun afterTextChanged(s: Editable?) {
         if (et_color.isFocused) {
-            val color = parseColorString(s.toString())
+            val color = try {
+                parseColorString(s.toString())
+            } catch (e: Exception) {
+                color(R.color.colorAccent)
+            }
             if (color != cpv_color.color) {
                 fromEditText = true
                 cpv_color.setColor(color, true)

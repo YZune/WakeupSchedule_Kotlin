@@ -17,8 +17,8 @@ import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.dao.TableDao
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.items.*
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Utils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.activities.start
 import splitties.resources.color
@@ -82,6 +82,7 @@ class SettingsActivity : BaseListActivity() {
         items.add(SwitchItem("自动检查更新", getPrefer().getBoolean(PreferenceKeys.CHECK_UPDATE, true)))
         items.add(SwitchItem("页面预加载", getPrefer().getBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, true), "开启后，滑动界面后会马上显示课表。关闭后，滑动界面后需要短暂的时间加载课表，不过理论上内存占用会更小，App启动速度也会更快。"))
         items.add(SwitchItem("显示日视图背景", getPrefer().getBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, false)))
+        items.add(SwitchItem("显示空视图图片", getPrefer().getBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, true)))
         items.add(SwitchItem("显示侧栏「苏大生活」", getPrefer().getBoolean(PreferenceKeys.SHOW_SUDA_LIFE, true)))
         items.add(HorizontalItem("设置当前课表", ""))
         items.add(HorizontalItem("显示主题", dayNightTheme[dayNightIndex]))
@@ -109,6 +110,12 @@ class SettingsActivity : BaseListActivity() {
                     putBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, isChecked)
                 }
                 mRecyclerView.snack("重启App后生效哦")
+            }
+            "显示空视图图片" -> {
+                getPrefer().edit {
+                    putBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, isChecked)
+                }
+                mRecyclerView.snack("切换页面后生效哦")
             }
             "显示日视图背景" -> {
                 getPrefer().edit {
@@ -150,10 +157,16 @@ class SettingsActivity : BaseListActivity() {
                                 0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                                 1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                                 2 -> {
-                                    if (Build.VERSION.SDK_INT >= 29) {
-                                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                                    } else {
-                                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                                    when {
+                                        Build.VERSION.SDK_INT >= 29 -> {
+                                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                                        }
+                                        Build.VERSION.SDK_INT >= 23 -> {
+                                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
+                                        }
+                                        else -> {
+                                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                                        }
                                     }
                                 }
                             }
@@ -175,7 +188,7 @@ class SettingsActivity : BaseListActivity() {
                 start<AdvancedSettingsActivity>()
             }
             "截至2018.12.02" -> {
-                CourseUtils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
+                Utils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }
     }

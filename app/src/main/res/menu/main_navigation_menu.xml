@@ -11,7 +11,8 @@
                 <item
                     android:id="@+id/nav_young"
                     android:icon="@drawable/young"
-                    android:title="咩咩" />
+                    android:title="咩咩"
+                    android:visible="false" />
                 <item
                     android:id="@+id/nav_explore"
                     android:icon="@drawable/explore"
@@ -21,13 +22,9 @@
                     android:icon="@drawable/about"
                     android:title="关于" />
                 <item
-                    android:id="@+id/nav_help"
-                    android:icon="@drawable/help"
-                    android:title="问答 + 技巧" />
-                <item
                     android:id="@+id/nav_feedback"
                     android:icon="@drawable/feedback"
-                    android:title="反馈" />
+                    android:title="吐个槽" />
                 <item
                     android:id="@+id/nav_setting"
                     android:icon="@drawable/setting"

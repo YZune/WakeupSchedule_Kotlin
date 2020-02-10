@@ -4,6 +4,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.schedule_import.bean.Course
 import org.jsoup.Jsoup
 
+// 东北石油大学
 // 湖南科技大学
 // 湖南科技大学潇湘学院
 class HNUSTParser(source: String, private val oldQzType: Int) : Parser(source) {
@@ -35,7 +36,8 @@ class HNUSTParser(source: String, private val oldQzType: Int) : Parser(source) {
                     var preIndex = -1
 
                     fun toCourse() {
-                        val courseName = Jsoup.parse(split[preIndex - 2]).text().trim()
+                        if (preIndex == -1) return
+                        val courseName = Jsoup.parse(split[0]).text().trim()
                         val room = Jsoup.parse(split[preIndex + 1]).text().trim()
                         val teacher = Jsoup.parse(split[preIndex - 1]).text().trim()
 

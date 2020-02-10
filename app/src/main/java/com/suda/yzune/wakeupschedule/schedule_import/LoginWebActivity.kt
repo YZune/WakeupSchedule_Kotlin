@@ -11,7 +11,6 @@ import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nbsp.materialfilepicker.ui.FilePickerActivity
-import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import es.dmoral.toasty.Toasty
@@ -24,7 +23,6 @@ class LoginWebActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login_web)
 
         intent.extras?.getString("import_type")?.let {
             viewModel.importType = it
@@ -60,7 +58,7 @@ class LoginWebActivity : BaseActivity() {
         }
         fragment?.let { frag ->
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fl_fragment, frag, viewModel.school)
+            transaction.add(android.R.id.content, frag, viewModel.school)
             transaction.commit()
             if (viewModel.importType != "apply" || viewModel.importType != "file") {
                 showImportSettingDialog()
@@ -69,7 +67,7 @@ class LoginWebActivity : BaseActivity() {
 
         if (fragment == null && intent.action == Intent.ACTION_VIEW) {
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.add(R.id.fl_fragment, FileImportFragment(), null)
+            transaction.add(android.R.id.content, FileImportFragment(), null)
             transaction.commit()
             importPath = intent.data!!.path!!.substringAfter("/external_files")
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {

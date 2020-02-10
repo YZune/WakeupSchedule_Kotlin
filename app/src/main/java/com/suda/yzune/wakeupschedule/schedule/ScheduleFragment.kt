@@ -22,7 +22,9 @@ import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import es.dmoral.toasty.Toasty
 import splitties.dimensions.dip
@@ -88,7 +90,9 @@ class ScheduleFragment : BaseFragment() {
                 ui.root.addView(LinearLayoutCompat(context!!).apply {
                     id = R.id.anko_empty_view
                     orientation = LinearLayoutCompat.VERTICAL
-                    addView(img, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(240))
+                    if (context.getPrefer().getBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, true)) {
+                        addView(img, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(240))
+                    }
                     addView(AppCompatTextView(context).apply {
                         text = "本周没有课程哦"
                         setTextColor(viewModel.table.textColor)

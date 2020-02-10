@@ -29,14 +29,6 @@
             android:text="默认" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:alpha="0.5"
-        android:background="@color/grey" />
-
     <androidx.appcompat.widget.LinearLayoutCompat style="@style/settings_item_ll">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -56,14 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:alpha="0.5"
-            android:background="@color/grey" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/settings_item_ll"

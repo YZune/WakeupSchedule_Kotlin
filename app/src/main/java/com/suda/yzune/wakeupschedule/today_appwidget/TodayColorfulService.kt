@@ -93,6 +93,9 @@ class TodayColorfulService : RemoteViewsService() {
 
         override fun getViewAt(position: Int): RemoteViews {
             val mRemoteViews = RemoteViews(applicationContext.packageName, R.layout.item_schedule_widget)
+            if (!this::table.isInitialized) {
+                table = tableDao.getDefaultTableSync()
+            }
             if (courseList.isNotEmpty()) {
                 val view = initView(applicationContext, position)
                 val contentView = view.findViewById<LinearLayout>(R.id.anko_layout)
@@ -108,9 +111,11 @@ class TodayColorfulService : RemoteViewsService() {
                 val view = LinearLayout(applicationContext).apply {
                     id = R.id.anko_empty_view
                     orientation = LinearLayout.VERTICAL
-                    addView(img, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(180)).apply {
-                        topMargin = dip(16)
-                    })
+                    if (context.getPrefer().getBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, true)) {
+                        addView(img, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(180)).apply {
+                            topMargin = dip(16)
+                        })
+                    }
                     addView(TextView(context).apply {
                         text = if (nextDay) {
                             "明天没有课哦"

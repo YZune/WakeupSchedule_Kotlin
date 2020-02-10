@@ -185,24 +185,24 @@ class ScheduleActivity : BaseActivity() {
                     .load(viewModel.table.background)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.main_background_2019)
+                    .error(R.drawable.main_background_2020_1)
                     .into(bgImageView)
             Glide.with(this)
                     .load(viewModel.table.background)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
-                    .error(R.drawable.main_background_2019)
+                    .error(R.drawable.main_background_2020_1)
                     .into(navigationView.getHeaderView(0).findViewById(R.id.iv_header))
         } else {
             val x = (ViewUtils.getRealSize(this).x * 0.5).toInt()
             val y = (ViewUtils.getRealSize(this).y * 0.5).toInt()
             Glide.with(this)
-                    .load(R.drawable.main_background_2019)
+                    .load(R.drawable.main_background_2020_1)
                     .override(x, y)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(bgImageView)
             Glide.with(this)
-                    .load(R.drawable.main_background_2019)
+                    .load(R.drawable.main_background_2020_1)
                     .override((x * 0.8).toInt(), (y * 0.8).toInt())
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(navigationView.getHeaderView(0).findViewById(R.id.iv_header))
@@ -340,10 +340,10 @@ class ScheduleActivity : BaseActivity() {
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
-                R.id.nav_help -> {
+                R.id.nav_feedback -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        CourseUtils.openUrl(this, "https://yzune.github.io/2018/08/13/WakeUp%E8%AF%BE%E7%A8%8B-%E9%97%AE%E7%AD%94-+-%E6%8A%80%E5%B7%A7/")
+                        Utils.openUrl(this, "https://support.qq.com/product/97617")
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -358,15 +358,6 @@ class ScheduleActivity : BaseActivity() {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
                         start<IntroYoungActivity>()
-                    }, 360)
-                    return@setNavigationItemSelectedListener true
-                }
-                R.id.nav_feedback -> {
-                    drawerLayout.closeDrawer(GravityCompat.START)
-                    drawerLayout.postDelayed({
-                        BeforeFeedbackFragment.newInstance().apply {
-                            isCancelable = false
-                        }.show(supportFragmentManager, "BeforeFeedbackFragment")
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }

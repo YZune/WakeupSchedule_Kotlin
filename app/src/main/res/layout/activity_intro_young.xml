@@ -23,7 +23,7 @@
         android:paddingLeft="48dp"
         android:paddingRight="48dp"
         android:paddingBottom="16dp"
-        android:text="咩咩\n一个简单的待重构的纪念日、倒数日App\n有丰富的桌面小部件样式\n迟些时间将会集成到课程表\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/YoungCommemoration"
+        android:text="咩咩\n一个简单的待重构的纪念日、倒数日App\n有丰富的桌面小部件样式\n迟些时间将会集成到课程表\n本项目开源  欢迎star和fork\nhttps://github.com/YZune/YoungCommemoration_Kotlin"
         android:textSize="12sp" />
 
     <com.google.android.material.button.MaterialButton

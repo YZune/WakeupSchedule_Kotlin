@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -37,7 +38,7 @@ class TimeSettingsFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_time_settings, container, false)
-        val recyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.rv_time_detail)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rv_time_detail)
         initAdapter(recyclerView)
         viewModel.getTimeData(viewModel.timeTableList[position].id).observe(this, Observer {
             if (it == null) return@Observer

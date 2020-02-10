@@ -224,6 +224,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("C", "长沙理工大学", "http://xk.csust.edu.cn/", TYPE_QZ_BR))
             add(SchoolInfo("D", "东北林业大学", "http://jwcnew.nefu.edu.cn/dblydx_jsxsd/", TYPE_QZ))
             add(SchoolInfo("D", "东北财经大学", "http://202.199.165.159/", TYPE_URP))
+            add(SchoolInfo("D", "东北石油大学", "http://jwgl.nepu.edu.cn/", TYPE_HNUST))
             add(SchoolInfo("D", "大庆师范学院", "", TYPE_QZ))
             add(SchoolInfo("D", "大连外国语大学", "http://cas.dlufl.edu.cn/cas/", TYPE_QZ))
             add(SchoolInfo("D", "大连大学", "http://202.199.155.33/default2.aspx", TYPE_ZF))
@@ -257,7 +258,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("H", "华南农业大学", "http://202.116.160.170/default2.aspx", TYPE_ZF))
             add(SchoolInfo("H", "华南理工大学", "http://xsjw2018.scuteo.com", TYPE_ZF_NEW))
             add(SchoolInfo("H", "哈尔滨商业大学", "http://jwxsd.hrbcu.edu.cn/", TYPE_QZ))
-            add(SchoolInfo("H", "哈尔滨工程大学", "", TYPE_QZ_WITH_NODE))
+            add(SchoolInfo("H", "哈尔滨工程大学", "", TYPE_QZ_CRAZY))
             add(SchoolInfo("H", "杭州医学院", "http://edu.hmc.edu.cn/", TYPE_ZF))
             add(SchoolInfo("H", "杭州电子科技大学", "http://jxgl.hdu.edu.cn/", TYPE_ZF))
             add(SchoolInfo("H", "河北大学", "http://zhjw.hbu.edu.cn/", TYPE_URP))
@@ -436,7 +437,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
         val adapter = SchoolImportListAdapter(R.layout.item_apply_info, showList)
         adapter.setOnItemClickListener { _, _, position ->
             if (fromLocal) {
-                setResult(Activity.RESULT_OK, Intent().apply { putExtra("name", showList[position].name) })
+                setResult(Activity.RESULT_OK, Intent().apply { putExtra("type", showList[position].type) })
                 finish()
             } else {
                 launch {

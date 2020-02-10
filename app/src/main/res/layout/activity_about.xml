@@ -145,7 +145,7 @@
         android:layout_marginBottom="240dp"
         android:gravity="center_horizontal"
         android:lineSpacingExtra="8dp"
-        android:text="对App有任何的建议\n欢迎点击侧栏的“反馈”"
+        android:text="对App有任何的建议\n欢迎点击侧栏的“吐个槽”"
         android:textSize="12sp" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -40,14 +40,6 @@ class TimeTableFragment : BaseFragment() {
             viewModel.timeTableList.addAll(it)
             recyclerView.adapter?.notifyDataSetChanged()
         })
-
-        viewModel.deleteInfo.observe(this, Observer {
-            if (it == null) return@Observer
-            when (it) {
-                "ok" -> Toasty.success(activity!!.applicationContext, "删除成功~").show()
-                "error" -> Toasty.error(activity!!.applicationContext, "该时间表仍被使用中>_<请确保它不被使用再删除哦").show()
-            }
-        })
         return view
     }
 

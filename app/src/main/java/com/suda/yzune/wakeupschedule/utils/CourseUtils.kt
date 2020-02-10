@@ -1,8 +1,6 @@
 package com.suda.yzune.wakeupschedule.utils
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
@@ -109,14 +107,18 @@ object CourseUtils {
     }
 
     @Throws(ParseException::class)
-    fun daysBetween(date: String, nextDay: Boolean = false, nextWeek: Boolean = false): Int {
+    fun daysBetween(date: String, nextDay: Boolean = false, sundayFirst: Boolean): Int {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
         val cal = Calendar.getInstance()
         if (nextDay) {
             cal.add(Calendar.DATE, 1)
         }
-        if (nextWeek) {
-            cal.add(Calendar.WEEK_OF_YEAR, 1)
+        if (sundayFirst) {
+            cal.firstDayOfWeek = Calendar.SUNDAY
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+        } else {
+            cal.firstDayOfWeek = Calendar.MONDAY
+            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
         }
         cal.set(Calendar.HOUR_OF_DAY, 0)
         cal.set(Calendar.MINUTE, 0)
@@ -138,13 +140,8 @@ object CourseUtils {
 
     @Throws(ParseException::class)
     fun countWeek(date: String, sundayFirst: Boolean, nextDay: Boolean = false): Int {
-        val during = daysBetween(date, nextDay)
-        val cal = Calendar.getInstance()
-        return if (!sundayFirst) {
-            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) during / 7 else during / 7 + 1
-        } else {
-            if (during < 0 && cal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) during / 7 else during / 7 + 1
-        }
+        val during = daysBetween(date, nextDay, sundayFirst)
+        return during / 7 + 1
     }
 
     fun getWeekday(nextDay: Boolean = false): String {
@@ -205,14 +202,6 @@ object CourseUtils {
             strTime = "$newHour:0$newMin"
         }
         return strTime
-    }
-
-    fun openUrl(context: Context, url: String) {
-        val intent = Intent()
-        intent.action = "android.intent.action.VIEW"
-        val contentUrl = Uri.parse(url)
-        intent.data = contentUrl
-        context.startActivity(intent)
     }
 
     fun getDateStringFromWeek(curWeek: Int, targetWeek: Int, sundayFirst: Boolean): List<String> {

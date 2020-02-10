@@ -220,13 +220,13 @@ class ColorPickerView @JvmOverloads constructor(context: Context, attrs: Attribu
             }
 
             //We create our bitmap in the cache if it doesn't exist.
-            if (satValBackgroundCache!!.bitmap == null) {
-                satValBackgroundCache!!.bitmap = Bitmap.createBitmap(rect!!.width(), rect.height(), Bitmap.Config.ARGB_8888)
+            if (satValBackgroundCache?.bitmap == null) {
+                satValBackgroundCache?.bitmap = Bitmap.createBitmap(rect!!.width(), rect.height(), Bitmap.Config.ARGB_8888)
             }
 
             //We create the canvas once so we can draw on our bitmap and the hold on to it.
-            if (satValBackgroundCache!!.canvas == null) {
-                satValBackgroundCache!!.canvas = Canvas(satValBackgroundCache!!.bitmap!!)
+            if (satValBackgroundCache?.canvas == null) {
+                satValBackgroundCache?.canvas = Canvas(satValBackgroundCache?.bitmap!!)
             }
 
             val rgb = Color.HSVToColor(floatArrayOf(hue, 1f, 1f))
@@ -244,12 +244,12 @@ class ColorPickerView @JvmOverloads constructor(context: Context, attrs: Attribu
             // wasn't supported by hardware acceleration which mean
             // there is no need to turn it of anymore. The rest of
             // the view will still be hw accelerated.
-            satValBackgroundCache!!.canvas!!.drawRect(0f, 0f, satValBackgroundCache!!.bitmap!!.width.toFloat(),
+            satValBackgroundCache?.canvas?.drawRect(0f, 0f, satValBackgroundCache!!.bitmap!!.width.toFloat(),
                     satValBackgroundCache!!.bitmap!!.height.toFloat(), satValPaint)
 
             //We set the hue value in our cache to which hue it was drawn with,
             //then we know that if it hasn't changed we can reuse our cached bitmap.
-            satValBackgroundCache!!.value = hue
+            satValBackgroundCache?.value = hue
         }
 
         // We draw our bitmap from the cached, if the hue has changed

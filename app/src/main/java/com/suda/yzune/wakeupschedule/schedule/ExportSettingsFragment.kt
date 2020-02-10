@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.Utils
 import es.dmoral.toasty.Toasty
 import gdut.bsx.share2.FileUtil
 import gdut.bsx.share2.Share2
@@ -57,7 +57,7 @@ class ExportSettingsFragment : BaseDialogFragment() {
         }
 
         tv_export_ics.setOnLongClickListener {
-            CourseUtils.openUrl(activity!!, "https://www.jianshu.com/p/de3524cbe8aa")
+            Utils.openUrl(activity!!, "https://www.jianshu.com/p/de3524cbe8aa")
             return@setOnLongClickListener true
         }
 
