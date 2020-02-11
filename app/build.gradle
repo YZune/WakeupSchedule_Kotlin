@@ -113,7 +113,7 @@ android {
 
 dependencies {
     def lifecycle_version = "2.2.0"
-    def appCenterSdkVersion = "2.5.0"
+    def appCenterSdkVersion = "2.5.1"
     def room_version = "2.2.3"
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
@@ -146,7 +146,7 @@ dependencies {
     implementation 'com.nbsp:library:1.8'
     implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.7.3'
-    implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.2'
+    implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.3'
     implementation 'com.bigkoo:quicksidebar:1.0.3'
     implementation 'com.timehop.stickyheadersrecyclerview:library:0.4.3@aar'
     testImplementation 'junit:junit:4.13'
