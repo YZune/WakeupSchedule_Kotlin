@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.suda.yzune.wakeupschedule.R
 
 abstract class BaseListFragment : BaseFragment() {
 
@@ -15,7 +16,7 @@ abstract class BaseListFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return ConstraintLayout(context).apply {
 
-            mRecyclerView = RecyclerView(context).apply {
+            mRecyclerView = RecyclerView(context, null, R.attr.verticalRecyclerViewStyle).apply {
                 overScrollMode = View.OVER_SCROLL_NEVER
             }
 

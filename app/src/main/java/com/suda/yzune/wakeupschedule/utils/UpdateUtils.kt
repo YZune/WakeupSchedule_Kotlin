@@ -40,8 +40,8 @@ object UpdateUtils {
                     sundayFirst = context.getPrefer().getBoolean("s_sunday_first", false),
                     nodes = context.getPrefer().getInt("classNum", 11),
                     itemAlpha = context.getPrefer().getInt("sb_alpha", 60),
-                    background = context.getPrefer().getString(PreferenceKeys.OLD_VERSION_BG_URI, "")!!,
-                    startDate = context.getPrefer().getString(PreferenceKeys.OLD_VERSION_TERM_START, "2019-02-25")!!,
+                    background = context.getPrefer().getString(Const.KEY_OLD_VERSION_BG_URI, "")!!,
+                    startDate = context.getPrefer().getString(Const.KEY_OLD_VERSION_TERM_START, "2019-02-25")!!,
                     widgetItemAlpha = context.getPrefer().getInt("sb_widget_alpha", 60),
                     widgetItemHeight = context.getPrefer().getInt("widget_item_height", 56),
                     widgetItemTextSize = context.getPrefer().getInt("sb_widget_text_size", 12),
@@ -126,7 +126,7 @@ object UpdateUtils {
                 }
 
                 context.getPrefer().edit {
-                    putBoolean(PreferenceKeys.HAS_ADJUST, true)
+                    putBoolean(Const.KEY_HAS_ADJUST, true)
                 }
             } catch (e: Exception) {
 
@@ -183,7 +183,7 @@ object UpdateUtils {
 
             }
             context.getPrefer().edit {
-                putBoolean(PreferenceKeys.HAS_ADJUST, true)
+                putBoolean(Const.KEY_HAS_ADJUST, true)
             }
         }
     }

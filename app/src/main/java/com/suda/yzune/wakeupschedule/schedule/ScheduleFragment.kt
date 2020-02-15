@@ -21,8 +21,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.suda.yzune.wakeupschedule.widget.TipTextView
@@ -50,7 +50,7 @@ class ScheduleFragment : BaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         weekDay = CourseUtils.getWeekdayInt()
-        ui = ScheduleUI(context!!, viewModel.table, weekDay)
+        ui = ScheduleUI(context!!, viewModel.table, if (week == viewModel.currentWeek) weekDay else -1)
         showCourseNumber = viewModel.getShowCourseNumber(week)
         return ui.root
     }
@@ -73,12 +73,12 @@ class ScheduleFragment : BaseFragment() {
         }
         if (preLoad) {
             for (i in 1..7) {
-                viewModel.allCourseList[i - 1].observe(this, Observer {
+                viewModel.allCourseList[i - 1].observe(viewLifecycleOwner, Observer {
                     initWeekPanel(it, i, viewModel.table)
                 })
             }
         }
-        showCourseNumber.observe(this, Observer {
+        showCourseNumber.observe(viewLifecycleOwner, Observer {
             if (it == 0) {
                 ui.content.visibility = View.GONE
                 if (ui.root.findViewById<View?>(R.id.anko_empty_view) != null) {
@@ -90,7 +90,7 @@ class ScheduleFragment : BaseFragment() {
                 ui.root.addView(LinearLayoutCompat(context!!).apply {
                     id = R.id.anko_empty_view
                     orientation = LinearLayoutCompat.VERTICAL
-                    if (context.getPrefer().getBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, true)) {
+                    if (context.getPrefer().getBoolean(Const.KEY_SHOW_EMPTY_VIEW, true)) {
                         addView(img, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, dip(240))
                     }
                     addView(AppCompatTextView(context).apply {
@@ -123,7 +123,7 @@ class ScheduleFragment : BaseFragment() {
         if (preLoad) return
         if (!isLoaded) {
             for (i in 1..7) {
-                viewModel.allCourseList[i - 1].observe(this, Observer {
+                viewModel.allCourseList[i - 1].observe(viewLifecycleOwner, Observer {
                     initWeekPanel(it, i, viewModel.table)
                 })
             }

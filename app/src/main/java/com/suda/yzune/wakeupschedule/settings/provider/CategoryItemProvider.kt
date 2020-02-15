@@ -13,7 +13,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.items.BaseSettingItem
 import com.suda.yzune.wakeupschedule.settings.items.CategoryItem
 import com.suda.yzune.wakeupschedule.settings.items.SettingType
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.dimensions.dip
@@ -37,7 +37,7 @@ class CategoryItemProvider : BaseItemProvider<BaseSettingItem>() {
 
             addView(LinearLayoutCompat(context).apply {
                 setPadding(dip(16), dip(2), dip(16), dip(2))
-                setBackgroundColor(context.getPrefer().getInt(PreferenceKeys.THEME_COLOR, color(R.color.colorAccent)))
+                setBackgroundColor(context.getPrefer().getInt(Const.KEY_THEME_COLOR, color(R.color.colorAccent)))
 
                 addView(AppCompatTextView(context).apply {
                     id = R.id.anko_text_view

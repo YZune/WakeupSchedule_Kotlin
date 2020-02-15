@@ -163,8 +163,8 @@ object AppWidgetUtils {
         mRemoteViews.setTextColor(R.id.tv_week, tableBean.widgetTextColor)
         mRemoteViews.setInt(R.id.iv_next, "setColorFilter", tableBean.widgetTextColor)
         mRemoteViews.setInt(R.id.iv_back, "setColorFilter", tableBean.widgetTextColor)
-        mRemoteViews.setTextViewTextSize(R.id.tv_date, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat() + 2)
-        mRemoteViews.setTextViewTextSize(R.id.tv_week, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
+        mRemoteViews.setTextViewTextSize(R.id.tv_date, TypedValue.COMPLEX_UNIT_DIP, tableBean.widgetItemTextSize.toFloat() + 2)
+        mRemoteViews.setTextViewTextSize(R.id.tv_week, TypedValue.COMPLEX_UNIT_DIP, tableBean.widgetItemTextSize.toFloat())
         if (nextDay) {
             mRemoteViews.setTextViewText(R.id.tv_date, "明天")
             mRemoteViews.setViewVisibility(R.id.iv_next, View.GONE)

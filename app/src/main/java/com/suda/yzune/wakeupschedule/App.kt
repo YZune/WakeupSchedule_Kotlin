@@ -15,7 +15,7 @@ import com.microsoft.appcenter.AppCenter
 import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
 
@@ -43,7 +43,7 @@ class App : Application() {
             importance = NotificationManager.IMPORTANCE_LOW
             createNotificationChannel(this, channelId, channelName, importance)
         }
-        when (getPrefer().getInt(PreferenceKeys.DAY_NIGHT_THEME, 2)) {
+        when (getPrefer().getInt(Const.KEY_DAY_NIGHT_THEME, 2)) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             2 -> {

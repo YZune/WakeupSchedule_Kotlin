@@ -10,15 +10,13 @@
     android:layout_marginEnd="8dp"
     android:clipChildren="true"
     android:gravity="center"
-    android:orientation="vertical"
     android:padding="8dp">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_table_bg"
         android:layout_width="64dp"
         android:layout_height="96dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/main_background_2020_1"
+        app:srcCompat="@drawable/main_background_2020_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -13,6 +13,8 @@ import androidx.core.graphics.ColorUtils
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.Ui
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.utils.Const
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.dimensions.dip
 import splitties.dimensions.dp
 
@@ -85,7 +87,7 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
             })
         }
 
-        if (!forWidget) {
+        if (!forWidget && context.getPrefer().getBoolean(Const.KEY_SCHEDULE_BLANK_AREA, true)) {
             addView(View(context), ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, itemHeight * 4).apply {
                 topToBottom = R.id.anko_tv_node1 + table.nodes - 1
                 bottomToBottom = ConstraintSet.PARENT_ID
@@ -134,7 +136,7 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
                 textSize = 12f
                 gravity = Gravity.CENTER
                 setLineSpacing(dp(2), 1f)
-                if (i == 0 || i == dayMap[day]) {
+                if (i == 0 || (day > 0 && i == dayMap[day])) {
                     typeface = Typeface.DEFAULT_BOLD
                     setTextColor(textColor)
                 } else {

@@ -18,7 +18,7 @@ import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
@@ -54,7 +54,7 @@ class WebViewLoginFragment : BaseFragment() {
             et_url.setText(url)
             startVisit()
         } else {
-            val url = context!!.getPrefer().getString(PreferenceKeys.SCHOOL_URL, "")
+            val url = context!!.getPrefer().getString(Const.KEY_SCHOOL_URL, "")
             if (url != "") {
                 et_url.setText(url)
             } else {
@@ -300,7 +300,7 @@ class WebViewLoginFragment : BaseFragment() {
         if (URLUtil.isHttpUrl(url) || URLUtil.isHttpsUrl(url)) {
             wv_course.loadUrl(url)
             context!!.getPrefer().edit {
-                putString(PreferenceKeys.SCHOOL_URL, url)
+                putString(Const.KEY_SCHOOL_URL, url)
             }
         } else {
             Toasty.error(context!!, "请输入正确的网址╭(╯^╰)╮").show()

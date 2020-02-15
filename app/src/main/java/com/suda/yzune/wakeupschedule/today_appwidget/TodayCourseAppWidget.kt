@@ -30,7 +30,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
     @SuppressLint("NewApi")
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "WAKEUP_REMIND_COURSE") {
-            if (context.getPrefer().getBoolean(PreferenceKeys.COURSE_REMIND, false)) {
+            if (context.getPrefer().getBoolean(Const.KEY_COURSE_REMIND, false)) {
                 val courseName = intent.getStringExtra("courseName")
                 var room = intent.getStringExtra("room")
                 val time = intent.getStringExtra("time")
@@ -60,7 +60,7 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher))
                         .setSmallIcon(R.drawable.wakeup)
                         .setAutoCancel(false)
-                        .setOngoing(context.getPrefer().getBoolean(PreferenceKeys.REMINDER_ON_GOING, false))
+                        .setOngoing(context.getPrefer().getBoolean(Const.KEY_REMINDER_ON_GOING, false))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
                         .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
@@ -110,11 +110,11 @@ class TodayCourseAppWidget : AppWidgetProvider() {
 
         goAsync {
             val table = tableDao.getDefaultTable()
-            if (context.getPrefer().getBoolean(PreferenceKeys.COURSE_REMIND, false)) {
+            if (context.getPrefer().getBoolean(Const.KEY_COURSE_REMIND, false)) {
                 val week = CourseUtils.countWeek(table.startDate, table.sundayFirst)
                 if (week >= 0) {
                     val weekDay = CourseUtils.getWeekday()
-                    val before = context.getPrefer().getInt(PreferenceKeys.REMINDER_TIME, 20)
+                    val before = context.getPrefer().getInt(Const.KEY_REMINDER_TIME, 20)
                     val type = if (week % 2 == 0) 2 else 1
                     val courseList = courseDao.getCourseByDayOfTable(CourseUtils.getWeekdayInt(), week, type, table.id)
 
@@ -145,9 +145,6 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         val pi = PendingIntent.getBroadcast(context, index, i, PendingIntent.FLAG_UPDATE_CURRENT)
 
                         when {
-                            Build.VERSION.SDK_INT < 19 -> {
-                                manager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
-                            }
                             Build.VERSION.SDK_INT in 19..22 -> {
                                 manager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pi)
                             }

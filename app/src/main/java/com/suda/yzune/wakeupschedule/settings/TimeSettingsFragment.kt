@@ -55,7 +55,7 @@ class TimeSettingsFragment : BaseFragment() {
         return view
     }
 
-    private fun initAdapter(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+    private fun initAdapter(recyclerView: RecyclerView) {
         val adapter = TimeSettingsAdapter(R.layout.item_time_detail, viewModel.timeList)
         adapter.setOnItemClickListener { _, _, position ->
             val selectTimeDialog = SelectTimeDetailFragment.newInstance(this.position, position)

@@ -20,8 +20,8 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.dimensions.dip
@@ -75,7 +75,7 @@ class TodayColorfulService : RemoteViewsService() {
             }
             timeList.clear()
             timeList.addAll(timeDao.getTimeListSync(table.timeTable))
-            showColor = getPrefer().getBoolean(PreferenceKeys.SHOW_DAY_WIDGET_COLOR, false)
+            showColor = getPrefer().getBoolean(Const.KEY_DAY_WIDGET_COLOR, false)
         }
 
         override fun onDestroy() {
@@ -111,7 +111,7 @@ class TodayColorfulService : RemoteViewsService() {
                 val view = LinearLayout(applicationContext).apply {
                     id = R.id.anko_empty_view
                     orientation = LinearLayout.VERTICAL
-                    if (context.getPrefer().getBoolean(PreferenceKeys.SHOW_EMPTY_VIEW, true)) {
+                    if (context.getPrefer().getBoolean(Const.KEY_SHOW_EMPTY_VIEW, true)) {
                         addView(img, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, dip(180)).apply {
                             topMargin = dip(16)
                         })
@@ -147,6 +147,7 @@ class TodayColorfulService : RemoteViewsService() {
             if (alphaStr.length < 2) {
                 alphaStr = "0$alphaStr"
             }
+            val widgetTextSize = table.widgetItemTextSize.toFloat()
             return LinearLayout(context).apply {
                 id = R.id.anko_layout
                 orientation = LinearLayout.VERTICAL
@@ -177,7 +178,7 @@ class TodayColorfulService : RemoteViewsService() {
                             text = c.startNode.toString()
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
-                            textSize = 12f
+                            textSize = widgetTextSize
                             typeface = Typeface.DEFAULT_BOLD
                         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             bottomMargin = dip(dp * 2)
@@ -187,7 +188,7 @@ class TodayColorfulService : RemoteViewsService() {
                             text = "${c.startNode + c.step - 1}"
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
-                            textSize = 12f
+                            textSize = widgetTextSize
                             typeface = Typeface.DEFAULT_BOLD
                         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             topMargin = dip(dp * 2)
@@ -203,7 +204,7 @@ class TodayColorfulService : RemoteViewsService() {
                             alpha = 0.8f
                             text = timeList[c.startNode - 1].startTime
                             setTextColor(table.widgetCourseTextColor)
-                            textSize = 12f
+                            textSize = widgetTextSize
                         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             setMargins(dip(dp * 2))
                         })
@@ -212,7 +213,7 @@ class TodayColorfulService : RemoteViewsService() {
                             text = timeList[c.startNode + c.step - 2].endTime
                             alpha = 0.8f
                             setTextColor(table.widgetCourseTextColor)
-                            textSize = 12f
+                            textSize = widgetTextSize
                         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                             setMargins(dip(dp * 2))
                         })
@@ -226,7 +227,7 @@ class TodayColorfulService : RemoteViewsService() {
                         addView(TextView(context).apply {
                             text = c.courseName
                             setTextColor(table.widgetCourseTextColor)
-                            textSize = 14f
+                            textSize = widgetTextSize + 2
                             typeface = Typeface.DEFAULT_BOLD
                         }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
@@ -238,7 +239,7 @@ class TodayColorfulService : RemoteViewsService() {
                                         text = "\uE6B2"
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
-                                        textSize = 12f
+                                        textSize = widgetTextSize + 2
                                         typeface = iconFont
                                     }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
@@ -247,7 +248,7 @@ class TodayColorfulService : RemoteViewsService() {
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
                                         maxLines = 1
-                                        textSize = 12f
+                                        textSize = widgetTextSize + 2
                                     }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                                         marginStart = dip(dp * 2)
                                         marginEnd = dip(dp * 8)
@@ -258,7 +259,7 @@ class TodayColorfulService : RemoteViewsService() {
                                         text = "\uE6EB"
                                         alpha = 0.8f
                                         setTextColor(table.widgetCourseTextColor)
-                                        textSize = 12f
+                                        textSize = widgetTextSize + 2
                                         typeface = iconFont
                                     }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT))
 
@@ -268,7 +269,7 @@ class TodayColorfulService : RemoteViewsService() {
                                         setTextColor(table.widgetCourseTextColor)
                                         maxLines = 1
                                         ellipsize = TextUtils.TruncateAt.END
-                                        textSize = 12f
+                                        textSize = widgetTextSize + 2
                                     }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
                                         marginStart = dip(dp * 2)
                                     })

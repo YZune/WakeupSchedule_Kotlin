@@ -83,7 +83,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:lineSpacingExtra="4dp"
-                android:text="为了增加导入的成功率，现在要求选择的是 CSV 文件，在电脑上把 Excel 转 CSV 也十分简单，只需要 另存为 -> 选择 CSV 格式，保存即可。"
+                android:text="为了增加导入的成功率，现在要求选择的是 CSV 文件，在电脑上把 Excel 转 CSV 也十分简单，只需要 另存为 -> 选择 CSV 格式，保存即可。关于周数可能会变为日期的问题已经特殊处理过了，可以正常导入的。"
                 android:textColor="@color/colorAccent"
                 android:textSize="12sp" />
 
@@ -101,45 +101,6 @@
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_qq"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="48dp"
-                android:text="我从QQ接收的分享文件"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_tim"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="48dp"
-                android:text="我从Tim接收的分享文件"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_wechat"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="48dp"
-                android:text="我从微信接收的分享文件"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_self"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
@@ -149,7 +110,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
                 android:layout_marginBottom="48dp"
-                android:text="我要自己选择路径"
+                android:text="选择 CSV 文件"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 

@@ -1,9 +1,8 @@
 package com.suda.yzune.wakeupschedule.schedule
 
-import android.Manifest
 import android.appwidget.AppWidgetManager
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,19 +10,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.app.ShareCompat
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
@@ -43,13 +41,11 @@ import com.suda.yzune.wakeupschedule.bean.UpdateInfoBean
 import com.suda.yzune.wakeupschedule.course_add.AddCourseActivity
 import com.suda.yzune.wakeupschedule.intro.AboutActivity
 import com.suda.yzune.wakeupschedule.intro.IntroYoungActivity
-import com.suda.yzune.wakeupschedule.schedule_import.LoginWebActivity
 import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.schedule_settings.ScheduleSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingsActivity
 import com.suda.yzune.wakeupschedule.suda_life.SudaLifeActivity
 import com.suda.yzune.wakeupschedule.utils.*
-import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.UpdateUtils.getVersionCode
 import es.dmoral.toasty.Toasty
 import okhttp3.ResponseBody
@@ -81,17 +77,17 @@ class ScheduleActivity : BaseActivity() {
     private lateinit var navigationView: NavigationView
     private lateinit var drawerLayout: DrawerLayout
     private val preLoad by lazy(LazyThreadSafetyMode.NONE) {
-        getPrefer().getBoolean(PreferenceKeys.SCHEDULE_PRE_LOAD, true)
+        getPrefer().getBoolean(Const.KEY_SCHEDULE_PRE_LOAD, true)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (getPrefer().getBoolean(PreferenceKeys.HIDE_NAV_BAR, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (getPrefer().getBoolean(Const.KEY_HIDE_NAV_BAR, false) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
         setContentView(ScheduleActivityUI(this).root)
 
-        val json = getPrefer().getString(PreferenceKeys.OLD_VERSION_COURSE, "")
+        val json = getPrefer().getString(Const.KEY_OLD_VERSION_COURSE, "")
         if (!json.isNullOrEmpty()) {
             launch {
                 try {
@@ -121,25 +117,25 @@ class ScheduleActivity : BaseActivity() {
         initView()
         initNavView()
 
-        val openTimes = getPrefer().getInt(PreferenceKeys.OPEN_TIMES, 0)
+        val openTimes = getPrefer().getInt(Const.KEY_OPEN_TIMES, 0)
         if (openTimes < 10) {
             getPrefer().edit {
-                putInt(PreferenceKeys.OPEN_TIMES, openTimes + 1)
+                putInt(Const.KEY_OPEN_TIMES, openTimes + 1)
             }
         } else if (openTimes == 10) {
             val dialog = DonateFragment.newInstance()
             dialog.isCancelable = false
             dialog.show(supportFragmentManager, "donateDialog")
             getPrefer().edit {
-                putInt(PreferenceKeys.OPEN_TIMES, openTimes + 1)
+                putInt(Const.KEY_OPEN_TIMES, openTimes + 1)
             }
         }
 
-        if (!getPrefer().getBoolean(PreferenceKeys.HAS_COUNT, false)) {
+        if (!getPrefer().getBoolean(Const.KEY_HAS_COUNT, false)) {
             MyRetrofitUtils.instance.addCount(applicationContext)
         }
 
-        if (getPrefer().getBoolean(PreferenceKeys.CHECK_UPDATE, true)) {
+        if (getPrefer().getBoolean(Const.KEY_CHECK_UPDATE, true)) {
             MyRetrofitUtils.instance.getService().getUpdateInfo().enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {}
 
@@ -159,7 +155,7 @@ class ScheduleActivity : BaseActivity() {
             })
         }
 
-        if (!getPrefer().getBoolean(PreferenceKeys.HAS_INTRO, false)) {
+        if (!getPrefer().getBoolean(Const.KEY_HAS_INTRO, false)) {
             initIntro()
         }
 
@@ -230,7 +226,7 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initTableMenu(data: MutableList<TableSelectBean>) {
-        tableNameRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(this)
+        tableNameRecyclerView.layoutManager = LinearLayoutManager(this)
         val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
         val adapter = TableNameAdapter(R.layout.item_table_select_main, data)
         adapter.addHeaderView(FrameLayout(this).apply {
@@ -244,14 +240,10 @@ class ScheduleActivity : BaseActivity() {
                     startActivityForResult(Intent(this,
                             ScheduleSettingsActivity::class.java).apply {
                         putExtra("tableData", viewModel.table)
-                    }, 16)
+                    }, Const.REQUEST_CODE_SCHEDULE_SETTING)
                 }
                 R.id.menu_export -> {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-                    } else {
-                        ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
-                    }
+                    ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
                 }
             }
         }
@@ -309,12 +301,12 @@ class ScheduleActivity : BaseActivity() {
         val tableManage = view.findViewById<AppCompatTextView>(R.id.nav_table_manage)
         tableManage.setOnClickListener {
             startActivityForResult(
-                    Intent(this, ScheduleManageActivity::class.java), 16)
+                    Intent(this, ScheduleManageActivity::class.java), Const.REQUEST_CODE_SCHEDULE_SETTING)
         }
         return view
     }
 
-    fun initIntro() {
+    private fun initIntro() {
     }
 
     override fun onStart() {
@@ -323,13 +315,13 @@ class ScheduleActivity : BaseActivity() {
     }
 
     private fun initNavView() {
-        navigationView.menu.findItem(R.id.nav_suda).isVisible = getPrefer().getBoolean(PreferenceKeys.SHOW_SUDA_LIFE, true)
+        navigationView.menu.findItem(R.id.nav_suda).isVisible = getPrefer().getBoolean(Const.KEY_SHOW_SUDA_LIFE, true)
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_setting -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     drawerLayout.postDelayed({
-                        startActivityForResult(Intent(this, SettingsActivity::class.java), 31)
+                        startActivityForResult(Intent(this, SettingsActivity::class.java), Const.REQUEST_CODE_SCHEDULE_SETTING)
                     }, 360)
                     return@setNavigationItemSelectedListener true
                 }
@@ -387,47 +379,6 @@ class ScheduleActivity : BaseActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        when (requestCode) {
-            1 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ExportSettingsFragment().show(supportFragmentManager, "exportSettingsFragment")
-                } else {
-                    Toasty.error(applicationContext, "你取消了授权>_<无法导出", Toast.LENGTH_LONG).show()
-                }
-            }
-            2 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    start<LoginWebActivity> {
-                        putExtra("import_type", "file")
-                    }
-                } else {
-                    Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
-                }
-            }
-            3 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    start<LoginWebActivity> {
-                        putExtra("import_type", "excel")
-                        putExtra("tableId", viewModel.table.id)
-                    }
-                } else {
-                    Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
-                }
-            }
-            4 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    start<LoginWebActivity> {
-                        putExtra("import_type", "html")
-                        putExtra("tableId", viewModel.table.id)
-                    }
-                } else {
-                    Toasty.error(applicationContext, "你取消了授权>_<无法从文件导入", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-
     private fun initViewPage(maxWeek: Int, table: TableBean) {
         if (mAdapter == null) {
             mAdapter = SchedulePagerAdapter(maxWeek, preLoad, supportFragmentManager)
@@ -460,11 +411,7 @@ class ScheduleActivity : BaseActivity() {
         navImageButton.setOnClickListener { drawerLayout.openDrawer(GravityCompat.START) }
 
         shareImageButton.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-            } else {
-                ExportSettingsFragment().show(supportFragmentManager, "share")
-            }
+            ExportSettingsFragment().show(supportFragmentManager, null)
         }
 
         importImageButton.setOnClickListener {
@@ -473,9 +420,8 @@ class ScheduleActivity : BaseActivity() {
 
         weekdayTextView.setOnClickListener {
             weekdayTextView.text = CourseUtils.getWeekday()
-            val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
-            if (currentWeek > 0) {
-                scheduleViewPager.currentItem = currentWeek - 1
+            if (viewModel.currentWeek > 0) {
+                scheduleViewPager.currentItem = viewModel.currentWeek - 1
             } else {
                 scheduleViewPager.currentItem = 0
             }
@@ -485,10 +431,9 @@ class ScheduleActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 viewModel.selectedWeek = position + 1
-                val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
                 try {
-                    if (currentWeek > 0) {
-                        if (viewModel.selectedWeek == currentWeek) {
+                    if (viewModel.currentWeek > 0) {
+                        if (viewModel.selectedWeek == viewModel.currentWeek) {
                             weekTextView.text = "第${viewModel.selectedWeek}周"
                             weekdayTextView.text = CourseUtils.getWeekday()
                         } else {
@@ -519,10 +464,8 @@ class ScheduleActivity : BaseActivity() {
         launch {
             viewModel.table = viewModel.getDefaultTable()
 
-            val currentWeek = countWeek(viewModel.table.startDate, viewModel.table.sundayFirst)
-
-            if (currentWeek > 0) {
-                weekTextView.text = "第${currentWeek}周"
+            if (viewModel.currentWeek > 0) {
+                weekTextView.text = "第${viewModel.currentWeek}周"
             } else {
                 weekTextView.text = "还没有开学哦"
             }
@@ -550,17 +493,61 @@ class ScheduleActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 16) {
-            initView()
+        if (resultCode != RESULT_OK) {
+            when (requestCode) {
+                Const.REQUEST_CODE_EXPORT -> Toasty.info(this, "你似乎取消了导出").show()
+            }
+            super.onActivityResult(requestCode, resultCode, data)
+            return
         }
-        if (requestCode == 32 && resultCode == RESULT_OK) {
-            drawerLayout.openDrawer(GravityCompat.END)
-            AfterImportTipFragment.newInstance().show(supportFragmentManager, "AfterImportTipFragment")
-        }
-        if (requestCode == 31 && resultCode == RESULT_OK) {
-            initView()
+        when (requestCode) {
+            Const.REQUEST_CODE_SCHEDULE_SETTING -> initView()
+            Const.REQUEST_CODE_IMPORT -> {
+                drawerLayout.openDrawer(GravityCompat.END)
+                AfterImportTipFragment.newInstance().show(supportFragmentManager, null)
+            }
+            Const.REQUEST_CODE_EXPORT -> {
+                val uri = data?.data
+                launch {
+                    try {
+                        viewModel.exportData(uri)
+                        showShareDialog("分享课程文件", uri!!)
+                    } catch (e: Exception) {
+                        Toasty.error(this@ScheduleActivity, "导出失败>_<${e.message}")
+                    }
+                }
+            }
+            Const.REQUEST_CODE_EXPORT_ICS -> {
+                val uri = data?.data
+                launch {
+                    try {
+                        viewModel.exportICS(uri)
+                        showShareDialog("分享日历文件", uri!!)
+                    } catch (e: Exception) {
+                        Toasty.error(this@ScheduleActivity, "导出失败>_<${e.message}")
+                    }
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun showShareDialog(title: String, uri: Uri) {
+        MaterialAlertDialogBuilder(this)
+                .setTitle("分享")
+                .setMessage("成功导出至你指定的路径啦，是否还要分享出去呢？")
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton("分享") { _, _ ->
+                    val shareIntent = ShareCompat.IntentBuilder.from(this)
+                            .setChooserTitle(title)
+                            .setStream(uri)
+                            .setType("*/*")
+                            .createChooserIntent()
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(shareIntent)
+                }
+                .setCancelable(false)
+                .show()
     }
 
     override fun onBackPressed() {

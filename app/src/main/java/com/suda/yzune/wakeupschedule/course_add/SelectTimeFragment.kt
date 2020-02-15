@@ -54,14 +54,18 @@ class SelectTimeFragment : BaseDialogFragment() {
     private fun initEvent() {
         wp_day.minValue = 0
         wp_day.maxValue = dayList.size - 1
+        if (day < 1) day = 1
+        if (day > 7) day = 7
         wp_day.value = day - 1
 
         wp_start.minValue = 0
         wp_start.maxValue = viewModel.nodes - 1
+        if (start < 1) start = 1
         wp_start.value = start - 1
 
         wp_end.minValue = 0
         wp_end.maxValue = viewModel.nodes - 1
+        if (start < 1) start = 1
         wp_end.value = end - 1
 
         wp_day.setOnValueChangedListener { _, _, newVal ->

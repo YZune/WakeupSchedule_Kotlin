@@ -27,16 +27,19 @@ abstract class Parser(val source: String) {
                         )
                 )
             }
-            _detailList.add(
-                    CourseDetailBean(
+            var step = course.endNode - course.startNode + 1
+            if (step < 1) step = 1
+            _detailList.add(CourseDetailBean(
                     id = id, room = course.room,
-                    teacher = course.teacher, day = course.day,
-                    step = course.endNode - course.startNode + 1,
-                    startWeek = course.startWeek, endWeek = course.endWeek,
-                    type = course.type, startNode = course.startNode,
+                    teacher = course.teacher,
+                    day = if (course.day < 1) 1 else course.day,
+                    step = step,
+                    startWeek = if (course.startWeek < 1) 1 else course.startWeek,
+                    endWeek = if (course.endWeek < 1) 1 else course.endWeek,
+                    type = course.type,
+                    startNode = if (course.startNode < 1) 1 else course.startNode,
                     tableId = tableId
-                    )
-            )
+            ))
         }
     }
 

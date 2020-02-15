@@ -20,7 +20,7 @@ class MyRetrofitUtils private constructor() {
         myService.addCount().enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
                 context.getPrefer().edit {
-                    putBoolean(PreferenceKeys.HAS_COUNT, true)
+                    putBoolean(Const.KEY_HAS_COUNT, true)
                 }
             }
 

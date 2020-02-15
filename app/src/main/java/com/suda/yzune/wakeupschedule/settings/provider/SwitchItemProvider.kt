@@ -14,7 +14,7 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.settings.items.BaseSettingItem
 import com.suda.yzune.wakeupschedule.settings.items.SettingType
 import com.suda.yzune.wakeupschedule.settings.items.SwitchItem
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import splitties.dimensions.dip
 import splitties.resources.color
@@ -60,7 +60,7 @@ class SwitchItemProvider : BaseItemProvider<BaseSettingItem>() {
 
             val checkBox = AppCompatCheckBox(context).apply {
                 id = R.id.anko_check_box
-                val color = context.getPrefer().getInt(PreferenceKeys.THEME_COLOR, color(R.color.colorAccent))
+                val color = context.getPrefer().getInt(Const.KEY_THEME_COLOR, color(R.color.colorAccent))
                 val states = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
                 val colors = intArrayOf(color, Color.GRAY)
                 supportButtonTintList = ColorStateList(states, colors)

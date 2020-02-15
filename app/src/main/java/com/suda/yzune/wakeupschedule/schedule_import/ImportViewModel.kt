@@ -1,10 +1,12 @@
 package com.suda.yzune.wakeupschedule.schedule_import
 
 import android.app.Application
+import android.net.Uri
 import android.util.SparseArray
 import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.suda.yzune.wakeupschedule.App
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.schedule_import.exception.NetworkErrorException
@@ -25,7 +27,7 @@ import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
-import java.io.File
+import java.nio.charset.Charset
 import java.util.regex.Pattern
 
 class ImportViewModel(application: Application) : AndroidViewModel(application) {
@@ -39,7 +41,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
     var zfType = 0
     var qzType = 0
     var oldQzType = 0
-    var htmlPath = ""
+    var htmlUri: Uri? = null
 
     var sudaXK: SudaXK? = null
 
@@ -691,10 +693,13 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         if (!response.isSuccessful) throw Exception(response.message())
     }
 
-    suspend fun importFromFile(path: String) {
+    suspend fun importFromFile(uri: Uri?) {
+        if (uri == null) throw Exception("读取文件失败")
+        if (!uri.path!!.contains("wakeup_schedule")) throw Exception("请确保文件类型正确")
         val gson = Gson()
-        val file = File(path)
-        val list = file.readLines()
+        val list = withContext(Dispatchers.IO) {
+            getApplication<App>().contentResolver.openInputStream(uri)!!.bufferedReader().readLines()
+        }
         val timeTable = gson.fromJson<TimeTableBean>(list[0], object : TypeToken<TimeTableBean>() {}.type)
         val timeDetails = gson.fromJson<List<TimeDetailBean>>(list[1], object : TypeToken<List<TimeDetailBean>>() {}.type)
         val table = gson.fromJson<TableBean>(list[2], object : TypeToken<TableBean>() {}.type)
@@ -723,9 +728,16 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         courseDao.insertCourses(courseBaseList, courseDetailList)
     }
 
-    suspend fun importFromExcel(path: String): Int {
+    suspend fun importFromExcel(uri: Uri?): Int {
+        if (uri == null) throw Exception("读取文件失败")
+        if (!uri.path!!.endsWith("csv")) throw Exception("请确保选取的是 csv 文件")
         val source = withContext(Dispatchers.IO) {
-            File(path).readText()
+            val text = getApplication<App>().contentResolver.openInputStream(uri)!!.bufferedReader(Charset.forName("gbk")).readText()
+            if (text.startsWith("课程名称")) {
+                text
+            } else {
+                getApplication<App>().contentResolver.openInputStream(uri)!!.bufferedReader().readText()
+            }
         }
         val parser = CSVParser(source)
         return parser.saveCourse(getApplication(), importId) { baseList, detailList ->

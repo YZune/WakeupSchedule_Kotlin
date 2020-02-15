@@ -43,7 +43,7 @@ abstract class BaseListActivity : BaseActivity() {
         val outValue = TypedValue()
         theme.resolveAttribute(R.attr.selectableItemBackgroundBorderless, outValue, true)
 
-        mRecyclerView = RecyclerView(context).apply {
+        mRecyclerView = RecyclerView(context, null, R.attr.verticalRecyclerViewStyle).apply {
             overScrollMode = OVER_SCROLL_NEVER
         }
 

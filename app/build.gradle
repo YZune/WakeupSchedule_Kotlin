@@ -25,7 +25,7 @@ android {
             storePassword '11166511'
         }
     }
-    compileSdkVersion 28
+    compileSdkVersion 29
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -33,9 +33,9 @@ android {
     flavorDimensions "versionCode"
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
-        versionCode 85
-        versionName "3.612"
+        targetSdkVersion 29
+        versionCode 86
+        versionName "3.613"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         packagingOptions {
@@ -77,7 +77,7 @@ android {
             signingConfig signingConfigs.config
         }
     }
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.3'
 
     productFlavors {
         google {
@@ -131,20 +131,17 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
-    implementation 'org.jsoup:jsoup:1.12.1'
+    implementation 'org.jsoup:jsoup:1.12.2'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'cn.carbswang.android:NumberPickerView:1.2.0'
     implementation('com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.0-beta11') {
         exclude group: 'androidx'
     }
-    implementation 'jp.wasabeef:glide-transformations:4.1.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation 'com.nbsp:library:1.8'
-    implementation 'gdut.bsx:share2:0.9.3'
     implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.7.3'
     implementation 'com.github.jahirfiquitiva:TextDrawable:1.0.3'
     implementation 'com.bigkoo:quicksidebar:1.0.3'

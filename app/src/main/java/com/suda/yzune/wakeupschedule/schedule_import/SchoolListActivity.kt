@@ -42,7 +42,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_1
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF_NEW
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration
 import es.dmoral.toasty.Toasty
@@ -399,7 +399,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("X", "西昌学院", "https://jwxt.xcc.edu.cn/xtgl/login_slogin.html", TYPE_ZF_NEW))
             add(SchoolInfo("Y", "云南财经大学", "http://202.203.194.2/", TYPE_ZF))
             add(SchoolInfo("Y", "延安大学", "http://jwglxt.yau.edu.cn/jwglxt/xtgl/login_slogin.html", TYPE_ZF_NEW))
-            add(SchoolInfo("Y", "烟台大学", "http://xk.jwc.ytu.edu.cn/", TYPE_URP))
+            add(SchoolInfo("Y", "烟台大学", "http://xk.jwc.ytu.edu.cn/", TYPE_URP_NEW))
             add(SchoolInfo("Z", "中南大学", "https://csujwc.its.csu.edu.cn/", TYPE_QZ))
             add(SchoolInfo("Z", "中南林业科技大学", "http://jwgl.csuft.edu.cn/", TYPE_QZ))
             add(SchoolInfo("Z", "中南财经政法大学", "", TYPE_QZ))
@@ -446,7 +446,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
                         return@launch
                     }
                     getPrefer().edit {
-                        putString(PreferenceKeys.IMPORT_SCHOOL, gson.toJson(showList[position]))
+                        putString(Const.KEY_IMPORT_SCHOOL, gson.toJson(showList[position]))
                     }
                     val tableId = tableDao.getDefaultTableId()
                     start<LoginWebActivity> {

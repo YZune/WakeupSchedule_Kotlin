@@ -1,6 +1,7 @@
 package com.suda.yzune.wakeupschedule.schedule
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
@@ -17,13 +18,12 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
-import com.suda.yzune.wakeupschedule.utils.PreferenceKeys
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,18 +41,20 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     var selectedWeek = 1
     val marTop = application.resources.getDimensionPixelSize(R.dimen.weekItemMarTop)
     var itemHeight = 0
-    var statusBarMargin = 0
     var alphaInt = 225
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
+    val currentWeek by lazy(LazyThreadSafetyMode.NONE) {
+        CourseUtils.countWeek(table.startDate, table.sundayFirst)
+    }
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectListLiveData()
     }
 
     fun getImportSchoolBean(): SchoolInfo {
-        val json = getApplication<App>().getPrefer().getString(PreferenceKeys.IMPORT_SCHOOL, null)
+        val json = getApplication<App>().getPrefer().getString(Const.KEY_IMPORT_SCHOOL, null)
                 ?: return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
         val gson = Gson()
         val res = gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
@@ -149,20 +151,13 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         courseDao.insertCourses(baseList, detailList)
         getApplication<App>().getPrefer().edit {
-            remove(PreferenceKeys.OLD_VERSION_COURSE)
+            remove(Const.KEY_OLD_VERSION_COURSE)
         }
     }
 
-    suspend fun exportData(currentDir: String): String {
-        val myDir = if (currentDir.endsWith(File.separator)) {
-            "${currentDir}WakeUp课程表/"
-        } else {
-            "$currentDir/WakeUp课程表/"
-        }
-        val dir = File(myDir)
-        if (!dir.exists()) {
-            dir.mkdir()
-        }
+    suspend fun exportData(uri: Uri?) {
+        if (uri == null) throw Exception("无法获取文件")
+        val outputStream = getApplication<App>().contentResolver.openOutputStream(uri)
         val gson = Gson()
         val strBuilder = StringBuilder()
         strBuilder.append(gson.toJson(timeTableDao.getTimeTable(table.timeTable)))
@@ -170,36 +165,16 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         strBuilder.append("\n${gson.toJson(table)}")
         strBuilder.append("\n${gson.toJson(courseDao.getCourseBaseBeanOfTable(table.id))}")
         strBuilder.append("\n${gson.toJson(courseDao.getDetailOfTable(table.id))}")
-        val tableName = if (table.tableName == "") {
-            "我的课表"
-        } else {
-            table.tableName
+        withContext(Dispatchers.IO) {
+            outputStream?.write(strBuilder.toString().toByteArray())
         }
-        val file = File(myDir, "$tableName${Calendar.getInstance().timeInMillis}.wakeup_schedule")
-        file.writeText(strBuilder.toString())
-        return file.path
     }
 
-    suspend fun exportICS(currentDir: String): String {
-        val myDir = if (currentDir.endsWith(File.separator)) {
-            "${currentDir}WakeUp课程表/"
-        } else {
-            "$currentDir/WakeUp课程表/"
-        }
-        val dir = File(myDir)
-        if (!dir.exists()) {
-            dir.mkdir()
-        }
-        //val week = CourseUtils.countWeekForExport(table.startDate, table.sundayFirst)
-        withContext(Dispatchers.Default) {
-
-        }
+    suspend fun exportICS(uri: Uri?) {
+        if (uri == null) throw Exception("无法获取文件")
         val ical = ICalendar()
         withContext(Dispatchers.Default) {
             ical.setProductId("-//YZune//WakeUpSchedule//EN")
-//        calendar.properties.add(ProdId("-//WakeUpSchedule //iCal4j 2.0//EN"))
-//        calendar.properties.add(Version.VERSION_2_0)
-//        calendar.properties.add(CalScale.GREGORIAN)
             val startTimeMap = ICalUtils.getClassTime(timeList, true)
             val endTimeMap = ICalUtils.getClassTime(timeList, false)
             val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
@@ -216,15 +191,9 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
         }
         val warnings = ical.validate(ICalVersion.V2_0)
         Log.d("日历", warnings.toString())
-        val tableName = if (table.tableName == "") {
-            "我的课表"
-        } else {
-            table.tableName
-        }
-        val file = File(myDir, "日历-$tableName.ics")
+        val outputStream = getApplication<App>().contentResolver.openOutputStream(uri)
         withContext(Dispatchers.IO) {
-            Biweekly.write(ical).go(file)
+            Biweekly.write(ical).go(outputStream)
         }
-        return file.path
     }
 }

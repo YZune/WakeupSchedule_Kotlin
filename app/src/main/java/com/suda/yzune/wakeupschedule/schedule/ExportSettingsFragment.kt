@@ -1,18 +1,15 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.activityViewModels
 import com.suda.yzune.wakeupschedule.R
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.Utils
 import es.dmoral.toasty.Toasty
-import gdut.bsx.share2.FileUtil
-import gdut.bsx.share2.Share2
-import gdut.bsx.share2.ShareContentType
 import kotlinx.android.synthetic.main.fragment_export_settings.*
-import java.io.File
 
 class ExportSettingsFragment : BaseDialogFragment() {
 
@@ -21,39 +18,27 @@ class ExportSettingsFragment : BaseDialogFragment() {
 
     private val viewModel by activityViewModels<ScheduleViewModel>()
 
+    val tableName by lazy(LazyThreadSafetyMode.NONE) {
+        if (viewModel.table.tableName == "") {
+            "我的课表"
+        } else {
+            viewModel.table.tableName
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         isCancelable = false
 
         tv_export.setOnClickListener {
-            tv_export.text = "导出中…请稍候"
-            launch {
-                try {
-                    viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
-                    Toasty.success(activity!!.applicationContext, "导出成功").show()
-                    dismiss()
-                } catch (e: Exception) {
-                    Toasty.error(activity!!.applicationContext, "出现异常>_<\n${e.message}").show()
-                }
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "text/octet-stream"
+                putExtra(Intent.EXTRA_TITLE, "$tableName.wakeup_schedule")
             }
-        }
-
-        tv_share.setOnClickListener {
-            tv_share.text = "导出中…请稍候"
-            launch {
-                try {
-                    val path = viewModel.exportData(Environment.getExternalStorageDirectory().absolutePath)
-                    Share2.Builder(activity)
-                            .setContentType(ShareContentType.FILE)
-                            .setShareFileUri(FileUtil.getFileUri(activity, null, File(path)))
-                            .setTitle("导出并分享课程文件")
-                            .build()
-                            .shareBySystem()
-                    dismiss()
-                } catch (e: Exception) {
-                    Toasty.error(activity!!.applicationContext, "出现异常>_<\n${e.message}").show()
-                }
-            }
+            Toasty.info(activity!!, "请自行选择导出的地方\n不要修改文件的扩展名哦", Toasty.LENGTH_LONG).show()
+            activity?.startActivityForResult(intent, Const.REQUEST_CODE_EXPORT)
+            dismiss()
         }
 
         tv_export_ics.setOnLongClickListener {
@@ -62,34 +47,14 @@ class ExportSettingsFragment : BaseDialogFragment() {
         }
 
         tv_export_ics.setOnClickListener {
-            launch {
-                tv_export_ics.text = "导出中…请稍候"
-                try {
-                    viewModel.exportICS(Environment.getExternalStorageDirectory().absolutePath)
-                    Toasty.success(activity!!.applicationContext, "导出成功").show()
-                    dismiss()
-                } catch (e: Exception) {
-                    Toasty.error(activity!!.applicationContext, "出现异常>_<\n${e.message}").show()
-                }
+            val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "text/calendar"
+                putExtra(Intent.EXTRA_TITLE, "日历-$tableName")
             }
-        }
-
-        tv_share_ics.setOnClickListener {
-            tv_share_ics.text = "导出中…请稍候"
-            launch {
-                try {
-                    val path = viewModel.exportICS(Environment.getExternalStorageDirectory().absolutePath)
-                    Share2.Builder(activity)
-                            .setContentType(ShareContentType.FILE)
-                            .setShareFileUri(FileUtil.getFileUri(activity, null, File(path)))
-                            .setTitle("导出并分享日历文件")
-                            .build()
-                            .shareBySystem()
-                    dismiss()
-                } catch (e: Exception) {
-                    Toasty.error(activity!!.applicationContext, "出现异常>_<\n${e.message}").show()
-                }
-            }
+            Toasty.info(activity!!, "请自行选择导出的地方\n不要修改文件的扩展名哦", Toasty.LENGTH_LONG).show()
+            activity?.startActivityForResult(intent, Const.REQUEST_CODE_EXPORT_ICS)
+            dismiss()
         }
 
         tv_cancel.setOnClickListener {

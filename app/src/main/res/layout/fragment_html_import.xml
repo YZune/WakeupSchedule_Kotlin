@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,11 +10,20 @@
     <View
         android:id="@+id/v_status"
         android:layout_width="match_parent"
-        android:layout_height="24dp" />
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toTopOf="@id/ll_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toTopOf="@id/sv_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/v_status">
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/ib_back"
@@ -38,8 +47,13 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <ScrollView
+        android:id="@+id/sv_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_bar">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -101,52 +115,6 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:alpha="0.5"
-                android:background="@color/grey" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_qq"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginEnd="48dp"
-                android:text="从 QQ 接收位置选取"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_tim"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="48dp"
-                android:text="从 Tim 接收位置选取"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/tv_wechat"
-                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="48dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="48dp"
-                android:text="从 微信 接收位置选取"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_self"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
@@ -156,23 +124,16 @@
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="48dp"
-                android:text="我要自己选择路径"
+                android:text="选择 HTML 文件"
                 android:textSize="12sp"
                 android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:alpha="0.5"
-                android:background="@color/grey" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="48dp"
                 android:layout_marginEnd="48dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="56dp"
                 android:orientation="horizontal">
 
@@ -202,116 +163,113 @@
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:gravity="center">
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/cg_qz"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:visibility="gone"
-                        app:chipSpacingHorizontal="16dp"
-                        app:chipSpacingVertical="16dp"
-                        app:lineSpacing="20dp"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 1"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/red" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 2"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/pink" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 3"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/lightBlue" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_qz4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="强智 4"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/orange" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/cg_zf"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:visibility="gone"
-                        app:chipSpacingHorizontal="16dp"
-                        app:chipSpacingVertical="16dp"
-                        app:lineSpacing="20dp"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_zf1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="正方 1"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/red" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_zf2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="正方 2"
-                            android:textColor="?attr/colorSurface"
-                            app:chipBackgroundColor="@color/pink" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                </RelativeLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/fab_import"
-                    android:layout_width="56dp"
-                    android:layout_height="67dp"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/iconfont"
-                    android:includeFontPadding="false"
-                    android:text=""
-                    android:textSize="25sp"
-                    app:cornerRadius="48dp" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_qz"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:chipSpacingHorizontal="16dp"
+        app:chipSpacingVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fab_import"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lineSpacing="20dp"
+        app:singleSelection="true"
+        tools:visibility="visible">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_qz1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="强智 1"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/red" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_qz2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="强智 2"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/pink" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_qz3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="强智 3"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/lightBlue" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_qz4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="强智 4"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/orange" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cg_zf"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:chipSpacingHorizontal="16dp"
+        app:chipSpacingVertical="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fab_import"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lineSpacing="20dp"
+        app:singleSelection="true"
+        tools:visibility="visible">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_zf1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="正方 1"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/red" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_zf2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="正方 2"
+            android:textColor="?attr/colorSurface"
+            app:chipBackgroundColor="@color/pink" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/fab_import"
+        android:layout_width="56dp"
+        android:layout_height="67dp"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/iconfont"
+        android:includeFontPadding="false"
+        android:text=""
+        android:textSize="25sp"
+        app:cornerRadius="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

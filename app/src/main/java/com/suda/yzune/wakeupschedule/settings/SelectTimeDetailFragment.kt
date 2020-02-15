@@ -60,10 +60,10 @@ class SelectTimeDetailFragment : BaseDialogFragment() {
         var endIndex: Int
         startIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].startTime)
         endIndex = viewModel.timeSelectList.indexOf(viewModel.timeList[position].endTime)
-        if (startIndex == -1) {
+        if (startIndex < 0) {
             startIndex = 0
         }
-        if (endIndex == -1) {
+        if (endIndex < 0) {
             endIndex = 0
         }
 

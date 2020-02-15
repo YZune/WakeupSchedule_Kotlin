@@ -35,6 +35,11 @@ class CSVParser(source: String) : Parser(source) {
                             endWeek = weeks[1].trim().toInt()
                         }
                     }
+                } else if (weekStr.contains("月")) {
+                    // 针对 Excel 自动转为日期格式的情况
+                    type = 0
+                    startWeek = weekStr.substringBefore('月').trim().toInt()
+                    endWeek = weekStr.substringAfter("月").trim().removeSuffix("日").trim().toInt()
                 } else {
                     startWeek = weekStr.trim().toInt()
                     endWeek = weekStr.trim().toInt()

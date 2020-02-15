@@ -44,7 +44,7 @@ class SchoolInfoFragment : BaseFragment() {
                 val fragment = WebViewLoginFragment.newInstance()
                 val transaction = parentFragmentManager.beginTransaction()
                 transaction.hide(this)
-                transaction.add(R.id.fl_fragment, fragment, "webLogin")
+                transaction.add(android.R.id.content, fragment, "webLogin")
                 transaction.commit()
             } else {
                 Toasty.error(activity!!, "请填写学校全称").show()

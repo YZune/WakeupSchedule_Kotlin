@@ -3,25 +3,24 @@ package com.suda.yzune.wakeupschedule.schedule_import
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
-import com.nbsp.materialfilepicker.MaterialFilePicker
-import com.nbsp.materialfilepicker.ui.FilePickerActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_QZ
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_ZF
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.Utils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import es.dmoral.toasty.Toasty
 import kotlinx.android.synthetic.main.fragment_html_import.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import splitties.snackbar.longSnack
-import java.io.File
 import java.nio.charset.Charset
 
 class HtmlImportFragment : BaseFragment() {
@@ -45,7 +44,7 @@ class HtmlImportFragment : BaseFragment() {
         tv_type.setOnClickListener {
             startActivityForResult(Intent(activity, SchoolListActivity::class.java).apply {
                 putExtra("fromLocal", true)
-            }, 4)
+            }, Const.REQUEST_CODE_CHOOSE_SCHOOL)
         }
 
         cp_utf.isChecked = true
@@ -102,40 +101,20 @@ class HtmlImportFragment : BaseFragment() {
             }
         }
 
-        val basePath = Environment.getExternalStorageDirectory().absolutePath
-
-        val qqPath = if (basePath.endsWith(File.separator)) {
-            "${basePath}tencent/QQfile_recv/"
-        } else {
-            "$basePath/tencent/QQfile_recv/"
-        }
-
-        val timPath = if (basePath.endsWith(File.separator)) {
-            "${basePath}tencent/TIMfile_recv/"
-        } else {
-            "$basePath/tencent/TIMfile_recv/"
-        }
-
-        val wechatPath = if (basePath.endsWith(File.separator)) {
-            "${basePath}tencent/micromsg/Download/"
-        } else {
-            "$basePath/tencent/micromsg/Download/"
-        }
-
-        tv_qq.setOnClickListener {
-            showFilePicker(qqPath)
-        }
-
-        tv_tim.setOnClickListener {
-            showFilePicker(timPath)
-        }
-
-        tv_wechat.setOnClickListener {
-            showFilePicker(wechatPath)
-        }
-
         tv_self.setOnClickListener {
-            showFilePicker(basePath)
+            if (viewModel.importType.equals("html")) {
+                getView()?.longSnack("请先点击第二个按钮选择类型哦")
+            } else {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                    type = "text/*"
+                }
+                try {
+                    startActivityForResult(intent, Const.REQUEST_CODE_IMPORT_HTML)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
 
         ib_back.setOnClickListener {
@@ -143,13 +122,17 @@ class HtmlImportFragment : BaseFragment() {
         }
 
         fab_import.setOnClickListener {
-            if (viewModel.htmlPath.isBlank()) {
+            if (viewModel.htmlUri == null) {
                 it.longSnack("还没有选择文件呢>_<")
                 return@setOnClickListener
             }
             launch {
                 try {
-                    val html = File(viewModel.htmlPath).readText(if (cp_utf.isChecked) Charsets.UTF_8 else Charset.forName("gbk"))
+                    val html = withContext(Dispatchers.IO) {
+                        activity!!.contentResolver.openInputStream(viewModel.htmlUri!!)!!.bufferedReader(
+                                if (cp_utf.isChecked) Charsets.UTF_8 else Charset.forName("gbk")
+                        ).readText()
+                    }
                     val result = viewModel.importSchedule(html)
                     Toasty.success(activity!!,
                             "成功导入 $result 门课程(ﾟ▽ﾟ)/\n请在右侧栏切换后查看").show()
@@ -163,23 +146,11 @@ class HtmlImportFragment : BaseFragment() {
         }
     }
 
-    private fun showFilePicker(path: String) {
-        if (viewModel.importType.isNullOrBlank()) {
-            view!!.longSnack("请先点击第二个按钮选择类型哦")
-        } else {
-            MaterialFilePicker()
-                    .withSupportFragment(this)
-                    .withRequestCode(3)
-                    .withPath(path)
-                    .start()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 3 && resultCode == RESULT_OK) {
-            viewModel.htmlPath = data!!.getStringExtra(FilePickerActivity.RESULT_FILE_PATH)
+        if (requestCode == Const.REQUEST_CODE_IMPORT_HTML && resultCode == RESULT_OK) {
+            viewModel.htmlUri = data?.data
         }
-        if (requestCode == 4 && resultCode == RESULT_OK) {
+        if (requestCode == Const.REQUEST_CODE_CHOOSE_SCHOOL && resultCode == RESULT_OK) {
             viewModel.importType = data!!.getStringExtra("type")
             when (viewModel.importType) {
                 TYPE_ZF -> {

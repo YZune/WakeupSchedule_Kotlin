@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="8dp"
     tools:background="@android:color/black"
-    android:background="@color/transparent">
+    android:background="@android:color/transparent">
 
     <TextView
         android:id="@+id/tv_date"

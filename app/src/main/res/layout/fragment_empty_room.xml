@@ -35,7 +35,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginTop="-16dp"
-        android:background="@color/transparent"
+        android:background="@android:color/transparent"
         android:textAlignment="center" />
 
     <androidx.appcompat.widget.AppCompatTextView
