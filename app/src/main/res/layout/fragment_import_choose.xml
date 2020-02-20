@@ -45,12 +45,7 @@
         android:id="@+id/tv_school"
         style="@style/DialogButtonStyle"
         android:layout_marginTop="8dp"
-        android:text="苏大教务导入" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/tv_more"
-        style="@style/DialogButtonStyle"
-        android:text="更多学校导入" />
+        android:text="从学校教务导入" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_excel"

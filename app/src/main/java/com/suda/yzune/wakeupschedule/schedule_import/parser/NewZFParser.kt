@@ -49,10 +49,10 @@ class NewZFParser(source: String) : Parser(source) {
                     val weekList = arrayListOf<String>()
                     pList.forEach { e ->
                         when (e.getElementsByAttribute("title").attr("title")) {
-                            "教师" -> teacher = e.getElementsByTag("font").last().text().trim()
-                            "上课地点" -> room = e.getElementsByTag("font").last().text().trim()
+                            "教师" -> teacher = e.text().trim()
+                            "上课地点" -> room = e.text().trim()
                             "节/周", "周/节" -> {
-                                timeStr = e.getElementsByTag("font").last().text().trim()
+                                timeStr = e.text().trim()
                                 val result = Common.nodePattern.find(timeStr)
                                 if (result != null) {
                                     val nodeInfo = result.value

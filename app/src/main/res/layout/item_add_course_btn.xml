@@ -2,6 +2,8 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="24dp"
+    android:paddingBottom="128dp"
     android:gravity="center">
 
     <com.google.android.material.button.MaterialButton
@@ -9,10 +11,6 @@
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center"
         android:paddingStart="64dp"
         android:paddingEnd="64dp"
         android:text="添加时间段"

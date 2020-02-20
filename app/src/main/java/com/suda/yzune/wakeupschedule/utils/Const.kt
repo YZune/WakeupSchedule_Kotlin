@@ -16,6 +16,7 @@ object Const {
     const val REQUEST_CODE_IMPORT_HTML = 105
     const val REQUEST_CODE_IMPORT_CSV = 106
     const val REQUEST_CODE_CHOOSE_SCHOOL = 107
+    const val REQUEST_CODE_ADD_COURSE = 108
 
     const val KEY_OLD_VERSION_COURSE = "course"
     const val KEY_OLD_VERSION_BG_URI = "pic_uri"
@@ -40,5 +41,6 @@ object Const {
     const val KEY_HAS_INTRO = "has_intro"
     const val KEY_SCHEDULE_PRE_LOAD = "schedule_pre_load"
     const val KEY_SCHEDULE_BLANK_AREA = "schedule_blank_area"
+    const val KEY_SCHEDULE_DETAIL_TIME = "schedule_detail_time"
 
 }

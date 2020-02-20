@@ -5,6 +5,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.bean.WeekBean
 
 object Common {
 
+    const val TYPE_HELP = "help"
     const val TYPE_ZF = "zf"
     const val TYPE_ZF_1 = "zf_1"
     const val TYPE_ZF_NEW = "zf_new"

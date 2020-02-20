@@ -8,7 +8,7 @@ import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 @Dao
 interface TableDao {
     @Insert
-    suspend fun insertTable(tableBean: TableBean)
+    suspend fun insertTable(tableBean: TableBean): Long
 
     @Update
     suspend fun updateTable(tableBean: TableBean)
@@ -51,4 +51,7 @@ interface TableDao {
 
     @Query("delete from tablebean where id = :id")
     suspend fun deleteTable(id: Int)
+
+    @Query("delete from coursebasebean where tableId = :id")
+    suspend fun clearTable(id: Int)
 }

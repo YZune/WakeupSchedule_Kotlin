@@ -17,7 +17,6 @@ import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.schedule_import.Common
-import com.suda.yzune.wakeupschedule.schedule_import.bean.SchoolInfo
 import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.ICalUtils
@@ -45,23 +44,10 @@ class ScheduleViewModel(application: Application) : AndroidViewModel(application
     val tableSelectList = arrayListOf<TableSelectBean>()
     val allCourseList = Array(7) { MutableLiveData<List<CourseBean>>() }
     val daysArray = arrayOf("日", "一", "二", "三", "四", "五", "六", "日")
-    val currentWeek by lazy(LazyThreadSafetyMode.NONE) {
-        CourseUtils.countWeek(table.startDate, table.sundayFirst)
-    }
+    var currentWeek = 1
 
     fun initTableSelectList(): LiveData<List<TableSelectBean>> {
         return tableDao.getTableSelectListLiveData()
-    }
-
-    fun getImportSchoolBean(): SchoolInfo {
-        val json = getApplication<App>().getPrefer().getString(Const.KEY_IMPORT_SCHOOL, null)
-                ?: return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
-        val gson = Gson()
-        val res = gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
-        if (!res.type.isNullOrEmpty()) {
-            return gson.fromJson<SchoolInfo>(json, SchoolInfo::class.java)
-        }
-        return SchoolInfo("S", "苏州大学", "", Common.TYPE_LOGIN)
     }
 
     fun getMultiCourse(week: Int, day: Int, startNode: Int): List<CourseBean> {

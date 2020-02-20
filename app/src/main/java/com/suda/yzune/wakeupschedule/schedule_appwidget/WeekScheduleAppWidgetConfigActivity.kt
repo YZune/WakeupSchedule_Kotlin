@@ -73,8 +73,8 @@ class WeekScheduleAppWidgetConfigActivity : BaseBlurTitleActivity() {
                     }
                 }
             }
-            rv_table_list.adapter = adapter
-            rv_table_list.layoutManager = LinearLayoutManager(this)
+            rv_list.adapter = adapter
+            rv_list.layoutManager = LinearLayoutManager(this)
             launch {
                 list.clear()
                 list.addAll(viewModel.getTableList())

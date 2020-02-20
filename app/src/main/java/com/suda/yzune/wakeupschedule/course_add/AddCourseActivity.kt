@@ -1,10 +1,9 @@
 package com.suda.yzune.wakeupschedule.course_add
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
+import android.app.Activity
 import android.app.Dialog
 import android.appwidget.AppWidgetManager
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -18,7 +17,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.setMargins
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -42,7 +44,6 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
 
     private lateinit var tvColor: AppCompatTextView
     private lateinit var ivColor: AppCompatTextView
-    private var showTip = false
 
     override fun onSetupSubButton(tvButton: AppCompatTextView): AppCompatTextView? {
         tvButton.text = "保存"
@@ -55,11 +56,10 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 if (viewModel.baseBean.id == -1 || !viewModel.updateFlag) {
                     launch {
                         val task = viewModel.checkSameName()
-                        if (task == null) {
-                            saveData()
-                        } else {
-                            AddCourseTipFragment.newInstance(task).apply { isCancelable = false }.show(supportFragmentManager, "AddCourseTipFragment")
+                        if (task != null) {
+                            viewModel.baseBean.id = task.id
                         }
+                        saveData(task != null)
                     }
                 } else {
                     saveData()
@@ -72,15 +72,16 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
     private val viewModel by viewModels<AddCourseViewModel>()
     private lateinit var etName: AppCompatEditText
     private var isExit: Boolean = false
+    private lateinit var adapter: AddCourseAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        showTip = intent.extras!!.getBoolean("showTip", false)
         if (intent.extras!!.getInt("id") == -1) {
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
             viewModel.nodes = intent.extras!!.getInt("nodes")
-            initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek)), viewModel.baseBean)
+            adapter = AddCourseAdapter(R.layout.item_add_course_detail, viewModel.initData(viewModel.maxWeek))
+            initAdapter(viewModel.baseBean)
         } else {
             viewModel.tableId = intent.extras!!.getInt("tableId")
             viewModel.maxWeek = intent.extras!!.getInt("maxWeek")
@@ -95,9 +96,49 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                 viewModel.baseBean.color = courseBaseBean.color
                 viewModel.baseBean.courseName = courseBaseBean.courseName
                 viewModel.baseBean.tableId = courseBaseBean.tableId
-                initAdapter(AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList), viewModel.baseBean)
+                adapter = AddCourseAdapter(R.layout.item_add_course_detail, viewModel.editList)
+                initAdapter(viewModel.baseBean)
             }
         }
+        rootView.addView(MaterialButton(this).apply {
+            includeFontPadding = false
+            textSize = 25f
+            cornerRadius = dip(48)
+            text = getString(R.string.icon_add)
+            typeface = ResourcesCompat.getFont(context, R.font.iconfont)
+            setOnClickListener {
+                if (viewModel.editList.isEmpty()) {
+                    adapter.addData(CourseEditBean(
+                            teacher = "",
+                            room = "",
+                            tableId = viewModel.tableId,
+                            weekList = MutableLiveData<ArrayList<Int>>().apply {
+                                this.value = ArrayList<Int>().apply {
+                                    for (i in 1..viewModel.maxWeek) {
+                                        this.add(i)
+                                    }
+                                }
+                            }))
+                } else {
+                    adapter.addData(CourseEditBean(
+                            teacher = viewModel.editList[0].teacher,
+                            room = viewModel.editList[0].room,
+                            tableId = viewModel.tableId,
+                            weekList = MutableLiveData<ArrayList<Int>>().apply {
+                                this.value = ArrayList<Int>().apply {
+                                    for (i in 1..viewModel.maxWeek) {
+                                        this.add(i)
+                                    }
+                                }
+                            }))
+                }
+                mRecyclerView.scrollToPosition(adapter.data.size)
+            }
+        }, ConstraintLayout.LayoutParams(dip(56), dip(67)).apply {
+            bottomToBottom = ConstraintSet.PARENT_ID
+            endToEnd = ConstraintSet.PARENT_ID
+            setMargins(dip(16))
+        })
     }
 
     override fun onEditTextAfterTextChanged(editable: Editable, position: Int, what: String) {
@@ -107,10 +148,9 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         }
     }
 
-    private fun initAdapter(adapter: AddCourseAdapter, baseBean: CourseBaseBean) {
+    private fun initAdapter(baseBean: CourseBaseBean) {
         adapter.setListener(this)
         adapter.addHeaderView(initHeaderView(baseBean))
-        adapter.addFooterView(initFooterView(adapter))
         adapter.addChildClickViewIds(R.id.ll_time, R.id.ib_delete,
                 R.id.ll_weeks, R.id.ll_teacher, R.id.ll_room)
         adapter.setOnItemChildClickListener { _, view, position ->
@@ -125,17 +165,10 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                     selectTimeDialog.show(supportFragmentManager, "selectTime")
                 }
                 R.id.ib_delete -> {
-                    if (adapter.data.size - viewModel.deleteList.size == 1) {
+                    if (adapter.data.size == 1) {
                         Toasty.error(this.applicationContext, "至少要保留一个时间段").show()
                     } else {
-                        viewModel.deleteList.add(position)
-                        val viewHolder = mRecyclerView.findViewHolderForLayoutPosition(position + 1)
-                        if (viewHolder != null) {
-                            val lp = viewHolder.itemView.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams
-                            lp.height = 0
-                            lp.bottomMargin = 0
-                            viewHolder.itemView.layoutParams = lp
-                        }
+                        adapter.remove(position)
                     }
                 }
                 R.id.ll_weeks -> {
@@ -203,9 +236,6 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         }
         mRecyclerView.adapter = adapter
         mRecyclerView.layoutManager = LinearLayoutManager(this)
-        if (showTip) {
-            mRecyclerView.scrollToPosition(adapter.itemCount - 1)
-        }
     }
 
     private fun initHeaderView(baseBean: CourseBaseBean): View {
@@ -251,50 +281,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
         viewModel.baseBean.color = "#${Integer.toHexString(color)}"
     }
 
-    private fun initFooterView(adapter: AddCourseAdapter): View {
-        val view = LayoutInflater.from(this).inflate(R.layout.item_add_course_btn, null)
-        val tvBtn = view.findViewById<MaterialButton>(R.id.tv_add)
-        if (showTip) {
-            val colorAnim = ObjectAnimator.ofInt(tvBtn, "textColor",
-                    ContextCompat.getColor(this, R.color.colorAccent), Color.WHITE).apply {
-                duration = 500
-                setEvaluator(ArgbEvaluator())
-                repeatCount = ValueAnimator.INFINITE
-                repeatMode = ValueAnimator.REVERSE
-            }
-            colorAnim.start()
-        }
-        tvBtn.setOnClickListener {
-            if (viewModel.editList.isEmpty()) {
-                adapter.addData(CourseEditBean(
-                        teacher = "",
-                        room = "",
-                        tableId = viewModel.tableId,
-                        weekList = MutableLiveData<ArrayList<Int>>().apply {
-                            this.value = ArrayList<Int>().apply {
-                                for (i in 1..viewModel.maxWeek) {
-                                    this.add(i)
-                                }
-                            }
-                        }))
-            } else {
-                adapter.addData(CourseEditBean(
-                        teacher = viewModel.editList[0].teacher,
-                        room = viewModel.editList[0].room,
-                        tableId = viewModel.tableId,
-                        weekList = MutableLiveData<ArrayList<Int>>().apply {
-                            this.value = ArrayList<Int>().apply {
-                                for (i in 1..viewModel.maxWeek) {
-                                    this.add(i)
-                                }
-                            }
-                        }))
-            }
-        }
-        return view
-    }
-
-    private fun saveData() {
+    private fun saveData(isSame: Boolean = false) {
         launch {
             val maxId = viewModel.getLastId()
             if (viewModel.newId == -1) {
@@ -306,7 +293,7 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
             }
 
             try {
-                viewModel.preSaveData()
+                viewModel.preSaveData(isSame)
                 val appWidgetManager = AppWidgetManager.getInstance(applicationContext)
                 val list = viewModel.getScheduleWidgetIds()
                 list.forEach {
@@ -316,6 +303,9 @@ class AddCourseActivity : BaseListActivity(), ColorPickerFragment.ColorPickerDia
                     }
                 }
                 Toasty.success(applicationContext, "保存成功").show()
+                if (!viewModel.updateFlag) {
+                    setResult(Activity.RESULT_OK, Intent().putExtra("course", viewModel.baseBean))
+                }
                 finish()
             } catch (e: Exception) {
                 Toasty.error(applicationContext, e.message ?: "发生异常", Toast.LENGTH_LONG).show()

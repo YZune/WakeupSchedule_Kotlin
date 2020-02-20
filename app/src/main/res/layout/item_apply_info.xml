@@ -43,6 +43,7 @@
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_top"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -51,6 +52,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
+                android:id="@+id/tv_center"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="已读数量"
@@ -59,6 +61,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/tv_bottom"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="8dp"
                 android:text="已读且有效数量"
@@ -68,6 +71,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_detail_num"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

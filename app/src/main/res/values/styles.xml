@@ -8,8 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="coordinatorLayoutStyle">@style/Widget.Support.CoordinatorLayout</item>
         <item name="colorSecondary">@color/colorPrimary</item>
-        <!--<item name="android:windowTranslucentNavigation">true</item>-->
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.MyApp.SmallComponent
         </item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.MyApp.MediumComponent
@@ -17,6 +15,8 @@
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.MyApp.LargeComponent
         </item>
         <item name="verticalRecyclerViewStyle">@style/VerticalRecyclerView</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
+        <item name="windowActionModeOverlay">true</item>
     </style>
 
     <style name="ShapeAppearance.MyApp.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">

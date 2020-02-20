@@ -70,6 +70,14 @@ class LoginWebActivity : BaseActivity() {
                     path.endsWith("html") -> "html"
                     else -> ""
                 }
+                if (type.isEmpty()) {
+                    Toasty.error(this@LoginWebActivity, "文件的扩展名不对哦>_<", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this@LoginWebActivity, SplashActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                    return@launch
+                }
                 val transaction = supportFragmentManager.beginTransaction()
                 when (type) {
                     "file" -> transaction.add(android.R.id.content, FileImportFragment(), null)

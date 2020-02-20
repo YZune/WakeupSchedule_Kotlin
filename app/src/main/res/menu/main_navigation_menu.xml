@@ -14,6 +14,10 @@
                     android:title="咩咩"
                     android:visible="false" />
                 <item
+                    android:id="@+id/nav_course"
+                    android:icon="@drawable/wakeup"
+                    android:title="已添课程" />
+                <item
                     android:id="@+id/nav_explore"
                     android:icon="@drawable/explore"
                     android:title="申请情况" />

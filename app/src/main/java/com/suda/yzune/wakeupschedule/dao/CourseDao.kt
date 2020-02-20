@@ -23,6 +23,12 @@ interface CourseDao {
     }
 
     @Transaction
+    suspend fun updateSameCourse(courseBaseBean: CourseBaseBean, courseDetailList: List<CourseDetailBean>) {
+        updateCourseBaseBean(courseBaseBean)
+        insertDetailList(courseDetailList)
+    }
+
+    @Transaction
     suspend fun insertCourses(courseBaseList: List<CourseBaseBean>, courseDetailList: List<CourseDetailBean>) {
         insertBaseList(courseBaseList)
         insertDetailList(courseDetailList)
@@ -37,9 +43,6 @@ interface CourseDao {
 
     @Delete
     suspend fun deleteCourseDetail(courseDetailBean: CourseDetailBean)
-
-    @Query("select * from coursebasebean where tableId = :tableId")
-    fun getCourseBaseBeanOfTableLiveData(tableId: Int): LiveData<List<CourseBaseBean>>
 
     @Query("select * from coursebasebean where tableId = :tableId")
     suspend fun getCourseBaseBeanOfTable(tableId: Int): List<CourseBaseBean>

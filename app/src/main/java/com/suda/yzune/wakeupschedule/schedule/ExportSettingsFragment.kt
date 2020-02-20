@@ -33,7 +33,7 @@ class ExportSettingsFragment : BaseDialogFragment() {
         tv_export.setOnClickListener {
             val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
-                type = "text/octet-stream"
+                type = "application/octet-stream"
                 putExtra(Intent.EXTRA_TITLE, "$tableName.wakeup_schedule")
             }
             Toasty.info(activity!!, "请自行选择导出的地方\n不要修改文件的扩展名哦", Toasty.LENGTH_LONG).show()

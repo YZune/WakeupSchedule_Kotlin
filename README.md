@@ -6,6 +6,10 @@
 
 开源旨在可以降低后来者的门槛，借鉴可以，但是希望在相关 App 中能有所声明。
 
+教务网页解析的部分单独抽出了一个库，见 [CourseAdapter](https://github.com/YZune/CourseAdapter)
+
+近期要忙于毕设，欢迎大佬们 PR
+
 ## 上架情况
 
 截至2020.02.10
@@ -31,11 +35,8 @@
 - [NumberPickerView](https://github.com/Carbs0126/NumberPickerView)
 - [BaseRecyclerViewAdapterHelper](https://github.com/CymChad/BaseRecyclerViewAdapterHelper)
 - [ColorPicker](https://github.com/jaredrummler/ColorPicker)
-- [glide-transformations](https://github.com/wasabeef/glide-transformations)
 - [Glide](https://github.com/bumptech/glide)
 - [Gson](https://github.com/google/gson)
-- [MaterialFilePicker](https://github.com/nbsp-team/MaterialFilePicker)
-- [Share2](https://github.com/baishixian/Share2/)
 - [kotlin-csv](https://github.com/doyaaaaaken/kotlin-csv)
 - [TextDrawable](https://github.com/jahirfiquitiva/TextDrawable)
 - [Android-QuickSideBar](https://github.com/saiwu-bigkoo/Android-QuickSideBar/)

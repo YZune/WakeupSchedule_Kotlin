@@ -20,7 +20,7 @@ data class TableBean(
         @PrimaryKey(autoGenerate = true)
         var id: Int,
         var tableName: String,
-        var nodes: Int = 11,
+        var nodes: Int = 20,
         var background: String = "",
         var timeTable: Int = 1,
         var startDate: String = "2020-02-03",

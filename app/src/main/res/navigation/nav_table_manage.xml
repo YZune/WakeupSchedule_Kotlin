@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_table_manage"
     app:startDestination="@id/scheduleManageFragment">
     <fragment
         android:id="@+id/scheduleManageFragment"
         android:name="com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageFragment"
-        android:label="多课表管理"
-        tools:layout="@layout/fragment_schedule_manage">
+        android:label="多课表管理">
         <action
             android:id="@+id/scheduleManageFragment_to_courseManageFragment"
-            app:destination="@id/courseManageFragment"
-            app:enterAnim="@anim/fragment_in"
-            app:exitAnim="@anim/fragment_out" />
+            app:destination="@+id/courseManageFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/courseManageFragment"
         android:name="com.suda.yzune.wakeupschedule.schedule_manage.CourseManageFragment"
-        android:label="课程管理"
-        tools:layout="@layout/fragment_course_manage" />
+        android:label="课程管理" />
 </navigation>

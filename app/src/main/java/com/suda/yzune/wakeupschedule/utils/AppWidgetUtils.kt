@@ -58,6 +58,7 @@ object AppWidgetUtils {
         if (tableBean.tableName.isEmpty()) {
             tableBean.tableName = "我的课表"
         }
+        var notStart = false
         if (week > 0) {
             if (nextWeek) {
                 mRemoteViews.setTextViewText(R.id.tv_week, "${tableBean.tableName} | 第${week}周")
@@ -67,6 +68,7 @@ object AppWidgetUtils {
         } else {
             mRemoteViews.setTextViewText(R.id.tv_week, "${tableBean.tableName} | 还没有开学哦")
             week = 1
+            notStart = true
         }
 
         if (tableBean.showSun) {
@@ -97,7 +99,9 @@ object AppWidgetUtils {
         mRemoteViews.setTextViewTextSize(R.id.tv_title0, TypedValue.COMPLEX_UNIT_SP, tableBean.widgetItemTextSize.toFloat())
         mRemoteViews.setTextViewText(R.id.tv_title0, weekDate[0] + "\n月")
         if (nextWeek) {
-            mRemoteViews.setTextViewText(R.id.tv_date, "下周")
+            if (!notStart) {
+                mRemoteViews.setTextViewText(R.id.tv_date, "下周")
+            }
             mRemoteViews.setViewVisibility(R.id.iv_next, View.GONE)
             mRemoteViews.setViewVisibility(R.id.iv_back, View.VISIBLE)
         } else {

@@ -32,10 +32,12 @@ abstract class BaseListActivity : BaseActivity() {
     protected var showSearch = false
     protected var textWatcher: TextWatcher? = null
     protected lateinit var mRecyclerView: RecyclerView
+    lateinit var rootView: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(createView())
+        rootView = createView()
+        setContentView(rootView)
     }
 
     private fun createView() = ConstraintLayout(this).apply {

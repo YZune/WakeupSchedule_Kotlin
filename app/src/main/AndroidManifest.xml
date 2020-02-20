@@ -28,8 +28,7 @@
 
         <activity
             android:name=".schedule_import.LoginWebActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="portrait">
             <intent-filter
                 android:label="导入到课程表"
                 tools:ignore="AppLinkUrlError">

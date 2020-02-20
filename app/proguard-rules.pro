@@ -275,3 +275,5 @@
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
+
+-keep class it.sephiroth.android.library.xtooltip.TooltipOverlayDrawable { *; }

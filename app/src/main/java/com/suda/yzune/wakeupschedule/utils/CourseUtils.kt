@@ -188,10 +188,13 @@ object CourseUtils {
         val timeHour = Integer.valueOf(time.substring(0, 2))
         val timeMin = Integer.valueOf(time.substring(3, 5))
         val add = timeMin + min
-        val newHour = timeHour + add / 60
-        val newMin = add % 60
+        var newHour = timeHour + add / 60
+        var newMin = add % 60
         var strTime = ""
-
+        if (newHour > 23) {
+            newHour = 0
+            newMin = 0
+        }
         if (newHour < 10 && newMin >= 10) {
             strTime = "0$newHour:$newMin"
         } else if (newHour < 10 && newMin < 10) {

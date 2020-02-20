@@ -23,7 +23,9 @@ import com.suda.yzune.wakeupschedule.DonateActivity
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.bean.TableBean
+import com.suda.yzune.wakeupschedule.bean.TableSelectBean
 import com.suda.yzune.wakeupschedule.schedule.DonateFragment
+import com.suda.yzune.wakeupschedule.schedule_manage.ScheduleManageActivity
 import com.suda.yzune.wakeupschedule.settings.AdvancedSettingsActivity
 import com.suda.yzune.wakeupschedule.settings.SettingItemAdapter
 import com.suda.yzune.wakeupschedule.settings.TimeSettingsActivity
@@ -32,6 +34,7 @@ import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
+import splitties.dimensions.dip
 import splitties.snackbar.longSnack
 
 private const val TITLE_COLOR = 1
@@ -142,6 +145,24 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         viewModel.mYear = Integer.parseInt(viewModel.termStartList[0])
         viewModel.mMonth = Integer.parseInt(viewModel.termStartList[1])
         viewModel.mDay = Integer.parseInt(viewModel.termStartList[2])
+        val settingItem = intent?.extras?.getString("settingItem")
+        if (settingItem != null) {
+            mRecyclerView.postDelayed({
+                try {
+                    val i = showItems.indexOfFirst {
+                        it.title == settingItem
+                    }
+                    (mRecyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(i, dip(64))
+                    when (showItems[i]) {
+                        is HorizontalItem -> onHorizontalItemClick(showItems[i] as HorizontalItem, i)
+                        is VerticalItem -> onVerticalItemClick(showItems[i] as VerticalItem)
+                        is SeekBarItem -> onSeekBarItemClick(showItems[i] as SeekBarItem, i)
+                    }
+                } catch (e: Exception) {
+
+                }
+            }, 100)
+        }
     }
 
     private fun onItemsCreated(items: MutableList<BaseSettingItem>) {
@@ -150,6 +171,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         items.add(HorizontalItem("上课时间", "点击此处更改", listOf("时间")))
         items.add(HorizontalItem("学期开始日期", viewModel.table.startDate, listOf("学期", "周", "日期", "开学", "开始", "时间")))
         items.add(currentWeekItem)
+        items.add(HorizontalItem("管理已添加课程", "", keys = listOf("课程", "课")))
         items.add(SeekBarItem("一天课程节数", viewModel.table.nodes, 1, 30, "节", keys = listOf("节数", "数量", "数")))
         items.add(SeekBarItem("学期周数", viewModel.table.maxWeek, 1, 30, "周", keys = listOf("学期", "周", "时间")))
         items.add(SwitchItem("周日为每周第一天", viewModel.table.sundayFirst, keys = listOf("周日", "第一天", "起始", "星期天", "天")))
@@ -181,6 +203,8 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
             "huawei" -> items.add(VerticalItem("看看都有哪些高级功能", "高级功能会持续更新~", keys = listOf("高级")))
             else -> items.add(VerticalItem("解锁高级功能", "解锁赞助一下社团和开发者ヾ(=･ω･=)o\n高级功能会持续更新~\n采用诚信授权模式", keys = listOf("高级")))
         }
+
+        items.add(VerticalItem("", "\n\n\n"))
     }
 
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
@@ -200,6 +224,7 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 .setView(R.layout.dialog_edit_text)
                 .setNegativeButton(R.string.cancel, null)
                 .setPositiveButton(R.string.sure, null)
+                .setCancelable(false)
                 .create()
         dialog.show()
         val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
@@ -311,13 +336,25 @@ class ScheduleSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                     putExtra("selectedId", viewModel.table.timeTable)
                 }, REQUEST_CODE_CHOOSE_TABLE)
             }
+            "管理已添加课程" -> {
+                start<ScheduleManageActivity> {
+                    putExtra("selectedTable", TableSelectBean(
+                            id = viewModel.table.id,
+                            background = viewModel.table.background,
+                            tableName = viewModel.table.tableName,
+                            maxWeek = viewModel.table.maxWeek,
+                            nodes = viewModel.table.nodes,
+                            type = viewModel.table.type
+                    ))
+                }
+            }
         }
     }
 
     private fun onVerticalItemClick(item: VerticalItem) {
         when (item.title) {
             "课程表背景" -> {
-                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "image/*"
                 }

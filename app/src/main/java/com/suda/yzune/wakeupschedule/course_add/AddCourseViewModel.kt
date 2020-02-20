@@ -27,7 +27,6 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
     private val saveList = mutableListOf<CourseDetailBean>()
 
     var updateFlag = true
-    val deleteList = arrayListOf<Int>()
     var newId = -1
     var tableId = 0
     var maxWeek = 30
@@ -49,7 +48,7 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
         return 0
     }
 
-    suspend fun preSaveData() {
+    suspend fun preSaveData(isSame: Boolean = false) {
         saveList.clear()
         if (baseBean.id == -1) {
             updateFlag = false
@@ -66,21 +65,23 @@ class AddCourseViewModel(application: Application) : AndroidViewModel(applicatio
             baseBean.color = "#${Integer.toHexString(ViewUtils.getCustomizedColor(getApplication(), baseBean.id % 9))}"
         }
         for (i in editList.indices) {
-            if (i !in deleteList) {
-                saveList.addAll(CourseUtils.editBean2DetailBeanList(editList[i]))
-            }
+            saveList.addAll(CourseUtils.editBean2DetailBeanList(editList[i]))
         }
 
         val selfUnique = CourseUtils.checkSelfUnique(saveList)
 
         if (selfUnique) {
-            saveData()
+            saveData(isSame)
         } else {
             throw Exception("此处填写的时间有重复，请仔细检查")
         }
     }
 
-    private suspend fun saveData() {
+    private suspend fun saveData(isSame: Boolean = false) {
+        if (isSame) {
+            courseDao.updateSameCourse(baseBean, saveList)
+            return
+        }
         if (updateFlag) {
             courseDao.updateSingleCourse(baseBean, saveList)
         } else {

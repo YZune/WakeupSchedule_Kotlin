@@ -106,7 +106,6 @@ object ViewUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return vh
     }
 

@@ -4,21 +4,26 @@ import android.app.Activity.RESULT_OK
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.webkit.*
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.suda.yzune.wakeupschedule.BuildConfig
 import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.apply_info.ApplyInfoActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseFragment
 import com.suda.yzune.wakeupschedule.utils.Const
+import com.suda.yzune.wakeupschedule.utils.Utils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
@@ -32,6 +37,8 @@ class WebViewLoginFragment : BaseFragment() {
     private val viewModel by activityViewModels<ImportViewModel>()
     private var isRefer = false
     private val hostRegex = Regex("""(http|https)://.*?/""")
+    private var tips = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入\n4. 如果遇到总是提示密码错误或者网页错位等问题，可以取消底栏的「电脑模式」或者调节字体缩放"
+    private var zoom = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +71,7 @@ class WebViewLoginFragment : BaseFragment() {
         }
 
         if (viewModel.importType == "apply") {
-            tv_tips.text = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
+            tips = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表或者相关的页面\n3. 点击右下角的按钮抓取源码，并上传到服务器"
         }
 
         if (viewModel.school == "强智教务") {
@@ -77,6 +84,8 @@ class WebViewLoginFragment : BaseFragment() {
         if (viewModel.school == "正方教务") {
             cg_zf.visibility = View.VISIBLE
             chip_zf1.isChecked = true
+            tips = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到「个人课表」的页面，注意不是「班级课表」！注意选择自己需要导入的学期。正方教务目前仅支持个人课表的导入\n3. 点击右下角的按钮完成导入\n" +
+                    "4. 如果遇到总是提示密码错误或者网页错位等问题，可以取消底栏的「电脑模式」或者调节字体缩放"
         } else {
             cg_zf.visibility = View.GONE
         }
@@ -88,6 +97,16 @@ class WebViewLoginFragment : BaseFragment() {
         } else {
             cg_old_qz.visibility = View.GONE
         }
+
+        MaterialAlertDialogBuilder(activity)
+                .setTitle("注意事项")
+                .setMessage(tips)
+                .setPositiveButton("我知道啦", null)
+                .setNeutralButton("如何正确选择教务？") { _, _ ->
+                    Utils.openUrl(activity!!, "https://support.qq.com/embed/97617/faqs/59901")
+                }
+                .setCancelable(false)
+                .show()
 
         wv_course.settings.javaScriptEnabled = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -142,6 +161,55 @@ class WebViewLoginFragment : BaseFragment() {
     }
 
     private fun initEvent() {
+
+        chip_mode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("Mobile", "eliboM").replace("Android", "diordnA")
+            } else {
+                wv_course.settings.userAgentString = wv_course.settings.userAgentString.replace("eliboM", "Mobile").replace("diordnA", "Android")
+            }
+            wv_course.reload()
+        }
+
+        chip_zoom.setOnClickListener {
+            val dialog = MaterialAlertDialogBuilder(activity)
+                    .setTitle("设置缩放")
+                    .setView(R.layout.dialog_edit_text)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setPositiveButton(R.string.sure, null)
+                    .create()
+            dialog.show()
+            val inputLayout = dialog.findViewById<TextInputLayout>(R.id.text_input_layout)
+            val editText = dialog.findViewById<TextInputEditText>(R.id.edit_text)
+            inputLayout?.helperText = "范围 10 ~ 200"
+            inputLayout?.suffixText = "%"
+            editText?.inputType = InputType.TYPE_CLASS_NUMBER
+            val valueStr = zoom.toString()
+            editText?.setText(valueStr)
+            editText?.setSelection(valueStr.length)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val value = editText?.text
+                if (value.isNullOrBlank()) {
+                    inputLayout?.error = "数值不能为空哦>_<"
+                    return@setOnClickListener
+                }
+                val valueInt = try {
+                    value.toString().toInt()
+                } catch (e: Exception) {
+                    inputLayout?.error = "输入异常>_<"
+                    return@setOnClickListener
+                }
+                if (valueInt < 10 || valueInt > 200) {
+                    inputLayout?.error = "注意范围 10 ~ 200"
+                    return@setOnClickListener
+                }
+                zoom = valueInt
+                wv_course.settings.textZoom = zoom
+                chip_zoom.text = "文字缩放 $zoom%"
+                wv_course.reload()
+                dialog.dismiss()
+            }
+        }
 
         var qzChipId = R.id.chip_qz1
         cg_qz.setOnCheckedChangeListener { chipGroup, id ->
@@ -200,12 +268,6 @@ class WebViewLoginFragment : BaseFragment() {
                     chipGroup.findViewById<Chip>(oldQZChipId).isChecked = true
                 }
             }
-        }
-
-        tv_got_it.setOnClickListener {
-            tv_got_it.visibility = View.GONE
-            tv_tips.visibility = View.GONE
-            tv_tips.visibility = View.GONE
         }
 
         tv_go.setOnClickListener {

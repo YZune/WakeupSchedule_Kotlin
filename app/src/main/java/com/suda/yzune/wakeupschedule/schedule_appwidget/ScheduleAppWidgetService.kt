@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import android.widget.TextView
 import androidx.core.view.setPadding
 import com.suda.yzune.wakeupschedule.AppDatabase
 import com.suda.yzune.wakeupschedule.R
@@ -14,9 +15,11 @@ import com.suda.yzune.wakeupschedule.bean.CourseBean
 import com.suda.yzune.wakeupschedule.bean.TableBean
 import com.suda.yzune.wakeupschedule.bean.TimeDetailBean
 import com.suda.yzune.wakeupschedule.schedule.ScheduleUI
+import com.suda.yzune.wakeupschedule.utils.Const
 import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.CourseUtils.countWeek
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.suda.yzune.wakeupschedule.widget.TipTextView
 import splitties.dimensions.dip
 import java.text.ParseException
@@ -84,12 +87,8 @@ class ScheduleAppWidgetService : RemoteViewsService() {
                 allCourseList[i - 1] = courseDao.getCourseByDayOfTableSync(i, table.id)
             }
 
-            if (table.showTime) {
-                timeList.clear()
-                timeList.addAll(timeDao.getTimeListSync(table.timeTable))
-            } else {
-                timeList.clear()
-            }
+            timeList.clear()
+            timeList.addAll(timeDao.getTimeListSync(table.timeTable))
         }
 
         override fun onDestroy() {
@@ -124,6 +123,16 @@ class ScheduleAppWidgetService : RemoteViewsService() {
 
         fun initData(views: RemoteViews) {
             val ui = ScheduleUI(applicationContext, table, weekDay, true)
+            val showTimeDetail = applicationContext.getPrefer().getBoolean(Const.KEY_SCHEDULE_DETAIL_TIME, true)
+            ui.showTimeDetail = showTimeDetail
+            if (timeList.isNotEmpty() && showTimeDetail) {
+                for (i in 0 until table.nodes) {
+                    (ui.content.getViewById(R.id.anko_tv_node1 + i) as FrameLayout).apply {
+                        findViewById<TextView>(R.id.tv_start).text = timeList[i].startTime
+                        findViewById<TextView>(R.id.tv_end).text = timeList[i].endTime
+                    }
+                }
+            }
             for (i in 1..7) {
                 initWeekPanel(ui, allCourseList[i - 1], i)
             }
@@ -135,7 +144,7 @@ class ScheduleAppWidgetService : RemoteViewsService() {
         }
 
         private fun initWeekPanel(ui: ScheduleUI, data: List<CourseBean>?, day: Int) {
-            val ll = ui.content.findViewById<FrameLayout?>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+            val ll = ui.content.getViewById(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1) as FrameLayout?
                     ?: return
             ll.removeAllViews()
             if (data == null || data.isEmpty()) return

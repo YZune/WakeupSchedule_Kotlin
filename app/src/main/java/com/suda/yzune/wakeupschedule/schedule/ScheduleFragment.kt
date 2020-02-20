@@ -51,6 +51,7 @@ class ScheduleFragment : BaseFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         weekDay = CourseUtils.getWeekdayInt()
         ui = ScheduleUI(context!!, viewModel.table, if (week == viewModel.currentWeek) weekDay else -1)
+        ui.showTimeDetail = context!!.getPrefer().getBoolean(Const.KEY_SCHEDULE_DETAIL_TIME, true)
         showCourseNumber = viewModel.getShowCourseNumber(week)
         return ui.root
     }
@@ -58,17 +59,25 @@ class ScheduleFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         weekDate = CourseUtils.getDateStringFromWeek(CourseUtils.countWeek(viewModel.table.startDate, viewModel.table.sundayFirst), week, viewModel.table.sundayFirst)
-        view.findViewById<AppCompatTextView>(R.id.anko_tv_title0).text = weekDate[0] + "\n月"
+        ((view as ConstraintLayout).getViewById(R.id.anko_tv_title0) as AppCompatTextView).text = weekDate[0] + "\n月"
         var textView: AppCompatTextView?
         for (i in 1..7) {
             if (ui.dayMap[i] == -1) continue
-            textView = view.findViewById(R.id.anko_tv_title0 + ui.dayMap[i])
+            textView = view.getViewById(R.id.anko_tv_title0 + ui.dayMap[i]) as AppCompatTextView
             if (i == 7 && !viewModel.table.showSat && !viewModel.table.sundayFirst) {
-                textView?.text = viewModel.daysArray[i] + "\n${weekDate[7]}"
+                textView.text = viewModel.daysArray[i] + "\n${weekDate[7]}"
             } else if (!viewModel.table.showSun && viewModel.table.sundayFirst && i != 7) {
-                textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i] + 1]}"
+                textView.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i] + 1]}"
             } else {
-                textView?.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
+                textView.text = viewModel.daysArray[i] + "\n${weekDate[ui.dayMap[i]]}"
+            }
+        }
+        if (viewModel.timeList.isNotEmpty() && ui.showTimeDetail) {
+            for (i in 0 until viewModel.table.nodes) {
+                (ui.content.getViewById(R.id.anko_tv_node1 + i) as FrameLayout).apply {
+                    findViewById<AppCompatTextView>(R.id.tv_start).text = viewModel.timeList[i].startTime
+                    findViewById<AppCompatTextView>(R.id.tv_end).text = viewModel.timeList[i].endTime
+                }
             }
         }
         if (preLoad) {
@@ -81,7 +90,7 @@ class ScheduleFragment : BaseFragment() {
         showCourseNumber.observe(viewLifecycleOwner, Observer {
             if (it == 0) {
                 ui.content.visibility = View.GONE
-                if (ui.root.findViewById<View?>(R.id.anko_empty_view) != null) {
+                if (ui.root.getViewById(R.id.anko_empty_view) != null) {
                     return@Observer
                 }
                 val img = AppCompatImageView(context!!).apply {
@@ -111,8 +120,8 @@ class ScheduleFragment : BaseFragment() {
                 })
             } else {
                 ui.content.visibility = View.VISIBLE
-                ui.root.findViewById<View?>(R.id.anko_empty_view)?.let {
-                    ui.root.removeView(it)
+                ui.root.getViewById(R.id.anko_empty_view)?.let { emptyView ->
+                    ui.root.removeView(emptyView)
                 }
             }
         })
@@ -143,7 +152,7 @@ class ScheduleFragment : BaseFragment() {
     }
 
     private fun initWeekPanel(data: List<CourseBean>?, day: Int, table: TableBean) {
-        val ll = ui.content.findViewById<FrameLayout?>(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1)
+        val ll = ui.content.getViewById(R.id.anko_ll_week_panel_0 + ui.dayMap[day] - 1) as FrameLayout?
                 ?: return
         ll.removeAllViews()
         if (data == null || data.isEmpty()) return

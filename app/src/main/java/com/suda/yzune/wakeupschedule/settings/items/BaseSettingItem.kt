@@ -1,6 +1,6 @@
 package com.suda.yzune.wakeupschedule.settings.items
 
-abstract class BaseSettingItem(val keyWords: List<String>?) {
+abstract class BaseSettingItem(val title: String, val keyWords: List<String>?) {
     abstract fun getType(): Int
 }
 

@@ -2,6 +2,7 @@ package com.suda.yzune.wakeupschedule.schedule
 
 import android.content.Context
 import android.graphics.Typeface
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
@@ -21,6 +22,8 @@ import splitties.dimensions.dp
 class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidget: Boolean = false) : Ui {
 
     private var col = 6
+
+    var showTimeDetail = true
 
     val dayMap = IntArray(8)
     val itemHeight = ctx.dip(if (forWidget) table.widgetItemHeight else table.itemHeight)
@@ -56,13 +59,42 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
 
     val content = ConstraintLayout(ctx).apply {
         id = R.id.anko_cl_content_panel
+        val timeSize = when (col) {
+            7 -> 9f
+            6 -> 10f
+            else -> 8f
+        }
         for (i in 1..table.nodes) {
-            addView(AppCompatTextView(context).apply {
+            addView(FrameLayout(context).apply {
                 id = R.id.anko_tv_node1 + i - 1
-                text = i.toString()
-                textSize = 12f
-                gravity = Gravity.CENTER
-                setTextColor(textColor)
+                if (showTimeDetail) {
+                    addView(AppCompatTextView(context).apply {
+                        id = R.id.tv_start
+                        setTextColor(textColor)
+                        //gravity = Gravity.CENTER
+                        //textAlignment = View.TEXT_ALIGNMENT_CENTER
+                        setSingleLine()
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, timeSize)
+                    }, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                    })
+                    addView(AppCompatTextView(context).apply {
+                        id = R.id.tv_end
+                        setTextColor(textColor)
+                        setSingleLine()
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, timeSize)
+                    }, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.BOTTOM
+                    })
+                }
+                addView(AppCompatTextView(context).apply {
+                    setTextColor(textColor)
+                    text = i.toString()
+                    textSize = 12f
+                    setSingleLine()
+                }, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+                    gravity = Gravity.CENTER
+                })
             }, ConstraintLayout.LayoutParams(0, itemHeight).apply {
                 topMargin = dip(2)
                 endToStart = R.id.anko_ll_week_panel_0
@@ -76,7 +108,8 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
                         verticalChainStyle = ConstraintSet.CHAIN_PACKED
                     }
                     table.nodes -> {
-                        bottomToTop = R.id.anko_navigation_bar_view
+                        //bottomToTop = R.id.anko_navigation_bar_view
+                        bottomToBottom = ConstraintSet.PARENT_ID
                         topToBottom = R.id.anko_tv_node1 + i - 2
                     }
                     else -> {
@@ -110,6 +143,13 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
                     col - 2 -> {
                         startToEnd = R.id.anko_ll_week_panel_0 + i - 1
                         endToEnd = ConstraintSet.PARENT_ID
+                        if (!forWidget) {
+                            marginEnd = if (col < 8) {
+                                dip(8)
+                            } else {
+                                dip(4)
+                            }
+                        }
                     }
                     else -> {
                         startToEnd = R.id.anko_ll_week_panel_0 + i - 1
@@ -155,6 +195,13 @@ class ScheduleUI(override val ctx: Context, table: TableBean, day: Int, forWidge
                         startToEnd = R.id.anko_tv_title0 + i - 1
                         endToEnd = ConstraintSet.PARENT_ID
                         baselineToBaseline = R.id.anko_tv_title0 + i - 1
+                        if (!forWidget) {
+                            marginEnd = if (col < 8) {
+                                dip(8)
+                            } else {
+                                dip(4)
+                            }
+                        }
                     }
                     else -> {
                         horizontalWeight = 1f

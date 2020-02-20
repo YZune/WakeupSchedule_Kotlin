@@ -15,11 +15,7 @@ class TableNameAdapter(layoutResId: Int, data: MutableList<TableSelectBean>) :
 
     override fun convert(helper: BaseViewHolder, item: TableSelectBean?) {
         if (item == null) return
-        if (item.type == 1) {
-            helper.setVisible(R.id.ll_action, true)
-        } else {
-            helper.setVisible(R.id.ll_action, false)
-        }
+        helper.setGone(R.id.menu_setting, item.type != 1)
 
         if (item.tableName != "") {
             helper.setText(R.id.tv_table_name, item.tableName)

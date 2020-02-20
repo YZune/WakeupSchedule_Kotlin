@@ -21,7 +21,10 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseListActivity
 import com.suda.yzune.wakeupschedule.dao.AppWidgetDao
 import com.suda.yzune.wakeupschedule.settings.items.*
-import com.suda.yzune.wakeupschedule.utils.*
+import com.suda.yzune.wakeupschedule.utils.AppWidgetUtils
+import com.suda.yzune.wakeupschedule.utils.Const
+import com.suda.yzune.wakeupschedule.utils.DonateUtils
+import com.suda.yzune.wakeupschedule.utils.getPrefer
 import com.suda.yzune.wakeupschedule.widget.colorpicker.ColorPickerFragment
 import es.dmoral.toasty.Toasty
 import splitties.activities.start
@@ -103,9 +106,6 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
         items.add(SwitchItem("提醒通知常驻", getPrefer().getBoolean(Const.KEY_REMINDER_ON_GOING, false)))
         items.add(SeekBarItem("提前几分钟提醒", getPrefer().getInt(Const.KEY_REMINDER_TIME, 20), 0, 90, "分钟"))
         //items.add(SwitchItem("提醒同时将手机静音", PreferenceUtils.getBooleanFromSP(applicationContext, "silence_reminder", false)))
-
-        items.add(CategoryItem("开发情况", false))
-        items.add(VerticalItem("截至2018.12.02", "161次代码提交\n净提交代码17935行\n点击跳转至项目地址\n欢迎star和fork"))
     }
 
     private fun onSwitchItemCheckChange(item: SwitchItem, isChecked: Boolean) {
@@ -114,11 +114,7 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                 getPrefer().edit {
                     putBoolean(Const.KEY_HIDE_NAV_BAR, isChecked)
                 }
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    mRecyclerView.longSnack("该设置仅对 Android 4.4 及以上版本有效>_<")
-                } else {
-                    mRecyclerView.longSnack("重启App后生效哦~")
-                }
+                mRecyclerView.longSnack("重启App后生效哦~")
                 item.checked = isChecked
             }
             "开启上课提醒" -> {
@@ -184,9 +180,6 @@ class AdvancedSettingsActivity : BaseListActivity(), ColorPickerFragment.ColorPi
                         .setShowAlphaSlider(true)
                         .setColor(getPrefer().getInt(Const.KEY_THEME_COLOR, color(R.color.colorAccent)))
                         .show(this)
-            }
-            "截至2018.12.02" -> {
-                Utils.openUrl(this, "https://github.com/YZune/WakeupSchedule_Kotlin/")
             }
         }
     }

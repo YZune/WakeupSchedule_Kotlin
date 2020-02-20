@@ -18,8 +18,8 @@ class AddCourseAdapter(layoutResId: Int, data: MutableList<CourseEditBean>) :
     }
 
     override fun convert(helper: BaseViewHolder, item: CourseEditBean?) {
-        //helper.setText(R.id.tv_item_id, "${helper.layoutPosition}")
         if (item == null) return
+        //helper.setText(R.id.tv_item, "${helper.layoutPosition}")
         helper.setText(R.id.et_room, item.room)
         helper.setText(R.id.et_teacher, item.teacher)
 

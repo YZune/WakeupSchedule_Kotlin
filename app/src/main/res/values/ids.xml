@@ -83,4 +83,18 @@
     <item name="anko_seek_bar" type="id" />
     <item name="anko_quick_side_bar" type="id" />
     <item name="anko_empty_view" type="id" />
+
+    <item name="bottom_sheet_title_week" type="id" />
+    <item name="bottom_sheet_title_schedule" type="id" />
+    <item name="bottom_sheet_title_shortcut" type="id" />
+    <item name="bottom_sheet_change_week_btn" type="id" />
+    <item name="bottom_sheet_modify_time_btn" type="id" />
+    <item name="bottom_sheet_bg_btn" type="id" />
+    <item name="bottom_sheet_check_course_btn" type="id" />
+    <item name="bottom_sheet_question_btn" type="id" />
+    <item name="bottom_sheet_create_schedule_btn" type="id" />
+    <item name="bottom_sheet_manage_schedule_btn" type="id" />
+    <item name="bottom_sheet_sv_week" type="id" />
+    <item name="bottom_sheet_cg_week" type="id" />
+    <item name="bottom_sheet_rv_table" type="id" />
 </resources>

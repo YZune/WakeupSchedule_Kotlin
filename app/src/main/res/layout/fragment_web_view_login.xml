@@ -69,41 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_tips"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            android:lineSpacingExtra="8dp"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="8dp"
-            android:text="1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入"
-            android:textSize="12sp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_got_it"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_tips"
-            android:background="?attr/colorSurface"
-            android:gravity="right"
-            android:paddingEnd="16dp"
-            android:paddingBottom="16dp"
-            android:text="我知道啦"
-            android:textColor="@color/colorAccent"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <View
-            android:id="@+id/v_tips"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/tv_got_it"
-            android:alpha="0.5"
-            android:background="@color/grey" />
-
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_error"
             android:layout_width="wrap_content"
@@ -147,11 +112,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:visibility="gone"
-                    tools:visibility="visible"
                     app:chipSpacingHorizontal="16dp"
                     app:chipSpacingVertical="16dp"
                     app:lineSpacing="20dp"
-                    app:singleSelection="true">
+                    app:singleSelection="true"
+                    tools:visibility="visible">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_qz1"
@@ -230,11 +195,11 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:visibility="gone"
-                    tools:visibility="visible"
                     app:chipSpacingHorizontal="16dp"
                     app:chipSpacingVertical="16dp"
                     app:lineSpacing="20dp"
-                    app:singleSelection="true">
+                    app:singleSelection="true"
+                    tools:visibility="visible">
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chip_old_qz1"
@@ -280,11 +245,28 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btn_back"
-            android:tint="?attr/colorOnSurface"
             style="@style/ButtonBackground"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/ic_back" />
+            android:src="@drawable/ic_back"
+            android:tint="?attr/colorOnSurface" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_mode"
+            style="@style/Widget.MaterialComponents.Chip.Choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:checked="true"
+            android:text="电脑模式" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip_zoom"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="文字缩放 100%" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

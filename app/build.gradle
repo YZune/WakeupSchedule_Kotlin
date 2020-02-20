@@ -34,8 +34,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 86
-        versionName "3.613"
+        versionCode 90
+        versionName "3.621"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         packagingOptions {
@@ -155,4 +155,5 @@ dependencies {
     }
     implementation "com.microsoft.appcenter:appcenter-analytics:$appCenterSdkVersion"
     implementation "com.microsoft.appcenter:appcenter-crashes:$appCenterSdkVersion"
+    implementation 'com.github.sephiroth74:android-target-tooltip:2.0.4'
 }
