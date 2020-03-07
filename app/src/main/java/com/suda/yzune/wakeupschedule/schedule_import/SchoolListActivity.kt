@@ -30,6 +30,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_CF
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HELP
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNIU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNUST
+import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_JNU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_LOGIN
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_PKU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_QZ

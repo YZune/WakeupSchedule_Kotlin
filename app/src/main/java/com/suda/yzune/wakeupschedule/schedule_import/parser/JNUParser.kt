@@ -27,7 +27,7 @@ class JNUParser(source: String) : Parser(source) {
                 if (str.isNullOrEmpty() || j == 0) continue
 
                 room = str.substringBefore(' ')
-                courseName = str.substringAfter('：').substringBefore('(')
+                courseName = str.substringAfter('：').substringBeforeLast('(')
 
                 if (courseNames.contains(courseName)) {
                     step = courseNames[courseName]!!
