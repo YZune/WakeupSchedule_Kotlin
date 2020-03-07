@@ -34,6 +34,7 @@ class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
             Common.TYPE_BNUZ to "", // 北京师范大学珠海分校
             Common.TYPE_HNIU to "", // 湖南信息职业技术学院
             Common.TYPE_HNUST to "", // 湖南科技大学
+            Common.TYPE_JNU to "by @Jiuh-star", // 暨南大学
             Common.TYPE_LOGIN to "", // 模拟登录方式
             Common.TYPE_MAINTAIN to "不可用" // 维护状态，暂不可用
     )

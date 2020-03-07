@@ -21,6 +21,7 @@ object Common {
     const val TYPE_BNUZ = "bnuz" // 北京师范大学珠海分校
     const val TYPE_HNIU = "hniu" // 湖南信息职业技术学院
     const val TYPE_HNUST = "hnust" // 湖南科技大学
+    const val TYPE_JNU = "jnu" // 暨南大学
     const val TYPE_LOGIN = "login" // 模拟登录方式
     const val TYPE_MAINTAIN = "maintain" // 维护状态，暂不可用
 

@@ -80,6 +80,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             Common.TYPE_BNUZ -> BNUZParser(source)
             Common.TYPE_HNIU -> HNIUParser(source)
             Common.TYPE_HNUST -> HNUSTParser(source, oldQzType)
+            Common.TYPE_JNU -> JNUParser(source)
             else -> null
         }
         return parser?.saveCourse(getApplication(), importId) { baseList, detailList ->

@@ -30,6 +30,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_CF
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HELP
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNIU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNUST
+import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_JNU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_LOGIN
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_PKU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_QZ
@@ -312,6 +313,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("J", "江苏科技大学", "http://jwgl.just.edu.cn:8080/jsxsd/", TYPE_QZ))
             add(SchoolInfo("J", "江西中医药大学", "http://jwxt.jxutcm.edu.cn/jwglxt/xtgl/", TYPE_ZF_NEW))
             add(SchoolInfo("J", "江西农业大学南昌商学院", "http://223.83.249.67:8080/jsxsd/", TYPE_QZ_BR))
+            add(SchoolInfo("J", "暨南大学", "https://jwxt.jnu.edu.cn/", TYPE_JNU))
             add(SchoolInfo("J", "济南大学", "http://jwgl4.ujn.edu.cn/jwglxt", TYPE_ZF_NEW))
             add(SchoolInfo("J", "济南工程职业技术学院", "", TYPE_ZF_NEW))
             add(SchoolInfo("J", "锦州医科大学", "http://jwgl.jzmu.edu.cn/jsxsd/", TYPE_QZ))
