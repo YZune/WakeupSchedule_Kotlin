@@ -39,6 +39,7 @@ class WebViewLoginFragment : BaseFragment() {
     private val hostRegex = Regex("""(http|https)://.*?/""")
     private var tips = "1. 在上方输入教务网址，部分学校需要连接校园网\n2. 登录后点击到个人课表的页面，注意选择自己需要导入的学期\n3. 点击右下角的按钮完成导入\n4. 如果遇到总是提示密码错误或者网页错位等问题，可以取消底栏的「电脑模式」或者调节字体缩放"
     private var zoom = 100
+    private var countClick = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -333,6 +334,23 @@ class WebViewLoginFragment : BaseFragment() {
                     isRefer = true
                 } else {
                     wv_course.loadUrl("javascript:window.local_obj.showSource(document.getElementsByTagName('html')[0].innerText);")
+                }
+            } else if (viewModel.importType == Common.TYPE_JNU) {
+                if (countClick == 0) {
+                    val referUrl = getHostUrl() + "Secure/TeachingPlan/wfrm_Prt_Report.aspx"
+                    wv_course.loadUrl(referUrl)
+                    it.longSnack("请在看到网页加载完成后，再点一次右下角按钮")
+                    countClick++
+                } else if(countClick == 1){
+//                    val jnujs = "javascript:window.local_obj.jump2DespairingUrl(document.getElementById(\"ReportFrameReportViewer1\").src);"
+                    val jnujs = "javascript:window.location.href = document.getElementById(\"ReportFrameReportViewer1\").src;"
+                    wv_course.loadUrl(jnujs)
+//                    wv_course.loadUrl(despairingUrl)
+                    it.longSnack("请再点一次右下角按钮")
+                    countClick++
+                }else{
+                    wv_course.loadUrl(js)
+                    countClick = 0
                 }
             } else {
                 wv_course.loadUrl(js)
