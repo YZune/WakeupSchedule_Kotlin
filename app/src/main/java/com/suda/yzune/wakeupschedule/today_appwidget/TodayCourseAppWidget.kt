@@ -57,7 +57,6 @@ class TodayCourseAppWidget : AppWidgetProvider() {
                         .setSubText("上课提醒")
                         .setContentText("$weekDay  地点：$room")
                         .setWhen(System.currentTimeMillis())
-                        .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher))
                         .setSmallIcon(R.drawable.wakeup)
                         .setAutoCancel(false)
                         .setOngoing(context.getPrefer().getBoolean(Const.KEY_REMINDER_ON_GOING, false))
