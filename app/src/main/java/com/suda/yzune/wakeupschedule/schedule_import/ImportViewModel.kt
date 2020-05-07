@@ -407,7 +407,7 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 }
 
                 firstornot = true//确保下一行的index是本activity的first
-                val matcher = Pattern.compile("TaskActivity\\(.+?,\"(.+?)\",.+?,\"(.+?)\",.+?,\"(.+?)\",\"(.+)\"").matcher(text)
+                val matcher = Pattern.compile("TaskActivity\\(.+?,\"(.*?)\",.+?,\"(.+?)\",.+?,\"(.+?)\",\"(.+)\"").matcher(text)
                 matcher.find()
                 val matchRs = matcher.toMatchResult()
                 if (lclass != matchRs.group(2)) {//课程不同
