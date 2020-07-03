@@ -659,6 +659,14 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
         return write2DB()
     }
 
+    suspend fun writeCourseList2DB(courseList: List<CourseBaseBean>, courseDetailList: List<CourseDetailBean>): Int {
+        baseList.clear()
+        detailList.clear()
+        baseList.addAll(courseList)
+        detailList.addAll(courseDetailList)
+        return write2DB()
+    }
+
     private val nodeHashMap = SparseArray<Array<Int>?>()
 
     private fun mathStartEnd(lessonValue: Int): Array<Int> {

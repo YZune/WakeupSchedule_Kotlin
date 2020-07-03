@@ -15,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.text.HtmlCompat
+import com.suda.yzune.wakeupschedule.App
 import com.suda.yzune.wakeupschedule.R
 import java.io.File
 import java.io.FileOutputStream
@@ -192,8 +193,7 @@ object ViewUtils {
         v.layout(0, 0, v.measuredWidth, v.measuredHeight)
     }
 
-    fun getCustomizedColor(context: Context, index: Int): Int {
-        val customizedColors = context.resources.getIntArray(R.array.customizedColors)
-        return customizedColors[index]
+    fun getCustomizedColor(context: Context = App.instance, index: Int): Int {
+        return context.resources.getIntArray(R.array.customizedColors)[index]
     }
 }

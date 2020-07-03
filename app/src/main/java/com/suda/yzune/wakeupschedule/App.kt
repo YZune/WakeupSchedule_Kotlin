@@ -20,11 +20,17 @@ import com.suda.yzune.wakeupschedule.utils.getPrefer
 import es.dmoral.toasty.Toasty
 
 class App : Application() {
-
     var activityCount = 0
+
+    companion object {
+        lateinit var instance: App
+            private set
+    }
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
+
         Toasty.Config.getInstance()
                 .setToastTypeface(Typeface.DEFAULT_BOLD)
                 .setTextSize(12)
