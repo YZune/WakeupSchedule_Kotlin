@@ -21,6 +21,7 @@ import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorExce
 import com.suda.yzune.wakeupschedule.schedule_import.exception.UserNameErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.hust.MobileHub
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.jlu.UIMS
+import com.suda.yzune.wakeupschedule.schedule_import.login_school.nau.NAUCourse
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.suda.SudaXK
 import com.suda.yzune.wakeupschedule.utils.Utils
 import es.dmoral.toasty.Toasty
@@ -236,6 +237,16 @@ class LoginWebFragment : BaseFragment() {
                     list.add(index.toString())
                 }
                 cardC2Dialog(list, true)
+            }
+            "南京审计大学" -> {
+                val nauCourse = NAUCourse(et_id.text.toString(), et_pwd.text.toString())
+                try {
+                    nauCourse.getCourseTable(viewModel.importId).let {
+                        result = viewModel.writeCourseList2DB(it.first, it.second)
+                    }
+                } catch (e: Exception) {
+                    exception = e
+                }
             }
         }
         if (viewModel.school == "苏州大学" || viewModel.school == "西北工业大学") return

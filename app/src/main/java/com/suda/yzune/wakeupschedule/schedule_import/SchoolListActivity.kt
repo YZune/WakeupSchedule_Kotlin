@@ -330,6 +330,7 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("N", "南京师范大学中北学院", "http://222.192.5.246/", TYPE_ZF_NEW))
             add(SchoolInfo("N", "南京特殊教育师范学院", "", TYPE_ZF_NEW))
             add(SchoolInfo("N", "南京理工大学", "http://202.119.81.112:8080/", TYPE_QZ))
+            add(SchoolInfo("N", "南京审计大学", "", TYPE_LOGIN))
             add(SchoolInfo("N", "南宁师范大学", "http://172.16.130.25/dean/student/login", TYPE_QZ))
             add(SchoolInfo("N", "南宁职业技术学院", "http://jwxt.ncvt.net:8088/jwglxt/", TYPE_ZF_NEW))
             add(SchoolInfo("N", "南方医科大学", "http://zhjw.smu.edu.cn/", TYPE_CF))

@@ -43,7 +43,8 @@ class SchoolImportListAdapter(layoutResId: Int, data: MutableList<SchoolInfo>) :
             "清华大学" to "RikaSugisawa",
             "上海大学" to "Deep Sea",
             "吉林大学" to "颩欥殘膤",
-            "西北工业大学" to "ludoux"
+            "西北工业大学" to "ludoux",
+            "南京审计大学" to "XFY9326"
     )
 
     override fun getHeaderId(position: Int): Long {

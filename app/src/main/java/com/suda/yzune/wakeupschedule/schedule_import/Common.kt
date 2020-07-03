@@ -225,4 +225,37 @@ object Common {
         }
     }
 
+    // 处理多个时间间隔，可自定义列表间隔与时间间隔字符串
+    // 例如：输入 '1-2' ，输出 [Pair(1, 2)]
+    //      输入 '2' ，输出 [Pair(2, 2)]
+    //      输入 '' ，输出 []
+    //      输入 '1-2,2-3,4' ，输出 [Pair(1, 2), Pair(2, 3), Pair(4, 4)]
+    fun parseTimePeriodList(str: String, listSplitSymbol: String = ",", timeSplitSymbol: String = "-") = if (str.isNotEmpty() && str.isNotBlank()) {
+        val text = str.trim()
+        if (listSplitSymbol in text) {
+            val splitArray = text.split(listSplitSymbol)
+            Array(splitArray.size) { i ->
+                parseTimePeriod(splitArray[i], timeSplitSymbol)
+            }
+        } else {
+            arrayOf(parseTimePeriod(text, timeSplitSymbol))
+        }
+    } else {
+        emptyArray()
+    }
+
+    // 处理单个时间间隔，可自定义时间间隔字符串
+    // 例如：输入 '1-2' ，输出 Pair(1, 2)
+    //      输入 '2' ，输出 Pair(2, 2)
+    fun parseTimePeriod(str: String, splitSymbol: String = "-") = if (str.isNotEmpty() && str.isNotBlank()) {
+        val text = str.trim()
+        if (splitSymbol in text) {
+            val splitArr = text.split(splitSymbol)
+            splitArr[0].toInt() to splitArr[1].toInt()
+        } else {
+            text.toInt() to text.toInt()
+        }
+    } else {
+        throw IllegalArgumentException("Empty Parse Text to Time Period!")
+    }
 }
