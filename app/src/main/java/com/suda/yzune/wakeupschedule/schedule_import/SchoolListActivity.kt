@@ -27,7 +27,6 @@ import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.base_view.BaseTitleActivity
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_BNUZ
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_CF
-import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HAUST
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HELP
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNIU
 import com.suda.yzune.wakeupschedule.schedule_import.Common.TYPE_HNUST
@@ -278,7 +277,6 @@ class SchoolListActivity : BaseTitleActivity(), OnQuickSideBarTouchListener {
             add(SchoolInfo("H", "河北科技师范学院", "http://121.22.25.47/", TYPE_ZF))
             add(SchoolInfo("H", "河北经贸大学", "http://222.30.218.44/default2.aspx", TYPE_ZF))
             add(SchoolInfo("H", "河北金融学院", "", TYPE_QZ_CRAZY))
-            add(SchoolInfo("H", "河南科技大学", "http://jxglxt2.haust.edu.cn/wsxk/stu_zxjg_rpt.aspx", TYPE_HAUST))
             add(SchoolInfo("H", "河南工程学院", "http://125.219.48.18/", TYPE_ZF))
             add(SchoolInfo("H", "河南理工大学", "", TYPE_URP))
             add(SchoolInfo("H", "河南财经政法大学", "http://xk.huel.edu.cn/jwglxt/xtgl/login_slogin.html", TYPE_ZF_NEW))
