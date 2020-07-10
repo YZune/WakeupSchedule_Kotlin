@@ -1,76 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:layout_width="280dp"
-	android:layout_height="wrap_content"
-	android:layout_gravity="center"
-	android:orientation="vertical"
-	tools:context=".schedule.ImportChooseFragment">
-	
-	<androidx.appcompat.widget.AppCompatTextView
-		android:id="@+id/ib_close"
-		style="@style/ButtonBackground"
-		android:layout_width="32dp"
-		android:layout_height="32dp"
-		android:layout_gravity="end"
-		android:layout_marginTop="8dp"
-		android:layout_marginEnd="8dp"
-		android:fontFamily="@font/iconfont"
-		android:gravity="center"
-		android:includeFontPadding="false"
-		android:text=""
-		android:textSize="20sp" />
-	
-	<androidx.appcompat.widget.AppCompatTextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal"
-		android:layout_marginTop="-16dp"
-		android:gravity="center"
-		android:text="导入课程"
-		android:textStyle="bold" />
-	
-	<androidx.appcompat.widget.AppCompatTextView
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_marginTop="8dp"
-		android:gravity="center"
-		android:lineSpacingExtra="4dp"
-		android:paddingStart="16dp"
-		android:paddingEnd="16dp"
-		android:text="已支持从两百多所学校的教务直接导入课程\n也可以去申请适配试试看:)"
-		android:textSize="12sp" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_school"
-		style="@style/DialogButtonStyle"
-		android:layout_marginTop="8dp"
-		android:text="从学校教务导入" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_excel"
-		style="@style/DialogButtonStyle"
-		android:text="从 Excel 导入" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_json"
-		style="@style/DialogButtonStyle"
-		android:text="从 Json 导入" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_html"
-		style="@style/DialogButtonStyle"
-		android:text="从 Html 文件导入" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_file"
-		style="@style/DialogButtonStyle"
-		android:text="从分享/导出文件导入" />
-	
-	<com.google.android.material.button.MaterialButton
-		android:id="@+id/tv_feedback"
-		style="@style/DialogButtonStyle"
-		android:layout_marginBottom="8dp"
-		android:text="申请适配" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    tools:context=".schedule.ImportChooseFragment">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/ib_close"
+        style="@style/ButtonBackground"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/iconfont"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text=""
+        android:textSize="20sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-16dp"
+        android:gravity="center"
+        android:text="导入课程"
+        android:textStyle="bold" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="已支持从两百多所学校的教务直接导入课程\n也可以去申请适配试试看:)"
+        android:textSize="12sp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_school"
+        style="@style/DialogButtonStyle"
+        android:layout_marginTop="8dp"
+        android:text="从学校教务导入" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_excel"
+        style="@style/DialogButtonStyle"
+        android:text="从 Excel 导入" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_html"
+        style="@style/DialogButtonStyle"
+        android:text="从 Html 文件导入" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_file"
+        style="@style/DialogButtonStyle"
+        android:text="从分享/导出文件导入" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/tv_feedback"
+        style="@style/DialogButtonStyle"
+        android:layout_marginBottom="8dp"
+        android:text="申请适配" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

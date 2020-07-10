@@ -4,9 +4,7 @@ import android.app.Application
 import android.net.Uri
 import android.util.SparseArray
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.suda.yzune.wakeupschedule.App
 import com.suda.yzune.wakeupschedule.AppDatabase
@@ -14,14 +12,12 @@ import com.suda.yzune.wakeupschedule.bean.*
 import com.suda.yzune.wakeupschedule.schedule_import.exception.NetworkErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.exception.PasswordErrorException
 import com.suda.yzune.wakeupschedule.schedule_import.exception.UserNameErrorException
-import com.suda.yzune.wakeupschedule.schedule_import.json.JsonImporter
 import com.suda.yzune.wakeupschedule.schedule_import.login_school.suda.SudaXK
 import com.suda.yzune.wakeupschedule.schedule_import.parser.*
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzBrParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzCrazyParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzParser
 import com.suda.yzune.wakeupschedule.schedule_import.parser.qz.QzWithNodeParser
-import com.suda.yzune.wakeupschedule.utils.CourseUtils
 import com.suda.yzune.wakeupschedule.utils.MyRetrofitUtils
 import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +27,6 @@ import org.json.JSONObject
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
-import tiiehenry.classschedule.json.ClassSchedule
 import java.nio.charset.Charset
 import java.util.regex.Pattern
 
@@ -85,7 +80,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
             Common.TYPE_BNUZ -> BNUZParser(source)
             Common.TYPE_HNIU -> HNIUParser(source)
             Common.TYPE_HNUST -> HNUSTParser(source, oldQzType)
-            Common.TYPE_HAUST -> HAUSTParser(source)
             else -> null
         }
         return parser?.saveCourse(getApplication(), importId) { baseList, detailList ->
@@ -761,28 +755,6 @@ class ImportViewModel(application: Application) : AndroidViewModel(application) 
                 tableDao.insertTable(TableBean(id = importId, tableName = "未命名"))
                 courseDao.insertCourses(baseList, detailList)
             }
-        }
-    }
-
-    suspend fun importFromJson(text: String) {
-        baseList.clear()
-        detailList.clear()
-        var errorMessage = ""
-        var errorFlag = false
-        var cs: ClassSchedule? = null
-        try {
-            cs = ClassSchedule.fromJsonText(text)
-        } catch (e: JsonSyntaxException) {
-            e.printStackTrace()
-            errorMessage = e.message ?: "json格式错误"
-            errorFlag = true
-        }
-        if (!errorFlag && cs != null) {
-            JsonImporter.importClassSchedule(cs,baseList, detailList,importId,getApplication())
-            write2DB()
-        }
-        if (errorFlag) {
-            throw Exception(errorMessage)
         }
     }
 

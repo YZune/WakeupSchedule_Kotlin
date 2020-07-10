@@ -139,7 +139,6 @@ class HtmlImportFragment : BaseFragment() {
                     activity!!.setResult(RESULT_OK)
                     activity!!.finish()
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     Toasty.error(activity!!,
                             "导入失败>_<\n${e.message}", Toast.LENGTH_LONG).show()
                 }
