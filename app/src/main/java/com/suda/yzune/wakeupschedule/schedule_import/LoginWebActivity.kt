@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.suda.yzune.wakeupschedule.R
 import com.suda.yzune.wakeupschedule.SplashActivity
 import com.suda.yzune.wakeupschedule.base_view.BaseActivity
 import com.suda.yzune.wakeupschedule.utils.Const
@@ -40,6 +41,9 @@ class LoginWebActivity : BaseActivity() {
             }
             "html" -> {
                 HtmlImportFragment()
+            }
+            "json" -> {
+                JsonImportFragment()
             }
             else -> {
                 if (viewModel.importType.isNullOrEmpty() || viewModel.school.isNullOrEmpty()) {
