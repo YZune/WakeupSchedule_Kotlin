@@ -1,8 +1,12 @@
 package com.suda.yzune.wakeupschedule.schedule
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.BaseDialogFragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -36,6 +40,17 @@ class ImportChooseFragment : BaseDialogFragment() {
                 activity!!.startActivityForResult(
                         Intent(activity, LoginWebActivity::class.java).apply {
                             putExtra("import_type", "file")
+                        },
+                        Const.REQUEST_CODE_IMPORT)
+                this.dismiss()
+            }
+        }
+        tv_json.setOnClickListener {
+            showSAFTips {
+                activity!!.startActivityForResult(
+                        Intent(activity, LoginWebActivity::class.java).apply {
+                            putExtra("import_type", "json")
+                            putExtra("tableId", viewModel.table.id)
                         },
                         Const.REQUEST_CODE_IMPORT)
                 this.dismiss()

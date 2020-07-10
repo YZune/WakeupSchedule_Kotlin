@@ -1,8 +1,17 @@
 package com.suda.yzune.wakeupschedule.schedule_import.parser
 
+import android.app.Application
+import androidx.lifecycle.MutableLiveData
+import com.suda.yzune.wakeupschedule.bean.CourseBaseBean
+import com.suda.yzune.wakeupschedule.bean.CourseDetailBean
+import com.suda.yzune.wakeupschedule.bean.CourseEditBean
+import com.suda.yzune.wakeupschedule.bean.TimeBean
 import com.suda.yzune.wakeupschedule.schedule_import.Common
 import com.suda.yzune.wakeupschedule.schedule_import.bean.Course
+import com.suda.yzune.wakeupschedule.utils.CourseUtils
+import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import org.jsoup.Jsoup
+import tiiehenry.classschedule.json.ClassSchedule
 
 // 东北石油大学
 // 湖南科技大学
@@ -76,5 +85,6 @@ class HNUSTParser(source: String, private val oldQzType: Int) : Parser(source) {
         }
         return courseList
     }
+
 
 }

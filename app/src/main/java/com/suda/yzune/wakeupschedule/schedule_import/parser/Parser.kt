@@ -43,8 +43,8 @@ abstract class Parser(val source: String) {
         }
     }
 
-    suspend fun saveCourse(context: Context, tableId: Int, block: suspend (baseList: List<CourseBaseBean>,
-                                                                           detailList: List<CourseDetailBean>) -> Unit): Int {
+    open suspend fun saveCourse(context: Context, tableId: Int, block: suspend (baseList: List<CourseBaseBean>,
+                                                                                detailList: List<CourseDetailBean>) -> Unit): Int {
         convertCourse(context, tableId)
         if (_baseList.isEmpty()) throw Exception("导入数据为空>_<请确保选择正确的教务类型\n以及到达显示课程的页面")
         block(_baseList, _detailList)
