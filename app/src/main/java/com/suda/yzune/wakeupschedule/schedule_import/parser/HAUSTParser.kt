@@ -50,13 +50,26 @@ class HAUSTParser(source: String) : Parser(source) {
                 val scheduleText = it.children().last().toString().substringAfter(">").substringBeforeLast("<br>")
                 val scheduleTextList = scheduleText.split("<br>")
                 val 上课安排 = mutableListOf<ClassTime>()
-                scheduleTextList.forEach { eachScheduleText ->
-                    val timeText = eachScheduleText.substringBefore("/")
-                    val 星期 = week2Day(timeText.substringBefore(" "))
-                    val timeTextWithoutWeek = timeText.substringAfter(" ")
-                    val 节次 = timeTextWithoutWeek.substringBefore("节")
-                    val 周次 = timeTextWithoutWeek.substringAfter("[").substringBefore("周")
-                    val 地点 = if (eachScheduleText.contains("/")) eachScheduleText.substringAfter("/") else ""
+                for (eachScheduleText in scheduleTextList) {
+                    if (eachScheduleText.isEmpty()) {
+                        continue
+                    }
+//                    println(eachScheduleText)
+                    val splited=eachScheduleText.split("/")
+                    if (splited.isEmpty())
+                        continue
+
+                    val 地点 =if (splited.size>1){splited[1]}
+                    else ""
+
+                    val timeText = splited[0]
+//                    [1-12周]星期二[7-8节]/专业机房3（开元工科613，611，617）
+                    val weekText=timeText.substringBefore("星期")
+                    val weekDayAndSectionText=timeText.substringAfter("星期")
+                    val 周次 = weekText.substringAfter("[").substringBefore("周")
+                    val 星期 = week2Day(weekDayAndSectionText.first())
+//                    println(星期)
+                    val 节次 = weekDayAndSectionText.substringAfter("[").substringBefore("节")
 
                     上课安排.add(
                             ClassTime(
@@ -89,22 +102,23 @@ class HAUSTParser(source: String) : Parser(source) {
                 学期 = "大二下",
                 课程 = 课程
         )
-        println(schedule)
+//        println(schedule)
         return schedule
     }
 
-    private fun week2Day(day: String): Int {
+    private fun week2Day(day: Char): Int {
         return when (day) {
-            "一" -> 1
-            "二" -> 2
-            "三" -> 3
-            "四" -> 4
-            "五" -> 5
-            "六" -> 6
-            "日" -> 7
+            '一' -> 1
+            '二' -> 2
+            '三' -> 3
+            '四' -> 4
+            '五' -> 5
+            '六' -> 6
+            '日' -> 7
             else -> 7
         }
     }
+
     override fun generateCourseList(): List<Course> {
         return mutableListOf()
     }
