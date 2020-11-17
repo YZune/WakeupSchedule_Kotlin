@@ -11,114 +11,126 @@ import com.suda.yzune.wakeupschedule.utils.ViewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.FormBody
-import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.math.BigInteger
+import java.security.KeyFactory
+import java.security.interfaces.RSAPublicKey
+import java.security.spec.RSAPublicKeySpec
+import javax.crypto.Cipher
 
 class NAUCourse(private val userId: String, private val userPw: String) {
     private val cookieJar: SimpleCookieJar = SimpleCookieJar()
     private val client: OkHttpClient = OkHttpClient.Builder().cookieJar(cookieJar).build()
 
     companion object {
+        private const val JWC_HOST = "jwc.nau.edu.cn"
         private const val SSO_HOST = "sso.nau.edu.cn"
+        private const val JWC_LOGIN_SINGLE_URL = "http://$JWC_HOST/Login_Single.aspx"
+        private const val JWC_SSO_LOGIN_URL = "http://$SSO_HOST/sso/login?service=$JWC_LOGIN_SINGLE_URL"
+
+        @Suppress("SpellCheckingInspection")
+        private const val JWC_LOGOUT_URL = "http://$JWC_HOST/Loginout.aspx"
         private const val SSO_LOGOUT_URL = "http://$SSO_HOST/sso/logout"
 
-        private const val JWC_HOST = "jwc.nau.edu.cn"
-        private const val JWC_SSO_LOGIN_URL = "http://$SSO_HOST/sso/login?service=http%3A%2F%2F$JWC_HOST%2FLogin_Single.aspx"
-        private const val JWC_LOGOUT_URL = "http://$JWC_HOST/LoginOut.aspx"
+        private const val JWC_COURSE_THIS_TERM_URL = "http://$JWC_HOST/Students/MyCourseScheduleTable.aspx"
 
-        private val SSO_LOGIN_PARAM = arrayOf("lt", "execution", "_eventId", "useVCode", "isUseVCode", "sessionVcode")
-        private const val SSO_LOGIN_PARAM_ERROR_COUNT = "errorCount"
-        private const val SSO_LOGIN_PARAM_ERROR_COUNT_VALUE = ""
+        private const val JWC_ALREADY_LOGIN = "已经登录"
+        private const val SSO_ACCOUNT_LOCK = "账号被锁定"
+        private const val SSO_LOGIN_PASSWORD_ERROR_STR = "密码错误"
 
-        private const val SSO_INPUT_TAG_NAME_ATTR = "name"
-        private const val SSO_INPUT_TAG_VALUE_ATTR = "value"
-        private const val SSO_INPUT = "input[$SSO_INPUT_TAG_NAME_ATTR][$SSO_INPUT_TAG_VALUE_ATTR]"
-        private const val SSO_POST_FORMAT = "input[$SSO_INPUT_TAG_NAME_ATTR=%s]"
-        private const val SSO_POST_USERNAME = "username"
-        private const val SSO_POST_PASSWORD = "password"
-
-        private const val JWC_ALREADY_LOGIN_STR = "已经登录"
-        private const val JWC_SERVER_ERROR_STR = "非法字符"
-        private const val JWC_PASSWORD_ERROR_STR = "密码错误"
-        private const val JWC_LOGIN_PAGE_STR = "用户登录"
-
-        private const val JWC_DEFAULT_ASPX = "default.aspx"
-        private const val JWC_STUDENTS_PATH = "Students"
         private const val JWC_URL_PARAM_R = "r"
         private const val JWC_URL_PARAM_D = "d"
 
-        private const val SSO_LOGIN_PASSWORD_ERROR_STR = "密码错误"
-        private const val SSO_LOGIN_INPUT_ERROR_STR = "请勿输入非法字符"
-        private const val SSO_SERVER_ERROR = "单点登录系统未正常工作"
-        private const val SSO_LOGIN_PAGE_STR = "南京审计大学统一身份认证登录"
+        private const val HTML_ATTR_NAME = "name"
+        private const val HTML_ATTR_VALUE = "value"
+        private const val HTML_DIV = "div"
 
-        private const val COURSE_TABLE_URL = "http://$JWC_HOST/Students/MyCourseScheduleTable.aspx"
+        private const val SSO_USER_PASSWORD_ENCRYPTED = "encrypted"
+        private const val SSO_INPUT = "#fm1 > $HTML_DIV:nth-child(5)"
+        private const val SSO_POST_FORMAT = "input[$HTML_ATTR_NAME=%s]"
+        private const val SSO_POST_USERNAME = "username"
+        private const val SSO_POST_PASSWORD = "password"
+        private val SSO_LOGIN_PARAM = arrayOf("execution", "_eventId", "loginType", "submit")
 
-        private fun getLoginPostForm(userId: String, userPw: String, ssoResponseContent: String): FormBody = FormBody.Builder().apply {
-            add(SSO_POST_USERNAME, userId)
-            add(SSO_POST_PASSWORD, userPw)
-            val htmlContent = Jsoup.parse(ssoResponseContent).select(SSO_INPUT)
-            for (param in SSO_LOGIN_PARAM) {
-                add(param, htmlContent.select(SSO_POST_FORMAT.format(param)).first().attr(SSO_INPUT_TAG_VALUE_ATTR))
+        private const val RSA_ALGORITHM_NAME = "RSA"
+        private const val RSA_EXPONENT = "010001"
+
+        @Suppress("SpellCheckingInspection")
+        private const val RSA_MODULUS =
+                "008aed7e057fe8f14c73550b0e6467b023616ddc8fa91846d2613cdb7f7621e3cada4cd5d812d627af6b87727ade4e26d26208b7326815941492b2204c3167ab2d53df1e3a2c9153bdb7c8c2e968df97a5e7e01cc410f92c4c2c2fba529b3ee988ebc1fca99ff5119e036d732c368acf8beba01aa2fdafa45b21e4de4928d0d403"
+
+
+        private fun encryptPassword(password: String): String {
+            val modulus = BigInteger(RSA_MODULUS, 16)
+            val exponent = BigInteger(RSA_EXPONENT, 16)
+
+            val keyFactory = KeyFactory.getInstance(RSA_ALGORITHM_NAME)
+            val publicKey = keyFactory.generatePublic(RSAPublicKeySpec(modulus, exponent)) as RSAPublicKey
+
+            val cipher = Cipher.getInstance(RSA_ALGORITHM_NAME)
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey)
+
+            return buildString {
+                for (byte in cipher.doFinal(password.reversed().toByteArray())) {
+                    Integer.toHexString(byte.toInt() and 0xFF).let {
+                        if (it.length == 1) append('0')
+                        append(it)
+                    }
+                }
             }
-            add(SSO_LOGIN_PARAM_ERROR_COUNT, SSO_LOGIN_PARAM_ERROR_COUNT_VALUE)
-        }.build()
+        }
 
-        private fun validateJwcLoginUrl(url: HttpUrl): Boolean =
-                url.pathSegments().size >= 2 && url.pathSegments()[0] == JWC_STUDENTS_PATH && url.pathSegments()[1] == JWC_DEFAULT_ASPX &&
-                        url.querySize() >= 2 && url.queryParameter(JWC_URL_PARAM_D) != null && url.queryParameter(JWC_URL_PARAM_R) != null
+        private fun buildPostForm(userId: String, userPw: String, ssoResponseContent: String) = FormBody.Builder().apply {
+            val htmlContent = Jsoup.parse(ssoResponseContent).select(SSO_INPUT)
+            add(SSO_POST_USERNAME, userId)
+            add(SSO_POST_PASSWORD, encryptPassword(userPw))
+            add(SSO_USER_PASSWORD_ENCRYPTED, true.toString())
+            for (param in SSO_LOGIN_PARAM) {
+                val input = htmlContent.select(SSO_POST_FORMAT.format(param)).first()
+                val value = input.attr(HTML_ATTR_VALUE)
+                add(param, value)
+            }
+        }.build()
     }
 
     private fun login(reLogin: Boolean = true) {
-        client.newCall(Request.Builder().url(JWC_SSO_LOGIN_URL).build()).execute().use { r1 ->
-            if (r1.isSuccessful) {
-                val u1 = r1.request().url()
-                r1.body()?.string()?.let { b1 ->
-                    when {
-                        u1.host().equals(JWC_HOST, true) -> jwcLoginCheck(u1, b1, reLogin)
-                        SSO_LOGIN_PAGE_STR in b1 || u1.host().equals(SSO_HOST, true) ->
-                            client.newCall(r1.request().newBuilder().post(getLoginPostForm(userId, userPw, b1)).build()).execute().use { r2 ->
-                                if (r2.isSuccessful) {
-                                    val u2 = r2.request().url()
-                                    r2.body()?.string()?.let { b2 ->
-                                        when {
-                                            u2.host().equals(JWC_HOST, true) -> {
-                                                jwcLoginCheck(u2, b2, reLogin)
-                                                return
-                                            }
-                                            SSO_LOGIN_PASSWORD_ERROR_STR in b2 -> throw PasswordErrorException("密码错误！")
-                                            SSO_LOGIN_INPUT_ERROR_STR in b2 -> throw PasswordErrorException("用户名或密码错误！")
-                                            SSO_SERVER_ERROR in b2 -> throw ServerErrorException(SSO_SERVER_ERROR)
-                                            else -> throw ServerErrorException("SSO未知登录错误！")
+        client.newCall(Request.Builder().url(JWC_SSO_LOGIN_URL).build()).execute().use { pr ->
+            pr.body()?.string()?.let { pb ->
+                client.newCall(Request.Builder().url(JWC_SSO_LOGIN_URL).post(buildPostForm(userId, userPw, pb)).build()).execute().use { r1 ->
+                    if (r1.isSuccessful) {
+                        val u1 = r1.request().url()
+                        r1.body()?.string()?.let { b1 ->
+                            when (u1.host()) {
+                                JWC_HOST -> if (u1.queryParameter(JWC_URL_PARAM_R).isNullOrBlank() || u1.queryParameter(JWC_URL_PARAM_D).isNullOrBlank()) {
+                                    if (JWC_ALREADY_LOGIN in b1) {
+                                        if (reLogin) {
+                                            jwcLogout()
+                                            login(false)
+                                        } else {
+                                            throw ServerErrorException("教务服务器错误！")
                                         }
+                                    } else {
+                                        throw ServerErrorException("教务未知登录错误！")
                                     }
+                                } else {
+                                    return
                                 }
+                                SSO_HOST -> when {
+                                    SSO_LOGIN_PASSWORD_ERROR_STR in b1 -> throw PasswordErrorException("密码错误！")
+                                    SSO_ACCOUNT_LOCK in b1 -> throw PasswordErrorException("账户被锁定！")
+                                    else -> throw ServerErrorException("SSO未知登录错误！")
+                                }
+                                else -> throw ServerErrorException("SSO登录页面错误！")
                             }
-                        SSO_SERVER_ERROR in b1 -> throw ServerErrorException(SSO_SERVER_ERROR)
-                        else -> throw ServerErrorException("SSO登录页面错误！")
+                        }
                     }
                 }
             }
         }
         throw NetworkErrorException("SSO服务器连接失败！")
-    }
-
-    private fun jwcLoginCheck(url: HttpUrl, body: String, reLogin: Boolean) {
-        when {
-            JWC_PASSWORD_ERROR_STR in body -> throw PasswordErrorException("密码错误！")
-            JWC_SERVER_ERROR_STR in body -> throw ServerErrorException(JWC_SERVER_ERROR_STR)
-            JWC_LOGIN_PAGE_STR in body || JWC_ALREADY_LOGIN_STR in body -> {
-                if (reLogin && jwcLogout()) {
-                    login(false)
-                } else {
-                    throw ServerErrorException("您已在其他地方登录教务系统，请十分钟后重试！")
-                }
-            }
-            !validateJwcLoginUrl(url) -> throw ServerErrorException("教务系统登录页面错误！")
-        }
     }
 
     private fun jwcLogout() = client.newCall(Request.Builder().url(JWC_LOGOUT_URL).build()).execute().use {
@@ -131,7 +143,7 @@ class NAUCourse(private val userId: String, private val userPw: String) {
     }
 
     private fun getCourseTableHtmlContent(): String? {
-        client.newCall(Request.Builder().url(COURSE_TABLE_URL).build()).execute().use {
+        client.newCall(Request.Builder().url(JWC_COURSE_THIS_TERM_URL).build()).execute().use {
             if (it.isSuccessful) {
                 return it.body()?.string()
             }
